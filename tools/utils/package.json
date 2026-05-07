@@ -1,0 +1,8 @@
+{
+  "name": "@internal/utils",
+  "private": true,
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "glob": "^13.0.6"
+  }
+}

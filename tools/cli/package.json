@@ -1,0 +1,12 @@
+{
+  "name": "@internal/cli",
+  "private": true,
+  "version": "1.0.0",
+  "bin": {
+    "egs-build": "./bin/egs-build",
+    "generate-api-impl": "./bin/generate-api-impl"
+  },
+  "dependencies": {
+    "yargs": "^18.0.0"
+  }
+}

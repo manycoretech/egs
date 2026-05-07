@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
+
+const argv = yargs(hideBin(process.argv))
+    .option('target', { type: 'string', required: true })
+    .option('entry', { type: 'string', required: true, array: true })
+    .argv;
+
+require('@internal/utils/api-builder').generate(argv.target, argv.entry);

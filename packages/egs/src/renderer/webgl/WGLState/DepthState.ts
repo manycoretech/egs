@@ -1,0 +1,71 @@
+import { DepthModes } from '../../../utils/Constants';
+import { Nullable } from '../../../utils/Utils';
+
+export class DepthState {
+    readonly gl: WebGLRenderingContext | WebGL2RenderingContext;
+    private currentDepthMask: Nullable<boolean>;
+    private currentDepthFunc: Nullable<number>;
+    private currentDepthClear: Nullable<number>;
+
+    constructor(gl: WebGLRenderingContext | WebGL2RenderingContext) {
+        this.gl = gl;
+        this.currentDepthMask = null;
+        this.currentDepthFunc = null;
+        this.currentDepthClear = null;
+        this.setClear(1);
+    }
+
+    public setMask(depthMask: boolean): void {
+        if (this.currentDepthMask !== depthMask) {
+            this.gl.depthMask(depthMask);
+            this.currentDepthMask = depthMask;
+        }
+    }
+
+    public setFunc(depthFunc: DepthModes): void {
+        if (this.currentDepthFunc !== depthFunc) {
+            switch (depthFunc) {
+                case DepthModes.NeverDepth:
+                    this.gl.depthFunc(this.gl.NEVER);
+                    break;
+                case DepthModes.AlwaysDepth:
+                    this.gl.depthFunc(this.gl.ALWAYS);
+                    break;
+                case DepthModes.LessDepth:
+                    this.gl.depthFunc(this.gl.LESS);
+                    break;
+                case DepthModes.LessEqualDepth:
+                    this.gl.depthFunc(this.gl.LEQUAL);
+                    break;
+                case DepthModes.EqualDepth:
+                    this.gl.depthFunc(this.gl.EQUAL);
+                    break;
+                case DepthModes.GreaterEqualDepth:
+                    this.gl.depthFunc(this.gl.GEQUAL);
+                    break;
+                case DepthModes.GreaterDepth:
+                    this.gl.depthFunc(this.gl.GREATER);
+                    break;
+                case DepthModes.NotEqualDepth:
+                    this.gl.depthFunc(this.gl.NOTEQUAL);
+                    break;
+                default:
+                    this.gl.depthFunc(this.gl.LEQUAL);
+            }
+            this.currentDepthFunc = depthFunc;
+        }
+    }
+
+    public setClear(depth: number): void {
+        if (this.currentDepthClear !== depth) {
+            this.gl.clearDepth(depth);
+            this.currentDepthClear = depth;
+        }
+    }
+
+    public reset(): void {
+        this.currentDepthMask = null;
+        this.currentDepthFunc = null;
+        this.currentDepthClear = null;
+    }
+}

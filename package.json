@@ -1,0 +1,26 @@
+{
+  "name": "@internal/egs",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/manycoretech/egs.git"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "author": "egs",
+  "license": "MIT",
+  "packageManager": "pnpm@11.2.2",
+  "description": "the wrapper repo which contains the egs-main repo and egs-website together to help test and develop",
+  "devDependencies": {
+    "@types/node": "^12.20.55",
+    "@internal/cli": "workspace:*",
+    "@internal/utils": "workspace:*",
+    "prettier": "^3.7.4",
+    "typescript": "~3.8.3"
+  },
+  "scripts": {
+    "build": "pnpm run -r build",
+    "build:release": "pnpm run -r build:release"
+  }
+}

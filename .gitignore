@@ -1,0 +1,12 @@
+**/node_modules
+**/build
+.build-tools
+
+.DS_Store
+*.log
+
+# pnpm start
+.pnp.*
+.pnpm/*
+!.pnpm/plugins
+# pnpm end

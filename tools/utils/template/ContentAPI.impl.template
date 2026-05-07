@@ -1,0 +1,71 @@
+// @ts-nocheck
+// AUTO GENERATED DO NOT MODIFY, IF FOUND COMPILE ERROR RUN "pnpm generate:content-api" in package/egs-main
+
+import type { TypedArray, Nullable } from './utils/Utils';
+import type { BufferGeometryBase, BufferGroup } from './elements/geometries/containers/BufferGeometry';
+import type { Material } from './elements/materials/Material';
+import type { Object3D } from './scene/Object3D';
+import type { InstancedBufferGeometry } from './elements/geometries/containers/InstancedBufferGeometry';
+import type { RenderTarget, RenderTargetCube } from './elements/textures/RenderTarget';
+import type { Drawable } from './scene/drawables/Drawable';
+import type { Camera3D } from './scene/cameras/Camera3D';
+import type { Texture2D } from './elements/textures/Texture2D';
+import type { ShaderComponent } from './renderer/shader/Shader';
+import type { Shadow } from './scene/shadows/Shadow';
+import type { Intersection, Raycaster } from './scene/tools/Raycaster';
+import type { Light } from './scene/lights/Light';
+import type { Viewer } from './Viewer';
+import type { BufferAttribute } from './elements/attributes/BufferAttribute';
+import type { PopBufferGeometry } from './elements/geometries/containers/PopBufferGeometry';
+import type { IPopbufferInfo } from './elements/geometries/containers/IPopBufferInfo';
+import type { SkinnedMesh } from './scene/drawables/SkinnedMesh';
+import type { Texture } from './elements/textures/Texture';
+import type { MipLevelSource, LayerSource, SourceTexture } from './elements/textures/SourceTexture';
+import type { Matrix3 } from './math/Matrix3';
+import type { Matrix4 } from './math/Matrix4';
+import type { Scene3D } from './scene/Scene3D';
+import type { ReadonlyVector2 } from './math/Vector2';
+import type { ContentAPI, ContentManagedAPI, WorldRebuildConfig } from './ContentAPI';
+
+let registeredManagedContentAPI: ContentManagedAPI | undefined;
+export function registerManagedContentAPI(api: ContentManagedAPI) {
+    registeredManagedContentAPI = api;
+}
+export function hasManagedContentAPI() {
+    return registeredManagedContentAPI !== undefined;
+}
+export function removeManagedContentAPI() {
+    registeredManagedContentAPI = undefined;
+}
+
+const warnInvalidInternalStaticInitLogic = new Proxy({}, {
+    get: (_: any, key: string) => {
+        console.warn('invalid egs static init logic: ', key);
+        return () => { };
+    },
+});
+
+const registeredContentAPI: ContentAPI[] = [warnInvalidInternalStaticInitLogic];
+
+export function hasAnyRegisteredContentAPI() {
+    return registeredContentAPI.length !== 0;
+}
+
+export function registerContentAPI(api: ContentAPI) {
+    registeredContentAPI.push(api);
+}
+
+export function unregisterContentAPI(api: ContentAPI) {
+    const index = registeredContentAPI.indexOf(api);
+    if (index > -1) {
+        registeredContentAPI.splice(index, 1);
+    }
+}
+
+export function egsInitFinished() {
+    unregisterContentAPI(warnInvalidInternalStaticInitLogic);
+}
+
+export const ContentBridge: Required<ContentAPI> = ${ContentAPI;target:registeredContentAPI;type:array;onlyThrowUsefulError}
+
+export const ManagedContentBridge: Required<ContentManagedAPI> = ${ContentManagedAPI;target:registeredManagedContentAPI;onlyThrowUsefulError}

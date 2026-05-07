@@ -1,0 +1,16 @@
+packages:
+  - "packages/*"
+  - "packages/loaders/*"
+  - "packages/utils/*"
+  - "tools/*"
+
+overrides:
+  "@qunhe/egs-typings": "workspace:*"
+  "@qunhe/egs-lib": "workspace:*"
+  "@qunhe/egs": "workspace:*"
+  "@qunhe/egs-splat-loader": "workspace:*"
+  "@qunhe/egs-splat-utils": "workspace:*"
+  "@internal/cli": "workspace:*"
+  "@internal/utils": "workspace:*"
+  "@types/node": "^12.20.55"
+  "typescript": "~3.8.3"

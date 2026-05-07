@@ -1,0 +1,137 @@
+import { BufferGeometry, BufferGroup } from '../containers/BufferGeometry';
+import { BufferAttribute } from '../../attributes/BufferAttribute';
+import { Vector3 } from '../../../math/Vector3';
+
+/**
+ * @param { number } width That is the length of the edges parallel to the X axis. Default is 1.
+ * @param { number } height That is the length of the edges parallel to the Y axis. Default is 1.
+ * @param { number } depth That is the length of the edges parallel to the Z axis. Default is 1.
+ * @param { number } widthSegments Number of segmented rectangular faces along the width of the sides. Default is 1.
+ * @param { number } heightSegments Number of segmented rectangular faces along the height of the sides. Default is 1.
+ * @param { number } depthSegments Number of segmented rectangular faces along the depth of the sides. Default is 1.
+ */
+export interface BoxShapeParameter {
+    width: number;
+    height: number;
+    depth: number;
+    widthSegments: number;
+    heightSegments: number;
+    depthSegments: number;
+}
+
+const def = {
+    width: 1,
+    height: 1,
+    depth: 1,
+    widthSegments: 1,
+    heightSegments: 1,
+    depthSegments: 1,
+};
+
+export function box(parameters: Partial<BoxShapeParameter>): BufferGeometry {
+    // eslint-disable-next-line prefer-const
+    let { width, height, depth, widthSegments, heightSegments, depthSegments } = {  ...def,...parameters };
+
+    // segments
+    widthSegments = Math.floor(widthSegments);
+    heightSegments = Math.floor(heightSegments);
+    depthSegments = Math.floor(depthSegments);
+
+    // buffers
+    const indices: number[] = [];
+    const vertices: number[] = [];
+    const normals: number[] = [];
+    const uvs: number[] = [];
+    const groups: BufferGroup[] = [];
+
+    // helper variables
+    let numberOfVertices = 0;
+    let groupStart = 0;
+
+    // build each side of the box geometry
+    buildPlane('z', 'y', 'x', - 1, - 1, depth, height, width, depthSegments, heightSegments, 0); // px
+    buildPlane('z', 'y', 'x', 1, - 1, depth, height, - width, depthSegments, heightSegments, 1); // nx
+    buildPlane('x', 'z', 'y', 1, 1, width, depth, height, widthSegments, depthSegments, 2); // py
+    buildPlane('x', 'z', 'y', 1, - 1, width, depth, - height, widthSegments, depthSegments, 3); // ny
+    buildPlane('x', 'y', 'z', 1, - 1, width, height, depth, widthSegments, heightSegments, 4); // pz
+    buildPlane('x', 'y', 'z', - 1, - 1, width, height, - depth, widthSegments, heightSegments, 5); // nz
+
+    function buildPlane(u: 'x' | 'y' | 'z', v: 'x' | 'y' | 'z', w: 'x' | 'y' | 'z', udir: number, vdir: number, _width: number, _height: number, _depth: number, gridX: number, gridY: number, materialIndex: number) {
+        const segmentWidth = _width / gridX;
+        const segmentHeight = _height / gridY;
+        const widthHalf = _width / 2;
+        const heightHalf = _height / 2;
+        const depthHalf = _depth / 2;
+        const gridX1 = gridX + 1;
+        const gridY1 = gridY + 1;
+        let vertexCounter = 0;
+        let groupCount = 0;
+        let ix: number;
+        let iy: number;
+        const vector = new Vector3();
+
+        // generate vertices, normals and uvs
+        for (iy = 0; iy < gridY1; iy++) {
+            const y = iy * segmentHeight - heightHalf;
+            for (ix = 0; ix < gridX1; ix++) {
+                const x = ix * segmentWidth - widthHalf;
+                // set values to correct vector component
+                vector[u] = x * udir;
+                vector[v] = y * vdir;
+                vector[w] = depthHalf;
+                // now apply vector to vertex buffer
+                vertices.push(vector.x, vector.y, vector.z);
+                // set values to correct vector component
+                vector[u] = 0;
+                vector[v] = 0;
+                vector[w] = _depth > 0 ? 1 : - 1;
+
+                // now apply vector to normal buffer
+                normals.push(vector.x, vector.y, vector.z);
+                // uvs
+                uvs.push(ix / gridX);
+                uvs.push(1 - (iy / gridY));
+
+                // counters
+                vertexCounter += 1;
+            }
+        }
+
+        // indices
+        // 1. you need three indices to draw a single face
+        // 2. a single segment consists of two faces
+        // 3. so we need to generate six (2*3) indices per segment
+        for (iy = 0; iy < gridY; iy++) {
+            for (ix = 0; ix < gridX; ix++) {
+                const a = numberOfVertices + ix + gridX1 * iy;
+                const b = numberOfVertices + ix + gridX1 * (iy + 1);
+                const c = numberOfVertices + (ix + 1) + gridX1 * (iy + 1);
+                const d = numberOfVertices + (ix + 1) + gridX1 * iy;
+
+                // faces
+                indices.push(a, b, d);
+                indices.push(b, c, d);
+                // increase counter
+                groupCount += 6;
+            }
+        }
+
+        // add a group to the geometry. this will ensure multi material support
+        groups.push({
+            start: groupStart,
+            count: groupCount,
+            materialIndex,
+        });
+        // calculate new start value for groups
+        groupStart += groupCount;
+        // update total number of vertices
+        numberOfVertices += vertexCounter;
+    }
+
+    return new BufferGeometry()
+        .setGroups(groups)
+        .setIndex(indices)
+        .addAttribute('position', new BufferAttribute(new Float32Array(vertices), 3))
+        .addAttribute('normal', new BufferAttribute(new Float32Array(normals), 3))
+        .addAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2));
+}

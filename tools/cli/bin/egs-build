@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+const yargs = require('yargs/yargs');
+const { hideBin } = require('yargs/helpers');
+const argv = yargs(hideBin(process.argv))
+    .boolean('release')
+    .array('cp')
+    .argv;
+
+require('@internal/utils/builder').build(argv.cp, argv.release);

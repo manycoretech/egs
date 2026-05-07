@@ -1,0 +1,26 @@
+{
+  "name": "@qunhe/egs-gltf-loader",
+  "version": "1.0.1",
+  "description": "decode gltf",
+  "main": "index.js",
+  "license": "MIT",
+  "types": "index.d.ts",
+  "repository": "https://github.com/manycoretech/egs.git",
+  "release": {
+    "scripts": {
+     "pre-release": "echo build"
+    },
+    "publishRoot": "./build"
+  },
+  "scripts": {
+    "build": "pnpm egs-build",
+    "build:release": "pnpm build --release"
+  },
+  "dependencies": {
+    "@qunhe/egs": "^1.1.228",
+    "tslib": "^1.14.1"
+  },
+  "devDependencies": {
+    "typescript": "~3.8.3"
+  }
+}

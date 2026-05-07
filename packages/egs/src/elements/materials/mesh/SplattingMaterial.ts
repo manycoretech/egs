@@ -1,0 +1,265 @@
+import { Material, ColorTransfer } from '../Material';
+import { ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
+import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
+import { Side } from '../../../utils/Constants';
+import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
+import { Vector4 } from '../../../math/Vector4';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
+import { TextureV2 } from '../../textures/TextureV2';
+
+export class SplattingMaterial extends Material {
+    transparent = true;
+    premultipliedAlpha = true;
+    depthWrite = false;
+    side = Side.DoubleSide;
+
+    repackEnabled: boolean = false;
+    normalizedFalloff: boolean = false;
+
+    maxStdDev: number = Math.sqrt(8);
+    maxPixelRadius: number = 1024;
+    preBlurAmount: number = 0;
+    blurAmount: number = 0.3;
+    focalAdjustment: number = 1;
+    detailCullingThreshold: number = 1;
+    selectedColor: Vector4 = new Vector4(1, 1, 0, 1);
+
+    shadingPickIdEnabled: boolean = false;
+
+    activeSplats: number = 0;
+    centerTex: TextureV2;
+    covTex: TextureV2;
+    orderTex: TextureV2;
+    colorTransfer: ColorTransfer = ColorTransfer.Linear;
+
+    className() {
+        return 'SplattingMaterial';
+    }
+
+    generateShaderKey() {
+        return HashKeyBuilder.getInstance()
+            .raw(this.className())
+            .raw(this.colorTransfer)
+            .bool(this.repackEnabled)
+            .bool(this.normalizedFalloff)
+            .bool(this.shadingPickIdEnabled)
+            .getKey();
+    }
+
+    computeShapeKey() { return 'splatting'; }
+    updateShapeUniforms(_program: WGLProgram) { }
+    extendShaderShape(_builder: ShaderBuilder) { }
+
+    extendShaderShading(builder: ShaderBuilder) {
+        builder
+            .addFragment(ShaderBlockPool.ColorTransferFunctions)
+            .addGlobalUniform(BuiltInUniformTypes.resolution)
+            .addGlobalUniform(BuiltInUniformTypes.projectionMatrix)
+            .addGlobalUniform(BuiltInUniformTypes.viewMatrix)
+            .addUniform('activeSplats', WebGLShaderDataType.UInt)
+            .addUniform('maxStdDev', WebGLShaderDataType.Float)
+            .addUniform('maxPixelRadius', WebGLShaderDataType.Float)
+            .addUniform('preBlurAmount', WebGLShaderDataType.Float)
+            .addUniform('blurAmount', WebGLShaderDataType.Float)
+            .addUniform('focalAdjustment', WebGLShaderDataType.Float)
+            .addUniform('detailCullingThreshold', WebGLShaderDataType.Float)
+            .addUniform('selectedColor', WebGLShaderDataType.Vec4)
+            .addUniform('centerTex', WebGLShaderDataType.Sampler2D)
+            .addUniform('packedTexWidth', WebGLShaderDataType.UInt)
+            .addUniform('covTex', WebGLShaderDataType.USampler2D)
+            .when(!this.repackEnabled, builder => builder
+                .addUniform('orderTex', WebGLShaderDataType.USampler2D)
+                .addUniform('orderTexWidth', WebGLShaderDataType.UInt)
+            )
+            .addVaryingCustom('vColor', WebGLShaderDataType.Vec4)
+            .addVaryingCustom('vSplatUv', WebGLShaderDataType.Vec2)
+            .when(this.shadingPickIdEnabled, builder => builder
+                .addVertexCustom(`flat out uint vId;`)
+                .addFragmentCustom(`flat in uint vId;`)
+            )
+            .addVertex(ShaderBlockPool.SplatHeader)
+            .inject(ShaderInjectionTypes.gl_Position, createVertexShader(this))
+            .addFragment(ShaderBlockPool.SplatHeader)
+            .addFragment(ShaderBlockPool.FastEXP)
+            .inject(ShaderInjectionTypes.gl_FragColor, createFragmentShader(this));
+    }
+
+    updateShadingUniforms(program: WGLProgram) {
+        program.setUniform('activeSplats', this.activeSplats);
+        program.setUniform('maxStdDev', this.maxStdDev);
+        program.setUniform('maxPixelRadius', this.maxPixelRadius);
+        program.setUniform('preBlurAmount', this.preBlurAmount);
+        program.setUniform('blurAmount', this.blurAmount);
+        program.setUniform('focalAdjustment', this.focalAdjustment);
+        program.setUniform('detailCullingThreshold', this.detailCullingThreshold);
+        program.setUniform('selectedColor', this.selectedColor);
+        program.setTexture2D('centerTex', this.centerTex);
+        program.setTexture2D('covTex', this.covTex);
+        program.setUniform('packedTexWidth', this.centerTex.width);
+        if (!this.repackEnabled) {
+            program.setTexture2D('orderTex', this.orderTex);
+            program.setUniform('orderTexWidth', this.orderTex.width);
+        }
+    }
+
+    clone(): Material { return this; }
+    copy(_other: Material) { }
+}
+
+function createVertexShader(material: SplattingMaterial): string {
+    const { repackEnabled, shadingPickIdEnabled } = material;
+    return `
+        gl_Position = vec4(0.0, 0.0, 2.0, 1.0);
+
+        uint splatIndex = uint(gl_VertexID / 4 + 128 * gl_InstanceID);
+        if (splatIndex >= activeSplats) {
+            return;
+        }
+        ${!repackEnabled ? `
+            splatIndex = texelFetch(orderTex, ivec2(splatIndex % orderTexWidth, splatIndex / orderTexWidth), 0).r;
+        ` : ''}
+
+        ivec2 texCoord = ivec2(splatIndex % packedTexWidth, splatIndex / packedTexWidth);
+        vec4 pixel_0 = texelFetch(centerTex, texCoord, 0);
+        uint vertexState = uint(pixel_0.w + 0.5);
+        vec3 center = pixel_0.xyz;
+        vec4 viewCenter = viewMatrix * vec4(center, 1.0);
+        if (viewCenter.z >= 0.0) {
+            return;
+        }
+        vec4 clipCenter = projectionMatrix * viewCenter;
+        if (abs(clipCenter.z) >= clipCenter.w) {
+            return;
+        }
+
+        uvec4 covData = texelFetch(covTex, texCoord, 0);
+        vec2 covA = unpackHalf2x16(covData.x);
+        vec2 covB = unpackHalf2x16(covData.y);
+        vec2 covC = unpackHalf2x16(covData.z);
+        uint uColor = covData.w;
+        float sx2 = exp2(covA.x);
+        float sy2 = exp2(covA.y);
+        float sz2 = exp2(covB.x);
+        float xy = covB.y * exp2(0.5 * (covA.x + covA.y));
+        float xz = covC.x * exp2(0.5 * (covA.x + covB.x));
+        float yz = covC.y * exp2(0.5 * (covA.y + covB.x));
+        mat3 mCov3D = mat3(
+            sx2, xy, xz,
+            xy, sy2, yz,
+            xz, yz, sz2
+        );
+        if (determinant(mCov3D) <= 0.0) {
+            return;
+        }
+
+        vec2 scaledResolution = resolution * focalAdjustment;
+        vec2 focal = 0.5 * scaledResolution * vec2(projectionMatrix[0][0], projectionMatrix[1][1]);
+        mat3 J;
+        if(projectionMatrix[2][3] == 0.0) {
+            J = mat3(
+                focal.x, 0.0, 0.0,
+                0.0, focal.y, 0.0,
+                0.0, 0.0, 0.0
+            );
+        } else {
+            float invZ = 1.0 / viewCenter.z;
+            vec2 J1 = focal * invZ;
+            vec2 J2 = -(J1 * viewCenter.xy) * invZ;
+            J = mat3(
+                J1.x, 0.0, 0.0,
+                0.0, J1.y, 0.0,
+                J2.x, J2.y, 0.0
+            );
+        }
+
+        mat3 m = J * mat3(viewMatrix);
+        mat3 cov2D = m * mCov3D * transpose(m);
+        float a = cov2D[0][0];
+        float d = cov2D[1][1];
+        float b = cov2D[0][1];
+
+        a += preBlurAmount;
+        d += preBlurAmount;
+        float detOrig = a * d - b * b;
+        a += blurAmount;
+        d += blurAmount;
+        float det = a * d - b * b;
+
+        float blurAdjust = sqrt(max(0.0, detOrig / det));
+        vec4 color = vec4(uColor & 0xFFu, (uColor >> 8u) & 0xFFu, (uColor >> 16u) & 0xFFu, (uColor >> 24u) & 0xFFu) * INV_255;
+        color.a *= blurAdjust;
+        if (color.a < MIN_ALPHA) {
+            return;
+        }
+
+        float factor = min(1.0, 0.5 * sqrt(-log(INV_255 / color.a)));
+        float k = maxStdDev * factor;
+        if (detailCullingThreshold > 0.) {
+            float Ek = 1.0 - exp(-0.5 * k * k);
+            float effArea = PI * Ek * sqrt(det);
+            if (effArea < detailCullingThreshold) {
+                return;
+            }
+        }
+
+        float avg = 0.5 * (a + d);
+        float delta = sqrt(max(0.0, avg * avg - det));
+        float lambda1 = avg + delta;
+        float lambda2 = avg - delta;
+        float maxRadius = min(maxPixelRadius * focalAdjustment, min(scaledResolution.x, scaledResolution.y));
+        float scale1 = min(maxRadius, maxStdDev * sqrt(lambda1));
+        float scale2 = min(maxRadius, maxStdDev * sqrt(lambda2));
+        if (any(greaterThan(abs(clipCenter.xy) - vec2(max(scale1, scale2) * clipCenter.w / scaledResolution), clipCenter.ww))) {
+            return;
+        }
+
+        vec2 v1 = normalize(vec2((abs(b) < 0.001) ? 1.0 : b, lambda1 - a));
+        vec2 v2 = vec2(v1.y, -v1.x);
+        vec2 pixelOffset = position.x * v1 * scale1 + position.y * v2 * scale2;
+        clipCenter.xy += (2.0 / scaledResolution) * pixelOffset * factor * clipCenter.w;
+
+        if ((vertexState & 2u) != 0u) {
+            color.xyz = mix(color.xyz, selectedColor.xyz * 0.8, selectedColor.a);
+        }
+
+        vColor = color;
+        vSplatUv = position.xy * k;
+        ${shadingPickIdEnabled ? 'vId = splatIndex;' : ''}
+        gl_Position = clipCenter;
+    `;
+}
+
+function createFragmentShader(material: SplattingMaterial): string {
+    const { normalizedFalloff, shadingPickIdEnabled } = material;
+    let colorTransfer = '';
+    switch (material.colorTransfer) {
+        case ColorTransfer.LinearToSrgb:
+            colorTransfer = 'linearToSrgb';
+            break;
+        case ColorTransfer.SrgbToLinear:
+            colorTransfer = 'srgbToLinear';
+            break;
+    }
+
+    return `
+        float z = dot(vSplatUv, vSplatUv);
+        if (z > (maxStdDev * maxStdDev)) {
+            discard;
+        }
+        float alpha = vColor.a * ${normalizedFalloff ? `(exp(-0.5 * z) - EXP4) * INV_EXP4` : 'fastExp(-0.5 * z)'};
+        if (alpha < MIN_ALPHA) {
+            discard;
+        }
+        gl_FragColor = vec4(${colorTransfer}(vColor.rgb) * alpha, alpha);
+        ${shadingPickIdEnabled ? `
+            gl_FragColor = vec4(
+                float((vId >> 0u) & 0xFFu) / 255.0,
+                float((vId >> 8u) & 0xFFu) / 255.0,
+                float((vId >> 16u) & 0xFFu) / 255.0,
+                float((vId >> 24u) & 0xFFu) / 255.0
+            );
+        ` : ''}
+    `;
+}
