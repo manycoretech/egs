@@ -118,15 +118,13 @@ export interface Status {
 
 export interface Attribute {
     num_components(): number;
+    normalized(): boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export enum GeometryType { }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export enum GeometryAttributeType { }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export enum DataType { }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
