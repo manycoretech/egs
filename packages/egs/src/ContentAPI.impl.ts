@@ -310,11 +310,17 @@ export const ContentBridge: Required<ContentAPI> = {
             }
         }
     },
-    bufferAttributeSetData(attribute: BufferAttribute, data: TypedArray, itemSize: number, count: number) {
+    bufferAttributeSetData(
+        attribute: BufferAttribute,
+        data: TypedArray,
+        itemSize: number,
+        count: number,
+        normalized: boolean,
+    ) {
         try {
             const _l = registeredContentAPI.length;
             for (let _i = 0; _i < _l; _i++) {
-                registeredContentAPI[_i]?.bufferAttributeSetData?.(attribute, data, itemSize, count);
+                registeredContentAPI[_i]?.bufferAttributeSetData?.(attribute, data, itemSize, count, normalized);
             }
         } catch (e) {
             if (window.EGS_WASM_FATAL_ERROR_OCCURRED !== true) {
@@ -1110,9 +1116,15 @@ export const ManagedContentBridge: Required<ContentManagedAPI> = {
             }
         }
     },
-    bufferAttributeSetData(attribute: BufferAttribute, data: TypedArray, itemSize: number, count: number) {
+    bufferAttributeSetData(
+        attribute: BufferAttribute,
+        data: TypedArray,
+        itemSize: number,
+        count: number,
+        normalized: boolean,
+    ) {
         try {
-            return registeredManagedContentAPI?.bufferAttributeSetData?.(attribute, data, itemSize, count);
+            return registeredManagedContentAPI?.bufferAttributeSetData?.(attribute, data, itemSize, count, normalized);
         } catch (e) {
             if (window.EGS_WASM_FATAL_ERROR_OCCURRED !== true) {
                 throw e;

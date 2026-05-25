@@ -313,7 +313,7 @@ export interface ContentAPI {
     bufferAttributeCreate?(attribute: BufferAttribute): void;
     bufferAttributeDestroy?(attribute: BufferAttribute): void;
     bufferAttributeFreeGPU?(attribute: BufferAttribute): void;
-    bufferAttributeSetData?(attribute: BufferAttribute, data: TypedArray, itemSize: number, count: number): void;
+    bufferAttributeSetData?(attribute: BufferAttribute, data: TypedArray, itemSize: number, count: number, normalized: boolean): void;
     bufferAttributeNotifyContentChange?(attribute: BufferAttribute): void;
 
     textureCreate?(texture: Texture): void;

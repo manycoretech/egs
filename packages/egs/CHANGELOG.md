@@ -1,5 +1,10 @@
 # EGS 发布说明 Release Notes
 
+## DEV
+
+1. 修复
+    - `ContentBridge`缺失`normalized`
+
 ## 1.2.87
 
 1. 修复
