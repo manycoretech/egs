@@ -59,8 +59,7 @@ export {
 export { registerPipelineContentAPI, removePipelineContentAPI } from './fx/PipelineAPI';
 export { registerContentAPI, unregisterContentAPI, ContentManagedAPI, ContentAPI, registerManagedContentAPI, removeManagedContentAPI, WorldRebuildConfig } from './ContentAPI';
 export { LegacySourceTexture } from './elements/textures/Texture';
-export { SourceTexture, MipLevelSource, LayerSource } from './elements/textures/SourceTexture';
-export { TextureDimension, TextureViewDimension, TextureFormat, textureCopyInfo, textureCopyFootprint } from './elements/textures/types';
+export { textureCopyInfo, textureCopyFootprint } from './elements/textures/types';
 
 export { RenderInfo } from './utils/RenderInfo';
 export { Renderable } from './scene/renderables/IRenderable';

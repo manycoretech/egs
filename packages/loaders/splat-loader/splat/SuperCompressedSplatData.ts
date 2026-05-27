@@ -75,8 +75,8 @@ const LN_SCALE_MAX = 9;
 const LN_SCALE = 254.0 / (LN_SCALE_MAX - LN_SCALE_MIN);
 const LN_SCALE_INV = 1 / LN_SCALE;
 export class SuperCompressedSplatData extends SplatData {
-    counts: number;
-    shDegree: number;
+    counts: number = 0;
+    shDegree: number = 0;
 
     private splatSampler: ISampler;
     private splatUint8Buffer: Uint8Array;

@@ -2,7 +2,7 @@ import { materialProperty } from '../../../ContentAPI';
 import { DrivenMaterial } from './DrivenMaterial';
 import { Matrix4 } from '../../../math/Matrix4';
 import { DrivenCullingConfig } from '../../../fx/plugins/PipelinePlugin';
-import { RenderAttachment } from '../../../EGSInner';
+import { RenderAttachment } from '../../textures/RenderTarget';
 
 export class DrivenCullingMaterial extends DrivenMaterial {
     @materialProperty()

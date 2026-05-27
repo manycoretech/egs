@@ -197,7 +197,11 @@ export interface DeprecatedPipelineConfig {
         clippingPlanes: ConfigCell<Plane[]>,
     };
     Splatting: PipelineConfig['Splatting'];
+    /**
+     * @internal
+     */
     __INNER__: PipelineConfig;
+    __INTERNAL__: PipelineConfig;
 }
 
 export function createDeprecatedPipelineConfig(pipeline: PostPipeline, renderingConfig: RenderingConfig, updateGpuDrivenEnabled?: (value: boolean) => void, updateTlsFlag?: (value: boolean) => void, optConfig?: PipelineConfig): DeprecatedPipelineConfig {
@@ -431,6 +435,7 @@ export function createDeprecatedPipelineConfig(pipeline: PostPipeline, rendering
         sceneClip: config.SceneClip,
         Splatting: config.Splatting,
         __INNER__: config,
+        __INTERNAL__: config,
     };
 }
 //#endregion

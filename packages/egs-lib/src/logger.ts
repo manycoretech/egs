@@ -1,6 +1,6 @@
 import { ENV } from './env';
 
-const enum LogType {
+export const enum LogType {
     Unreachable = 'Unreachable',
     Unsupported = 'Unsupported',
     InvalidInput = 'InvalidInput',
@@ -63,4 +63,3 @@ export class Logger {
 }
 
 export const logger = new Logger();
-

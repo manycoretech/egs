@@ -830,7 +830,7 @@ export class SplattingPlugin extends PipelinePlugin {
                     },
                 },
             },
-            __INNER__: {
+            __INTERNAL__: {
                 renderMode: {
                     get: () => this.splattingRenderMode,
                     set: (v: SplattingRenderMode) => {

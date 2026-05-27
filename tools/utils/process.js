@@ -1,49 +1,7 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-        desc = { enumerable: true, get: function () { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function (o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function (o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function (o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.workers = void 0;
-exports.execCommand = execCommand;
-exports.echoAndExecCommand = echoAndExecCommand;
-exports.spawnProcess = spawnProcess;
-exports.echoAndSpawnProcess = echoAndSpawnProcess;
-exports.$ = $;
-const child_process = __importStar(require("node:child_process"));
-const os = __importStar(require("node:os"));
-const path = __importStar(require("node:path"));
+import * as child_process from 'node:child_process';
+import * as os from 'node:os';
+import * as path from 'node:path';
 const workers = [];
-exports.workers = workers;
 const splitRegex = /\r?\n/;
 function pauseStdout() {
     for (const worker of workers) {
@@ -182,7 +140,7 @@ function bindAndPromisify(p, ioPrefix, pipe) {
         });
     });
 }
-function execCommand(command, options = DEFAULT_EXEC_OPTIONS) {
+export function execCommand(command, options = DEFAULT_EXEC_OPTIONS) {
     const process = child_process.exec(command, {
         cwd: options.cwd ?? DEFAULT_EXEC_OPTIONS.cwd,
         env: options.env ?? DEFAULT_EXEC_OPTIONS.env,
@@ -192,7 +150,7 @@ function execCommand(command, options = DEFAULT_EXEC_OPTIONS) {
         promise: bindAndPromisify(process, options.ioPrefix ?? DEFAULT_EXEC_OPTIONS.ioPrefix, options.pipe ?? DEFAULT_EXEC_OPTIONS.pipe),
     };
 }
-function echoAndExecCommand(command, options = DEFAULT_EXEC_OPTIONS) {
+export function echoAndExecCommand(command, options = DEFAULT_EXEC_OPTIONS) {
     console.log(`${options.ioPrefix ?? DEFAULT_EXEC_OPTIONS.ioPrefix}${command}`);
     return execCommand(command, options);
 }
@@ -200,7 +158,7 @@ const DEFAULT_SPAWN_OPTIONS = {
     ...DEFAULT_EXEC_OPTIONS,
     shell: false
 };
-function spawnProcess(command, args, options = DEFAULT_SPAWN_OPTIONS) {
+export function spawnProcess(command, args, options = DEFAULT_SPAWN_OPTIONS) {
     const process = child_process.spawn(command, args, {
         cwd: options.cwd ?? DEFAULT_SPAWN_OPTIONS.cwd,
         env: options.env ?? DEFAULT_SPAWN_OPTIONS.env,
@@ -211,12 +169,12 @@ function spawnProcess(command, args, options = DEFAULT_SPAWN_OPTIONS) {
         promise: bindAndPromisify(process, options.ioPrefix ?? DEFAULT_SPAWN_OPTIONS.ioPrefix, options.pipe ?? DEFAULT_SPAWN_OPTIONS.pipe),
     };
 }
-function echoAndSpawnProcess(command, args, options = DEFAULT_SPAWN_OPTIONS) {
+export function echoAndSpawnProcess(command, args, options = DEFAULT_SPAWN_OPTIONS) {
     console.log(`${options.ioPrefix ?? DEFAULT_SPAWN_OPTIONS.ioPrefix}${command} ${args.join(' ')}`);
     return spawnProcess(command, args, options);
 }
-
-function $(cmd, dir, inherit = true) {
+export { workers };
+export function $(cmd, dir, inherit = true) {
     const cwd = dir ? path.resolve(process.cwd(), dir) : process.cwd();
     console.info(`<${cwd}> ${cmd}`);
     const result = child_process.execSync(cmd, {
@@ -226,3 +184,4 @@ function $(cmd, dir, inherit = true) {
     });
     return inherit ? void 0 : result.toString();
 }
+//# sourceMappingURL=process.js.map

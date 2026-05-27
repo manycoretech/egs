@@ -59,7 +59,7 @@ export class IterableWeakMap<K extends Object, V> {
     }
 }
 
-export class IterableWeakSet<V> {
+export class IterableWeakSet<V extends Object> {
     private map = new IterableWeakMap<V, 1>();
 
     add(value: V) {

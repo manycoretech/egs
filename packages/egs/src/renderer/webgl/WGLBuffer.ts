@@ -37,7 +37,7 @@ export class WGLBuffer {
             }
         }
 
-        let type = gl.FLOAT;
+        let type: number = gl.FLOAT;
         if (array instanceof Float32Array) {
             type = gl.FLOAT;
         } else if (array instanceof Float64Array) {

@@ -662,7 +662,7 @@ export class Viewer extends EventDispatcher {
     readRenderResultDataUrl(type?: string, ...args: any[]): string {
         this.render();
         const canvas = this._canvasContainer.firstElementChild as HTMLCanvasElement;
-        return canvas.toDataURL(type, args);
+        return canvas.toDataURL(type, ...args);
     }
 
     /**

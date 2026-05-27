@@ -1,8 +1,9 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "strict": false,
     "strictNullChecks": true,
     "noImplicitAny": true,
@@ -12,19 +13,19 @@
     "noUnusedParameters": true,
     "allowUnreachableCode": false,
     "experimentalDecorators": true,
+    "useDefineForClassFields": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "sourceMap": true,
     "declaration": true,
+    "stripInternal": true,
     "importHelpers": true,
-    // "stripInternal": true,
     "esModuleInterop": true,
     "lib": [
       "ESNext",
       "DOM"
     ],
-    "typeRoots": [],
     "types": [
       "node"
     ]

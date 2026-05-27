@@ -1,6 +1,6 @@
 import { materialProperty } from '../../../ContentAPI';
+import { RenderAttachment } from '../../textures/RenderTarget';
 import { DrivenMaterial } from './DrivenMaterial';
-import { RenderAttachment } from '../../../EGSInner';
 
 export class DrivenGenHZBMaterial extends DrivenMaterial {
     @materialProperty()

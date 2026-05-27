@@ -1,5 +1,5 @@
 import { deferred, sleep, Deferred } from '@qunhe/egs-lib';
-import { __INNER__, Box3, Vector3, Camera, Object3D, Frustum, Matrix4, SplatSortedEvent, Splat, Vector4, IViewerContext } from '@qunhe/egs';
+import { __INTERNAL__, Box3, Vector3, Camera, Object3D, Frustum, Matrix4, SplatSortedEvent, Splat, Vector4, IViewerContext } from '@qunhe/egs';
 import { parseSplatData, detectSplatFileType } from '@qunhe/egs-splat-loader';
 import { ResourceManager } from './ResourceManager';
 

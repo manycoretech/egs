@@ -236,7 +236,7 @@ export class PopMeshMerger extends DrawcallMerger<PopMesh, MeshPhongMaterial, Po
                 if (faceCount > 0) {
                     const count = faceCount * 3;
                     const start = group.start + _Math.SumArraySection(block.levelFaceCounts, 0, i - 1) * 3;
-                    const indexCopyView = new constructor(index.buffer, start * index.BYTES_PER_ELEMENT, count);
+                    const indexCopyView = new constructor(index.buffer as ArrayBuffer, start * index.BYTES_PER_ELEMENT, count);
                     this.newIndexAttribute!.set(indexCopyView, this.newIndexFillOffset);
                     this.newIndexFillOffset += count;
                 }

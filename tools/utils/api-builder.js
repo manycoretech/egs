@@ -1,12 +1,12 @@
-#!/usr/bin/env node
+import { readFileSync, writeFileSync } from 'node:fs';
+import { EOL } from 'node:os';
+import { resolve, parse, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { SyntaxKind, createProgram } from 'typescript';
+import { format } from 'prettier';
 
-const fse = require('node:fs');
-const os = require('node:os');
-const path = require('node:path')
-const ts = require('typescript');
-const prettier = require('prettier')
-
-const templateRoot = path.resolve(__dirname, './template');
+const __dirname = parse(fileURLToPath(import.meta.url)).dir;
+const templateRoot = resolve(__dirname, './template');
 
 const configKeys = {
     target: 'target',
@@ -79,7 +79,7 @@ function parseInterface(entry, sourceFile, parsedInterface) {
         return parsedInterface[entry];
     }
     sourceFile.forEachChild(ch => {
-        if (ch.kind === ts.SyntaxKind.InterfaceDeclaration && ch.name.escapedText === entry) {
+        if (ch.kind === SyntaxKind.InterfaceDeclaration && ch.name.escapedText === entry) {
             let inherits = [];
             let parsed = {
                 members: []
@@ -96,7 +96,7 @@ function parseInterface(entry, sourceFile, parsedInterface) {
                 }
             }
             for (const member of ch.members) {
-                if (member.kind === ts.SyntaxKind.MethodSignature) {
+                if (member.kind === SyntaxKind.MethodSignature) {
                     const method = {
                         name: member.name.escapedText,
                         typeParameters: member.typeParameters?.map(t => t.getFullText(sourceFile)) ?? [],
@@ -119,10 +119,10 @@ function parseInterface(entry, sourceFile, parsedInterface) {
 
 
 function generate(target, entries) {
-    const pathInfo = path.parse(target);
+    const pathInfo = parse(target);
     const implName = `${pathInfo.name}.impl`
-    let template = fse.readFileSync(path.join(templateRoot, `${implName}.template`), { encoding: 'utf-8' });
-    const program = ts.createProgram([target], {});
+    let template = readFileSync(join(templateRoot, `${implName}.template`), { encoding: 'utf-8' });
+    const program = createProgram([target], {});
     const sourceFile = program.getSourceFile(target);
     const prettierOptions = {
         printWidth: 120,
@@ -143,15 +143,16 @@ function generate(target, entries) {
             return `${method.name}${method.typeParameters.length > 0 ? `<${method.typeParameters.join(', ')}>` : ''}(${method.parameters.map(p => `${p.name}${p.optional ? '?' : ''}: ${p.type}`).join(', ')}) {
                     ${generateMethodBody(method, config)}
                 },`
-        }).join(os.EOL)}
+        }).join(EOL)}
     };
     `
         template = template.replace(config.pattern, content);
     }
 
-    prettier.format(template, prettierOptions).then(data => {
-        fse.writeFileSync(path.join(pathInfo.dir, `${implName}.ts`), data);
+    format(template, prettierOptions).then(data => {
+        writeFileSync(join(pathInfo.dir, `${implName}.ts`), data);
     })
 }
 
-exports.generate = generate;
+const _generate = generate;
+export { _generate as generate };

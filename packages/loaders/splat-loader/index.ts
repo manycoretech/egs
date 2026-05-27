@@ -1,4 +1,4 @@
-import { __INNER__ } from '@qunhe/egs';
+import { __INTERNAL__ } from '@qunhe/egs';
 import { FactoryWorkerPool, deferred } from '@qunhe/egs-lib';
 import { getMaxTextureSize, SplatFileType, SplatPackType } from './utils';
 import { ParseExtras, SendMessage, TaskType, ReceiveMessage, TaskStatus } from './WorkerMessage';
@@ -39,7 +39,7 @@ export async function parseSplatData(
     } else if (input instanceof Uint8Array) {
         stream = new ReadableStream<Uint8Array>({
             start: (controller: ReadableByteStreamController) => {
-                controller.enqueue(input);
+                controller.enqueue(input as Uint8Array<ArrayBuffer>);
                 controller.close();
             },
         });
@@ -81,7 +81,7 @@ export async function parseSplatData(
         worker.release();
     };
 
-    const platform = __INNER__.Platform.getInstance();
+    const platform = __INTERNAL__.Platform.getInstance();
     const isMockStream = platform.isSafari || platform.ios;
     const payload: SendMessage<TaskType.ParseSplat> = {
         taskType: TaskType.ParseSplat,
@@ -136,4 +136,4 @@ async function sortSplats(splatCounts: number, sorting: Uint16Array, ordering: U
     return promise;
 }
 
-__INNER__.setSortSplats?.(sortSplats);
+__INTERNAL__.setSortSplats?.(sortSplats);

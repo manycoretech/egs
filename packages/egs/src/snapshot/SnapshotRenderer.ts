@@ -136,10 +136,10 @@ export class SnapshotRenderer {
         this.pipelineConfig.ao.enabled.set(isAOEnabled);
         this.pipelineConfig.taa.enabled.set(isTaaEnabled);
         this.pipelineConfig.taa.maxSample.set(taaSampleCount);
-        this.pipelineConfig.__INNER__.Background.ground.enabled.set(false);
-        this.pipelineConfig.__INNER__.Background.background.active.set(BackgroundMode.BasicBackground);
-        this.pipelineConfig.__INNER__.Background.background.basic.color.set(this.backgroundColor);
-        this.pipelineConfig.__INNER__.Background.background.basic.alpha.set(this.backgroundAlpha);
+        this.pipelineConfig.__INTERNAL__.Background.ground.enabled.set(false);
+        this.pipelineConfig.__INTERNAL__.Background.background.active.set(BackgroundMode.BasicBackground);
+        this.pipelineConfig.__INTERNAL__.Background.background.basic.color.set(this.backgroundColor);
+        this.pipelineConfig.__INTERNAL__.Background.background.basic.alpha.set(this.backgroundAlpha);
 
         pipeline.updateEffect(adaptor, true, true, this.renderingConfig, this.drivenCullingConfig);
         pipeline.resetContentCache();

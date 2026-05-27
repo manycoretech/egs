@@ -1,8 +1,8 @@
-import { Clock, SkinnedMesh, EventType, Viewer, IViewerContext, __INNER__ } from '@qunhe/egs';
+import { Clock, SkinnedMesh, EventType, Viewer, IViewerContext, __INTERNAL__ } from '@qunhe/egs';
 import { AnimationMixer } from './AnimationMixer';
 import { ISkinnedMesh, Skeleton } from './Skeleton';
 
-import ViewerPlugin = __INNER__.ViewerPlugin;
+import ViewerPlugin = __INTERNAL__.ViewerPlugin;
 
 export const SkeletonUpdatedEvent = new EventType();
 
@@ -15,7 +15,6 @@ interface SkeletonBinding {
  * A special viewer plugin responsible for animation and skeleton updating.
  */
 export class AnimationPlugin implements ViewerPlugin {
-
     readonly clock = new Clock();
     private mixerList: AnimationMixer[] = [];
     private skeletonMap = new Map<Skeleton, SkeletonBinding>();

@@ -1,5 +1,5 @@
 import { deferred } from '@qunhe/egs-lib';
-import { Splat, Vector3, Quaternion, Matrix3, Matrix4, SplatState, __INNER__ } from '@qunhe/egs';
+import { Splat, Vector3, Quaternion, Matrix3, Matrix4, SplatState, TextureFormat, TextureDimension, SourceTexture, TextureViewDimension, __INTERNAL__ } from '@qunhe/egs';
 import { SplatFileType, PlyFile, SpzFile, SplatFile, SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData, ISampler, ISamplerFormat, SH_MAPS, IFile } from '@qunhe/egs-splat-loader';
 import { createSHRotateFn } from './utils';
 
@@ -54,35 +54,35 @@ export function createSplatModifyData(splat: Splat): ISplatModifyData {
     return { transform, deletedIndices, indicesTransforms };
 }
 
-export function createSourceTextureFromSampler(sampler: ISampler): __INNER__.SourceTexture {
-    let format: __INNER__.TextureFormat;
+export function createSourceTextureFromSampler(sampler: ISampler): SourceTexture {
+    let format: TextureFormat;
     switch (sampler.format) {
         case ISamplerFormat.RG_UINT: {
-            format = __INNER__.TextureFormat.Rg32Uint;
+            format = TextureFormat.Rg32Uint;
             break;
         }
         case ISamplerFormat.RGBA_UINT: {
-            format = __INNER__.TextureFormat.Rgba32Uint;
+            format = TextureFormat.Rgba32Uint;
             break;
         }
     }
-    return new __INNER__.SourceTexture(
-        __INNER__.TextureDimension.D2, __INNER__.TextureViewDimension.D2, format,
+    return new SourceTexture(
+        TextureDimension.D2, TextureViewDimension.D2, format,
         sampler.width, sampler.height, 1, false, false)
         .configAsDataTexture()
         .setLevelData(new Uint32Array(sampler.source.buffer), 0);
 }
 
 export function createSourceTextureFromImageSource(buffer: Uint8Array, type: string = 'image/webp') {
-    const { promise, resolve } = deferred<__INNER__.SourceTexture>();
-    const blob = new Blob([buffer], { type });
+    const { promise, resolve } = deferred<SourceTexture>();
+    const blob = new Blob([buffer as Uint8Array<ArrayBuffer>], { type });
     const url = URL.createObjectURL(blob);
     const img = new Image();
     img.src = url;
     img.onload = () => {
         URL.revokeObjectURL(url);
-        resolve(new __INNER__.SourceTexture(
-            __INNER__.TextureDimension.D2, __INNER__.TextureViewDimension.D2, __INNER__.TextureFormat.Rgba8Unorm,
+        resolve(new SourceTexture(
+            TextureDimension.D2, TextureViewDimension.D2, TextureFormat.Rgba8Unorm,
             img.width, img.height, 1, false, false)
             .configAsDataTexture()
             .setLevelLayerData(img, 0, 0)
@@ -99,7 +99,7 @@ export async function createSplat(data: SplatData): Promise<Splat> {
     } else if (data instanceof CompressedSplatData) {
         const { counts, shDegree, samplers } = data.serialize();
         const textures = samplers.map(sampler => createSourceTextureFromSampler(sampler));
-        splat = new __INNER__.CompressedSplat(
+        splat = new __INTERNAL__.CompressedSplat(
             counts,
             shDegree,
             textures[0], textures[1],
@@ -111,7 +111,7 @@ export async function createSplat(data: SplatData): Promise<Splat> {
     } else if (data instanceof SuperCompressedSplatData) {
         const { counts, shDegree, samplers } = data.serialize();
         const textures = samplers.map(sampler => createSourceTextureFromSampler(sampler));
-        splat = new __INNER__.SuperCompressedSplat(
+        splat = new __INTERNAL__.SuperCompressedSplat(
             counts,
             shDegree,
             textures[0],
@@ -124,7 +124,7 @@ export async function createSplat(data: SplatData): Promise<Splat> {
             meansL, meansU, scales, quats,
             sh0, shNLabels, shNCentroids,
         ] = await Promise.all(samplers.map(v => createSourceTextureFromImageSource(v.source)));
-        splat = new __INNER__.SogSplat(
+        splat = new __INTERNAL__.SogSplat(
             extras[0],
             meansL, meansU, quats, scales,
             sh0, shNLabels, shNCentroids,
@@ -136,14 +136,14 @@ export async function createSplat(data: SplatData): Promise<Splat> {
     return splat;
 }
 
-export function createSamplerFromSourceTexture(texture: __INNER__.SourceTexture): ISampler {
+export function createSamplerFromSourceTexture(texture: SourceTexture): ISampler {
     let format: ISamplerFormat;
     switch (texture.format) {
-        case __INNER__.TextureFormat.Rg32Uint: {
+        case TextureFormat.Rg32Uint: {
             format = ISamplerFormat.RG_UINT;
             break;
         }
-        case __INNER__.TextureFormat.Rgba32Uint: {
+        case TextureFormat.Rgba32Uint: {
             format = ISamplerFormat.RGBA_UINT;
             break;
         }
@@ -163,7 +163,7 @@ export function createSamplerFromSourceTexture(texture: __INNER__.SourceTexture)
 export function createSplatData(splat: Splat): SplatData {
     let splatData: SplatData | undefined;
     const samplers: ISampler[] = [];
-    if (splat instanceof __INNER__.CompressedSplat) {
+    if (splat instanceof __INTERNAL__.CompressedSplat) {
         splatData = new CompressedSplatData();
         samplers.push(createSamplerFromSourceTexture(splat.splat1Tex));
         samplers.push(createSamplerFromSourceTexture(splat.splat2Tex));
@@ -179,7 +179,7 @@ export function createSplatData(splat: Splat): SplatData {
         if (splat.sh4Tex) {
             samplers.push(createSamplerFromSourceTexture(splat.sh4Tex));
         }
-    } else if (splat instanceof __INNER__.SuperCompressedSplat) {
+    } else if (splat instanceof __INTERNAL__.SuperCompressedSplat) {
         splatData = new SuperCompressedSplatData();
         samplers.push(createSamplerFromSourceTexture(splat.splatTex));
         if (splat.sh1Tex) {

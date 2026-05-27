@@ -1,7 +1,7 @@
-import { Application, Object3D, Matrix4, Texture2D, _Math, WebGLPixelFormat, TextureDataType, __INNER__, SkinnedMesh } from '@qunhe/egs';
+import { Application, Object3D, Matrix4, Texture2D, _Math, WebGLPixelFormat, TextureDataType, __INTERNAL__, SkinnedMesh } from '@qunhe/egs';
 import semver from 'semver';
 
-import Object3DChangeEvent = __INNER__.Object3DChangeEvent;
+import Object3DChangeEvent = __INTERNAL__.Object3DChangeEvent;
 
 const tempMat = new Matrix4();
 

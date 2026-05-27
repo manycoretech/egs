@@ -17,7 +17,7 @@ export function torusKnot(params: Partial<TorusKnotShapeParameter>): BufferGeome
 }
 
 export class TorusKnotBufferGeometry extends BufferGeometry {
-    public parameters: {
+    declare parameters: {
         radius: number;
         tube: number;
         radialSegments: number;

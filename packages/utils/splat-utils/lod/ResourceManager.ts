@@ -1,14 +1,13 @@
 import { deferred } from '@qunhe/egs-lib';
-import { Splat, __INNER__ } from '@qunhe/egs';
+import { SourceTexture, Splat, __INTERNAL__ } from '@qunhe/egs';
 import { SplatData, SplatPackType, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from '@qunhe/egs-splat-loader';
 import { createSourceTextureFromSampler, createSourceTextureFromImageSource } from '../SplatData';
-import { SourceTexture } from '@qunhe/egs/src/EGSInner';
 
 interface ResourceData {
     type: SplatPackType;
     counts: number;
     shDegree: number;
-    textures: __INNER__.SourceTexture[];
+    textures: SourceTexture[];
     extras: any[];
 }
 
@@ -100,7 +99,7 @@ export class ResourceManager {
                 throw new Error('RawSplatData is not supported create splat.');
             }
             case SplatPackType.Compressed:
-                splat = new __INNER__.CompressedSplat(
+                splat = new __INTERNAL__.CompressedSplat(
                     counts,
                     shDegree,
                     textures[0], textures[1],
@@ -111,7 +110,7 @@ export class ResourceManager {
                 );
                 break;
             case SplatPackType.SuperCompressed: {
-                splat = new __INNER__.SuperCompressedSplat(
+                splat = new __INTERNAL__.SuperCompressedSplat(
                     counts,
                     shDegree,
                     textures[0],
@@ -122,7 +121,7 @@ export class ResourceManager {
             }
             case SplatPackType.Sog: {
                 const [meansL, meansU, scales, quats, sh0, shNLabels, shNCentroids] = textures;
-                splat = new __INNER__.SogSplat(
+                splat = new __INTERNAL__.SogSplat(
                     extras[0],
                     meansL, meansU, quats, scales,
                     sh0, shNLabels, shNCentroids,

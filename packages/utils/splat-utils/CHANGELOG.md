@@ -1,5 +1,9 @@
 # changelog
 
+## 1.0.4
+
+- 升级 `typescript: ^6.0.3` & `tslib: ^2.8.1` & `@qunhe/egs: ^1.2.88`
+
 ## 1.0.3
 
 - 修复`Lod`中`minLevel`可能不生效的问题

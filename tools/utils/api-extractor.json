@@ -1,0 +1,51 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+  "mainEntryPointFilePath": "<projectFolder>/build/index.d.ts",
+  "bundledPackages": [],
+  "compiler": {
+    "tsconfigFilePath": "",
+    "skipLibCheck": true
+  },
+  "apiReport": {
+    "enabled": false
+  },
+  "docModel": {
+    "enabled": false
+  },
+  "dtsRollup": {
+    "enabled": true,
+    "untrimmedFilePath": "<projectFolder>/build/.api-extractor/index-untrimmed.d.ts",
+    "publicTrimmedFilePath": "<projectFolder>/build/.api-extractor/index.d.ts",
+    "omitTrimmingComments": true
+  },
+  "tsdocMetadata": {
+    "enabled": false
+  },
+  "messages": {
+    "extractorMessageReporting": {
+      "ae-missing-release-tag": {
+        "logLevel": "none"
+      },
+      "ae-unresolved-link": {
+        "logLevel": "none"
+      },
+      "ae-setter-with-docs": {
+        "logLevel": "none"
+      },
+      "ae-missing-getter": {
+        "logLevel": "none"
+      },
+      "ae-forgotten-export": {
+        "logLevel": "none"
+      },
+      "ae-wrong-input-file-type": {
+        "logLevel": "none"
+      }
+    },
+    "tsdocMessageReporting": {
+      "default": {
+        "logLevel": "none"
+      }
+    }
+  }
+}

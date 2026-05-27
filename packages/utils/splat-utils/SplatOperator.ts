@@ -1,4 +1,4 @@
-import { Splat, SplatState, Vector3, WGLCapabilities, Quaternion, Matrix4, __INNER__ } from '@qunhe/egs';
+import { Splat, SplatState, Vector3, WGLCapabilities, Quaternion, Matrix4, __INTERNAL__, SourceTexture, TextureViewDimension, TextureDimension, TextureFormat } from '@qunhe/egs';
 import { SplatData, ISingleSplat } from '@qunhe/egs-splat-loader';
 
 interface IVector3 {
@@ -194,8 +194,8 @@ export class SplatOperator {
         const pixels = splat.counts;
         const width = Math.min(Math.ceil(Math.sqrt(pixels) / 2) * 2, MAX_TEXTURE_SIZE);
         const height = Math.ceil(pixels / width);
-        splat.stateTex = new __INNER__.SourceTexture(
-            __INNER__.TextureDimension.D2, __INNER__.TextureViewDimension.D2, __INNER__.TextureFormat.R32Uint,
+        splat.stateTex = new SourceTexture(
+            TextureDimension.D2, TextureViewDimension.D2, TextureFormat.R32Uint,
             width, height, 1, false, false)
             .configAsDataTexture()
             .setLevelData(new Uint8Array(width * height), 0);

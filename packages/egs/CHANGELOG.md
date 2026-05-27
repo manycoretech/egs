@@ -1,9 +1,13 @@
 # EGS 发布说明 Release Notes
 
-## DEV
+## 1.2.88
 
-1. 修复
+1. 新功能
+    - 升级 `typescript: ^6.0.3` & `tslib: ^2.8.1`
+2. 修复
     - `ContentBridge`缺失`normalized`
+3. 优化
+    - `__INNER__`替换为`__INTERNAL__` (仅类型)
 
 ## 1.2.87
 
@@ -36,7 +40,6 @@
         - 增加`Background.up`配置
     - `EnvMapBackground`增加`reverseVertical`选项
     - 新增`3D Gaussian Splatting`支持
-
 2. 优化
     - `readPixelsAsync/readPixels`移除`checkFramebufferStatus`
     - 移除部分导出，仅内部使用，意外导出类型，裁剪部分接口

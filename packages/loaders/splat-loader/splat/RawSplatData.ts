@@ -21,8 +21,8 @@ const enum ColIdx {
 }
 
 export class RawSplatData extends SplatData {
-    counts: number;
-    shDegree: number;
+    counts: number = 0;
+    shDegree: number = 0;
 
     private shCounts: number;
     private table: Float32Array[];

@@ -17,8 +17,8 @@ function decode111011s(decode: number, out: number[], offset: number) {
 }
 
 export class CompressedSplatData extends SplatData {
-    counts: number;
-    shDegree: number;
+    counts: number = 0;
+    shDegree: number = 0;
 
     private splat1Sampler: ISampler;
     private splat1Float32Buffer: Float32Array;

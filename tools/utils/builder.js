@@ -1,39 +1,36 @@
-const fs = require("fs");
-const path = require("path");
-const chalk = require("chalk").default;
-const { sync } = require("glob");
-const { $ } = require('./process');
+import { existsSync, rmSync, mkdirSync, copyFileSync } from 'fs';
+import { relative, resolve, dirname } from 'path';
+import chalk from 'chalk';
+import { sync } from 'glob';
+import { $ } from './process.js';
+import { rollup } from './dts-rollup.js';
 
-function build(cp) {
+export function build(cp, release) {
+    if (existsSync('./build')) {
+        rmSync('./build', { recursive: true });
+    }
+
+    $('pnpm tsc -b');
+
     const movePatterns = [
         './package.json',
         './README.md',
         './CHANGELOG.md',
-        './LICENSE'
+        './LICENSE',
+        ...(cp ?? []),
     ];
-
-    if (fs.existsSync('./build')) {
-        fs.rmdirSync('./build', { recursive: true });
-    }
-
-    $('pnpm tsc --build');
-
-    if (cp) {
-        for (let i = 0; i < cp.length; i++) {
-            movePatterns.push(cp[i]);
-        }
-    }
-
     for (let i = 0; i < movePatterns.length; i++) {
         const files = sync(movePatterns[i]);
         files.forEach(item => {
-            const t = path.relative('.', path.resolve('./build', item));
-            fs.mkdirSync(path.dirname(t), { recursive: true });
-            fs.copyFileSync(item, t);
+            const t = relative('.', resolve('./build', item));
+            mkdirSync(dirname(t), { recursive: true });
+            copyFileSync(item, t);
             console.log(item, '->', t);
         });
     }
     console.log(chalk.bold.green('[build]: copy file finished.'));
-}
 
-exports.build = build;
+    if (release) {
+        rollup(process.cwd());
+    }
+}

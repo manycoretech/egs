@@ -67,6 +67,9 @@ export { Texture2D, Texture2DLayer, Texture2DCommonLayer } from './elements/text
 export { Texture3D, Texture3DLayer } from './elements/textures/Texture3D';
 export { TextureCube, TextureCubeSide } from './elements/textures/TextureCube';
 
+export { SourceTexture, MipLevelSource, LayerSource } from './elements/textures/SourceTexture';
+export { TextureDimension, TextureViewDimension, TextureFormat } from './elements/textures/types';
+
 export { FatLineMaterial } from './elements/materials/mesh/FatLineMaterial';
 export * from './elements/materials/mesh/MeshBasicMaterial';
 export * from './elements/materials/mesh/MeshPhongMaterial';
@@ -204,13 +207,18 @@ export { Polygon } from './math/shape/plane/Polygon';
 
 export { Ticker } from './utils/Ticker';
 
-import * as __INNER__ from './EGSInner';
+import * as __INTERNAL__ from './Internal';
 
-export { serializeObject3D, parseObjects, deepCloneObject3D, downloadStringAsFile } from './EGSInner';
+export { serializeObject3D, parseObjects, deepCloneObject3D, downloadStringAsFile } from './Internal';
 
 /**
- * DO NOT USE THIS!!!!
+ * @internal
  */
-export { __INNER__ };
+export import __INNER__ = __INTERNAL__;
+
+/**
+* DO NOT USE THIS!!!!
+*/
+export { __INTERNAL__ };
 
 egsInitFinished();

@@ -9,7 +9,7 @@ import { lightProperty } from '../../ContentAPI';
 import { readonlyMath } from '../../math/Readonly';
 import { Texture2D } from '../../elements/textures/Texture2D';
 import { Deserializer, Serializer } from '../../utils/Serialization';
-import { RenderAttachment } from '../../EGSInner';
+import { RenderAttachment } from '../../elements/textures/RenderTarget';
 
 interface TargetLight extends Object3D {
     target: Object3D

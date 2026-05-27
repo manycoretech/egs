@@ -7,7 +7,7 @@ interface Worker {
     piped: boolean
 }
 
-const workers: Worker[] = [];
+export const workers: Worker[] = [];
 const splitRegex = /\r?\n/;
 
 function pauseStdout() {
@@ -210,11 +210,7 @@ export function echoAndSpawnProcess(command: string, args: string[], options: Sp
     return spawnProcess(command, args, options);
 }
 
-export {
-    workers
-};
-
-export function $(cmd: string, dir: string, inherit = true) {
+export function $(cmd: string, dir?: string, inherit: boolean = true) {
     const cwd = dir ? path.resolve(process.cwd(), dir) : process.cwd();
     console.info(`<${cwd}> ${cmd}`);
     const result = child_process.execSync(cmd, {
