@@ -5,10 +5,11 @@
   "license": "MIT",
   "main": "index.js",
   "types": "index.d.ts",
+  "type": "module",
   "repository": "https://github.com/manycoretech/egs.git",
   "release": {
     "scripts": {
-     "pre-release": "pnpm build:release"
+      "pre-release": "pnpm build:release"
     },
     "publishRoot": "./build"
   },

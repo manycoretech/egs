@@ -4,8 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "bin": {
-    "egs-build": "./bin/egs-build",
-    "generate-api-impl": "./bin/generate-api-impl"
+    "egs-build": "./bin/egs-build.js",
+    "generate-api-impl": "./bin/generate-api-impl.js"
   },
   "dependencies": {
     "yargs": "^18.0.0"
