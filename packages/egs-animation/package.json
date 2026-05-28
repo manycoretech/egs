@@ -4,12 +4,11 @@
   "description": "egs animation",
   "main": "index.js",
   "types": "index.d.ts",
-  "type": "module",
   "license": "MIT",
   "repository": "https://github.com/manycoretech/egs.git",
   "release": {
     "scripts": {
-     "pre-release": "pnpm build:release"
+      "pre-release": "pnpm build:release"
     },
     "publishRoot": "./build"
   },

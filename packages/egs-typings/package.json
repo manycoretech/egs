@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "only for egs dev, do not use in other way!!!",
   "types": "index.d.ts",
-  "type": "module",
   "dependencies": {
     "@types/webxr": "^0.5.24",
     "@webgpu/types": "^0.1.70"

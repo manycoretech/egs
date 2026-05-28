@@ -4,7 +4,6 @@
   "description": "EGS 3d gaussian splatting loader",
   "main": "index.js",
   "types": "index.d.ts",
-  "type": "module",
   "license": "MIT",
   "repository": "https://github.com/manycoretech/egs.git",
   "scripts": {

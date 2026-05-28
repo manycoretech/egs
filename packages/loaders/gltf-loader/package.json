@@ -5,7 +5,6 @@
   "main": "index.js",
   "license": "MIT",
   "types": "index.d.ts",
-  "type": "module",
   "repository": "https://github.com/manycoretech/egs.git",
   "release": {
     "scripts": {
