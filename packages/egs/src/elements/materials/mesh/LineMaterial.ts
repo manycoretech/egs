@@ -61,7 +61,7 @@ export class LineBasicMaterial extends SceneClipMaterial {
         this.color.setValues(values);
     }
     /**
-     * @ignore
+     * @internal
      */
     public updateShadingUniforms(program: WGLProgram): void {
         if (!this.enableVertexColor) {
@@ -70,7 +70,7 @@ export class LineBasicMaterial extends SceneClipMaterial {
     }
 
     /**
-     * @ignore
+     * @internal
      */
     public extendShaderShading(b: ShaderBuilder, _r: ShaderComponentRegistry) {
         b
@@ -153,21 +153,21 @@ export class LineDashedMaterial extends LineBasicMaterial {
         this.dash.setValues(values);
     }
     /**
-     * @ignore
+     * @internal
      */
     public extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {
         super.extendShaderShape(builder, _);
         builder.extend(this.dash);
     }
     /**
-     * @ignore
+     * @internal
      */
     public computeShapeKey(_: ShaderComponentRegistry) {
         // LineDashedMaterial
         return super.computeShapeKey(_) + 'd';
     }
     /**
-     * @ignore
+     * @internal
      */
     public updateShapeUniforms(p: WGLProgram, _: ShaderComponentRegistry) {
         this.dash.updateShadingUniforms(p);
@@ -248,9 +248,6 @@ export class ColorWithAlpha extends ShaderComponent {
     public setValues(param: ColorWithAlphaParam) {
         Utils.copyProperties(colorWithAlphaKeys, this, param);
     }
-    /**
-     * @ignore
-     */
     public extendShaderShading(builder: ShaderBuilder) {
         builder
             .addUniform('color', WebGLShaderDataType.Vec3)
@@ -258,7 +255,7 @@ export class ColorWithAlpha extends ShaderComponent {
             .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = vec4(color, opacity);');
     }
     /**
-     * @ignore
+     * @internal
      */
     public updateShadingUniforms(program: WGLProgram) {
         program.setUniform('color', this.color);
@@ -310,7 +307,6 @@ const lineDashParamKeys = ['scale', 'gapSize', 'dashSize', 'viewScale', 'gapSize
  * which includes {@link FatLineMaterial| FatLineMaterial} and {@link LineDashedMaterial| LineDashedMaterial}.
  */
 export class LineDash extends ShaderComponent {
-    constructor() { super(); }
     /**
      * This parameter influence the length both of gaps and segments.
      */
@@ -380,9 +376,6 @@ export class LineDash extends ShaderComponent {
     public deserialize(ctx: Deserializer) {
         ctx.reads<LineDash>(['scale', 'gapSize', 'dashSize', 'viewScale', 'gapSize2', 'dashSize2']);
     }
-    /**
-     * @ignore
-     */
     public extendShaderShading(builder: ShaderBuilder) {
         builder
             .addUniform('scale', WebGLShaderDataType.Float)
@@ -405,7 +398,7 @@ export class LineDash extends ShaderComponent {
         }
     }
     /**
-     * @ignore
+     * @internal
      */
     public updateShadingUniforms(program: WGLProgram) {
         program.setUniform('scale', this.scale);

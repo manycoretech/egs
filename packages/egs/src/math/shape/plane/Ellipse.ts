@@ -49,14 +49,14 @@ export class Ellipse extends Shape {
         this._isInvalid = true;
     }
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Ellipse>(['x', 'y', 'halfWidth', 'halfHeight']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);

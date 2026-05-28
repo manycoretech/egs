@@ -28,13 +28,13 @@ export class AmbientLight extends Light {
         super(color, intensity);
     }
     /**
-     * @ignore
+     * @internal
      */
     public refreshUniforms() {
         this.uniformColor.copy(this.color).multiplyScalar(this.intensity);
     }
     /**
-     * @ignore
+     * @internal
      */
     public updateUniforms(program: WGLProgram) {
         program.setUniform('ambientLightColor', this.uniformColor);

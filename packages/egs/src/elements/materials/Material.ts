@@ -195,7 +195,7 @@ export abstract class Material extends ElementEventDispatcher
     /**
      * This just for control the shader compile behavior, not a state.
      * If this value is set to true, {@link isSupportInstance| isSupportInstance } must be set to true.
-     * @ignore
+     * @internal
      */
     useInstance = false;
     refreshInstanceInBuilding(enable: boolean) {
@@ -381,7 +381,7 @@ export abstract class Material extends ElementEventDispatcher
         return this.uuid;
     }
     /**
-     * @ignore
+     * @internal
      */
     createShader(registry: ShaderComponentRegistry): ShaderInfo {
         const builder = new ShaderBuilder();
@@ -389,7 +389,7 @@ export abstract class Material extends ElementEventDispatcher
         return builder.build();
     }
     /**
-     * @ignore
+     * @internal
      */
     extendShader(builder: ShaderBuilder, registry: ShaderComponentRegistry) {
         this.extendShaderShape(builder, registry);
@@ -400,7 +400,7 @@ export abstract class Material extends ElementEventDispatcher
         });
     }
     /**
-     * @ignore
+     * @internal
      */
     updateUniforms(program: WGLProgram, registry: ShaderComponentRegistry) {
         this.updateShadingUniforms(program, registry);
@@ -420,19 +420,19 @@ export abstract class Material extends ElementEventDispatcher
      */
     abstract className(): string;
     /**
-     * @ignore
+     * @internal
      */
     abstract extendShaderShape(builder: ShaderBuilder, registry: ShaderComponentRegistry): void;
     /**
-     * @ignore
+     * @internal
      */
     abstract extendShaderShading(builder: ShaderBuilder, registry: ShaderComponentRegistry): void;
     /**
-     * @ignore
+     * @internal
      */
     abstract updateShapeUniforms(program: WGLProgram, registry: ShaderComponentRegistry): void;
     /**
-     * @ignore
+     * @internal
      */
     abstract updateShadingUniforms(program: WGLProgram, registry: ShaderComponentRegistry): void;
 
@@ -445,7 +445,7 @@ export abstract class Material extends ElementEventDispatcher
      */
     abstract copy(other: Material): void;
     /**
-     * @ignore
+     * @internal
      */
     canDraw() {
         return true;
@@ -463,7 +463,7 @@ export abstract class Material extends ElementEventDispatcher
     }
     /**
      * Generate a unique key for shader.
-     * @ignore
+     * @internal
      */
     getShaderKey(registry: ShaderComponentRegistry) {
         if (this._shaderKey === undefined) {
@@ -473,7 +473,7 @@ export abstract class Material extends ElementEventDispatcher
     }
     /**
      * Generate a unique shape key for ShapeExtractableDispatcher.
-     * @ignore
+     * @internal
      */
     getShapeKey(registry: ShaderComponentRegistry): string {
         if (this._shapeKey === undefined) {
@@ -569,19 +569,19 @@ export abstract class Material extends ElementEventDispatcher
     /**
      * Use this to traverse material which has texture need to process.
      * @param {function} _visitor a method to process {@link Texture| texture}.
-     * @ignore
+     * @internal
      */
     traverseTexture(_visitor: (tex: Texture) => void) { }
     /**
      * Execute the given method for every ubo.
      * @param {function} _visitor a method to process ubo.
-     * @ignore
+     * @internal
      */
     traverseUBO(_visitor: (ubo: UniformBlockObject) => void) { }
     /**
      * Generate a basic key for material, and engine will recompile shader if this key is changed.
      * This method may override in extended class.
-     * @ignore
+     * @internal
      */
     generateShaderKey(_registry: ShaderComponentRegistry): string {
         return this.className() + this.components.map(c => {
@@ -589,7 +589,7 @@ export abstract class Material extends ElementEventDispatcher
         });
     }
     /**
-     * @ignore
+     * @internal
      */
     abstract computeShapeKey(registry: ShaderComponentRegistry): string;
 

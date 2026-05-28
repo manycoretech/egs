@@ -51,7 +51,7 @@ export class DiskAreaLight extends AreaLight {
         return new DiskAreaLight().copy(this, recursive);
     }
     /**
-     * @ignore
+     * @internal
      */
     public refreshUniforms(viewMatrix: Matrix4) {
         this.uniforms.color.copy(this.color).multiplyScalar(this.intensity);
@@ -67,7 +67,7 @@ export class DiskAreaLight extends AreaLight {
         this.uniforms.halfHeight.applyMatrix4(matrix42);
     }
     /**
-     * @ignore
+     * @internal
      */
     public updateUniformForForward(program: WGLProgram, index: number) {
         this.updateUniformByPrefix(program, `diskAreaLights[${index}]`);
@@ -96,27 +96,27 @@ export class DiskAreaLight extends AreaLight {
     }
 
     /**
-     * @ignore
+     * @internal
      */
     public static getLightCollectShader() {
         return diskAreaLightCollect;
     }
     /**
-     * @ignore
+     * @internal
      */
     public static getShaderInclude() {
         return diskAreaLightInclude;
     }
 
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<DiskAreaLight>(['width', 'height', 'specularStrength']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);

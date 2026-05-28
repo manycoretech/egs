@@ -247,7 +247,7 @@ export class PopBufferGeometry extends BufferGeometry {
         return new PopBufferGeometry().copy(this) as PopBufferGeometry;
     }
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);
@@ -263,7 +263,7 @@ export class PopBufferGeometry extends BufferGeometry {
         });
     }
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);

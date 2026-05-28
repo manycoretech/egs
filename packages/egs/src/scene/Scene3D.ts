@@ -62,14 +62,14 @@ export class Scene3D extends Object3D {
     renderProxyManager = new RenderProxyManager(this);
     /**
      * Give api to nodes of this scene to mark them with a reference.
-     * @ignore
+     * @internal
      */
     _refManager = new SceneElementRefManager();
     /**
      * The instance of ShaderComponentRegistry.
      * This class has a static map to cache the key of shader components which will be rendered to screen.
      * In addition, update light need use the api of this.
-     * @ignore
+     * @internal
      */
     shaderComponentRegistry = new ShaderComponentRegistry();
     /**
@@ -349,7 +349,7 @@ export class Scene3D extends Object3D {
      * {@link update| update } the data of current scene and let {@link renderProxyManager| renderProxyManager } do optimize before final drawing;
      * @param {Renderer} renderer give renderer the {@link shaderComponentRegistry| shaderComponentRegistry } of this scene.
      * @param {Camera} camera this is used to update corresponding data.
-     * @ignore
+     * @internal
      */
     generateDrawableList(isUseProxy: boolean = true): DrawableList {
         this.update();

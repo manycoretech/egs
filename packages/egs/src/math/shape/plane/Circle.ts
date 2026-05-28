@@ -41,14 +41,14 @@ export class Circle extends Shape {
         this._isInvalid = true;
     }
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Circle>(['x', 'y', 'radius']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);

@@ -195,7 +195,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * Generate a key for texture of material, and engine will recompile shader if the texture added or removed.
      * This method may override in extended class.
-     * @ignore
+     * @internal
      */
     public generateShaderKey(r: ShaderComponentRegistry) {
         const keyBuilder = HashKeyBuilder.getInstance()
@@ -254,7 +254,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     }
 
     /**
-     * @ignore
+     * @internal
      */
     public updateShadingUniforms(program: WGLProgram, r: ShaderComponentRegistry): void {
         super.updateShadingUniforms(program, r);
@@ -271,7 +271,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
         }
     }
     /**
-     * @ignore
+     * @internal
      */
     public extendShaderShading(b: ShaderBuilder, r: ShaderComponentRegistry) {
         super.extendShaderShading(b, r);
@@ -316,7 +316,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
         }
     }
     /**
-     * @ignore
+     * @internal
      */
     public generateMaterialForLight() {
         return `
@@ -328,25 +328,25 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
         `;
     }
     /**
-     * @ignore
+     * @internal
      */
     public RE_Direct(): string {
         return '#define RE_Direct RE_Direct_BlinnPhong';
     }
     /**
-     * @ignore
+     * @internal
      */
     public RE_Direct_RectArea(): string {
         return '#define RE_Direct_RectArea RE_Direct_RectArea_BlinnPhong';
     }
     /**
-     * @ignore
+     * @internal
      */
     public RE_Direct_DiskArea(): string {
         return '#define RE_Direct_DiskArea RE_Direct_DiskArea_BlinnPhong';
     }
     /**
-     * @ignore
+     * @internal
      */
     public RE_IndirectDiffuse(): string {
         return '#define RE_IndirectDiffuse RE_IndirectDiffuse_BlinnPhong';

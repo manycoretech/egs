@@ -319,7 +319,7 @@ export class Quaternion {
         return this.normalize();
     }
     /**
-     * @ignore
+     * @internal
      */
     public inverse(): Quaternion {
         // quaternion is assumed to have unit length

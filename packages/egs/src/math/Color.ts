@@ -531,13 +531,13 @@ export class Color {
         return array;
     }
     /**
-     * @ignore
+     * @internal
      */
     public getSerializeData() {
         return this.getHex();
     }
     /**
-     * @ignore
+     * @internal
      */
     public setSerializeData(value: number) {
         this.setHex(value);
@@ -770,4 +770,4 @@ export const ColorKeywords = {
 };
 
 export type ReadonlyColor = PickReadonly<Color,
-    'g' | 'r' | 'b' | 'isColor' | 'equals' | 'getHex' | 'getSerializeData'>;
+    'g' | 'r' | 'b' | 'isColor' | 'equals' | 'getHex'>;

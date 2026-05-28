@@ -21,14 +21,14 @@ export class Shape extends Path {
         this._isInvalid = true;
     }
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Shape>(['holes']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);

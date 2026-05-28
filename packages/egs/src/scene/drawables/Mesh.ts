@@ -161,7 +161,7 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx this parameter has not supported external Serializer yet.
      * It may cause that this method can not be used directly.
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);
@@ -171,7 +171,7 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx this parameter has not supported external Deserializer yet.
      * It may cause that this method can not be used directly.
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);

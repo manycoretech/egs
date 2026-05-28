@@ -22,13 +22,13 @@ export class CubicBezierCurve2D extends Curve2D {
         this.v3 = v3 || new Vector2();
     }
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         ctx.puts<CubicBezierCurve2D>(['v0', 'v1', 'v2', 'v3']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         ctx.reads<CubicBezierCurve2D>(['v0', 'v1', 'v2', 'v3']);

@@ -29,13 +29,13 @@ export class Vector2 implements Vector {
         this.y = _y || 0;
     }
     /**
-     * @ignore
+     * @internal
      */
     public getSerializeData() {
         return this.toArray();
     }
     /**
-     * @ignore
+     * @internal
      */
     public setSerializeData(value: any): void {
         this.fromArray(value);
@@ -527,7 +527,7 @@ export class Vector2 implements Vector {
 }
 
 export type ReadonlyVector2 = PickReadonly<Vector2,
-    'x' | 'y' | 'width' | 'height' | 'isVector2' | 'getSerializeData' | 'dot' | 'cross' | 'lengthSq' | 'length' | 'angle' |
+    'x' | 'y' | 'width' | 'height' | 'isVector2' | 'dot' | 'cross' | 'lengthSq' | 'length' | 'angle' |
     'manhattanLength' | 'distanceTo' | 'distanceToSquared' | 'manhattanDistanceTo' | 'getNumberCount' | 'equals' | 'toArray' | 'intoSize'>;
 
 const tmp1Vec2 = new Vector2();

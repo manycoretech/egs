@@ -6,11 +6,11 @@ import { plane } from '../../elements/geometries/builder/Index';
 import { IRenderer } from '../../renderer/IRenderer';
 import { Vector3 } from '../../math/Vector3';
 import { readonlyMath } from '../../..';
+
+const GROUND_DEFAULT_UP = new Vector3(0, 0, 1);
 /**
  * This class is used to draw a grid-like ground.
  */
-
-const GROUND_DEFAULT_UP = new Vector3(0, 0, 1);
 export class Ground implements Renderable {
     /**
      * The material of ground can be used to change style.
@@ -71,9 +71,6 @@ export class Ground implements Renderable {
         this.groundMesh.geometry = this.geometry;
     }
 
-    /**
-     * @ignore
-     */
     public render(renderer: IRenderer): void {
         if (!this.enabled) {
             return;

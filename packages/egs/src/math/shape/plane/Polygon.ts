@@ -23,14 +23,14 @@ export class Polygon extends Shape {
         this._isInvalid = true;
     }
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Polygon>(['points']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);

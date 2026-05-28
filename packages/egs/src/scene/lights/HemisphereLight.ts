@@ -39,14 +39,14 @@ export class HemisphereLight extends Light {
         return this;
     }
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<HemisphereLight>(['groundColor']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);

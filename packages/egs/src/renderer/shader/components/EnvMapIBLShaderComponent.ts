@@ -64,9 +64,6 @@ export class EnvMapIBLShaderComponent<T extends TextureCube | Texture2D | Textur
      */
     @materialProperty()
     refractionRatio = 0.98;
-    /**
-     * @ignore
-     */
     @materialProperty()
     envMapIntensity = 1;
 
@@ -100,9 +97,6 @@ export class EnvMapIBLShaderComponent<T extends TextureCube | Texture2D | Textur
         return new EnvMapIBLShaderComponent<T>().copy(this);
     }
 
-    /**
-     * @ignore
-     */
     extendShaderShading(builder: ShaderBuilder) {
         const supportTextureLOD = Capabilities.IS_SUPPORT_SHADER_TEXTURE_LOD;
         builder
@@ -123,8 +117,9 @@ export class EnvMapIBLShaderComponent<T extends TextureCube | Texture2D | Textur
             builder.addUniform('envMap', WebGLShaderDataType.Sampler2D);
         }
     }
+
     /**
-     * @ignore
+     * @internal
      */
     updateShadingUniforms(program: WGLProgram) {
         program.setTextureCube('envMap', this.envMap as TextureCube);
@@ -136,7 +131,7 @@ export class EnvMapIBLShaderComponent<T extends TextureCube | Texture2D | Textur
         }
     }
     /**
-     * @ignore
+     * @internal
      */
     getLightProbeIndirectRadiance() {
         const supportTextureLOD = Capabilities.IS_SUPPORT_SHADER_TEXTURE_LOD;
@@ -254,4 +249,3 @@ function getLightProbeIndirectRadiance(useFrac: boolean, mapping: EnvTextureType
     }
     `;
 }
-

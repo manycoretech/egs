@@ -6,6 +6,8 @@ import { MergedMeshPhongMaterial } from '../../../elements/materials/mesh/Merged
 import { PopBufferGeometry } from '../../../elements/geometries/containers/PopBufferGeometry';
 import { MeshPhongMaterial } from '../../../elements/materials/mesh/MeshPhongMaterial';
 import { PopMeshMerger } from './PopMeshMerger';
+import { Color } from '../../../math/Color';
+import { Matrix3 } from '../../../math/Matrix3';
 
 const merger = new PopMeshMerger();
 function mergePopMesh(mesh: PopMesh): Nullable<MergedMeshData> {
@@ -59,8 +61,8 @@ export class PopMeshMergeManager {
                 m.side, m.transparent, m.opacity,
                 m.polygonOffset, m.polygonOffsetFactor, m.polygonOffsetUnits,
                 m.blending, m.blendDst, m.blendDstAlpha, m.blendEquation, m.blendEquationAlpha, m.blendSrc, m.blendSrcAlpha,
-                m.color.getSerializeData(),
-                ...(m.texture ? [m.texture.uuid, m.uvTransform.getSerializeData()] : []),
+                (m.color as any as Color).getSerializeData(),
+                ...(m.texture ? [m.texture.uuid, (m.uvTransform as any as Matrix3).getSerializeData()] : []),
             ].join('-');
         }
 

@@ -81,7 +81,7 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
         Utils.copyProperty('enableVertexColor', 'enableVertexColor', this, values);
     }
     /**
-     * @ignore
+     * @internal
      */
     public extendShaderShading(builder: ShaderBuilder) {
         if (this.enableVertexColor) {
@@ -107,7 +107,7 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * Generate a key for texture of material, and engine will refresh texture if it is changed.
      * This method may override in extended class.
-     * @ignore
+     * @internal
      */
     public generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
@@ -117,7 +117,7 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
             .getKey();
     }
     /**
-     * @ignore
+     * @internal
      */
     public updateShadingUniforms(program: WGLProgram) {
         if (this.enableVertexColor) {
@@ -160,4 +160,3 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
         ctx.reads<MeshBasicMaterial>(['color', 'alpha', 'uvTransform', 'enableVertexColor']);
     }
 }
-

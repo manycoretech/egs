@@ -41,14 +41,14 @@ export class Path extends Curve2D {
         }
     }
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Path>(['curves', 'autoClose']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);

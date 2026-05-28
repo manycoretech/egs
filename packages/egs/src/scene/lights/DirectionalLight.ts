@@ -83,7 +83,7 @@ export class DirectionalLight extends Light {
         return new DirectionalLight().copy(this, recursive);
     }
     /**
-     * @ignore
+     * @internal
      */
     public refreshUniforms(viewMatrix: Matrix4) {
         this.uniforms.color.copy(this.color).multiplyScalar(this.intensity);
@@ -126,7 +126,7 @@ export class DirectionalLight extends Light {
     /**
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx an instance give the method to take the data for attribute.
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
@@ -135,14 +135,14 @@ export class DirectionalLight extends Light {
     /**
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx an instance used to store the data of scene objects.
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<DirectionalLight>(['target', 'shadow']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public static getLightCollectShader() {
         return directionLightCollect;
@@ -157,7 +157,7 @@ export class DirectionalLight extends Light {
     }
 
     /**
-     * @ignore
+     * @internal
      */
     public static getShaderInclude() {
         return directionalLightInclude;

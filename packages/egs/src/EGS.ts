@@ -134,7 +134,7 @@ export { TypedArray as TypeArray } from './utils/Utils';
 export { TypeAssert } from './scene/tools/TypeAssert';
 export { Scene3D } from './scene/Scene3D';
 /**
- * @ignore
+ * @internal
 */
 export { Scene3D as Scene } from './scene/Scene3D';
 export { Layers } from './scene/tools/Layers';
@@ -207,18 +207,16 @@ export { Polygon } from './math/shape/plane/Polygon';
 
 export { Ticker } from './utils/Ticker';
 
-import * as __INTERNAL__ from './Internal';
-
 export { serializeObject3D, parseObjects, deepCloneObject3D, downloadStringAsFile } from './Internal';
 
 /**
  * @internal
  */
-export import __INNER__ = __INTERNAL__;
+export * as __INNER__ from './Internal';
 
 /**
 * DO NOT USE THIS!!!!
 */
-export { __INTERNAL__ };
+export * as __INTERNAL__ from './Internal';
 
 egsInitFinished();

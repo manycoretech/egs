@@ -49,13 +49,13 @@ export class Matrix3 {
         this._elements = Matrix3.defaultElements.slice();
     }
     /**
-     * @ignore
+     * @internal
      */
     public getSerializeData() {
         return this.toArray();
     }
     /**
-     * @ignore
+     * @internal
      */
     public setSerializeData(value: any): void {
         this.fromArray(value);
@@ -611,7 +611,7 @@ export class Matrix3 {
 const tmpVec3 = new Vector3();
 
 export type ReadonlyMatrix3 = PickReadonly<Matrix3,
-    'elements' | 'equals' | 'getSerializeData'
+    'elements' | 'equals'
     | 'applyToBufferAttribute' | 'determinant' | 'transposeIntoArray'
     | 'applyToArray' | 'applyInverse' | 'getNumberCount' | 'toArray'
     | 'decompose'

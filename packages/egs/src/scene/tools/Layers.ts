@@ -68,13 +68,13 @@ export class Layers extends EventDispatcher {
         return (this._mask & layers._mask) !== 0;
     }
     /**
-     * @ignore
+     * @internal
      */
     public getSerializeData() {
         return this._mask;
     }
     /**
-     * @ignore
+     * @internal
      */
     public setSerializeData(value: number) {
         this.mask = value;

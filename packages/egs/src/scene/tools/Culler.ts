@@ -15,7 +15,7 @@ export class Culler {
     private cameraWorldPosition = new Vector3();
 
     /**
-     * @ignore
+     * @internal
      * camera should updated
      */
     public update(camera: Camera3D) {
@@ -29,7 +29,7 @@ export class Culler {
     }
 
     /**
-     * @ignore
+     * @internal
      */
     public queryCulling = (item: Drawable) => {
         if (this.enableDetailCulling && this.queryDetailCulling(item)) {

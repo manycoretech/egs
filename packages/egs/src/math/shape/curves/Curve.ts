@@ -33,15 +33,9 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
     public getUUID(): string {
         return this.uuid;
     }
-    /**
-     * @ignore
-     */
     public serialize(ctx: Serializer) {
         ctx.puts<Curve<any>>(['type', 'arcLengthDivisions']);
     }
-    /**
-     * @ignore
-     */
     public deserialize(ctx: Deserializer) {
         ctx.reads<Curve<any>>(['type', 'arcLengthDivisions']);
     }

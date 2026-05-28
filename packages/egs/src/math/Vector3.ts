@@ -46,13 +46,13 @@ export class Vector3 implements Vector {
         return isNaN(this.x) || isNaN(this.y) || isNaN(this.z);
     }
     /**
-     * @ignore
+     * @internal
      */
     public getSerializeData() {
         return this.toArray();
     }
     /**
-     * @ignore
+     * @internal
      */
     public setSerializeData(value: any): void {
         this.fromArray(value);
@@ -692,7 +692,7 @@ export class Vector3 implements Vector {
 }
 
 export type ReadonlyVector3 = PickReadonly<Vector3,
-    'x' | 'y' | 'z' | 'getSerializeData' | 'dot' | 'angleTo' | 'lengthSq' | 'length' | 'distanceTo' |
+    'x' | 'y' | 'z' | 'dot' | 'angleTo' | 'lengthSq' | 'length' | 'distanceTo' |
     'manhattanLength' | 'distanceToSquared' | 'manhattanDistanceTo' | 'getNumberCount' | 'equals' | 'toArray'>;
 
 const tmp1Vec3 = new Vector3();

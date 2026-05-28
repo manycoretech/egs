@@ -38,7 +38,7 @@ export abstract class Camera3D extends Object3D {
     culler = new Culler();
 
     /**
-     * @ignore
+     * @internal
      */
     queryCulling = (object: Drawable) => {
         if (!this.layers.test(object.netLayer)) {
@@ -47,7 +47,7 @@ export abstract class Camera3D extends Object3D {
         return this.culler.queryCulling(object);
     };
     /**
-     * @ignore
+     * @internal
      */
     filterLayers = (object: Drawable) => {
         return this.layers.test(object.netLayer);

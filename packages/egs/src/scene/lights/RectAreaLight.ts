@@ -61,7 +61,7 @@ export class RectAreaLight extends AreaLight {
         return new RectAreaLight().copy(this, recursive);
     }
     /**
-     * @ignore
+     * @internal
      */
     public refreshUniforms(viewMatrix: Matrix4) {
         this.uniforms.color.copy(this.color).multiplyScalar(this.intensity);
@@ -77,14 +77,14 @@ export class RectAreaLight extends AreaLight {
         this.uniforms.halfHeight.applyMatrix4(matrix42);
     }
     /**
-     * @ignore
+     * @internal
      */
     public updateUniformForForward(program: WGLProgram, index: number) {
         this.updateUniformByPrefix(program, `rectAreaLights[${index}]`);
     }
 
     /**
-     * @ignore
+     * @internal
      */
     public updateUniformForDefer(program: WGLProgram) {
         this.updateUniformByPrefix(program, 'rectAreaLight');
@@ -109,27 +109,27 @@ export class RectAreaLight extends AreaLight {
     }
 
     /**
-     * @ignore
+     * @internal
      */
     public static getLightCollectShader() {
         return rectAreaLightCollect;
     }
     /**
-     * @ignore
+     * @internal
      */
     public static getShaderInclude() {
         return rectAreaLightInclude;
     }
 
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<RectAreaLight>(['width', 'height', 'specularStrength']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);

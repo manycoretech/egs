@@ -40,13 +40,13 @@ export class Vector4 {
         this.w = (_w !== undefined) ? _w : 1;
     }
     /**
-     * @ignore
+     * @internal
      */
     public getSerializeData() {
         return this.toArray();
     }
     /**
-     * @ignore
+     * @internal
      */
     public setSerializeData(value: any): void {
         this.fromArray(value);
@@ -622,7 +622,7 @@ export class Vector4 {
 }
 
 export type ReadonlyVector4 = PickReadonly<Vector4,
-    'x' | 'y' | 'z' | 'w' | 'getSerializeData' | 'dot' | 'lengthSq' |
+    'x' | 'y' | 'z' | 'w' | 'dot' | 'lengthSq' |
     'length' | 'manhattanLength' | 'getNumberCount' | 'equals' | 'toArray'>;
 
 const tempMin = new Vector4();

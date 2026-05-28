@@ -33,14 +33,14 @@ export class Star extends Polygon {
         this._isInvalid = true;
     }
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Star>(['x', 'y', 'rotation', 'pointNum', 'innerRadius', 'radius']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);

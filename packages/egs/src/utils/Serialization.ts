@@ -2,6 +2,9 @@ import { TypedArray, PickSubTypeProperty, isNumber, ReadonlyMarked, ReadOnlyMark
 import { Object3D } from '../scene/Object3D';
 import { logger } from './Logger';
 import { TypeAssert } from '../scene/tools/TypeAssert';
+import { ReadonlyColor } from '../math/Color';
+import { ReadonlyMatrix3 } from '../math/Matrix3';
+import { ReadonlyVector2 } from '../EGS';
 
 export interface SerializerableDelegated {
     serialize(serialize: Serializer): void;
@@ -23,10 +26,12 @@ interface MutableSerializerableRaw {
 
 interface ReadonlySerializerableRaw extends ReadOnlyMarkedCreatable<any>, ReadonlyMarked<any> {
     getSerializeData(): any;
-    clone(): MutableSerializerableRaw
+    clone(): MutableSerializerableRaw;
 }
 
-type SerializerableRaw = MutableSerializerableRaw | ReadonlySerializerableRaw;
+type SerializerableMath = ReadonlyVector2 | ReadonlyColor | ReadonlyMatrix3;
+
+type SerializerableRaw = MutableSerializerableRaw | ReadonlySerializerableRaw | SerializerableMath;
 
 type primitive = boolean | number | undefined | null | string;
 

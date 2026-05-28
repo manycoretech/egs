@@ -131,7 +131,7 @@ export class PointLight<T extends TextureV2 | Texture2D = Texture2D> extends Lig
         return new PointLight<T>().copy(this, recursive);
     }
     /**
-     * @ignore
+     * @internal
      */
     refreshUniforms(viewMatrix: Matrix4) {
         this.uniforms.position.setFromMatrixPosition(this.matrixWorld).applyMatrix4(viewMatrix);
@@ -144,7 +144,7 @@ export class PointLight<T extends TextureV2 | Texture2D = Texture2D> extends Lig
         this.uniforms.isIESEnabled = this.isIESEnabled;
     }
     /**
-     * @ignore
+     * @internal
      */
     updateUniformForForward(program: WGLProgram, index: number) {
         const lightPrefix = `pointLights[${index}]`;
@@ -191,13 +191,13 @@ export class PointLight<T extends TextureV2 | Texture2D = Texture2D> extends Lig
         ctx.puts<PointLight>(['distance', 'decay', 'isIESEnabled', 'iesTextureResolution', 'iesIntensityScale', 'shadow']);
     }
     /**
-     * @ignore
+     * @internal
      */
     static getLightCollectShader() {
         return pointLightCollect;
     }
     /**
-     * @ignore
+     * @internal
      */
     static getShaderInclude() {
         return pointLightInclude;

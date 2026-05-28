@@ -27,14 +27,14 @@ export class Rectangle extends Shape {
      */
     public readonly type = 'Rectangle';
     /**
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Rectangle>(['x', 'y', 'width', 'height']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);

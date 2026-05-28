@@ -233,7 +233,7 @@ export class SpotLight<T extends TextureV2 | Texture2D = Texture2D> extends Ligh
         }
     }
     /**
-     * @ignore
+     * @internal
      */
     refreshUniforms(viewMatrix: Matrix4) {
         // scene camera view
@@ -313,13 +313,13 @@ export class SpotLight<T extends TextureV2 | Texture2D = Texture2D> extends Ligh
     }
 
     /**
-     * @ignore
+     * @internal
      */
     static getLightCollectShader() {
         return spotLightCollect;
     }
     /**
-     * @ignore
+     * @internal
      */
     static getShaderInclude() {
         return spotLightInclude;

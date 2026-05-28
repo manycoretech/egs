@@ -103,7 +103,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
      */
     public attributes: { [index: string]: BufferAttribute } = {};
     /**
-     * @ignore
+     * @internal
      * */
     public getAttributes(): Readonly<{ [index: string]: BufferAttribute }> {
         return this.attributes;
@@ -130,7 +130,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
     protected groups: BufferGroup[] = [];
 
     /**
-     * @ignore
+     * @internal
      */
     public getGroups(): ReadonlyArray<Readonly<BufferGroup>> {
         return this.groups;

@@ -72,15 +72,9 @@ export class SpottedShaderComponent extends ShaderComponent {
     public setValues(values: SpottedShaderComponentParameter) {
         Utils.copyProperties(keys, this, values);
     }
-    /**
-     * @ignore
-     */
     public serialize(ctx: Serializer) {
         ctx.puts<SpottedShaderComponent>(['markerType', 'markerSize', 'markerColor', 'markerSpacing', 'diagonalProportion']);
     }
-    /**
-     * @ignore
-     */
     public deserialize(ctx: Deserializer) {
         ctx.reads<SpottedShaderComponent>(['markerType', 'markerSize', 'markerColor', 'markerSpacing', 'diagonalProportion']);
     }
@@ -128,7 +122,7 @@ export class SpottedShaderComponent extends ShaderComponent {
         }
     }
     /**
-     * @ignore
+     * @internal
      */
     public updateShadingUniforms(program: WGLProgram) {
         program.setUniform('markerColor', this.markerColor);
@@ -139,7 +133,7 @@ export class SpottedShaderComponent extends ShaderComponent {
         }
     }
     /**
-     * @ignore
+     * @internal
      */
     public generateShaderKey() {
         return this.markerType.toString();

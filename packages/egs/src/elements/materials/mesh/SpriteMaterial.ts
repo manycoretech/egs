@@ -81,7 +81,7 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
         Utils.visitTexture([this.texture], visitor);
     }
     /**
-     * @ignore
+     * @internal
      */
     public generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
@@ -106,7 +106,7 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
         ctx.reads<SpriteMaterial>(['sizeAttenuation', 'rotation', 'texture', 'opacity', 'color']);
     }
     /**
-     * @ignore
+     * @internal
      */
     public extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {
         builder
@@ -118,21 +118,21 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
             .inject(ShaderInjectionTypes.gl_Position, spriteVertex(this.sizeAttenuation));
     }
     /**
-     * @ignore
+     * @internal
      */
     public computeShapeKey(_: ShaderComponentRegistry) {
         // SpriteMaterial
         return 'sp' + (this.sizeAttenuation ? '0' : '1');
     }
     /**
-     * @ignore
+     * @internal
      */
     public updateShapeUniforms(p: WGLProgram, _: ShaderComponentRegistry) {
         p.setUniform('rotation', this.rotation);
         p.setUniform('center', (p.renderState.builtUniforms.currentDrawable as Sprite).center);
     }
     /**
-     * @ignore
+     * @internal
      */
     public updateShadingUniforms(program: WGLProgram): void {
         program.setUniform('opacity', this.opacity);
@@ -143,7 +143,7 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
         }
     }
     /**
-     * @ignore
+     * @internal
      */
     public extendShaderShading(b: ShaderBuilder, _: ShaderComponentRegistry) {
         b

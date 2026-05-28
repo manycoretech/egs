@@ -215,7 +215,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      */
     public onBeforeRender: Nullable<RenderHook> = null;
     /**
-    * @ignore
+    * @internal
     * @deprecated
     */
     public hasDynamicShapeMaterial = false;
@@ -583,7 +583,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
     }
 
     /**
-     * @ignore
+     * @internal
      */
     public appendDrawcall(
         transparent: Drawcall[],
@@ -629,7 +629,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx this parameter has not supported external Serializer yet.
      * It may cause that this method can not be used directly.
-     * @ignore
+     * @internal
      */
     public serialize(ctx: Serializer) {
         super.serialize(ctx);
@@ -646,7 +646,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx this parameter has not supported external Deserializer yet.
      * It may cause that this method can not be used directly.
-     * @ignore
+     * @internal
      */
     public deserialize(ctx: Deserializer) {
         super.deserialize(ctx);

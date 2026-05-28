@@ -100,7 +100,7 @@ export class BufferAttribute<T extends TypedArray = TypedArray> extends ElementE
         this.array = array;
     }
     /**
-     * @ignore
+     * @internal
      */
     getLayoutKey(): string {
         return this.array.constructor.name + this.itemSize;
@@ -348,7 +348,7 @@ export class BufferAttribute<T extends TypedArray = TypedArray> extends ElementE
         return out;
     }
     /**
-     * @ignore
+     * @internal
      */
     onUpload(callback: () => void) {
         this.onUploadCallback = callback;
@@ -361,7 +361,7 @@ export class BufferAttribute<T extends TypedArray = TypedArray> extends ElementE
         return new BufferAttribute(this.array, this.itemSize).copy(this);
     }
     /**
-     * @ignore
+     * @internal
      */
     serialize(ctx: Serializer) {
         ctx.puts<BufferAttribute>(['itemSize', 'normalized', 'count', 'dynamic']);
@@ -369,7 +369,7 @@ export class BufferAttribute<T extends TypedArray = TypedArray> extends ElementE
         ctx.putRaw('updateRange', ctx.deepClone(this.updateRange));
     }
     /**
-     * @ignore
+     * @internal
      */
     deserialize(ctx: Deserializer) {
         ctx.reads<BufferAttribute>(['itemSize', 'normalized', 'count', 'dynamic']);

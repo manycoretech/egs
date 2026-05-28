@@ -46,13 +46,13 @@ export class Matrix4 {
         this._elements = Matrix4.defaultElements.slice();
     }
     /**
-     * @ignore
+     * @internal
      */
     public getSerializeData() {
         return this.toArray();
     }
     /**
-     * @ignore
+     * @internal
      */
     public setSerializeData(value: any): void {
         this.fromArray(value);
@@ -1077,7 +1077,7 @@ export class Matrix4 {
 }
 
 export type ReadonlyMatrix4 = PickReadonly<Matrix4,
-    'elements' | 'equals' | 'getSerializeData'
+    'elements' | 'equals'
     | 'applyToBufferAttribute' | 'determinant' | 'extractBasis'
     | 'applyToArray' | 'getPosition' | 'getMaxScaleOnAxis' | 'decompose'
     | 'decompose2D' | 'getNumberCount' | 'toArray'
