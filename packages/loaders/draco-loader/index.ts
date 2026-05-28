@@ -1,6 +1,6 @@
 import { deferred } from '@qunhe/egs-lib';
-import DracoDecoderModule, { DecoderModule, Decoder, PointCloud, Mesh, Attribute, TypedArray } from './draco_decoder_wrapper';
-const DracoDecoderWasm = require('./draco_decoder.wasm').default;
+import DracoDecoderModule, { type DecoderModule, type Decoder, type PointCloud, type Mesh, type Attribute, type TypedArray } from './draco_decoder_wrapper';
+import DracoDecoderWasm from './draco_decoder.wasm';
 
 let DecoderModule: Promise<DecoderModule> | undefined;
 function getDracoDecoderModule(): Promise<DecoderModule> {
