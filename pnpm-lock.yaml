@@ -130,6 +130,9 @@ importers:
       tslib:
         specifier: ^2.8.1
         version: 2.8.1
+      zstddec:
+        specifier: ^0.2.0
+        version: 0.2.0
     devDependencies:
       typescript:
         specifier: ^6.0.3
@@ -457,6 +460,9 @@ packages:
     resolution: {integrity: sha512-4UEqdc2RYGHZc7Doyqkrqiln3p9X2DZVxaGbwhn2pi7MrRagKaOcIKe8L3OxYcbhXLgLFUS3zAYuQjKBQgmuNg==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=23}
 
+  zstddec@0.2.0:
+    resolution: {integrity: sha512-oyPnDa1X5c13+Y7mA/FDMNJrn4S8UNBe0KCqtDmor40Re7ALrPN6npFwyYVRRh+PqozZQdeg23QtbcamZnG5rA==}
+
 snapshots:
 
   '@microsoft/api-extractor-model@7.33.8(@types/node@22.19.19)':
@@ -720,3 +726,5 @@ snapshots:
       string-width: 7.2.0
       y18n: 5.0.8
       yargs-parser: 22.0.0
+
+  zstddec@0.2.0: {}
