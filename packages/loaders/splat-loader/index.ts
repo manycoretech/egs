@@ -4,7 +4,7 @@ import { getMaxTextureSize, SplatFileType, SplatPackType } from './utils';
 import { ParseExtras, SendMessage, TaskType, ReceiveMessage, TaskStatus } from './WorkerMessage';
 import { SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
 
-export { IFile, KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile } from './file';
+export { IFile, KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, EszFile } from './file';
 export { SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
 export { ISingleSplat, ISamplerFormat, ISampler, SH_MAPS } from './splat/utils';
 export { SplatFileType, SplatPackType, detectSplatFileType } from './utils';

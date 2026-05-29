@@ -6,7 +6,7 @@ import { TaskType, SendMessage, TaskStatus, ReceiveMessage } from './WorkerMessa
 import { SplatFileType, sortSplats, SplatPackType } from './utils';
 import { SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
 import { ISplatData } from './splat/utils';
-import { KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile } from './file';
+import { KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, EszFile } from './file';
 import { IFile, NUM_F_REST_TO_SH_DEGREE } from './file/utils';
 import { SogMetadata } from './splat/SogSplatData';
 import { SogMetadataV1, SogMetadataV2 } from './file/sog';
@@ -61,6 +61,10 @@ self.onmessage = async (event: ExtendableMessageEvent) => {
                     }
                     case SplatFileType.LCC: {
                         file = new LccFile();
+                        break;
+                    }
+                    case SplatFileType.ESZ: {
+                        file = new EszFile();
                         break;
                     }
                 }

@@ -1,9 +1,10 @@
 # changelog
 
-## DEV
+## 1.0.3
 
 - 升级 `typescript: ^6.0.3` & `tslib: ^2.8.1` & `@qunhe/egs: ^1.2.88`
-- 新增`spzv4`支持
+- 新增`spz v4`支持
+- 新增`esz`格式支持，比`spz`体积小约 20%
 
 ## 1.0.2
 

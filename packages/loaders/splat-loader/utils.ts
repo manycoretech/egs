@@ -7,6 +7,7 @@ export enum SplatFileType {
     KSPLAT,
     SOG,
     LCC,
+    ESZ,
 }
 
 export enum SplatPackType {
@@ -86,6 +87,7 @@ export function detectSplatFileType(filename: string, buffer: Uint8Array) {
         case 'ksplat': { type = SplatFileType.KSPLAT; break; }
         case 'sog': { type = SplatFileType.SOG; break; }
         case 'lcc': { type = SplatFileType.LCC; break; }
+        case 'esz': { type = SplatFileType.ESZ; break; }
     }
     return type;
 }
