@@ -9,6 +9,8 @@
   "scripts": {
     "build": "pnpm egs-build",
     "build:release": "pnpm build --release",
+    "build:types": "pnpm build --type-only",
+    "build:types:release": "pnpm build --release --type-only",
     "generate:content-api": "pnpm generate-api-impl --target ./src/ContentAPI.ts --entry ContentAPI ContentManagedAPI",
     "generate:pipeline-api": "pnpm generate-api-impl --target ./src/fx/PipelineAPI.ts --entry PipelineAPI"
   },

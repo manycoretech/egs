@@ -8,7 +8,9 @@
   "repository": "https://github.com/manycoretech/egs.git",
   "scripts": {
     "build": "pnpm egs-build",
-    "build:release": "pnpm build --release"
+    "build:release": "pnpm build --release",
+    "build:types": "pnpm build --type-only",
+    "build:types:release": "pnpm build --release --type-only"
   },
   "dependencies": {
     "@qunhe/egs": "^1.2.88",

@@ -5,12 +5,12 @@ import { sync } from 'glob';
 import { $ } from './process.js';
 import { rollup } from './dts-rollup.js';
 
-export function build(cp, release) {
+export function build(cp, release, typeOnly) {
     if (existsSync('./build')) {
         rmSync('./build', { recursive: true });
     }
 
-    $('pnpm tsc -b');
+    $(`pnpm tsc -b ${typeOnly ? '--emitDeclarationOnly' : ''}`);
 
     const movePatterns = [
         './package.json',

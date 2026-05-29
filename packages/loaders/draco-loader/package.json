@@ -14,7 +14,9 @@
   },
   "scripts": {
     "build": "pnpm egs-build --cp ./draco_decoder*",
-    "build:release": "pnpm build --release"
+    "build:release": "pnpm build --release",
+    "build:types": "pnpm egs-build --cp ./*.d.ts --type-only",
+    "build:types:release": "pnpm build:types --type-only"
   },
   "dependencies": {
     "@qunhe/egs-lib": "^1.0.2",

@@ -14,7 +14,9 @@
   },
   "scripts": {
     "build": "pnpm egs-build",
-    "build:release": "pnpm build --release"
+    "build:release": "pnpm build --release",
+    "build:types": "pnpm build --type-only",
+    "build:types:release": "pnpm build --release --type-only"
   },
   "dependencies": {
     "tslib": "^2.8.1"
