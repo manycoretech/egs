@@ -1,6 +1,6 @@
 
 import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { Utils } from '../../../utils/Utils';
+import { Utils, Nullable } from '../../../utils/Utils';
 import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { MaterialParameters } from '../Material';
 import { ColorShaderComponent } from '../../../renderer/shader/components/ColorShaderComponent';
@@ -21,7 +21,7 @@ import { Texture } from '../../textures/Texture';
 export type MeshBasicMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters & {
     color?: number | string | Color,
     opacity?: number,
-    texture?: T,
+    texture?: Nullable<T>,
     uvTransform?: ReadonlyMatrix3,
     enableVertexColor?: boolean,
 };

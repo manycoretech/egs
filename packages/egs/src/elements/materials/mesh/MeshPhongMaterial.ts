@@ -173,7 +173,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * Change the corresponding attribute according to the values of given {@link MeshPhongMaterialParameters| parameters}.
      * @param {MeshPhongMaterialParameters} values a object of specified type contains parameters.
      */
-    public setValues(values?: MeshPhongMaterialParameters) {
+    public setValues(values?: MeshPhongMaterialParameters<T>) {
         if (values === undefined) {
             return;
         }

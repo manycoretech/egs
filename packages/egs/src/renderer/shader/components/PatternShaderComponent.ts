@@ -115,8 +115,7 @@ export class PatternShaderComponent<T extends TextureV2 | Texture2D = Texture2D>
     }
 }
 
-export type ShaderBlendParameter<T extends TextureV2 | Texture2D = Texture2D> = ConvertMaterialParameters<Pick<ShaderBlend<T>,
-    'shaderBlendSrc' | 'shaderBlendDst' | 'shaderBlendEquation' | 'shaderBlendSrcAlpha' | 'shaderBlendDstAlpha' | 'shaderBlendEquationAlpha'>>;
+export type ShaderBlendParameter = ConvertMaterialParameters<Pick<ShaderBlend, 'shaderBlendSrc' | 'shaderBlendDst' | 'shaderBlendEquation' | 'shaderBlendSrcAlpha' | 'shaderBlendDstAlpha' | 'shaderBlendEquationAlpha'>>;
 
 export const shaderBlendKeys = ['shaderBlendSrc', 'shaderBlendDst', 'shaderBlendEquation', 'shaderBlendSrcAlpha', 'shaderBlendDstAlpha', 'shaderBlendEquationAlpha'];
 

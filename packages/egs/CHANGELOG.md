@@ -5,6 +5,8 @@
 1. 修复
     - `SourceTexture`移除`internal`标记
     - 现在会及时提交贴图更新命令
+    - 修复`MeshPhongMaterial.setValues`, `MeshBasicMaterial.setValues`类型不正确的问题
+    - 移除`ShaderBlendParameter`泛型
 
 ## 1.2.88
 
