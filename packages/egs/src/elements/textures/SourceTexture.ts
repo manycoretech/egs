@@ -37,7 +37,7 @@ export class SourceTexture extends TextureV2 {
         super(
             dimension, viewDimension,
             format, width, height, depthOrArrayLayers, 1,
-            mipmaps, true
+            mipmaps, false
         );
         this.autoGenerateMipmap = autoGenerateMipmap;
         this.samplerNeedSync = true;

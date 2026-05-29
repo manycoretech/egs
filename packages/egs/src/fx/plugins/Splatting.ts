@@ -198,6 +198,7 @@ export class SplattingPlugin extends PipelinePlugin {
         ).configAsDataTexture().setLevelData(ordering.subarray(0, w * h), 0);
 
         renderer.renderer.queueFlushTexture(reorderMaterial.orderTex);
+        renderer.renderer.flushCommands();
         this.orderLayout = orderLayout;
         for (let i = 0; i < splats.length; i++) {
             splats[i].onSorted();

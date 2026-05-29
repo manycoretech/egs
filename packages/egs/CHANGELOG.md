@@ -1,5 +1,11 @@
 # EGS 发布说明 Release Notes
 
+## DEV
+
+1. 修复
+    - `SourceTexture`移除`internal`标记
+    - 现在会及时提交贴图更新命令
+
 ## 1.2.88
 
 1. 新功能

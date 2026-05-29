@@ -261,6 +261,7 @@ export class LodSplat {
                 for (let i = 0; i < splat.extrasTex.length; i++) {
                     renderer.queueFlushTexture(splat.extrasTex[i]);
                 }
+                renderer.flushCommands();
             }
             return { level: targetLevel, splat };
         }));

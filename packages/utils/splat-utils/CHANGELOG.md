@@ -1,5 +1,9 @@
 # changelog
 
+## DEV
+
+- 现在会及时提交贴图上传命令
+
 ## 1.0.4
 
 - 升级 `typescript: ^6.0.3` & `tslib: ^2.8.1` & `@qunhe/egs: ^1.2.88`
