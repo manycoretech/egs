@@ -3,6 +3,7 @@
 ## DEV
 
 - 升级 `typescript: ^6.0.3` & `tslib: ^2.8.1` & `@qunhe/egs: ^1.2.88`
+- 新增`spzv4`支持
 
 ## 1.0.2
 
