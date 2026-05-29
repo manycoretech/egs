@@ -21,9 +21,6 @@ function isBundledPackageRootModuleName(moduleName, bundledPackages = []) {
     return bundledPackages.includes(moduleName);
 }
 
-function isBundledPackageSubpathModuleName(moduleName, bundledPackages = []) {
-    return bundledPackages.some(packageName => moduleName.startsWith(`${packageName}/`));
-}
 
 function shouldStubExternalModuleName(moduleName, bundledPackages) {
     return isExternalModuleName(moduleName) && !isBundledPackageRootModuleName(moduleName, bundledPackages);
@@ -269,16 +266,6 @@ function rewriteIdentifierAliases(ts, content, aliases) {
     return offset === 0 ? content : output + content.slice(offset);
 }
 
-function hasTopLevelDeclaration(content, name) {
-    const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const declarationRegExp = new RegExp(
-        `^\\s*(?:export\\s+)?declare\\s+(?:abstract\\s+)?(?:class|interface|type|enum|namespace|function|const|let|var)\\s+${escapedName}\\b`,
-        'm'
-    );
-
-    return declarationRegExp.test(content);
-}
-
 function getTopLevelDeclarationNames(node) {
     if (
         ts.isClassDeclaration(node) ||
@@ -389,7 +376,6 @@ function collectBundledDeclarationPatches(content, bundledPackageInfos) {
 
 function repairBundledPackageDeclarationGaps(content, bundledPackageInfos) {
     const declarations = collectBundledDeclarationPatches(content, bundledPackageInfos);
-
     if (declarations.length === 0) {
         return content;
     }
@@ -397,97 +383,12 @@ function repairBundledPackageDeclarationGaps(content, bundledPackageInfos) {
     return `${declarations.join('\n\n')}\n\n${content}`;
 }
 
-function splitImportSpecifiers(specifierText) {
-    return specifierText
-        .split(',')
-        .map(specifier => specifier.trim())
-        .filter(Boolean);
-}
-
-function parseExportSpecifier(specifier) {
-    const match = specifier.match(new RegExp(`^(?:type\\s+)?(${identifierPattern})(?:\\s+as\\s+(${identifierPattern}))?$`));
-
-    return match ? { localName: match[1], exportedName: match[2] ?? match[1] } : null;
-}
-
-function collectNamespaceExportNames(content, namespaceName) {
-    const namespaceRegExp = new RegExp(
-        `declare\\s+namespace\\s+${namespaceName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s+\\{([\\s\\S]*?)^\\}`,
-        'm'
-    );
-    const match = content.match(namespaceRegExp);
-    const names = new Set();
-
-    if (!match) {
-        return names;
-    }
-
-    for (const exportMatch of match[1].matchAll(/export\s+\{([\s\S]*?)\}/g)) {
-        for (const specifier of splitImportSpecifiers(exportMatch[1])) {
-            const parsed = parseExportSpecifier(specifier);
-
-            if (parsed) {
-                names.add(parsed.exportedName);
-            }
-        }
-    }
-
-    return names;
-}
-
-function parseImportSpecifier(specifier) {
-    const match = specifier.match(new RegExp(`^(?:type\\s+)?(${identifierPattern})(?:\\s+as\\s+(${identifierPattern}))?$`));
-
-    if (!match) {
-        return null;
-    }
-
-    return {
-        exportedName: match[1],
-        localName: match[2] ?? match[1],
-    };
-}
-
-function collapseBundledPackageSubpathImports(content, bundledPackages) {
-    const aliases = new Map();
-    const importRegExp = /^import\s+\{([^}]+)\}\s+from\s+["']([^"']+)["'];\r?\n?/gm;
-    const contentWithoutImports = content.replace(importRegExp, (line, specifierText, moduleName) => {
-        if (!isBundledPackageSubpathModuleName(moduleName, bundledPackages)) {
-            return line;
-        }
-
-        const specifiers = splitImportSpecifiers(specifierText).map(parseImportSpecifier);
-        if (specifiers.some(specifier => !specifier)) {
-            return line;
-        }
-
-        for (const specifier of specifiers) {
-            if (!hasTopLevelDeclaration(content, specifier.exportedName)) {
-                return line;
-            }
-        }
-
-        for (const specifier of specifiers) {
-            if (specifier.localName !== specifier.exportedName) {
-                aliases.set(specifier.localName, specifier.exportedName);
-            }
-        }
-
-        return '';
-    });
-
-    return rewriteIdentifierAliases(ts, contentWithoutImports, aliases);
-}
-
-function fullyMergeBundledPackages(content, bundledPackageInfos, bundledPackages) {
+function fullyMergeBundledPackages(content, bundledPackageInfos) {
     if (bundledPackageInfos.length === 0) {
         return content;
     }
 
-    return collapseBundledPackageSubpathImports(
-        repairBundledPackageDeclarationGaps(content, bundledPackageInfos),
-        bundledPackages
-    );
+    return repairBundledPackageDeclarationGaps(content, bundledPackageInfos);
 }
 
 function collectExternalModuleStubsAndNormalizeDeclarations(projectDir, bundledPackages) {
@@ -677,13 +578,10 @@ export function rollup(projectDir, extraExtractorConfig) {
         );
     }
 
-    const rolledDts = bundledPackageInfos.length > 0
-        ? extractorConfig.untrimmedFilePath
-        : extractorConfig.publicTrimmedFilePath;
+    const rolledDts = extractorConfig.publicTrimmedFilePath;
     const rollupDtsContent = fullyMergeBundledPackages(
         fs.readFileSync(rolledDts, 'utf8'),
-        bundledPackageInfos,
-        configObject.bundledPackages ?? []
+        bundledPackageInfos
     ).replace(/<ArrayBufferLike>/g, '');
     fs.rmSync(path.dirname(rolledDts), { recursive: true });
     const removePatterns = [
