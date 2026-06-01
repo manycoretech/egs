@@ -27,5 +27,12 @@
       "pre-release": "pnpm build:release"
     },
     "publishRoot": "./build"
-  }
+  },
+  "typeOnlyExports": [
+    {
+      "name": "Viewport",
+      "type": "class",
+      "abstract": false
+    }
+  ]
 }

@@ -1,4 +1,4 @@
-import { existsSync, rmSync, mkdirSync, copyFileSync } from 'fs';
+import { existsSync, rmSync, mkdirSync, copyFileSync, readFileSync } from 'fs';
 import { relative, resolve, dirname } from 'path';
 import chalk from 'chalk';
 import { sync } from 'glob';
@@ -31,6 +31,9 @@ export function build(cp, release, typeOnly) {
     console.log(chalk.bold.green('[build]: copy file finished.'));
 
     if (release) {
-        rollup(process.cwd());
+        const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'))
+        rollup(process.cwd(), packageJson.typeOnlyExports ? {
+            typeOnlyExports: packageJson.typeOnlyExports
+        } : undefined);
     }
 }

@@ -549,12 +549,12 @@ function prepareApiExtractorTsconfig(projectDir, bundledPackageInfos) {
     return tsconfigPath;
 }
 
-export function rollup(projectDir, extraExtractorConfig) {
+export function rollup(projectDir, options) {
     const apiExtractorConfigPath = path.resolve(__dirname, './api-extractor.json');
     const configObject = ExtractorConfig.loadFile(apiExtractorConfigPath);
     configObject.projectFolder = projectDir;
-    if (extraExtractorConfig) {
-        Object.assign(configObject, extraExtractorConfig);
+    if (options?.extractorConfig) {
+        Object.assign(configObject, options.extractorConfig);
     }
     const bundledPackageInfos = collectBundledPackageInfos(projectDir, configObject.bundledPackages ?? []);
     configObject.bundledPackages = bundledPackageInfos.map(packageInfo => packageInfo.name);
@@ -579,10 +579,24 @@ export function rollup(projectDir, extraExtractorConfig) {
     }
 
     const rolledDts = extractorConfig.publicTrimmedFilePath;
-    const rollupDtsContent = fullyMergeBundledPackages(
+    let rollupDtsContent = fullyMergeBundledPackages(
         fs.readFileSync(rolledDts, 'utf8'),
         bundledPackageInfos
     ).replace(/<ArrayBufferLike>/g, '');
+    // post process to handle issue with https://github.com/microsoft/rushstack/issues/3616
+    if (options?.typeOnlyExports && options.typeOnlyExports.length > 0) {
+        const typeOnlyExports = [];
+        for (const info of options.typeOnlyExports) {
+            const exported = `export declare ${info.abstract ? 'abstract ' : ''}${info.type} ${info.name}`;
+            if (rollupDtsContent.indexOf(exported) !== -1) {
+                typeOnlyExports.push(info.name);
+                rollupDtsContent = rollupDtsContent.replace(exported, `declare ${info.abstract ? 'abstract ' : ''}${info.type} ${info.name}`);
+            }
+        }
+        rollupDtsContent += `\nexport type {
+    ${typeOnlyExports.join(',\n    ')}
+}\n`
+    }
     fs.rmSync(path.dirname(rolledDts), { recursive: true });
     const removePatterns = [
         './build/**/*.d.ts',
