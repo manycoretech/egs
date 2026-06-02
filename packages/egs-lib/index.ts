@@ -3,3 +3,7 @@ export { ENV } from './src/env';
 export { deferred, Deferred } from './src/promise';
 export { sleep, DebounceOptions, DebouncedFunction, debounce, ThrottleOptions, ThrottledFunction, throttle } from './src/timer';
 export { WebWorker, FactoryWorkerPool, WorkerPool } from './src/worker';
+export {
+    PrimitiveBuffers, BVHSource,
+    type BVHNode, IntersectContainment, BVH,
+} from './src/BVH';

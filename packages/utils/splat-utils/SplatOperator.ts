@@ -52,6 +52,7 @@ export class SplatOperator {
             const groupIdx = groupBuffer[index];
             if (groupIdx !== 0) {
                 const offset = groupIdx * 12;
+                tempMat.identity();
                 tempMat.elements.set(groupTransformBuffer.subarray(offset, offset + 12));
                 tempVec.applyMatrix4(tempMat.transpose());
             }
@@ -79,7 +80,7 @@ export class SplatOperator {
                     if (!mat) {
                         mat = transforms[groupIdx] = new Matrix4();
                         const offset = groupIdx * 12;
-                        tempMat.elements.set(groupTransformBuffer.subarray(offset, offset + 12));
+                        mat.elements.set(groupTransformBuffer.subarray(offset, offset + 12));
                         mat.transpose();
                     }
                     tempVec.applyMatrix4(mat);
@@ -89,22 +90,25 @@ export class SplatOperator {
         }
     }
 
-    readSplat(index: number): ISingleSplat {
-        const { splat: { groupTex, groupTransformTex }, data } = this;
-        const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
-        const groupTransformBuffer = groupTransformTex ? (groupTransformTex.getLevelLayerSource(0) as Float32Array) : undefined;
-
-        const single: ISingleSplat = {
+    readSplat(
+        index: number,
+        single: ISingleSplat = {
             x: 0, y: 0, z: 0,
             sx: 0, sy: 0, sz: 0,
             qx: 0, qy: 0, qz: 0, qw: 0,
             r: 0, g: 0, b: 0, a: 0,
-        };
+        },
+    ): ISingleSplat {
+        const { splat: { groupTex, groupTransformTex }, data } = this;
+        const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
+        const groupTransformBuffer = groupTransformTex ? (groupTransformTex.getLevelLayerSource(0) as Float32Array) : undefined;
+
         data.get(index, single);
         if (groupBuffer && groupTransformBuffer) {
             const groupIdx = groupBuffer[index];
             if (groupIdx !== 0) {
                 const offset = groupIdx * 12;
+                tempMat.identity();
                 tempMat.elements.set(groupTransformBuffer.subarray(offset, offset + 12));
                 tempMat.transpose();
                 const scale = new Vector3();
@@ -129,7 +133,15 @@ export class SplatOperator {
         return single;
     }
 
-    foreachSplat(callback: (i: number, single: ISingleSplat) => void) {
+    foreachSplat(
+        callback: (i: number, single: ISingleSplat) => void,
+        single: ISingleSplat = {
+            x: 0, y: 0, z: 0,
+            sx: 0, sy: 0, sz: 0,
+            qx: 0, qy: 0, qz: 0, qw: 0,
+            r: 0, g: 0, b: 0, a: 0,
+        },
+    ) {
         const { counts, splat: { stateTex, groupTex, groupTransformTex }, data } = this;
         const stateBuffer = stateTex ? (stateTex.getLevelLayerSource(0) as Uint8Array) : undefined;
         const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
@@ -140,12 +152,6 @@ export class SplatOperator {
             scale: Vector3;
             quat: Quaternion;
         }> = [];
-        const single: ISingleSplat = {
-            x: 0, y: 0, z: 0,
-            sx: 0, sy: 0, sz: 0,
-            qx: 0, qy: 0, qz: 0, qw: 0,
-            r: 0, g: 0, b: 0, a: 0,
-        };
         for (let i = 0; i < counts; i++) {
             if (stateBuffer && (stateBuffer[i] & SplatState.Deleted) !== 0) {
                 continue;
@@ -195,8 +201,9 @@ export class SplatOperator {
         const width = Math.min(Math.ceil(Math.sqrt(pixels) / 2) * 2, MAX_TEXTURE_SIZE);
         const height = Math.ceil(pixels / width);
         splat.stateTex = new SourceTexture(
-            TextureDimension.D2, TextureViewDimension.D2, TextureFormat.R32Uint,
-            width, height, 1, false, false)
+            TextureDimension.D2, TextureViewDimension.D2, TextureFormat.R8Uint,
+            width, height, 1, false, false
+        )
             .configAsDataTexture()
             .setLevelData(new Uint8Array(width * height), 0);
     }

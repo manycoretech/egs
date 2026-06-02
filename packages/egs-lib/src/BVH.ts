@@ -1,4 +1,17 @@
-import { SplatOperator } from './SplatOperator';
+export interface PrimitiveBuffers {
+    count: number;
+    indices: Uint32Array; // current idx -> source idx
+    centers: Float32Array; // x,y,z packed
+    boxMins: Float32Array; // x,y,z packed
+    boxMaxs: Float32Array; // x,y,z packed
+}
+
+export interface BVHSource<TPrimitive> {
+    build(): PrimitiveBuffers;
+
+    createEmpty(): TPrimitive;
+    get(localIdx: number, primitive: TPrimitive): void;
+}
 
 export enum IntersectContainment {
     Outside = 0,
@@ -6,14 +19,14 @@ export enum IntersectContainment {
     Inside = 2,
 }
 
-interface BVHNode {
+export interface BVHNode {
     boxMin: [number, number, number];
     boxMax: [number, number, number];
     left: number;
     right: number;
     parent: number;
-    start: number; // idx
-    end: number; // idx
+    start: number;
+    end: number;
     isLeaf: boolean;
 }
 
@@ -25,30 +38,43 @@ interface BuildTask {
 }
 
 /**
- * splat model space bvh
+ * BVH over source-provided primitive bounds in model space.
  */
-export class SplatBVH {
-    private operator: SplatOperator;
+export class BVH<TPrimitive> {
+    private source: BVHSource<TPrimitive>;
     private maxLeafSize: number;
-    private nodes: BVHNode[];
-    private indices: Uint32Array;
+    private nodes: BVHNode[] = [];
     private sorted: Uint32Array;
-    private positions: Float32Array;
+    private indices: Uint32Array;
 
-    constructor(operator: SplatOperator, maxLeafSize: number = 16) {
-        this.operator = operator;
+    constructor(source: BVHSource<TPrimitive>, maxLeafSize: number = 16) {
+        this.source = source;
         this.maxLeafSize = maxLeafSize;
-        this.rebuild();
+        this.build();
     }
 
-    rebuild() {
-        const { operator, maxLeafSize } = this;
-        const counts = operator.getActiveCounts();
-        const indices = new Uint32Array(counts);
-        const sorted = new Uint32Array(counts);
-        const positions = new Float32Array(counts * 3);
-
+    build() {
+        const { source, maxLeafSize } = this;
+        const { count, indices, centers, boxMins, boxMaxs } = source.build();
+        const sorted = new Uint32Array(count);
         const nodes: BVHNode[] = [];
+
+        if (count === 0) {
+            nodes.push({
+                boxMin: [0, 0, 0],
+                boxMax: [0, 0, 0],
+                left: -1,
+                right: -1,
+                parent: -1,
+                start: 0,
+                end: 0,
+                isLeaf: true,
+            });
+            this.nodes = nodes;
+            this.sorted = sorted;
+            this.indices = indices;
+            return;
+        }
 
         let minX = Infinity;
         let minY = Infinity;
@@ -56,14 +82,12 @@ export class SplatBVH {
         let maxX = -Infinity;
         let maxY = -Infinity;
         let maxZ = -Infinity;
-
-        let offset = 0;
-        operator.foreachSplatCenter((i, x, y, z) => {
-            indices[offset] = i;
-            sorted[offset] = offset;
-            positions[offset * 3] = x;
-            positions[offset * 3 + 1] = y;
-            positions[offset * 3 + 2] = z;
+        for (let i = 0; i < count; i++) {
+            sorted[i] = i;
+            const i3 = i * 3;
+            const x = centers[i3 + 0];
+            const y = centers[i3 + 1];
+            const z = centers[i3 + 2];
             if (x < minX) {
                 minX = x;
             }
@@ -82,20 +106,22 @@ export class SplatBVH {
             if (z > maxZ) {
                 maxZ = z;
             }
-            offset++;
-        });
+        }
 
-        const scaleX = 1024 / Math.max(maxX - minX, 1e-9);
-        const scaleY = 1024 / Math.max(maxY - minY, 1e-9);
-        const scaleZ = 1024 / Math.max(maxZ - minZ, 1e-9);
+        const scaleX = 1023 / Math.max(maxX - minX, 1e-9);
+        const scaleY = 1023 / Math.max(maxY - minY, 1e-9);
+        const scaleZ = 1023 / Math.max(maxZ - minZ, 1e-9);
 
-        const mortons = new Uint32Array(counts);
-        for (let i = 0; i < counts; i++) {
-            offset = i * 3;
+        const mortons = new Uint32Array(count);
+        for (let i = 0; i < count; i++) {
+            const i3 = i * 3;
+            const x = centers[i3 + 0];
+            const y = centers[i3 + 1];
+            const z = centers[i3 + 2];
             mortons[i] = morton3D(
-                ((positions[offset] - minX) * scaleX) | 0, // Math.floor
-                ((positions[offset + 1] - minY) * scaleY) | 0,
-                ((positions[offset + 2] - minZ) * scaleZ) | 0,
+                ((x - minX) * scaleX) | 0,
+                ((y - minY) * scaleY) | 0,
+                ((z - minZ) * scaleZ) | 0,
             );
         }
         radixSort(mortons, sorted);
@@ -104,7 +130,7 @@ export class SplatBVH {
             const startCode = mortons[start];
             const endCode = mortons[end];
             if (startCode === endCode) {
-                return ((start + end) / 2) | 0;
+                return start + (((end - start + 1) / 2) | 0);
             }
 
             const commonPrefix = lcp(startCode, endCode);
@@ -122,7 +148,7 @@ export class SplatBVH {
             return low;
         }
 
-        const stack: BuildTask[] = [{ start: 0, end: counts, parent: -1, isLeft: true }];
+        const stack: BuildTask[] = [{ start: 0, end: count, parent: -1, isLeft: true }];
         while (stack.length > 0) {
             const { start, end, parent, isLeft } = stack.pop()!;
 
@@ -173,6 +199,7 @@ export class SplatBVH {
                 boxMax[2] = lnMax[2] > rnMax[2] ? lnMax[2] : rnMax[2];
                 continue;
             }
+
             minX = Infinity;
             minY = Infinity;
             minZ = Infinity;
@@ -181,27 +208,30 @@ export class SplatBVH {
             maxZ = -Infinity;
             const { start, end } = node;
             for (let j = start; j < end; j++) {
-                offset = sorted[j] * 3;
-                const x = positions[offset];
-                const y = positions[offset + 1];
-                const z = positions[offset + 2];
-                if (x < minX) {
-                    minX = x;
+                const offset = sorted[j] * 3;
+                const boxMinX = boxMins[offset + 0];
+                const boxMinY = boxMins[offset + 1];
+                const boxMinZ = boxMins[offset + 2];
+                const boxMaxX = boxMaxs[offset + 0];
+                const boxMaxY = boxMaxs[offset + 1];
+                const boxMaxZ = boxMaxs[offset + 2];
+                if (boxMinX < minX) {
+                    minX = boxMinX;
                 }
-                if (y < minY) {
-                    minY = y;
+                if (boxMinY < minY) {
+                    minY = boxMinY;
                 }
-                if (z < minZ) {
-                    minZ = z;
+                if (boxMinZ < minZ) {
+                    minZ = boxMinZ;
                 }
-                if (x > maxX) {
-                    maxX = x;
+                if (boxMaxX > maxX) {
+                    maxX = boxMaxX;
                 }
-                if (y > maxY) {
-                    maxY = y;
+                if (boxMaxY > maxY) {
+                    maxY = boxMaxY;
                 }
-                if (z > maxZ) {
-                    maxZ = z;
+                if (boxMaxZ > maxZ) {
+                    maxZ = boxMaxZ;
                 }
             }
             boxMin[0] = minX;
@@ -213,9 +243,8 @@ export class SplatBVH {
         }
 
         this.nodes = nodes;
-        this.indices = indices;
         this.sorted = sorted;
-        this.positions = positions;
+        this.indices = indices;
     }
 
     getBBox3() {
@@ -225,9 +254,10 @@ export class SplatBVH {
 
     search(
         intersectNode: (node: BVHNode) => IntersectContainment,
-        intersectPoint: (x: number, y: number, z: number) => boolean,
+        intersectPrimitive: (primitive: TPrimitive) => boolean,
     ): number[] {
-        const { nodes, indices, sorted, positions } = this;
+        const { nodes, indices, sorted, source } = this;
+        const primitive = source.createEmpty();
         const result: number[] = [];
         const stack: number[] = [0];
         while (stack.length > 0) {
@@ -251,11 +281,8 @@ export class SplatBVH {
             const { start, end } = node;
             for (let i = start; i < end; i++) {
                 const idx = sorted[i];
-                const offset = idx * 3;
-                const x = positions[offset];
-                const y = positions[offset + 1];
-                const z = positions[offset + 2];
-                if (intersectPoint(x, y, z)) {
+                source.get(idx, primitive);
+                if (intersectPrimitive(primitive)) {
                     result.push(indices[idx]);
                 }
             }

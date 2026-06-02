@@ -1,8 +1,10 @@
 # changelog
 
-## DEV
+## 1.0.5
 
 - 现在会及时提交贴图上传命令
+- 修复`stateTexture`类型异常
+- 重构`bvh`部分目前支持`center`和`ellipsoid`两种
 
 ## 1.0.4
 
