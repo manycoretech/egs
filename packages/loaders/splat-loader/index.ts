@@ -1,14 +1,12 @@
 import { __INTERNAL__ } from '@qunhe/egs';
 import { FactoryWorkerPool, deferred } from '@qunhe/egs-lib';
 import { getMaxTextureSize, SplatFileType, SplatPackType } from './utils';
-import { type ParseExtras, type SendMessage, TaskType, type ReceiveMessage, TaskStatus } from './WorkerMessage';
+import { ParseExtras, SendMessage, TaskType, ReceiveMessage, TaskStatus } from './WorkerMessage';
 import { SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
 
-export { KsplatFile,PlyFile,SogFile,SplatFile,SpzFile,LccFile,EszFile } from './file';
-export type { IFile } from './file';
+export { IFile, KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, EszFile } from './file';
 export { SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
-export { ISamplerFormat,SH_MAPS } from './splat/utils';
-export type { ISingleSplat,ISampler } from './splat/utils';
+export { ISingleSplat, ISamplerFormat, ISampler, SH_MAPS } from './splat/utils';
 export { SplatFileType, SplatPackType, detectSplatFileType } from './utils';
 
 let SplatWorkerFactor: () => Worker;

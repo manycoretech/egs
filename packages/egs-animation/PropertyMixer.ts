@@ -1,5 +1,5 @@
 import { Quaternion, Object3D, Material } from '@qunhe/egs';
-import { multiplyQuaternionsFlat, type TrackPath } from './utils';
+import { multiplyQuaternionsFlat, TrackPath } from './utils';
 import { Blend } from './type';
 
 /**

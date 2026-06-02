@@ -5,7 +5,7 @@ import { AttachmentPool } from './AttachmentPool';
 import { RenderTarget, RenderAttachment } from '../elements/textures/RenderTarget';
 import { RenderTargetNode } from '../rendergraph/nodes/RenderTargetNode';
 import { ExecuteBeforeEvent, ExecuteAfterEvent } from './nodes/ExecuteNode';
-import type { OverrideScreenOutputTarget } from './nodes/PassNode';
+import { OverrideScreenOutputTarget } from './nodes/PassNode';
 import { Texture } from '../elements/textures/Texture';
 import { RenderAttachmentNode } from './nodes/RenderAttachmentNode';
 

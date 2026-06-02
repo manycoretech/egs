@@ -6,7 +6,7 @@ import { WGLProgram } from '../../renderer/webgl/WGLProgram';
 import { Deserializer, Serializer } from '../../utils/Serialization';
 import { PointShadow } from '../shadows/PointShadow';
 import { Light } from './Light';
-import type { Nullable } from '../../utils/Utils';
+import { Nullable } from '../../utils/Utils';
 import { lightProperty } from '../../ContentAPI';
 import { Vector2 } from '../../math/Vector2';
 import { Texture2D } from '../../elements/textures/Texture2D';

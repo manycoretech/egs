@@ -1,10 +1,10 @@
 import { Quad } from '../scene/renderables/Quad';
-import type { RenderSource } from '../rendergraph/nodes/PassNode';
-import type { IRenderer } from '../renderer/IRenderer';
+import { RenderSource } from '../rendergraph/nodes/PassNode';
+import { IRenderer } from '../renderer/IRenderer';
 import { Vector4 } from '../math/Vector4';
 import { Color } from '../math/Color';
 import { Material } from '../elements/materials/Material';
-import type { Renderable } from '../scene/renderables/IRenderable';
+import { Renderable } from '../scene/renderables/IRenderable';
 import { RenderTarget } from '../elements/textures/RenderTarget';
 import { QuadPoints } from '../scene/renderables/QuadPoints';
 import { singleton } from '../utils/Utils';

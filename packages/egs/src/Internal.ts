@@ -1,11 +1,9 @@
 export { logger } from './utils/Logger';
 export { MaterialShadingWithDynamicShapeDispatcher, DefaultMaterialDispatcher, MaterialDispatcher } from './renderer/MaterialDispatcher';
 export { ForwardDispatcher, PlanarShadowDispatcher, BeforeScenePassEvent, AfterScenePassEvent } from './fx/plugins/Forward';
-export { ShadowMode,PipelineFilters } from './fx/PipelineAPI';
-export type { PipelineAPI,IPipelineFilter } from './fx/PipelineAPI';
+export { ShadowMode, PipelineAPI, IPipelineFilter, PipelineFilters } from './fx/PipelineAPI';
 export { EncodeDispatcher } from './fx/plugins/Outline';
-export { RenderObjectsType,DrawableList,ProjectedDrawcallList,DrawcallListClassifyList } from './scene/tools/DrawcallList';
-export type { DrawcallListClassifyType } from './scene/tools/DrawcallList';
+export { RenderObjectsType, DrawableList, ProjectedDrawcallList, DrawcallListClassifyType, DrawcallListClassifyList } from './scene/tools/DrawcallList';
 export { InstancedBufferGeometry } from './elements/geometries/containers/InstancedBufferGeometry';
 export { SpriteBufferGeometry } from './elements/geometries/containers/SpriteBufferGeometry';
 export { ShaderComponent } from './renderer/shader/Shader';
@@ -13,9 +11,8 @@ export { Texture2DCommonLayer } from './elements/textures/Texture2D';
 export { Camera3D } from './scene/cameras/Camera3D';
 export { Object3DChangeEvent } from './scene/Object3D';
 export { RenderTarget, RenderAttachment } from './elements/textures/RenderTarget';
-export type { Nullable, TypedArray, IRange } from './utils/Utils';
-export { RendererState,RenderCtxInfo,MemoryGrowFailed } from './renderer/IRenderer';
-export type { IRenderer,RendererStatus,RendererParameters } from './renderer/IRenderer';
+export { Nullable, TypedArray, IRange } from './utils/Utils';
+export { IRenderer, RendererStatus, RendererState, RendererParameters, RenderCtxInfo, MemoryGrowFailed } from './renderer/IRenderer';
 export { registerGlobal3DRendererOverride, resetGlobal3DRendererOverride, } from './renderer/RendererOverride';
 export { EnvMapMaterial } from './elements/materials/mesh/EnvMapMaterial';
 export { GradientMaterial } from './elements/materials/mesh/GradientMaterial';
@@ -60,13 +57,12 @@ export {
 } from './fx/plugins/Deferred';
 
 export { registerPipelineContentAPI, removePipelineContentAPI } from './fx/PipelineAPI';
-export { registerContentAPI,unregisterContentAPI,registerManagedContentAPI,removeManagedContentAPI } from './ContentAPI';
-export type { ContentManagedAPI,ContentAPI,WorldRebuildConfig } from './ContentAPI';
+export { registerContentAPI, unregisterContentAPI, ContentManagedAPI, ContentAPI, registerManagedContentAPI, removeManagedContentAPI, WorldRebuildConfig } from './ContentAPI';
 export { LegacySourceTexture } from './elements/textures/Texture';
 export { textureCopyInfo, textureCopyFootprint } from './elements/textures/types';
 
 export { RenderInfo } from './utils/RenderInfo';
-export type { Renderable } from './scene/renderables/IRenderable';
+export { Renderable } from './scene/renderables/IRenderable';
 export { WebGLExtEnums } from './renderer/webgl/WGLExtensions';
 export { WGLConstantsConvertor } from './renderer/webgl/WGLConstantsConvertor';
 export { WGLExtensions } from './renderer/webgl/WGLExtensions';
@@ -81,16 +77,13 @@ export { setupWebGPUCapabilities, Capabilities, setupWebGPUCompressedTextureCapa
 export { setSortSplats, SplattingRenderMode } from './fx/plugins/Splatting';
 export { CompressedSplat } from './scene/splat/CompressedSplat';
 export { SuperCompressedSplat } from './scene/splat/SuperCompressedSplat';
-export { SogSplat } from './scene/splat/SogSplat';
-export type { SogSplatMeta } from './scene/splat/SogSplat';
+export { SogSplat, SogSplatMeta } from './scene/splat/SogSplat';
 
 export { GLOBAL_CONFIG } from './utils/GlobalConfig';
-export { deferred } from './utils/Deferred';
-export type { Deferred } from './utils/Deferred';
-export { BVHStrategyType,BVHBuilder } from './BVH';
-export type { BVHBuilderData,BVH,BVHRaw } from './BVH';
+export { Deferred, deferred } from './utils/Deferred';
+export { BVHStrategyType, BVHBuilderData, BVH, BVHRaw, BVHBuilder } from './BVH';
 
-export type { ViewerPlugin } from './Viewer';
+export { ViewerPlugin } from './Viewer';
 
 import {
     serializeObject3D as deprecatedSerializeObject3D,

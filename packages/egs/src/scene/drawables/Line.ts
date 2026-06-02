@@ -6,7 +6,7 @@ import { Drawable } from './Drawable';
 import { BufferGeometry, LineStrip } from '../../elements/geometries/containers/BufferGeometry';
 import { Material } from '../../elements/materials/Material';
 import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
-import { Raycaster, type Intersection } from '../tools/Raycaster';
+import { Raycaster, Intersection } from '../tools/Raycaster';
 import { DrawMode } from '../../utils/Constants';
 
 const inverseMatrix = new Matrix4();

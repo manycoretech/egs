@@ -4,7 +4,7 @@ import { WGLCapabilities } from './WGLCapabilities';
 import { Drawable } from '../../scene/drawables/Drawable';
 import { InstancedBufferGeometry } from '../../elements/geometries/containers/InstancedBufferGeometry';
 import { logger } from '../../utils/Logger';
-import type { Nullable } from '../../utils/Utils';
+import { Nullable } from '../../utils/Utils';
 
 // WGLBufferRenderer provides functions to control the method of drawing and drawing primitives without indices.
 // This also provides a function to draw instanced BufferGeometryBase.

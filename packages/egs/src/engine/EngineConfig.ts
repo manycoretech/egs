@@ -1,14 +1,14 @@
-import { type PipelineConfig, createPipelineConfig, type DeprecatedPipelineConfig, createDeprecatedPipelineConfig } from '../fx/PipelineConfig';
+import { PipelineConfig, createPipelineConfig, DeprecatedPipelineConfig, createDeprecatedPipelineConfig } from '../fx/PipelineConfig';
 import { Color } from '../math/Color';
 import { Vector2 } from '../math/Vector2';
 import { BackgroundMode } from '../scene/renderables/Background';
 import { Viewer } from '../Viewer';
 import { logger } from '../utils/Logger';
 import type { RenderEngine } from './RenderEngine';
-import type { Nullable } from '../utils/Utils';
+import { Nullable } from '../utils/Utils';
 import { PostPipeline } from '../fx/Pipeline';
 import { GLOBAL_CONFIG } from '../utils/GlobalConfig';
-import { type DrivenCullingConfig, TextureCompression } from '../fx/plugins/PipelinePlugin';
+import { DrivenCullingConfig, TextureCompression } from '../fx/plugins/PipelinePlugin';
 import { Texture } from '../elements/textures/Texture';
 
 export interface ConfigCell<T> {

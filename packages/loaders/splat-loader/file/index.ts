@@ -1,4 +1,4 @@
-export type { IFile } from './utils';
+export { IFile } from './utils';
 export { KsplatFile } from './ksplat';
 export { PlyFile } from './ply';
 export { SogFile } from './sog';

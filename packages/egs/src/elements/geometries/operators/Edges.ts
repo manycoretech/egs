@@ -1,7 +1,7 @@
 import { _Math } from '../../../math/Math';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 import { TypeAssert } from '../../../scene/tools/TypeAssert';
-import { BufferGeometry, type BufferGroup, LineList } from '../containers/BufferGeometry';
+import { BufferGeometry, BufferGroup, LineList } from '../containers/BufferGeometry';
 import { Geometry } from '../containers/Geometry';
 import { GeometryBase } from '../containers/GeometryBase';
 import { Vector3 } from '../../../math/Vector3';

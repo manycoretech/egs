@@ -1,4 +1,4 @@
-import type { BufferGroup,IndexBufferAttribute } from '../../../elements/geometries/containers/BufferGeometry';
+import { BufferGroup, IndexBufferAttribute } from '../../../elements/geometries/containers/BufferGeometry';
 import { BufferAttribute } from '../../../elements/attributes/BufferAttribute';
 import { Vector3 } from '../../../math/Vector3';
 import { Vector2 } from '../../../math/Vector2';

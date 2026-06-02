@@ -1,4 +1,4 @@
-import { BufferGeometry, type BufferRange } from '../containers/BufferGeometry';
+import { BufferGeometry, BufferRange } from '../containers/BufferGeometry';
 import { logger } from '../../../utils/Logger';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 import { Matrix4 } from '../../../math/Matrix4';

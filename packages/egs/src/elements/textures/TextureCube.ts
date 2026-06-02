@@ -6,7 +6,7 @@ import py from '../../assets/env/py.jpg';
 import pz from '../../assets/env/pz.jpg';
 
 import {
-    LegacySourceTexture, type SourceTextureWebGLUploadResult, TextureMipmapGroup, WebGLTextureUploadCtx, createImgByUrl
+    LegacySourceTexture, SourceTextureWebGLUploadResult, TextureMipmapGroup, WebGLTextureUploadCtx, createImgByUrl
 } from './Texture';
 import { TextureDimension, TextureViewDimension } from './types';
 import { Texture2DCommonLayer } from './Texture2D';

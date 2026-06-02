@@ -1,13 +1,13 @@
 import { Object3D } from './Object3D';
 import { Light } from './lights/Light';
 import { TypeAssert } from './tools/TypeAssert';
-import type { Nullable } from '../utils/Utils';
+import { Nullable } from '../utils/Utils';
 import { Camera3D } from './cameras/Camera3D';
 import { RenderProxyManager } from './tools/proxy/RenderProxyManager';
 import { EventType } from '../utils/EventDispatcher';
 import { SceneElementRefManager } from './tools/ElementRefManger';
 import { CoordinateSystemHelper } from './helpers/CoordinateSystemHelper';
-import type { IRenderer } from '../renderer/IRenderer';
+import { IRenderer } from '../renderer/IRenderer';
 import { DrawableList } from './tools/DrawcallList';
 import { ContentBridge, hasManagedContentAPI, ManagedContentBridge } from '../ContentAPI';
 import { Plane } from '../math/Plane';

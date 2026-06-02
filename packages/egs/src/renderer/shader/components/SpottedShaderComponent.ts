@@ -3,7 +3,7 @@ import { ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
 import { WGLProgram } from '../../webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
 import { Serializer, Deserializer } from '../../../utils/Serialization';
-import type { ConvertMaterialParameters } from '../../../elements/materials/Material';
+import { ConvertMaterialParameters } from '../../../elements/materials/Material';
 import { Utils } from '../../../utils/Utils';
 import { readonlyMath } from '../../../math/Readonly';
 import { ContentBridge, materialProperty } from '../../../ContentAPI';

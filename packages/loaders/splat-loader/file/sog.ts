@@ -1,5 +1,5 @@
 import { unzipSync } from 'fflate';
-import { type IFile, type IData, type ISingleSplat, SH_C0, SH_MAPS, isUrl, decodeImage, extractFromRootDir, NUM_F_REST_TO_SH_DEGREE } from './utils';
+import { IFile, IData, ISingleSplat, SH_C0, SH_MAPS, isUrl, decodeImage, extractFromRootDir, NUM_F_REST_TO_SH_DEGREE } from './utils';
 
 export interface SogMetadataV1 {
     version: undefined;

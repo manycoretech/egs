@@ -1,7 +1,7 @@
-import { type IRenderer, RendererBackend } from '../../renderer/IRenderer';
+import { IRenderer, RendererBackend } from '../../renderer/IRenderer';
 import { OrthographicCamera } from '../cameras/OrthographicCamera';
 import { Mesh } from '../drawables/Mesh';
-import type { Renderable } from './IRenderable';
+import { Renderable } from './IRenderable';
 import { Material } from '../../elements/materials/Material';
 import { PipelineContentBridge, PipelineContentAPIForRenderingAndFilteringEnabled, ShadowMode } from '../../fx/PipelineAPI';
 import { DeferredLightBase } from '../../fx/plugins/Deferred';

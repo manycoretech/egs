@@ -3,7 +3,7 @@ import { Material } from '../../elements/materials/Material';
 import { Drawable } from '../../scene/drawables/Drawable';
 import { raycastLine } from './Line';
 import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
-import { type Intersection, Raycaster } from '../../scene/tools/Raycaster';
+import { Intersection, Raycaster } from '../../scene/tools/Raycaster';
 import { DrawMode } from '../../utils/Constants';
 
 /**

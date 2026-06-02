@@ -1,4 +1,4 @@
-import type { TypedArray } from '../../utils/Utils';
+import { TypedArray } from '../../utils/Utils';
 import { Color } from '../../math/Color';
 import { Vector2 } from '../../math/Vector2';
 import { Vector3 } from '../../math/Vector3';

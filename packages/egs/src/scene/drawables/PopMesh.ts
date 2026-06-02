@@ -1,4 +1,4 @@
-import type { Nullable } from '../../utils/Utils';
+import { Nullable } from '../../utils/Utils';
 import { Mesh } from './Mesh';
 import { MeshPhongMaterial } from '../../elements/materials/mesh/MeshPhongMaterial';
 import { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';

@@ -1,5 +1,5 @@
 import { unzipSync } from 'fflate';
-import { type IFile, type IData, type ISingleSplat, extractFromRootDir } from './utils';
+import { IFile, IData, ISingleSplat, extractFromRootDir } from './utils';
 
 interface MetaAttribute {
     name: string,

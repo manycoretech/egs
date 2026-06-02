@@ -1,5 +1,5 @@
 import { WGLExtensions, WebGLExtEnums } from './WGLExtensions';
-import type { RendererParameters } from '../IRenderer';
+import { RendererParameters } from '../IRenderer';
 import { CompressTextureType } from '../../utils/Constants';
 import { logger } from '../../utils/Logger';
 import { Capabilities } from '../Capabilities';

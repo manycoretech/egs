@@ -3,7 +3,7 @@ import { Sphere } from './Sphere';
 import { Plane } from './Plane';
 import { Box3 } from './Box3';
 import { Matrix4 } from './Matrix4';
-import type { Nullable } from '../utils/Utils';
+import { Nullable } from '../utils/Utils';
 /**
  * A ray that emits from an origin in a certain direction. This is used by the
  * {@link Raycaster| Raycaster} to assist with {@link https://en.wikipedia.org/wiki/Ray_casting| ray casting}.

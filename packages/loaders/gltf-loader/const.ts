@@ -1,5 +1,5 @@
 import { MeshPhongMaterial, Texture2D, WebGLPixelFormat, TextureDataType } from '@qunhe/egs';
-import { type IAccessorType, AccessorComponentType } from './type';
+import { IAccessorType, AccessorComponentType } from './type';
 
 export const WEBGL_COMPONENT_TYPES: Record<AccessorComponentType, any> = {
     5120: Int8Array,

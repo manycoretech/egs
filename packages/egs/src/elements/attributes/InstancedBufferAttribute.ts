@@ -1,5 +1,5 @@
 import { BufferAttribute } from './BufferAttribute';
-import type { TypedArray } from '../../utils/Utils';
+import { TypedArray } from '../../utils/Utils';
 /**
  * An instanced version of {@link BufferAttribute | BufferAttribute }.
  */

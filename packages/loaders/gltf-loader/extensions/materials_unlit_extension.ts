@@ -1,5 +1,5 @@
 import { MeshBasicMaterial, Color, Texture2D } from '@qunhe/egs';
-import type { IMaterial } from '../type';
+import { IMaterial } from '../type';
 import type { ResourceManager } from '../resource';
 
 /**

@@ -3,7 +3,7 @@ import { Vector3 } from '../../math/Vector3';
 import { Vector2 } from '../../math/Vector2';
 import { Matrix4 } from '../../math/Matrix4';
 import { Drawable } from './Drawable';
-import { Raycaster, type Intersection } from '../tools/Raycaster';
+import { Raycaster, Intersection } from '../tools/Raycaster';
 import { Triangle } from '../../math/Triangle';
 import { Serializer, Deserializer } from '../../utils/Serialization';
 import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';

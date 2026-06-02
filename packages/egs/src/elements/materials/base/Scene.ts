@@ -1,4 +1,4 @@
-import type { Nullable } from '../../../utils/Utils';
+import { Nullable } from '../../../utils/Utils';
 import { Material, copyItem } from '../Material';
 import { materialProperty } from '../../../ContentAPI';
 import { PopShaderComponent } from '../../../renderer/shader/components/PopShaderComponent';

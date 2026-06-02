@@ -1,6 +1,6 @@
 import { SplatData } from './SplatData';
 import {
-    type ISampler, type ISplatData, type ISingleSplat, ISamplerFormat, computeTextureSize,
+    ISampler, ISplatData, ISingleSplat, ISamplerFormat, computeTextureSize,
     clamp, toHalf, fromHalf, encodeQuatOct, decodeQuatOct
 } from './utils';
 

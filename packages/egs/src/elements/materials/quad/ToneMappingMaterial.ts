@@ -1,5 +1,5 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
-import { type MaterialParameters, ColorTransfer } from '../../materials/Material';
+import { MaterialParameters, ColorTransfer } from '../../materials/Material';
 import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WGLProgram } from '../../../renderer/webgl/WGLProgram';

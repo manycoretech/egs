@@ -1,7 +1,7 @@
-import type { ReadonlyVector2 } from './math/Vector2';
+import { ReadonlyVector2 } from './math/Vector2';
 import { ContentBridge } from './ContentAPI.impl';
-import type { TypedArray,Nullable } from './utils/Utils';
-import { BufferGeometryBase, type BufferGroup } from './elements/geometries/containers/BufferGeometry';
+import { TypedArray, Nullable } from './utils/Utils';
+import { BufferGeometryBase, BufferGroup } from './elements/geometries/containers/BufferGeometry';
 import { Material } from './elements/materials/Material';
 import { Object3D } from './scene/Object3D';
 import { InstancedBufferGeometry } from './elements/geometries/containers/InstancedBufferGeometry';
@@ -12,12 +12,12 @@ import { Texture2D } from './elements/textures/Texture2D';
 import { ShaderComponent } from './renderer/shader/Shader';
 import { Shadow } from './scene/shadows/Shadow';
 import { Box3 } from './math/Box3';
-import { type Intersection, Raycaster } from './scene/tools/Raycaster';
+import { Intersection, Raycaster } from './scene/tools/Raycaster';
 import { Light } from './scene/lights/Light';
 import { Viewer } from './Viewer';
 import { BufferAttribute } from './elements/attributes/BufferAttribute';
 import { PopBufferGeometry } from './elements/geometries/containers/PopBufferGeometry';
-import type { IPopbufferInfo } from './elements/geometries/containers/IPopBufferInfo';
+import { IPopbufferInfo } from './elements/geometries/containers/IPopBufferInfo';
 import { Texture } from './elements/textures/Texture';
 import { Matrix3 } from './math/Matrix3';
 import { Matrix4 } from './math/Matrix4';
@@ -28,7 +28,7 @@ import { TypeAssert } from './scene/tools/TypeAssert';
 import { SkinnedMesh } from './scene/drawables/SkinnedMesh';
 import { Mesh } from './scene/drawables/Mesh';
 import { SpriteBufferGeometry } from './elements/geometries/containers/SpriteBufferGeometry';
-import { type MipLevelSource, type LayerSource, SourceTexture } from './elements/textures/SourceTexture';
+import { MipLevelSource, LayerSource, SourceTexture } from './elements/textures/SourceTexture';
 
 function getInheritanceChainByConstructor(constructor: any): any[] {
     const result: any[] = [];

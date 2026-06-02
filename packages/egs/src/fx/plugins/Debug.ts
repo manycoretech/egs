@@ -1,4 +1,4 @@
-import { type IEffectConfig, PipelinePlugin, type PipelineContext } from './PipelinePlugin';
+import { IEffectConfig, PipelinePlugin, PipelineContext } from './PipelinePlugin';
 import { DepthPackingStrategies, MeshDepthMaterial } from '../../elements/materials/mesh/MeshDepthMaterial';
 import { MeshNormalMaterial } from '../../elements/materials/mesh/MeshNormalMaterial';
 import { RenderGraph } from '../../rendergraph/RenderGraph';

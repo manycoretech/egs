@@ -1,8 +1,7 @@
 {
   "extends": "@internal/utils/tsconfig.json",
   "compilerOptions": {
-    "outDir": "./build",
-    "verbatimModuleSyntax": true
+    "outDir": "./build"
   },
   "include": ["./index.ts", "src/**/*.ts", "src/**/*.png"],
   "exclude": ["build"]

@@ -2,7 +2,7 @@ import { Vector3 } from '../../math/Vector3';
 import { Matrix4 } from '../../math/Matrix4';
 import { Ray } from '../../math/Ray';
 import { Sphere } from '../../math/Sphere';
-import { Raycaster, type Intersection } from '../tools/Raycaster';
+import { Raycaster, Intersection } from '../tools/Raycaster';
 import { FatLineMaterial } from '../../elements/materials/mesh/FatLineMaterial';
 import { FatLineBufferGeometry } from '../../elements/geometries/containers/FatLineBufferGeometry';
 import { checkIntersectionLine } from './Line';

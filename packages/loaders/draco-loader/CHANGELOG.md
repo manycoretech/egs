@@ -4,7 +4,6 @@
 
 - 移除`arraybuffer-loader`
 - 升级 `typescript: ^6.0.3` & `tslib: ^2.8.1`
-- 改进编码风格开启`verbatimModuleSyntax`
 
 ## 1.0.2
 

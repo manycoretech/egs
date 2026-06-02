@@ -1,6 +1,6 @@
-import { WGLUniform, type UniformGeneralTypes } from './WGLUniform';
+import { WGLUniform, UniformGeneralTypes } from './WGLUniform';
 import { Texture } from '../../elements/textures/Texture';
-import type { ShaderInfo } from '../shader/Shader';
+import { ShaderInfo } from '../shader/Shader';
 import { WGLShader } from './WGLShader';
 import { WebGLShaderDataType } from './WGLConstants';
 import { WGLUniformBlock } from './WGLUniformBlock';
@@ -10,7 +10,7 @@ import { BuiltInUniforms } from '../RenderState/BuiltInUniforms';
 import { WGLCapabilities } from './WGLCapabilities';
 import { Material } from '../../elements/materials/Material';
 import { logger } from '../../utils/Logger';
-import type { Nullable } from '../../utils/Utils';
+import { Nullable } from '../../utils/Utils';
 import { TextureCube } from '../../elements/textures/TextureCube';
 
 const arrayCacheF32: Float32Array[] = [];

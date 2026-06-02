@@ -1,8 +1,8 @@
 
 import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { Utils, type Nullable } from '../../../utils/Utils';
+import { Utils, Nullable } from '../../../utils/Utils';
 import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { MaterialParameters } from '../Material';
+import { MaterialParameters } from '../Material';
 import { ColorShaderComponent } from '../../../renderer/shader/components/ColorShaderComponent';
 import { AlphaShaderComponent } from '../../../renderer/shader/components/AlphaShaderComponent';
 import { Serializer, Deserializer } from '../../../utils/Serialization';
@@ -10,7 +10,7 @@ import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
 import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { Color } from '../../../math/Color';
 import { shaderComponentInMaterial, materialProperty } from '../../../ContentAPI';
-import type { ReadonlyMatrix3 } from '../../../math/Matrix3';
+import { ReadonlyMatrix3 } from '../../../math/Matrix3';
 import { readonlyMath } from '../../../math/Readonly';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { SceneClipMaterial } from '../base';

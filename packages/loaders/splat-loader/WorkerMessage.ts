@@ -1,5 +1,5 @@
 import { SplatFileType, SplatPackType } from './utils';
-import type { ISplatData } from './splat/utils';
+import { ISplatData } from './splat/utils';
 
 export interface ParseExtras {
     maxShDegree: number;

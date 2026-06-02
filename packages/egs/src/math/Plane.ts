@@ -4,7 +4,7 @@ import { Line3 } from './Line3';
 import { Box3 } from './Box3';
 import { Matrix4 } from './Matrix4';
 import { Matrix3 } from './Matrix3';
-import type { Nullable } from '../utils/Utils';
+import { Nullable } from '../utils/Utils';
 /**
  * A two dimensional surface that extends infinitely in 3d space,
  * represented in {@link http://mathworld.wolfram.com/HessianNormalForm.html| Hessian normal form} by a unit length normal vector and a constant.

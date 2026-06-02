@@ -1,5 +1,5 @@
 import { Quaternion } from '@qunhe/egs';
-import { type AnimationClip, Blend, InterpolationMode, type KeyframeTrack, type TypedArray } from './type';
+import { AnimationClip, Blend, InterpolationMode, KeyframeTrack, TypedArray } from './type';
 import { LinearInterpolant } from './interpolants/LinearInterpolant';
 import { DiscreteInterpolant } from './interpolants/DiscreteInterpolant';
 import { CubicInterpolant } from './interpolants/CubicInterpolant';

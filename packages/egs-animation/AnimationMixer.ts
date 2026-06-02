@@ -1,6 +1,6 @@
-import { EventDispatcher, Matrix3, MeshPhongMaterial, Object3D, type ReadonlyMatrix3 } from '@qunhe/egs';
+import { EventDispatcher, Matrix3, MeshPhongMaterial, Object3D, ReadonlyMatrix3 } from '@qunhe/egs';
 import { AnimationAction } from './AnimationAction';
-import type { AnimationClip } from './type';
+import { AnimationClip } from './type';
 import { PropertyMixer } from './PropertyMixer';
 
 /**

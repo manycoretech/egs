@@ -1,6 +1,6 @@
 import { SamplerDescriptor } from '../../elements/textures/Texture';
 import { ResourceNode } from './ResourceNode';
-import { type ResizeFN, defaultResizeFN, type Size } from './utils';
+import { ResizeFN, defaultResizeFN, Size } from './utils';
 import { TextureViewDimension, TextureFormat } from '../../elements/textures/types';
 import { SamplerFilter } from '../../utils/Constants';
 

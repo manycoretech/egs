@@ -1,4 +1,4 @@
-import { BufferGeometry, type BufferGroup } from '../containers/BufferGeometry';
+import { BufferGeometry, BufferGroup } from '../containers/BufferGeometry';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 import { Vector3 } from '../../../math/Vector3';
 

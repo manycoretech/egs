@@ -1,5 +1,5 @@
 import { WGLProgram } from './WGLProgram';
-import type { UniformBlockDescriptor } from '../shader/Shader';
+import { UniformBlockDescriptor } from '../shader/Shader';
 import { UBOManager } from '../ResourceManager/UBOManager';
 
 export interface WGLUniformBlockData {

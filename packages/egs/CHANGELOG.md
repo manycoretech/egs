@@ -10,7 +10,6 @@
     - `export type`被错误重写的问题
 2. 优化
     - 改进`api`文档
-    - 改进编码风格开启`verbatimModuleSyntax`
 
 ## 1.2.88
 

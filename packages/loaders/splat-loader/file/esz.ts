@@ -1,5 +1,5 @@
 import { unzipSync } from 'fflate';
-import { decodeImage, extractFromRootDir, type IData, type IFile, type ISingleSplat, isUrl, SH_C0, SH_MAPS } from './utils';
+import { decodeImage, extractFromRootDir, IData, IFile, ISingleSplat, isUrl, SH_C0, SH_MAPS } from './utils';
 
 interface Metadata {
     version: number;

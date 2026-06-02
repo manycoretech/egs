@@ -3,12 +3,12 @@ import { Object3D } from '../scene/Object3D';
 import { SnapshotResult, SnapshotResultResultType } from './SnapshotResult';
 import { Camera3D } from '../scene/cameras/Camera3D';
 import { SnapshotAxisDirection, SnapshotBoxPrecision, setupCamera, createRenderTarget } from './util';
-import { RenderMode, type ConfigCellImpl } from '../engine/EngineConfig';
+import { RenderMode, ConfigCellImpl } from '../engine/EngineConfig';
 import { Light } from '../scene/lights/Light';
 import { Box3 } from '../math/Box3';
-import type { Size } from '../utils/Utils';
+import { Size } from '../utils/Utils';
 import { Material } from '../elements/materials/Material';
-import { type IRenderer, RendererBackend, RendererState } from '../renderer/IRenderer';
+import { IRenderer, RendererBackend, RendererState } from '../renderer/IRenderer';
 import { RenderTarget } from '../elements/textures/RenderTarget';
 import { OrthographicCamera } from '../scene/cameras/OrthographicCamera';
 import { Scene3D } from '../scene/Scene3D';
@@ -25,7 +25,7 @@ import { MaterialShadingWithDynamicShapeDispatcher } from '../renderer/MaterialD
 import { logger } from '../utils/Logger';
 import { DirectionalLight } from '../scene/lights/DirectionalLight';
 import { AmbientLight } from '../scene/lights/AmbientLight';
-import { type PipelineConfig, createPipelineConfig } from '../fx/PipelineConfig';
+import { PipelineConfig, createPipelineConfig } from '../fx/PipelineConfig';
 import { DownsampleMaterial } from '../elements/materials/quad/DownsampleMaterial';
 import { Quad } from '../scene/renderables/Quad';
 import { RenderAttachment } from '../elements/textures/RenderTarget';
@@ -34,7 +34,7 @@ import { DepthPackingStrategies, MeshDepthMaterial } from '../elements/materials
 import { Blending, SamplerFilter } from '../utils/Constants';
 import { BackgroundMode } from '../scene/renderables/Background';
 import { Color } from '../math/Color';
-import { type RenderingConfig, type DrivenCullingConfig, TextureCompression } from '../fx/plugins/PipelinePlugin';
+import { RenderingConfig, DrivenCullingConfig, TextureCompression } from '../fx/plugins/PipelinePlugin';
 import { FilterTarget } from '../elements/materials/quad/FilterMaterial';
 import { SplatSortedEvent, Splat } from '../scene/splat/Splat';
 

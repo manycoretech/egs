@@ -4,7 +4,7 @@ import { Shape } from '../../math/shape/plane/Shape';
 import { _Math } from '../../math/Math';
 import { ArrowHelper } from './ArrowHelper';
 import { Mesh } from '../drawables/Mesh';
-import type { Renderable } from '../renderables/IRenderable';
+import { Renderable } from '../renderables/IRenderable';
 import { logger } from '../../utils/Logger';
 import { OrthographicCamera } from '../cameras/OrthographicCamera';
 import { Camera3D } from '../cameras/Camera3D';
@@ -13,7 +13,7 @@ import { Matrix4 } from '../../math/Matrix4';
 import { Color } from '../../math/Color';
 import { Material } from '../../elements/materials/Material';
 import { shape } from '../../elements/geometries/builder/Index';
-import type { IRenderer } from '../../renderer/IRenderer';
+import { IRenderer } from '../../renderer/IRenderer';
 
 const ALPHABET_X = new Shape().fromJSON(JSON.parse(`{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"Shape","autoClose":false,"curves":
 [{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[0.23,0],"v2":[2.5100000000000002,3.5300000000000002]},

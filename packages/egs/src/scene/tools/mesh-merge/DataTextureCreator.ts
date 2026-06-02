@@ -2,7 +2,7 @@
 import { WebGLPixelFormat, WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { TextureDataType } from '../../../utils/Constants';
 import { _Math } from '../../../math/Math';
-import { Color, type ReadonlyColor } from '../../../math/Color';
+import { Color, ReadonlyColor } from '../../../math/Color';
 import { logger } from '../../../utils/Logger';
 import { Vector3 } from '../../../math/Vector3';
 import { Vector2 } from '../../../math/Vector2';

@@ -1,6 +1,6 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
 import { Texture } from '../../textures/Texture';
-import type { Nullable } from '../../../utils/Utils';
+import { Nullable } from '../../../utils/Utils';
 import { Matrix4 } from '../../../math/Matrix4';
 import { Vector4 } from '../../../math/Vector4';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';

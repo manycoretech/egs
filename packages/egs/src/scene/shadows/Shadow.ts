@@ -1,7 +1,7 @@
 import { Camera3D } from '../cameras/Camera3D';
 import { Matrix4 } from '../../math/Matrix4';
 import { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import type { Nullable } from '../../utils/Utils';
+import { Nullable } from '../../utils/Utils';
 import { ShaderBuilder } from '../../renderer/shader/builders/ShaderBuilder';
 import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
 import { Object3D } from '../Object3D';

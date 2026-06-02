@@ -1,8 +1,8 @@
-import type { Vector } from '../../Vector';
+import { Vector } from '../../Vector';
 import { Vector3 } from '../../Vector3';
 import { Matrix4 } from '../../Matrix4';
 import { _Math } from '../../Math';
-import { type SerializerableDelegatedAsReference, Serializer, Deserializer } from '../../../utils/Serialization';
+import { SerializerableDelegatedAsReference, Serializer, Deserializer } from '../../../utils/Serialization';
 import { logger } from '../../../utils/Logger';
 /**
  * An extensible curve object which contains methods for interpolation.

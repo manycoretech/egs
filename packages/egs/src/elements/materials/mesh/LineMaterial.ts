@@ -2,7 +2,7 @@ import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes, ShaderAttributeTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { ShaderComponent } from '../../../renderer/shader/Shader';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { MaterialParameters,ConvertMaterialParameters } from '../Material';
+import { MaterialParameters, ConvertMaterialParameters } from '../Material';
 import { Serializer, Deserializer } from '../../../utils/Serialization';
 import { Renderer } from '../../../renderer/Renderer';
 import { Utils } from '../../../utils/Utils';

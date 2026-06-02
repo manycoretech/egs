@@ -1,4 +1,4 @@
-import type { IRenderer } from '../../renderer/IRenderer';
+import { IRenderer } from '../../renderer/IRenderer';
 
 export interface Renderable {
     /**

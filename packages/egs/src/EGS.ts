@@ -6,20 +6,16 @@ import * as geomOperatorImport from './elements/geometries/operators/Index';
 import { egsInitFinished } from './ContentAPI';
 export { Utils } from './utils/Utils';
 
-export { ContextLostEvent,ContextLostRestoreFailedEvent,RendererBackend } from './renderer/IRenderer';
-export type { MemoryInfo } from './renderer/IRenderer';
+export { ContextLostEvent, ContextLostRestoreFailedEvent, MemoryInfo, RendererBackend } from './renderer/IRenderer';
 export { EventDispatcher, EventType } from './utils/EventDispatcher';
 export {
-    Viewer,ViewerResizeEvent,ViewerUnInitializeEvent,RenderOverEvent,
-    RenderStatistics,RuntimeFatalErrorEvent
+    Viewer, ViewerResizeEvent, ViewerUnInitializeEvent, RenderOverEvent,
+    RenderStatistics, HighLightItem, HighlightGroup, RuntimeFatalErrorEvent,
 } from './Viewer';
-export type { HighLightItem,HighlightGroup } from './Viewer';
 export type { Viewport } from './Viewport';
-export { createViewerContext } from './ViewerContext';
-export type { IViewerContext } from './ViewerContext';
+export { IViewerContext, createViewerContext } from './ViewerContext';
 export { ResetRendererEvent } from './engine/RenderEngine';
-export { RenderMode,setViewerConfig } from './engine/EngineConfig';
-export type { EngineInitializeConfig } from './engine/EngineConfig';
+export { EngineInitializeConfig, RenderMode, setViewerConfig } from './engine/EngineConfig';
 /**
  * @deprecated
  */
@@ -31,37 +27,30 @@ export { Texture2DCompressed, CompressTexture2DLayer } from './elements/textures
 export { logger } from './utils/Logger';
 export * from './snapshot/SnapshotRenderer';
 export { PresetRenderConfig } from './snapshot/SnapshotRendererV2';
-export { SnapshotResultResultType,SnapshotResult } from './snapshot/SnapshotResult';
-export type { SnapshotCameraInfo } from './snapshot/SnapshotResult';
+export { SnapshotResultResultType, SnapshotResult, SnapshotCameraInfo } from './snapshot/SnapshotResult';
 export { SnapshotBoxPrecision, SnapshotAxisDirection, computeCameraPosition, computeProjectionSize } from './snapshot/util';
 export { Application, projectName } from './Application';
 
 export { Box2 } from './math/Box2';
 export { Box3 } from './math/Box3';
-export { Color } from './math/Color';
-export type { ReadonlyColor } from './math/Color';
+export { Color, ReadonlyColor } from './math/Color';
 export { Cylindrical } from './math/Cylindrical';
 export { Euler } from './math/Euler';
 export { Frustum } from './math/Frustum';
 export { Interpolant } from './math/Interpolant';
 export { Line3 } from './math/Line3';
 export * from './math/Math';
-export { Matrix3 } from './math/Matrix3';
-export type { ReadonlyMatrix3 } from './math/Matrix3';
-export { Matrix4 } from './math/Matrix4';
-export type { ReadonlyMatrix4 } from './math/Matrix4';
+export { Matrix3, ReadonlyMatrix3 } from './math/Matrix3';
+export { Matrix4, ReadonlyMatrix4 } from './math/Matrix4';
 export { Plane } from './math/Plane';
 export { Quaternion } from './math/Quaternion';
 export { Ray } from './math/Ray';
 export { Sphere } from './math/Sphere';
 export { Spherical } from './math/Spherical';
 export { Triangle } from './math/Triangle';
-export { Vector2 } from './math/Vector2';
-export type { ReadonlyVector2 } from './math/Vector2';
-export { Vector3 } from './math/Vector3';
-export type { ReadonlyVector3 } from './math/Vector3';
-export { Vector4 } from './math/Vector4';
-export type { ReadonlyVector4 } from './math/Vector4';
+export { Vector2, ReadonlyVector2 } from './math/Vector2';
+export { Vector3, ReadonlyVector3 } from './math/Vector3';
+export { Vector4, ReadonlyVector4 } from './math/Vector4';
 export { Face3 } from './math/Face3';
 export { Cone } from './math/Cone';
 export * from './math/Readonly';
@@ -76,11 +65,9 @@ export * from './scene/drawables/Drawable';
 export { Texture, TextureMipmapGroup } from './elements/textures/Texture';
 export { Texture2D, Texture2DLayer, Texture2DCommonLayer } from './elements/textures/Texture2D';
 export { Texture3D, Texture3DLayer } from './elements/textures/Texture3D';
-export { TextureCube } from './elements/textures/TextureCube';
-export type { TextureCubeSide } from './elements/textures/TextureCube';
+export { TextureCube, TextureCubeSide } from './elements/textures/TextureCube';
 
-export { SourceTexture } from './elements/textures/SourceTexture';
-export type { MipLevelSource,LayerSource } from './elements/textures/SourceTexture';
+export { SourceTexture, MipLevelSource, LayerSource } from './elements/textures/SourceTexture';
 export { TextureDimension, TextureViewDimension, TextureFormat } from './elements/textures/types';
 
 export { FatLineMaterial } from './elements/materials/mesh/FatLineMaterial';
@@ -143,7 +130,7 @@ export { createDataTexture } from './scene/tools/mesh-merge/DataTextureCreator';
 /**
  * @deprecated DON'T USE IT!!
  */
-export type { TypedArray as TypeArray } from './utils/Utils';
+export { TypedArray as TypeArray } from './utils/Utils';
 export { TypeAssert } from './scene/tools/TypeAssert';
 export { Scene3D } from './scene/Scene3D';
 /**
@@ -160,8 +147,7 @@ export { Points } from './scene/drawables/Points';
 export { PopMesh } from './scene/drawables/PopMesh';
 export { Sprite } from './scene/drawables/Sprite';
 export { SkinnedMesh } from './scene/drawables/SkinnedMesh';
-export { Splat,SplatState,SplatRenderingStabilityChangedEvent,SplatSortedEvent } from './scene/splat/Splat';
-export type { SplatEffectConfig } from './scene/splat/Splat';
+export { Splat, SplatState, SplatRenderingStabilityChangedEvent, SplatSortedEvent, SplatEffectConfig } from './scene/splat/Splat';
 
 export { InstanceMesh } from './scene/drawables/InstanceMesh';
 export { FatLineSegments } from './scene/drawables/FatLineSegments';
@@ -198,7 +184,7 @@ export { InstancedBufferAttribute } from './elements/attributes/InstancedBufferA
 export { Geometry } from './elements/geometries/containers/Geometry';
 export * from './elements/geometries/containers/BufferGeometry';
 export { GeometryBase } from './elements/geometries/containers/GeometryBase';
-export type { IPopbufferInfo } from './elements/geometries/containers/IPopBufferInfo';
+export { IPopbufferInfo } from './elements/geometries/containers/IPopBufferInfo';
 export { PopBufferGeometry } from './elements/geometries/containers/PopBufferGeometry';
 export { FatLineBufferGeometry } from './elements/geometries/containers/FatLineBufferGeometry';
 

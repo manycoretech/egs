@@ -1,5 +1,5 @@
-import { type ISingleSplat } from '@qunhe/egs-splat-loader';
-import { type BVHSource } from '@qunhe/egs-lib';
+import { ISingleSplat } from '@qunhe/egs-splat-loader';
+import { BVHSource } from '@qunhe/egs-lib';
 import { SplatOperator } from './SplatOperator';
 
 export type SplatEllipsoidPrimitive = ISingleSplat;

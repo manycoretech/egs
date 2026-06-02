@@ -1,6 +1,6 @@
-import { Camera3D, type CameraView } from './Camera3D';
+import { Camera3D, CameraView } from './Camera3D';
 import { _Math } from '../../math/Math';
-import type { Nullable } from '../../utils/Utils';
+import { Nullable } from '../../utils/Utils';
 import { Serializer, Deserializer } from '../../utils/Serialization';
 import { Vector2 } from '../../math/Vector2';
 import { Ray } from '../../math/Ray';

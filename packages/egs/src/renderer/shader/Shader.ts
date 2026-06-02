@@ -5,7 +5,7 @@ import { Material } from '../../elements/materials/Material';
 import { BuiltInUniformTypes } from '../RenderState/BuiltInUniforms';
 import { Camera3D } from '../../scene/cameras/Camera3D';
 import { logger } from '../../utils/Logger';
-import { Deserializer, Serializer, type SerializerableDelegated } from '../../utils/Serialization';
+import { Deserializer, Serializer, SerializerableDelegated } from '../../utils/Serialization';
 
 // Any class implements this interface can be composed in material
 // it's the basic abstraction of shading component

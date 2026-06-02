@@ -10,7 +10,7 @@ import { drawQuad, RendererAdaptor } from '../RendererAdaptor';
 import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher';
 import { Matrix4 } from '../../math/Matrix4';
 import { readonlyMath } from '../../math/Readonly';
-import { PipelinePlugin, type IEffectConfig, type PipelineContext } from './PipelinePlugin';
+import { PipelinePlugin, IEffectConfig, PipelineContext } from './PipelinePlugin';
 import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
 import { RenderGraph } from '../../rendergraph/RenderGraph';
 import { SceneAdaptor, SceneAdaptorDispatcher } from '../SceneAdaptor';

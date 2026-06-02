@@ -1,4 +1,4 @@
-import type { GLTF } from './type';
+import { GLTF } from './type';
 import { textDecoder } from './const';
 
 const BINARY_HEADER_MAGIC = 'glTF';

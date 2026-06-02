@@ -1,4 +1,4 @@
-import { type Size, type ResizeFN, defaultResizeFN } from './utils';
+import { Size, ResizeFN, defaultResizeFN } from './utils';
 import { DAGNode } from './DAGNode';
 import { RenderColorAttachmentNode, RenderDepthAttachmentNode, RenderAttachmentNode } from './RenderAttachmentNode';
 import type { PassNode } from './PassNode';

@@ -1,6 +1,6 @@
 import { RefCountMap } from '../../../utils/RefCountMap';
 import { PopMesh } from '../../drawables/PopMesh';
-import type { Nullable } from '../../../utils/Utils';
+import { Nullable } from '../../../utils/Utils';
 import { _Math } from '../../../math/Math';
 import { MergedMeshPhongMaterial } from '../../../elements/materials/mesh/MergedMeshPhongMaterial';
 import { PopBufferGeometry } from '../../../elements/geometries/containers/PopBufferGeometry';

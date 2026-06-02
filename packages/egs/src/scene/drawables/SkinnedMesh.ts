@@ -6,11 +6,11 @@ import { Matrix4 } from '../../math/Matrix4';
 import { Vector4 } from '../../math/Vector4';
 import { Box3 } from '../../math/Box3';
 import { Vector3 } from '../../math/Vector3';
-import { Raycaster, type Intersection } from '../tools/Raycaster';
+import { Raycaster, Intersection } from '../tools/Raycaster';
 import { Ray } from '../../math/Ray';
 import { SkinningShaderComponent } from '../../renderer/shader/components/SkinningShaderComponent';
 import { Texture2D } from '../../elements/textures/Texture2D';
-import type { Nullable } from '../../utils/Utils';
+import { Nullable } from '../../utils/Utils';
 import { SourceTexture } from '../../elements/textures/SourceTexture';
 import { TypeAssert } from '../tools/TypeAssert';
 

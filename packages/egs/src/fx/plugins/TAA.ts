@@ -8,7 +8,7 @@ import { Utils } from '../../utils/Utils';
 import { readonlyMath } from '../../math/Readonly';
 import { Blending } from '../../utils/Constants';
 import { PassNode } from '../../rendergraph/nodes/PassNode';
-import { PipelinePlugin, type IEffectConfig } from './PipelinePlugin';
+import { PipelinePlugin, IEffectConfig } from './PipelinePlugin';
 import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
 import { RenderGraph } from '../../rendergraph/RenderGraph';
 import { SceneAdaptor } from '../SceneAdaptor';

@@ -1,9 +1,9 @@
 import { logger } from '../../utils/Logger';
 import { _Math } from '../../math/Math';
-import type { TypedArray } from '../../utils/Utils';
+import { TypedArray } from '../../utils/Utils';
 import {
-    getFormatByteSize, LegacySourceTexture, type SourceTextureLayerWebGLUploadResult,
-    type SourceTextureWebGLUploadResult, TextureMipmapGroup, WebGLTextureUploadCtx, getInternalFormat, type WebGLUploadable
+    getFormatByteSize, LegacySourceTexture, SourceTextureLayerWebGLUploadResult,
+    SourceTextureWebGLUploadResult, TextureMipmapGroup, WebGLTextureUploadCtx, getInternalFormat, WebGLUploadable
 } from './Texture';
 import { ContentBridge } from '../../ContentAPI';
 import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants';

@@ -1,5 +1,5 @@
 import { ShaderComponent } from '../Shader';
-import type { Nullable } from '../../../utils/Utils';
+import { Nullable } from '../../../utils/Utils';
 import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
 import { WGLProgram } from '../../webgl/WGLProgram';

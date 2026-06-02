@@ -2,7 +2,7 @@ import { Color } from '../../Color';
 import { Vector2 } from '../../Vector2';
 import { Path } from './Path';
 import { Shape } from './Shape';
-import { type SerializerableDelegatedAsReference, Serializer, Deserializer } from '../../../utils/Serialization';
+import { SerializerableDelegatedAsReference, Serializer, Deserializer } from '../../../utils/Serialization';
 import { _Math } from '../../Math';
 import { Box2 } from '../../../math/Box2';
 import { logger } from '../../../utils/Logger';

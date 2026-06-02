@@ -1,4 +1,4 @@
-import { type IFile, type IData, type ISingleSplat, SH_MAPS, SH_C0, BufferReader, StreamChunkDecoder, type ChunkDecoder, NUM_F_REST_TO_SH_DEGREE } from './utils';
+import { IFile, IData, ISingleSplat, SH_MAPS, SH_C0, BufferReader, StreamChunkDecoder, ChunkDecoder, NUM_F_REST_TO_SH_DEGREE } from './utils';
 
 type PlyPropertyType =
     | 'char'

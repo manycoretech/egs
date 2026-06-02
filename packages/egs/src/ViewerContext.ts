@@ -1,10 +1,10 @@
-import type { ViewerConfig } from './engine/EngineConfig';
+import { ViewerConfig } from './engine/EngineConfig';
 import { SnapshotRenderer } from './snapshot/SnapshotRendererV2';
 import { Viewer } from './Viewer';
 import { Viewport } from './Viewport';
-import type { HighlightGroup } from './fx/plugins/Highlight';
+import { HighlightGroup } from './fx/plugins/Highlight';
 import { SnapshotResult } from './snapshot/SnapshotResult';
-import type { IRange } from './utils/Utils';
+import { IRange } from './utils/Utils';
 
 /**
  * Context object for viewport

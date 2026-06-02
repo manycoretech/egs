@@ -1,5 +1,5 @@
 import { DepthModes } from '../../../utils/Constants';
-import type { Nullable } from '../../../utils/Utils';
+import { Nullable } from '../../../utils/Utils';
 
 export class DepthState {
     readonly gl: WebGLRenderingContext | WebGL2RenderingContext;
