@@ -1,5 +1,5 @@
 import { pass, target, colorAttachment, depthAttachment } from '../../rendergraph/NodeMakers';
-import { PipelinePlugin, IEffectConfig, RenderingConfig, PipelineContext, DrivenCullingConfig } from './PipelinePlugin';
+import { PipelinePlugin, type IEffectConfig, type RenderingConfig, type PipelineContext, type DrivenCullingConfig } from './PipelinePlugin';
 import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
 import { RenderGraph } from '../../rendergraph/RenderGraph';
 import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial';
@@ -18,7 +18,7 @@ import { MaterialDispatcher, checkInstance, MaterialShadingWithDynamicShapeDispa
 import { OutlineShadingMode, Drawable, OutlineRenderMode } from '../../scene/drawables/Drawable';
 import { TypeAssert } from '../../scene/tools/TypeAssert';
 import { Material } from '../../elements/materials/Material';
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { WGLProgram } from '../../renderer/webgl/WGLProgram';
 import { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
 import { Renderer } from '../../renderer/Renderer';

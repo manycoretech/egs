@@ -1,6 +1,6 @@
-import { IRenderer } from '../../renderer/IRenderer';
+import type { IRenderer } from '../../renderer/IRenderer';
 import { OrthographicCamera } from '../cameras/OrthographicCamera';
-import { Renderable } from './IRenderable';
+import type { Renderable } from './IRenderable';
 import { Material } from '../../elements/materials/Material';
 import { Points } from '../drawables/Points';
 import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';

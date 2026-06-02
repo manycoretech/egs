@@ -1,6 +1,6 @@
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { UniformBlockObject } from '../shader/components/UniformBlockObject';
-import { WGLUniformBlockData } from '../webgl/WGLUniformBlock';
+import type { WGLUniformBlockData } from '../webgl/WGLUniformBlock';
 import { logger } from '../../utils/Logger';
 import { IterableWeakMap } from '../../utils/WeakCollections';
 

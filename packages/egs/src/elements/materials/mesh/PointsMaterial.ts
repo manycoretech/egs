@@ -1,7 +1,7 @@
-import { ColorWithAlpha, ColorWithAlphaParam } from './LineMaterial';
+import { ColorWithAlpha, type ColorWithAlphaParam } from './LineMaterial';
 import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { ShaderInjectionTypes, ShaderBuilder, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { Material, MaterialParameters, ConvertMaterialParameters } from '../Material';
+import { Material, type MaterialParameters, type ConvertMaterialParameters } from '../Material';
 import { Serializer, Deserializer } from '../../../utils/Serialization';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
 import { Utils } from '../../../utils/Utils';

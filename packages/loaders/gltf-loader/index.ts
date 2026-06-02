@@ -2,8 +2,8 @@ import { Object3D, Texture, SkinnedMesh } from '@qunhe/egs';
 import { TextureTransformExtension, MaterialsUnlitExtension, AnimationPointerExtension } from './extensions';
 import { parseGLTF } from './parseGLTF';
 import { ResourceManager } from './resource';
-import { ParseCtx, parseScene, parseAnimation } from './parse';
-import { GLTF, Animation, ISkeleton } from './type';
+import { type ParseCtx, parseScene, parseAnimation } from './parse';
+import type { GLTF,Animation,ISkeleton } from './type';
 
 export interface LoaderConfig {
     textureLoader: (url: string) => Promise<Texture>;

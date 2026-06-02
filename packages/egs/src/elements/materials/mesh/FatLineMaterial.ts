@@ -1,8 +1,8 @@
-import { LineBasicMaterial, ColorWithAlpha, LineDash, LineDashParam, ColorWithAlphaParam } from './LineMaterial';
+import { LineBasicMaterial, ColorWithAlpha, LineDash, type LineDashParam, type ColorWithAlphaParam } from './LineMaterial';
 import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { ConvertMaterialParameters, MaterialParameters } from '../Material';
+import type { ConvertMaterialParameters,MaterialParameters } from '../Material';
 import { Serializer, Deserializer } from '../../../utils/Serialization';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
 import { Utils } from '../../../utils/Utils';

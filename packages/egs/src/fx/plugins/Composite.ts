@@ -1,4 +1,4 @@
-import { PipelinePlugin, IEffectConfig } from './PipelinePlugin';
+import { PipelinePlugin, type IEffectConfig } from './PipelinePlugin';
 import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
 import { RenderGraph } from '../../rendergraph/RenderGraph';
 import { pass, target } from '../../rendergraph/NodeMakers';

@@ -2,7 +2,7 @@ import { WGLProgram } from '../../webgl/WGLProgram';
 import { ShaderComponent } from '../Shader';
 import { ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import { Nullable } from '../../../utils/Utils';
+import type { Nullable } from '../../../utils/Utils';
 import { Texture } from '../../../elements/textures/Texture';
 import { createShaderBlock } from '../builders/ShaderBlock';
 import { readonlyMath } from '../../../math/Readonly';

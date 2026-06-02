@@ -6,12 +6,12 @@ import { BufferManager } from './BufferManager';
 import { TextureManager } from './TextureManager';
 import { VAOManager } from './VAOManager';
 import { UniformBlockObject } from '../shader/components/UniformBlockObject';
-import { WGLBufferData } from '../webgl/WGLBuffer';
+import type { WGLBufferData } from '../webgl/WGLBuffer';
 import { Capabilities } from '../Capabilities';
 import { WGLProgram } from '../webgl/WGLProgram';
 import { BufferGeometryBase, BufferAttribute, Material } from '../../..';
 import { GeometryAttributeChangedEvent, GeometryDisposeEvent } from '../../elements/geometries/containers/BufferGeometry';
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { IterableWeakSet } from '../../utils/WeakCollections';
 import { Renderer } from '../Renderer';
 

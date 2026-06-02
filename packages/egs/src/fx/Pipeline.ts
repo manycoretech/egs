@@ -1,4 +1,4 @@
-import { IRenderer, RendererBackend } from '../renderer/IRenderer';
+import { type IRenderer, RendererBackend } from '../renderer/IRenderer';
 import { EffectComposer } from '../rendergraph/EffectComposer';
 import { screen, pass, target, colorAttachment } from '../rendergraph/NodeMakers';
 import { RenderGraph } from '../rendergraph/RenderGraph';
@@ -20,9 +20,9 @@ import { StylizePlugin } from './plugins/Stylize';
 import { TAAPlugin } from './plugins/TAA';
 import { TransparentLinePlugin } from './plugins/TransparentLine';
 import { SceneClipPlugin } from './plugins/SceneClip';
-import { PipelinePlugin, IEffectConfig, RenderingConfig, DrivenCullingConfig } from './plugins/PipelinePlugin';
+import { PipelinePlugin, type IEffectConfig, type RenderingConfig, type DrivenCullingConfig } from './plugins/PipelinePlugin';
 import { DrivenGenHZBMaterial } from '../elements/materials/driven/DrivenGenHZBMaterial';
-import { OverrideScreenOutputTarget } from '../rendergraph/nodes/PassNode';
+import type { OverrideScreenOutputTarget } from '../rendergraph/nodes/PassNode';
 import { CompositePlugin } from './plugins/Composite';
 import { DebugPlugin } from './plugins/Debug';
 import { RenderTargetNode } from '../rendergraph/nodes/RenderTargetNode';

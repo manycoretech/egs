@@ -5,7 +5,7 @@ import { InstancedBufferAttribute } from '../../elements/attributes/InstancedBuf
 import { Camera3D } from '../cameras/Camera3D';
 import { logger } from '../../utils/Logger';
 import { Matrix4 } from '../../math/Matrix4';
-import { Raycaster, Intersection } from '../tools/Raycaster';
+import { Raycaster, type Intersection } from '../tools/Raycaster';
 import { Ray } from '../../math/Ray';
 import { ContentBridge, hasManagedContentAPI } from '../../ContentAPI';
 import { Vector3 } from '../../math/Vector3';

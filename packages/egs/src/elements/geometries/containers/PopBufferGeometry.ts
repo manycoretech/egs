@@ -3,7 +3,7 @@ import { Deserializer, Serializer } from '../../../utils/Serialization';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 import { BufferGeometry } from './BufferGeometry';
 import { ContentBridge, hasManagedContentAPI } from '../../../ContentAPI';
-import { IPopbufferInfo, IMetaBlock, IPopbufferAttributes } from './IPopBufferInfo';
+import type { IPopbufferInfo,IMetaBlock,IPopbufferAttributes } from './IPopBufferInfo';
 
 export interface Metadata {
     boxMin: Readonly<Vector3>;

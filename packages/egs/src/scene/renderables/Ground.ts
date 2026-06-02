@@ -1,9 +1,9 @@
 import { Mesh } from '../drawables/Mesh';
-import { Renderable } from './IRenderable';
+import type { Renderable } from './IRenderable';
 import { GroundMaterial } from '../../elements/materials/mesh/GroundMaterial';
 import { logger } from '../../utils/Logger';
 import { plane } from '../../elements/geometries/builder/Index';
-import { IRenderer } from '../../renderer/IRenderer';
+import type { IRenderer } from '../../renderer/IRenderer';
 import { Vector3 } from '../../math/Vector3';
 import { readonlyMath } from '../../..';
 

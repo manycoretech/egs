@@ -1,9 +1,9 @@
 import { RendererAdaptor } from '../../fx/RendererAdaptor';
 import { Vector4 } from '../../math/Vector4';
 import { MaterialDispatcher } from '../../renderer/MaterialDispatcher';
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { ExecuteNode } from './ExecuteNode';
-import { Renderable } from '../../scene/renderables/IRenderable';
+import type { Renderable } from '../../scene/renderables/IRenderable';
 import { RenderTargetNode } from './RenderTargetNode';
 import { logger } from '../../utils/Logger';
 import { RenderTarget } from '../../elements/textures/RenderTarget';

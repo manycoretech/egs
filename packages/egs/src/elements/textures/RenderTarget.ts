@@ -3,7 +3,7 @@ import { WebGLTextureUploadCtx, SamplerDescriptor } from './Texture';
 import { TextureV2 } from './TextureV2';
 import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants';
 import { _Math } from '../../math/Math';
-import { WGLRenderAttachment } from '../../renderer/ResourceManager/TextureManager';
+import type { WGLRenderAttachment } from '../../renderer/ResourceManager/TextureManager';
 import { TextureViewDimension, TextureFormat, TextureDimension } from './types';
 import { RendererBackend } from '../../renderer/IRenderer';
 

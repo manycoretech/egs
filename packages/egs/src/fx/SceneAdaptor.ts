@@ -3,12 +3,12 @@ import { SpotLight } from '../scene/lights/SpotLight';
 import { Scene3D } from '../scene/Scene3D';
 import { Camera3D } from '../scene/cameras/Camera3D';
 import { ProjectedDrawcallList, DrawcallListClassifyList } from '../scene/tools/DrawcallList';
-import { Nullable } from '../utils/Utils';
+import type { Nullable } from '../utils/Utils';
 import { RendererAdaptor } from './RendererAdaptor';
-import { PassExecuteCtx } from '../rendergraph/nodes/PassNode';
+import type { PassExecuteCtx } from '../rendergraph/nodes/PassNode';
 import { Shadow } from '../scene/shadows/Shadow';
 import { PipelineFilters } from './PipelineAPI';
-import { ResizeFN } from '../rendergraph/nodes/utils';
+import type { ResizeFN } from '../rendergraph/nodes/utils';
 
 export class SceneAdaptorDispatcher {
     adaptor: SceneAdaptor;

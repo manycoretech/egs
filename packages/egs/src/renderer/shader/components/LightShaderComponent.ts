@@ -12,7 +12,7 @@ import {
 } from '../../../scene/lights/PointLight';
 import { RectAreaLight, rectAreaLightCollect } from '../../../scene/lights/RectAreaLight';
 import { SpotLight, spotLightCollect } from '../../../scene/lights/SpotLight';
-import { Nullable } from '../../../utils/Utils';
+import type { Nullable } from '../../../utils/Utils';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
 import { WGLProgram } from '../../webgl/WGLProgram';
 import { ShaderBlockPool } from '../builders/ShaderBlockPool';

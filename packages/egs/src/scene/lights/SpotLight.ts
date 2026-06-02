@@ -8,7 +8,7 @@ import { Deserializer, Serializer } from '../../utils/Serialization';
 import { SpotShadow } from '../shadows/SpotShadow';
 import { Cone } from '../../math/Cone';
 import { Quaternion } from '../../math/Quaternion';
-import { Nullable, singleton } from '../../utils/Utils';
+import { type Nullable, singleton } from '../../utils/Utils';
 import { Light } from './Light';
 import { Texture2D } from '../../elements/textures/Texture2D';
 import { WatchedVector3 } from '../../math/WatchedVector3';

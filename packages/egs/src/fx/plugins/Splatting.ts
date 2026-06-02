@@ -26,7 +26,7 @@ import { Vector3 } from '../../math/Vector3';
 import { Quaternion } from '../../math/Quaternion';
 import { ToneMappingMaterial, ToneMapping } from '../../elements/materials/quad/ToneMappingMaterial';
 import { ColorTransfer } from '../../elements/materials/Material';
-import { Size } from '../../utils/Utils';
+import type { Size } from '../../utils/Utils';
 import { Splat } from '../../scene/splat/Splat';
 import { TextureFormat, TextureDimension, TextureViewDimension } from '../../elements/textures/types';
 import { SourceTexture } from '../../elements/textures/SourceTexture';

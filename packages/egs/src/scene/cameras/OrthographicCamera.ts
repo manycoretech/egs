@@ -1,5 +1,5 @@
-import { Camera3D, CameraView } from './Camera3D';
-import { Nullable } from '../../utils/Utils';
+import { Camera3D, type CameraView } from './Camera3D';
+import type { Nullable } from '../../utils/Utils';
 import { Serializer, Deserializer } from '../../utils/Serialization';
 import { Vector2 } from '../../math/Vector2';
 import { Ray } from '../../math/Ray';

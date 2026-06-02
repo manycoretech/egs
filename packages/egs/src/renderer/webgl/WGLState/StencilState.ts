@@ -1,4 +1,4 @@
-import { Nullable } from '../../../utils/Utils';
+import type { Nullable } from '../../../utils/Utils';
 import { StencilFunc, StencilOp } from '../../../utils/Constants';
 
 export class StencilState {

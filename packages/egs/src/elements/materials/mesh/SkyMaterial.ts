@@ -5,11 +5,11 @@ import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { Side } from '../../../utils/Constants';
 import { ContentBridge, materialProperty } from '../../../ContentAPI';
 import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { Nullable } from '../../../utils/Utils';
+import type { Nullable } from '../../../utils/Utils';
 import { Texture } from '../../textures/Texture';
 import { PassQuadMaterialBase } from '../quad/PassMaterialBase';
 import { BackgroundLikeMaterial } from '../base';
-import { ReadonlyVector3 } from '../../../math/Vector3';
+import type { ReadonlyVector3 } from '../../../math/Vector3';
 import { readonlyMath } from '../../../math/Readonly';
 
 export class SkyMaterial extends BackgroundLikeMaterial {

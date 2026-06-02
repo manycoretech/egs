@@ -1,5 +1,5 @@
 import { logger } from '../../utils/Logger';
-import { BufferGeometryBase, BufferRange, BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
+import { BufferGeometryBase, type BufferRange, BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
 import { GeometryBase } from '../../elements/geometries/containers/GeometryBase';
 import { Material } from '../../elements/materials/Material';
 import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial';
@@ -10,12 +10,12 @@ import { Sphere } from '../../math/Sphere';
 import { Vector3 } from '../../math/Vector3';
 import { Renderer } from '../../renderer/Renderer';
 import { Deserializer, Serializer } from '../../utils/Serialization';
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { Camera3D } from '../cameras/Camera3D';
 import { Object3D } from '../Object3D';
 import { Scene3D } from '../Scene3D';
-import { Drawcall } from '../tools/DrawcallList';
-import { Intersection, Raycaster } from '../tools/Raycaster';
+import type { Drawcall } from '../tools/DrawcallList';
+import { type Intersection, Raycaster } from '../tools/Raycaster';
 import { ContentBridge, drawableState, hasManagedContentAPI, ManagedContentBridge } from '../../ContentAPI';
 import { DrawMode } from '../../utils/Constants';
 

@@ -1,7 +1,7 @@
 import { Mesh } from '../../drawables/Mesh';
 import { TypeAssert } from '../TypeAssert';
 import { Drawable } from '../../drawables/Drawable';
-import { DrawcallMerger, MergeDrawcallSource } from './Merger';
+import { DrawcallMerger, type MergeDrawcallSource } from './Merger';
 import { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry';
 import { Material } from '../../../elements/materials/Material';
 import { GeometryBase } from '../../../elements/geometries/containers/GeometryBase';

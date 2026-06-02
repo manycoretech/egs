@@ -6,7 +6,7 @@ import { Object3D } from '../Object3D';
 import { Ray } from '../../math/Ray';
 import { Face3 } from '../../math/Face3';
 import { Camera3D } from '../cameras/Camera3D';
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { hasManagedContentAPI, ManagedContentBridge } from '../../ContentAPI';
 import { Scene3D } from '../Scene3D';
 

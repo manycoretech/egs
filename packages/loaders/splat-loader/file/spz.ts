@@ -1,5 +1,5 @@
 import { ZSTDDecoder } from 'zstddec';
-import { ISingleSplat, IData, IFile, SH_MAPS, SH_C0, BufferReader, fromHalf, clamp, StreamChunkDecoder } from './utils';
+import { type ISingleSplat, type IData, type IFile, SH_MAPS, SH_C0, BufferReader, fromHalf, clamp, StreamChunkDecoder } from './utils';
 
 const SPZ_MAGIC = 0x5053474e; // NGSP = Niantic gaussian splat
 const SPZ_VERSION = 3;

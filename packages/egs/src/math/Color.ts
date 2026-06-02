@@ -1,7 +1,7 @@
 /* eslint-disable no-cond-assign */
 import { _Math } from './Math';
 import { logger } from '../utils/Logger';
-import { PickReadonly } from '../utils/Utils';
+import type { PickReadonly } from '../utils/Utils';
 
 export interface HSL {
     h: number;

@@ -1,4 +1,4 @@
-import { Nullable } from './Utils';
+import type { Nullable } from './Utils';
 
 export class HashKeyBuilder {
     private key = '';

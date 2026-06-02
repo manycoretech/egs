@@ -1,6 +1,6 @@
-import { LightMaterialComponent } from '../components/LightShaderComponent';
-import { Nullable } from '../../../utils/Utils';
-import { ShaderComponent, ShaderInputDescriptor, UniformArrayDescriptor, ShaderInfo, VaryArrayDescriptor } from '../Shader';
+import type { LightMaterialComponent } from '../components/LightShaderComponent';
+import type { Nullable } from '../../../utils/Utils';
+import { ShaderComponent, type ShaderInputDescriptor, type UniformArrayDescriptor, type ShaderInfo, type VaryArrayDescriptor } from '../Shader';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
 import {
     mapAttributeType,

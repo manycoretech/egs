@@ -4,7 +4,7 @@ import { Sphere } from '../../../math/Sphere';
 import { Vector3 } from '../../../math/Vector3';
 import { EventType } from '../../../utils/EventDispatcher';
 import { Deserializer, Serializer } from '../../../utils/Serialization';
-import { Nullable, TypedArray, Utils } from '../../../utils/Utils';
+import { type Nullable, type TypedArray, Utils } from '../../../utils/Utils';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 import { Geometry } from './Geometry';
 import { GeometryBase } from './GeometryBase';

@@ -1,6 +1,6 @@
 import { Mesh } from '../scene/drawables/Mesh';
-import { BVHStrategyType, BVH, BVHBuilder } from './Impl';
-import { Intersection, Raycaster } from '../scene/tools/Raycaster';
+import { BVHStrategyType, type BVH, BVHBuilder } from './Impl';
+import { type Intersection, Raycaster } from '../scene/tools/Raycaster';
 import { Ray } from '../math/Ray';
 import { Vector3 } from '../math/Vector3';
 import { Side } from '../utils/Constants';

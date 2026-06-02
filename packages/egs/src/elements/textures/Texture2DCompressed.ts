@@ -1,6 +1,6 @@
-import { TypedArray } from '../../utils/Utils';
+import type { TypedArray } from '../../utils/Utils';
 import {
-    LegacySourceTexture, SourceTextureLayerWebGLUploadResult, SourceTextureWebGLUploadResult,
+    LegacySourceTexture, type SourceTextureLayerWebGLUploadResult, type SourceTextureWebGLUploadResult,
     TextureMipmapGroup, WebGLTextureUploadCtx
 } from './Texture';
 import { Texture2DLayer } from './Texture2D';

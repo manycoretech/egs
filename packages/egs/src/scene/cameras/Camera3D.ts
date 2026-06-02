@@ -2,7 +2,7 @@ import { Matrix4 } from '../../math/Matrix4';
 import { Object3D, Object3DChangeEvent } from '../Object3D';
 import { Vector3 } from '../../math/Vector3';
 import { Serializer, Deserializer } from '../../utils/Serialization';
-import { ReadonlyVector2, Vector2 } from '../../math/Vector2';
+import { type ReadonlyVector2, Vector2 } from '../../math/Vector2';
 import { Ray } from '../../math/Ray';
 import { Culler } from '../tools/Culler';
 import { Drawable } from '../drawables/Drawable';

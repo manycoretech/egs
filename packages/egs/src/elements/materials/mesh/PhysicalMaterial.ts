@@ -1,5 +1,5 @@
 import { readonlyMath } from '../../../math/Readonly';
-import { Nullable } from '../../../utils/Utils';
+import type { Nullable } from '../../../utils/Utils';
 import { materialProperty } from '../../../ContentAPI';
 import { JsNoImplMaterial } from '../base';
 import { TextureV2 } from '../../textures/TextureV2';

@@ -4,7 +4,7 @@ import { BufferAttribute } from '../elements/attributes/BufferAttribute';
 import { logger } from '../utils/Logger';
 import { _Math } from './Math';
 import { Vector2 } from './Vector2';
-import { PickReadonly } from '../utils/Utils';
+import type { PickReadonly } from '../utils/Utils';
 /**
  * A class representing a 3x3 {@link https://en.wikipedia.org/wiki/Matrix_(mathematics)| matrix}.
  */

@@ -1,6 +1,6 @@
 import { PipelinePlugin } from './PipelinePlugin';
 import { Ground } from '../../scene/renderables/Ground';
-import { BackgroundMode, BasicBackground, SolidColorBackground, EnvMapBackground, GradientBackground, Background, SkyBackground } from '../../scene/renderables/Background';
+import { BackgroundMode, BasicBackground, SolidColorBackground, EnvMapBackground, GradientBackground, type Background, SkyBackground } from '../../scene/renderables/Background';
 import { PreSkyMapMaterial } from '../../elements/materials/mesh/SkyMaterial';
 import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
 import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
@@ -10,7 +10,7 @@ import { drawQuad, RendererAdaptor } from '../RendererAdaptor';
 import { RenderTarget } from '../../elements/textures/RenderTarget';
 import { Vector2 } from '../../math/Vector2';
 import { Color } from '../../math/Color';
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { Vector3 } from '../../math/Vector3';
 import { SceneAdaptorDispatcher } from '../SceneAdaptor';
 import { Texture } from '../../elements/textures/Texture';

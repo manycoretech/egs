@@ -2,7 +2,7 @@ import { WebGLTextureUploadCtx, SamplerDescriptor } from './Texture';
 import { TextureV2 } from './TextureV2';
 import { ContentBridge } from '../../ContentAPI';
 import { TextureDimension, TextureViewDimension, TextureFormat, mipLevelSize, CUBE_FACES } from './types';
-import { TypedArray } from '../../utils/Utils';
+import type { TypedArray } from '../../utils/Utils';
 import { _Math } from '../../math/Math';
 import { logger } from '../../utils/Logger';
 

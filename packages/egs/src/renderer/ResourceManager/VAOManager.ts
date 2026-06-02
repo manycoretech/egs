@@ -1,7 +1,7 @@
 import { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
 import { Capabilities } from '../Capabilities';
 import { WGLExtensions, WebGLExtEnums } from '../webgl/WGLExtensions';
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { IterableWeakMap } from '../../utils/WeakCollections';
 
 // VAOManager provides functions to control the use of Vertex Array Object of WebGL/WebGL2.

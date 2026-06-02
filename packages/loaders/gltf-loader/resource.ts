@@ -1,8 +1,8 @@
 import { Texture, Texture2D, SamplerFilter, SamplerWrap, Material, Side, MeshPhongMaterial, Color, BufferAttribute, BufferGeometry, EnvMapIBLShaderComponent } from '@qunhe/egs';
-import { IMaterial, ISampler, ITexture, IImage, IBuffer, IBufferView, IPrimitive, IAccessor, GLTF, AccessorComponentType, ALPHA_MODES } from './type';
+import { type IMaterial, type ISampler, type ITexture, type IImage, type IBuffer, type IBufferView, type IPrimitive, type IAccessor, type GLTF, AccessorComponentType, ALPHA_MODES } from './type';
 import { MaterialsUnlitExtension, TextureTransformExtension } from './extensions';
 import { DEFAULT_MATERIAL, WEBGL_COMPONENT_TYPES, ACCESSOR_TYPE_SIZES, EMPTY_TEXTURE, ATTRIBUTE_MAP } from './const';
-import { TransformExtensionData } from './extensions/texture_transform_extension';
+import type { TransformExtensionData } from './extensions/texture_transform_extension';
 
 interface ResourceManagerConfig {
     binaryBuffer?: ArrayBuffer,

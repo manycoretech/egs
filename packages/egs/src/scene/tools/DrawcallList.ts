@@ -1,13 +1,13 @@
 import { Drawable } from '../drawables/Drawable';
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { TypeAssert } from './TypeAssert';
 import { Camera3D } from '../cameras/Camera3D';
-import { IRenderer } from '../../renderer/IRenderer';
-import { BufferGeometryBase, BufferRange } from '../../elements/geometries/containers/BufferGeometry';
+import type { IRenderer } from '../../renderer/IRenderer';
+import { BufferGeometryBase, type BufferRange } from '../../elements/geometries/containers/BufferGeometry';
 import { Material } from '../../elements/materials/Material';
 import { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';
-import { Renderable } from '../renderables/IRenderable';
-import { PipelineContentBridge, PipelineContentAPIForRenderingAndFilteringEnabled, IPipelineFilter } from '../../fx/PipelineAPI';
+import type { Renderable } from '../renderables/IRenderable';
+import { PipelineContentBridge, PipelineContentAPIForRenderingAndFilteringEnabled, type IPipelineFilter } from '../../fx/PipelineAPI';
 import { PerspectiveCamera } from '../cameras/PerspectiveCamera';
 import { Box3 } from '../../math/Box3';
 import { Frustum } from '../../math/Frustum';

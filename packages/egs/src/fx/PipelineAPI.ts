@@ -1,5 +1,5 @@
-import { DrawableList, ProjectedDrawcallList, Drawcall, RenderObjectsType, DrawcallListClassifyType } from '../scene/tools/DrawcallList';
-import { IRenderer } from '../renderer/IRenderer';
+import { DrawableList, ProjectedDrawcallList, type Drawcall, RenderObjectsType, type DrawcallListClassifyType } from '../scene/tools/DrawcallList';
+import type { IRenderer } from '../renderer/IRenderer';
 import { MaterialDispatcher } from '../renderer/MaterialDispatcher';
 import { Camera3D } from '../scene/cameras/Camera3D';
 import { Drawable, OutlineRenderMode, DrawableRenderMode } from '../scene/drawables/Drawable';

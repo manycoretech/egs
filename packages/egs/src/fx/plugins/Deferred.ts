@@ -18,7 +18,7 @@ import { PointLight, punctualLightIntensityToIrradianceFactor } from '../../scen
 import { RectAreaLight } from '../../scene/lights/RectAreaLight';
 import { RenderTarget } from '../../elements/textures/RenderTarget';
 import { DiskAreaLight } from '../../scene/lights/DiskAreaLight';
-import { Matrix4, ReadonlyMatrix4 } from '../../math/Matrix4';
+import { Matrix4, type ReadonlyMatrix4 } from '../../math/Matrix4';
 import {
     DialuxLuminanceMaterial, DialuxWhiteBalanceExposureMaterial, ExposedCopyMaterial, ExposedToneMappingMaterial,
     HistogramComputeMaterial, AvgLuminanceMaterial
@@ -30,7 +30,7 @@ import { readonlyMath } from '../../math/Readonly';
 import { Quad } from '../../scene/renderables/Quad';
 import { PseudoColorMaterial } from '../../elements/materials/quad/PseudoColorMaterial';
 import { Capabilities } from '../../renderer/Capabilities';
-import { PipelinePlugin, PipelineContext } from './PipelinePlugin';
+import { PipelinePlugin, type PipelineContext } from './PipelinePlugin';
 import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
 import { RenderGraph } from '../../rendergraph/RenderGraph';
 import { filterBy, RenderObjectsType } from '../../scene/tools/DrawcallList';
@@ -45,7 +45,7 @@ import { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode';
 import { RendererBackend } from '../../renderer/IRenderer';
 import { PipelineContentBridge } from '../PipelineAPI.impl';
 import { Camera3D } from '../../scene/cameras/Camera3D';
-import { Vector3, ReadonlyVector3 } from '../../math/Vector3';
+import { Vector3, type ReadonlyVector3 } from '../../math/Vector3';
 import { TypeAssert } from '../../scene/tools/TypeAssert';
 import { logger } from '../../utils/Logger';
 import { Texture } from '../../elements/textures/Texture';

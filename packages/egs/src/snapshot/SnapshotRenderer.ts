@@ -6,7 +6,7 @@ import { SnapShotAdaptor } from './SnapshotAdaptor';
 import { Box3 } from '../math/Box3';
 import { Color } from '../math/Color';
 import { Vector3 } from '../math/Vector3';
-import { IRenderer, RendererState } from '../renderer/IRenderer';
+import { type IRenderer, RendererState } from '../renderer/IRenderer';
 import { MaterialShadingWithDynamicShapeDispatcher } from '../renderer/MaterialDispatcher';
 import { Camera3D } from '../scene/cameras/Camera3D';
 import { OrthographicCamera } from '../scene/cameras/OrthographicCamera';
@@ -15,7 +15,7 @@ import { Scene3D } from '../scene/Scene3D';
 import { DrawableList } from '../scene/tools/DrawcallList';
 import { Layers } from '../scene/tools/Layers';
 import { TypeAssert } from '../scene/tools/TypeAssert';
-import { Size, IRange } from '../utils/Utils';
+import type { Size,IRange } from '../utils/Utils';
 import { RenderMode } from '../engine/EngineConfig';
 import { Drawable } from '../scene/drawables/Drawable';
 import { Geometry } from '../elements/geometries/containers/Geometry';
@@ -24,9 +24,9 @@ import { PipelineContentAPIForRenderingAndFilteringEnabled, PipelineContentBridg
 import { ContentBridge } from '../ContentAPI';
 import { SnapshotResult, SnapshotResultResultType } from './SnapshotResult';
 import { SnapshotAxisDirection, setupCamera, SnapshotBoxPrecision, createRenderTarget } from './util';
-import { DeprecatedPipelineConfig, createDeprecatedPipelineConfig } from '../fx/PipelineConfig';
+import { type DeprecatedPipelineConfig, createDeprecatedPipelineConfig } from '../fx/PipelineConfig';
 import { BackgroundMode } from '../scene/renderables/Background';
-import { RenderingConfig, DrivenCullingConfig, TextureCompression } from '../fx/plugins/PipelinePlugin';
+import { type RenderingConfig, type DrivenCullingConfig, TextureCompression } from '../fx/plugins/PipelinePlugin';
 import { logger } from '../utils/Logger';
 
 export interface SnapshotRenderConfig {

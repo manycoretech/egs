@@ -1,6 +1,6 @@
 import { Sphere } from '../../math/Sphere';
 import { Drawable } from './Drawable';
-import { Raycaster, Intersection } from '../tools/Raycaster';
+import { Raycaster, type Intersection } from '../tools/Raycaster';
 import { Vector3 } from '../../math/Vector3';
 import { BufferGeometry, PointList } from '../../elements/geometries/containers/BufferGeometry';
 import { Material } from '../../elements/materials/Material';

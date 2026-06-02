@@ -1,4 +1,4 @@
-import { BVHSource } from '@qunhe/egs-lib';
+import { type BVHSource } from '@qunhe/egs-lib';
 import { SplatOperator } from './SplatOperator';
 
 export interface SplatCenterPrimitive {

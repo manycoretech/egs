@@ -1,10 +1,10 @@
 import { WebGLShaderDataType } from './WGLConstants';
-import { Vector4, ReadonlyVector4 } from '../../math/Vector4';
-import { Color, ReadonlyColor } from '../../math/Color';
-import { Matrix3, ReadonlyMatrix3 } from '../../math/Matrix3';
-import { Matrix4, ReadonlyMatrix4 } from '../../math/Matrix4';
-import { Vector2, ReadonlyVector2 } from '../../math/Vector2';
-import { Vector3, ReadonlyVector3 } from '../../math/Vector3';
+import { Vector4, type ReadonlyVector4 } from '../../math/Vector4';
+import { Color, type ReadonlyColor } from '../../math/Color';
+import { Matrix3, type ReadonlyMatrix3 } from '../../math/Matrix3';
+import { Matrix4, type ReadonlyMatrix4 } from '../../math/Matrix4';
+import { Vector2, type ReadonlyVector2 } from '../../math/Vector2';
+import { Vector3, type ReadonlyVector3 } from '../../math/Vector3';
 import { logger } from '../../utils/Logger';
 
 export type UniformUploadTypes = boolean | number | Float32Array | Int32Array | number[];

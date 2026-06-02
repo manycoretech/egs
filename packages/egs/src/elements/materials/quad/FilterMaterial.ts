@@ -4,7 +4,7 @@ import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { ShaderInjectionTypes, ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
 import { Texture } from '../../textures/Texture';
 import { materialProperty } from '../../../ContentAPI';
-import { Nullable } from '../../../utils/Utils';
+import type { Nullable } from '../../../utils/Utils';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
 import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { Vector3 } from '../../../math/Vector3';

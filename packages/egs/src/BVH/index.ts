@@ -1,2 +1,3 @@
-export { BVHStrategyType, BVHBuilderData, BVH, BVHRaw, BVHBuilder } from './Impl';
+export { BVHStrategyType,BVHBuilder } from './Impl';
+export type { BVHBuilderData,BVH,BVHRaw } from './Impl';
 export { createMeshBVH, MeshBVH } from './MeshBVH';

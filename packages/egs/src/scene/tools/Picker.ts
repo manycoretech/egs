@@ -1,4 +1,4 @@
-import { Intersection, Raycaster } from './Raycaster';
+import { type Intersection, Raycaster } from './Raycaster';
 import { Drawable } from '../drawables/Drawable';
 import { Vector2 } from '../../math/Vector2';
 import { TypeAssert } from './TypeAssert';

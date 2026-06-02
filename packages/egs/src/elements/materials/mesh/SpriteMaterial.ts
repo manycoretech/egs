@@ -1,11 +1,11 @@
 import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { Material, MaterialParameters, ConvertMaterialParameters } from '../Material';
+import { Material, type MaterialParameters, type ConvertMaterialParameters } from '../Material';
 import { Serializer, Deserializer } from '../../../utils/Serialization';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { Utils, Nullable } from '../../../utils/Utils';
+import { Utils, type Nullable } from '../../../utils/Utils';
 import { Sprite } from '../../../scene/drawables/Sprite';
 import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { readonlyMath } from '../../../math/Readonly';

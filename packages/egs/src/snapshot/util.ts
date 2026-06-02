@@ -2,12 +2,12 @@ import { Vector3 } from '../math/Vector3';
 import { Matrix4 } from '../math/Matrix4';
 import { OrthographicCamera } from '../scene/cameras/OrthographicCamera';
 import { Box3 } from '../math/Box3';
-import { Size } from '../utils/Utils';
+import type { Size } from '../utils/Utils';
 import { RenderTarget, RenderAttachment } from '../elements/textures/RenderTarget';
 import { SamplerDescriptor } from '../elements/textures/Texture';
 import { WGLCapabilities } from '../renderer/webgl/WGLCapabilities';
 import { TextureViewDimension, getDepthFormat, TextureFormat, TextureDimension } from '../elements/textures/types';
-import { IRenderer } from '../renderer/IRenderer';
+import type { IRenderer } from '../renderer/IRenderer';
 
 /**
  * Bounding strategy used to frame snapshot targets.

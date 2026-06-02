@@ -3,7 +3,7 @@ import { Material } from '../../../elements/materials/Material';
 import { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry';
 import { logger } from '../../../utils/Logger';
 import { GeometryBase } from '../../../elements/geometries/containers/GeometryBase';
-import { Nullable } from '../../../utils/Utils';
+import type { Nullable } from '../../../utils/Utils';
 
 export interface MergeDrawcallSource<
     T extends Drawable,

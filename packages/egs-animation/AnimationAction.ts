@@ -1,9 +1,9 @@
 import { Drawable, EventType, Material, MeshPhongMaterial, Object3D, Vector2 } from '@qunhe/egs';
-import { AnimationClip, Blend, Loop } from './type';
+import { type AnimationClip, Blend, Loop } from './type';
 import { Interpolant } from './interpolants/Interpolant';
 import { PropertyMixer } from './PropertyMixer';
 import { parseTrackPath, createInterpolant } from './utils';
-import { ISkinnedMesh } from './Skeleton';
+import { type ISkinnedMesh } from './Skeleton';
 import { AnimationMixer } from './AnimationMixer';
 
 export interface ActionCtx {

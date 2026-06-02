@@ -2,14 +2,14 @@
 
 declare let self: ServiceWorkerGlobalScope;
 
-import { TaskType, SendMessage, TaskStatus, ReceiveMessage } from './WorkerMessage';
+import { TaskType, type SendMessage, TaskStatus, type ReceiveMessage } from './WorkerMessage';
 import { SplatFileType, sortSplats, SplatPackType } from './utils';
 import { SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
-import { ISplatData } from './splat/utils';
+import type { ISplatData } from './splat/utils';
 import { KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, EszFile } from './file';
-import { IFile, NUM_F_REST_TO_SH_DEGREE } from './file/utils';
-import { SogMetadata } from './splat/SogSplatData';
-import { SogMetadataV1, SogMetadataV2 } from './file/sog';
+import { type IFile, NUM_F_REST_TO_SH_DEGREE } from './file/utils';
+import type { SogMetadata } from './splat/SogSplatData';
+import type { SogMetadataV1,SogMetadataV2 } from './file/sog';
 
 let writer: WritableStreamDefaultWriter<Uint8Array> | undefined;
 self.onmessage = async (event: ExtendableMessageEvent) => {

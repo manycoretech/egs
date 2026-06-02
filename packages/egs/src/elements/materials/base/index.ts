@@ -4,9 +4,9 @@ import type { ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuil
 import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { materialProperty } from '../../../ContentAPI';
-import { ReadonlyVector3 } from '../../../math/Vector3';
+import type { ReadonlyVector3 } from '../../../math/Vector3';
 import { readonlyMath } from '../../../math/Readonly';
-import { ReadonlyVector4 } from '../../../math/Vector4';
+import type { ReadonlyVector4 } from '../../../math/Vector4';
 import { WebGLShaderDataType } from '../../../..';
 
 export abstract class JsNoImplMaterial extends Material {

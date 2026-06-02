@@ -3,7 +3,7 @@ import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/Materi
 import { cubePass, cubeTarget, pass, target } from '../../rendergraph/NodeMakers';
 import { iter } from '../../utils/Utils';
 import { DrawcallListClassifyList, ProjectedDrawcallList } from '../../scene/tools/DrawcallList';
-import { PipelinePlugin, PipelineContext, DrivenCullingConfig } from './PipelinePlugin';
+import { PipelinePlugin, type PipelineContext, type DrivenCullingConfig } from './PipelinePlugin';
 import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
 import { RenderGraph } from '../../rendergraph/RenderGraph';
 import { Shadow } from '../../scene/shadows/Shadow';

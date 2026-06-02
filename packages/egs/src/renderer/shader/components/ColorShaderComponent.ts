@@ -1,12 +1,12 @@
 import { ShaderComponent } from '../Shader';
-import { Nullable } from '../../../utils/Utils';
+import type { Nullable } from '../../../utils/Utils';
 import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
 import { WGLProgram } from '../../webgl/WGLProgram';
 import { Serializer, Deserializer } from '../../../utils/Serialization';
 import { Texture2D } from '../../../elements/textures/Texture2D';
 import { readonlyMath } from '../../../math/Readonly';
-import { ReadonlyColor } from '../../../math/Color';
+import type { ReadonlyColor } from '../../../math/Color';
 import { materialProperty } from '../../../ContentAPI';
 import { TextureV2 } from '../../../elements/textures/TextureV2';
 

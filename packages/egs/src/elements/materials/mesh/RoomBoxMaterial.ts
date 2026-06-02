@@ -1,4 +1,4 @@
-import { MaterialParameters, copyItem } from '../Material';
+import { type MaterialParameters, copyItem } from '../Material';
 import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';

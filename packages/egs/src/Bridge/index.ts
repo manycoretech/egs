@@ -1,4 +1,4 @@
-import { ContentAPI, registerContentAPI, unregisterContentAPI, ContentBridge, getMaterialProperties, getMaterialShaderComponents, getLightProperties, hasManagedContentAPI, ManagedContentBridge } from '../ContentAPI';
+import { type ContentAPI, registerContentAPI, unregisterContentAPI, ContentBridge, getMaterialProperties, getMaterialShaderComponents, getLightProperties, hasManagedContentAPI, ManagedContentBridge } from '../ContentAPI';
 import { BufferAttribute } from '../elements/attributes/BufferAttribute';
 import { Texture } from '../elements/textures/Texture';
 import { Texture2D } from '../elements/textures/Texture2D';
