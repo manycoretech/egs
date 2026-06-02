@@ -17,8 +17,10 @@ export type PatternShaderComponentParameter<T extends TextureV2 | Texture2D = Te
 
 const keys = ['pattern', 'scale', 'offset', 'textureSize', 'screenSpaceEnabled', 'overrideSrcColor'];
 
-// SpottedShaderComponent controls the use of spotted effect.
-// This is coming from outside frontend team.
+/**
+ * SpottedShaderComponent controls the use of spotted effect.
+ * This is coming from outside.
+ */
 export class PatternShaderComponent<T extends TextureV2 | Texture2D = Texture2D> extends ShaderComponent {
     constructor() {
         super();

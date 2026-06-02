@@ -12,7 +12,7 @@ export class SceneElementRefManager {
     private lastSyncedDrawableRefGeometry: Map<Drawable, GeometryBase> = new Map();
     private geometryUsedByDrawable: RefObjectMap<GeometryBase, Drawable> = new RefObjectMap();
 
-    public destroy() {
+    destroy() {
         this.lastSyncedDrawableRefMaterial.forEach((_, d) => {
             d.off(MaterialPropertyChangeEvent, this.onMaterialChanged);
         });
@@ -45,7 +45,7 @@ export class SceneElementRefManager {
         });
     };
 
-    public removeDrawableGeometryRef(d: Drawable) {
+    removeDrawableGeometryRef(d: Drawable) {
         const lastSynced = this.lastSyncedDrawableRefGeometry.get(d);
         if (lastSynced !== undefined) {
             lastSynced.off(GeometryShapeChanged, this.onGeometryShapeChanged);
@@ -55,7 +55,7 @@ export class SceneElementRefManager {
         }
     }
 
-    public removeDrawableMaterialRef(d: Drawable) {
+    removeDrawableMaterialRef(d: Drawable) {
         const lastSynced = this.lastSyncedDrawableRefMaterial.get(d);
         if (lastSynced !== undefined) {
             lastSynced.forEach(m => {
@@ -66,7 +66,7 @@ export class SceneElementRefManager {
         }
     }
 
-    public createDrawableGeometryRef(d: Drawable) {
+    createDrawableGeometryRef(d: Drawable) {
         if (!this.geometryUsedByDrawable.has(d.geometry)) {
             d.geometry.on(GeometryShapeChanged, this.onGeometryShapeChanged);
             d.geometry.on(GeometryContentChanged, this.onGeometryContentChanged);
@@ -75,7 +75,7 @@ export class SceneElementRefManager {
         this.geometryUsedByDrawable.add(d.geometry, d);
     }
 
-    public createDrawableMaterialRef(d: Drawable) {
+    createDrawableMaterialRef(d: Drawable) {
         this.lastSyncedDrawableRefMaterial.set(d, d.getMaterials().slice());
         d.forEachMaterial(m => {
             m.on(MaterialPropertyChangeEvent, this.onMaterialChanged);

@@ -9,26 +9,26 @@ import { Texture } from '../../textures/Texture';
 
 export class SSAOBlurPassMaterial extends PassQuadMaterialBase {
     @materialProperty()
-    public map: Texture;
+    map: Texture;
     @materialProperty()
-    public depthMap: Texture;
+    depthMap: Texture;
     @materialProperty()
-    public normalMap: Texture;
+    normalMap: Texture;
     @materialProperty()
-    public axis = readonlyMath.vec2(0, 0);
+    axis = readonlyMath.vec2(0, 0);
     @materialProperty()
-    public weights: number[];
+    weights: number[];
     @materialProperty()
-    public texelSize = readonlyMath.vec2(1, 1);
+    texelSize = readonlyMath.vec2(1, 1);
     @materialProperty()
-    public cameraNear = 1.0;
+    cameraNear = 1.0;
     @materialProperty()
-    public cameraFar = 1000.0;
+    cameraFar = 1000.0;
     @materialProperty()
-    public edgeSharpness = 1.2;
+    edgeSharpness = 1.2;
     private KERNEL_RADIUS: number;
 
-    public className() {
+    className() {
         return 'SSAOBlurPassMaterial';
     }
 
@@ -47,11 +47,11 @@ export class SSAOBlurPassMaterial extends PassQuadMaterialBase {
         this.notifyRecompileShader();
     }
 
-    public setTexelSize(width: number, height: number) {
+    setTexelSize(width: number, height: number) {
         this.texelSize = readonlyMath.vec2(1 / width, 1 / height);
     }
 
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setTexture2D('map', this.map);
         program.setTexture2D('depthMap', this.depthMap);
         program.setUniform('axis', this.axis);
@@ -62,7 +62,7 @@ export class SSAOBlurPassMaterial extends PassQuadMaterialBase {
         program.setUniform('edgeSharpness', this.edgeSharpness);
     }
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         b
             .addFragDefine(`#define KERNEL_RADIUS ${this.KERNEL_RADIUS}`)
             .addUniform('map', WebGLShaderDataType.Sampler2D)

@@ -59,6 +59,9 @@ export function createShaderInjectionsForDataTextureSchema<M extends Material>(s
     varyingCountMap.clear();
 }
 
+/**
+ * Creates a data texture from material schema values.
+ */
 export function createDataTexture<M extends Material>(schema: DataTextureSchema<M>, inputs: M[]): Texture2D {
     const imageWidth = _Math.ceilPowerOfTwo(inputs.length);
     const imageHeight = _Math.ceilPowerOfTwo(schema.schema.length);

@@ -12,7 +12,13 @@ import { ContentBridge, hasManagedContentAPI, ManagedContentBridge } from '../..
 import { updateByGeometry } from '../operators/FromGeometry';
 import { MeshBVH } from '../../../BVH';
 
+/**
+ * Event emitted when a buffer geometry is disposed.
+ */
 export const GeometryDisposeEvent = new EventType<BufferGeometryBase>();
+/**
+ * Event emitted when a buffer geometry attribute is added, removed, or replaced.
+ */
 export const GeometryAttributeChangedEvent = new EventType<{ geometry: BufferGeometryBase, attributeName: string, newValue: Nullable<BufferAttribute>, oldValue: Nullable<BufferAttribute>, update: boolean }>();
 
 const vector = new Vector3();
@@ -33,10 +39,16 @@ export interface BufferRange {
 }
 
 // split a whole buffer geometry into different group to different materials
+/**
+ * Draw range within a buffer geometry together with its material index.
+ */
 export interface BufferGroup extends BufferRange {
     materialIndex: number;
 }
 
+/**
+ * Buffer attribute type used to store geometry indices.
+ */
 export type IndexBufferAttribute = BufferAttribute<Uint16Array | Uint32Array>;
 
 let bufferGeometryId = 1; // BufferGeometry uses odd numbers as Id
@@ -50,27 +62,27 @@ export abstract class BufferGeometryBase extends GeometryBase {
     /**
      * The name of viewer, which could be empty.
      */
-    public name = '';
+    name = '';
     /**
      * The type of this instance.
      * This will be give in extended class.
      */
-    public type = 'BufferGeometry';
+    type = 'BufferGeometry';
     /**
      * Flag to indicate the type of this class.
      * This value should not be changed by user.
      */
-    public isBufferGeometry = true;
+    isBufferGeometry = true;
     /**
      * This object is used to record all parameters which are set when instance is initialized.
      * But, change the value of this object may not change the geometry directly.
      */
-    public parameters = {};
+    parameters = {};
     /**
      * Use BVH to accelerate rendering.
      * This value usually dose not need you to change it, it is built by the engine automatically.
      */
-    public meshBVH?: MeshBVH;
+    meshBVH?: MeshBVH;
     /**
      * @internal
      */
@@ -83,7 +95,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * This should be set by {@link setIndex| setIndex()} to avoid error.
      * @defaultValue `null`
      */
-    public _index: Nullable<IndexBufferAttribute> = null;
+    _index: Nullable<IndexBufferAttribute> = null;
 
     get index(): IndexBufferAttribute { // TODO: null type
         return this._index!;
@@ -101,17 +113,17 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * @tips It's better to use {@link addAttribute| addAttribute() } or {@link setAttribute| setAttribute() } to change this.
      * @remarks See {@link BufferAttribute| BufferAttribute} for more details.
      */
-    public attributes: { [index: string]: BufferAttribute } = {};
+    attributes: { [index: string]: BufferAttribute } = {};
     /**
      * @internal
      * */
-    public getAttributes(): Readonly<{ [index: string]: BufferAttribute }> {
+    getAttributes(): Readonly<{ [index: string]: BufferAttribute }> {
         return this.attributes;
     }
     /**
      * @internal
      */
-    public _attributeBindMap: Record<string, string> = {};
+    _attributeBindMap: Record<string, string> = {};
     get position() {
         return this.attributes.position;
     }
@@ -132,28 +144,28 @@ export abstract class BufferGeometryBase extends GeometryBase {
     /**
      * @internal
      */
-    public getGroups(): ReadonlyArray<Readonly<BufferGroup>> {
+    getGroups(): ReadonlyArray<Readonly<BufferGroup>> {
         return this.groups;
     }
 
     /**
      * get group at index
      */
-    public getGroup(index: number): BufferGroup | undefined {
+    getGroup(index: number): BufferGroup | undefined {
         return this.groups[index];
     }
 
     /**
      * Split the data into different groups.
      */
-    public setGroup(group: BufferGroup, index: number): void {
+    setGroup(group: BufferGroup, index: number): void {
         this.groups[index] = group;
         ContentBridge.bufferGeometrySetGroup(this, index, group);
     }
     /**
      * set entire groups
      */
-    public setGroups(groups: BufferGroup[]) {
+    setGroups(groups: BufferGroup[]) {
         this.groups = groups;
         ContentBridge.bufferGeometryClearGroups(this);
         this.groups.forEach((g, index) => {
@@ -164,7 +176,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
     /**
      * push a group
      */
-    public pushGroup(group: BufferGroup) {
+    pushGroup(group: BufferGroup) {
         this.groups.push(group);
         ContentBridge.bufferGeometrySetGroup(this, this.groups.length - 1, group);
         return this;
@@ -173,7 +185,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * Split geometry data to a new group.
      * @remarks See {@link groups| groups} for more details.
      */
-    public addGroup(start: number, count: number, materialIndex?: number): void {
+    addGroup(start: number, count: number, materialIndex?: number): void {
         this.pushGroup({
             start,
             count,
@@ -183,7 +195,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
     /**
      * Clean all objects in the {@link groups| groups}.
      */
-    public clearGroups(): void {
+    clearGroups(): void {
         this.groups = [];
         ContentBridge.bufferGeometryClearGroups(this);
 
@@ -194,14 +206,14 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * @deprecated
      * @defaultValue `{ start: 0, count: Infinity }` All data will be uploaded.
      */
-    public drawRange: BufferRange = { start: 0, count: Infinity };
+    drawRange: BufferRange = { start: 0, count: Infinity };
 
     protected boundingBox: Nullable<Box3> = null;
     protected boundingSphere: Nullable<Sphere> = null;
     /**
      * If {@link boundingBox| boundingBox} is null, it will be {@link computeBoundingBox| calculated} a new one.
      */
-    public getBoundingBox() {
+    getBoundingBox() {
         if (this.boundingBox === null) {
             this.computeBoundingBox();
         }
@@ -210,7 +222,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
     /**
      * If {@link boundingSphere| boundingSphere} is null, it will be {@link computeBoundingSphere| calculated} a new one.
      */
-    public getBoundingSphere() {
+    getBoundingSphere() {
         if (this.boundingSphere === null) {
             this.computeBoundingSphere();
         }
@@ -219,7 +231,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
     /**
      * Clear the bounding box and sphere and recalculate them later.
      */
-    public notifyShapeChanged() {
+    notifyShapeChanged() {
         super.notifyShapeChanged();
         this.boundingBox = null;
         this.boundingSphere = null;
@@ -232,7 +244,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
     /**
      * Generate a hash key according to {@link index| index} and all {@link attributes| attributes}.
      */
-    public getAttributeLayoutKey(): string {
+    getAttributeLayoutKey(): string {
         let result = '';
         if (this.index) {
             result += this.index.getLayoutKey();
@@ -249,44 +261,44 @@ export abstract class BufferGeometryBase extends GeometryBase {
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'BufferGeometry';
     }
     /**
      * Clean old data of engine and load new data in next update.
      */
-    public attributeChanged() {
+    attributeChanged() {
         this.freeGPU();
     }
     /**
      * Return current instance of this class.
      */
-    public getBufferGeometry() {
+    getBufferGeometry() {
         return this;
     }
     /**
      * Return current instance of this class.
      */
-    public getLineBufferGeometry() {
+    getLineBufferGeometry() {
         return this;
     }
     /**
      * Return the instance of {@link index| index}.
      */
-    public getIndex(): IndexBufferAttribute {
+    getIndex(): IndexBufferAttribute {
         return this.index!;
     }
     /**
      * Call this method to let engine refresh data of {@link meshBVH| meshBVH}.
      */
-    public onAttributeUpdate(): void {
+    onAttributeUpdate(): void {
         this.notifyShapeChanged();
     }
     /**
      * Use this method to set new {@link index| index} for geometry.
      * @param {IndexBufferAttribute | number[]} index source data of the index.
      */
-    public setIndex(index: IndexBufferAttribute | number[] | TypedArray) {
+    setIndex(index: IndexBufferAttribute | number[] | TypedArray) {
         if (index instanceof BufferAttribute) {
             this.index = index;
         } else {
@@ -296,7 +308,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
         return this;
     }
 
-    public addAttribute(name: string, attribute: BufferAttribute) {
+    addAttribute(name: string, attribute: BufferAttribute) {
         const oldValue = this.attributes[name];
         ContentBridge.bufferGeometrySetAttribute(this, name, attribute);
         this.attributes[name] = attribute;
@@ -311,14 +323,14 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * @param {string} name the name of data such as position, uv and normal.
      * @param {BufferAttribute} attribute source data. see {@link BufferAttribute| BufferAttribute} for more details.
      */
-    public setAttribute(name: string, attribute: BufferAttribute) {
+    setAttribute(name: string, attribute: BufferAttribute) {
         return this.addAttribute(name, attribute);
     }
     /**
      * Get specified {@link attributes| attributes} from geometry.
      * @param {string} name the name of target attributes.
      */
-    public addOrSetAttribute(name: string, array: TypedArray, itemSize: number) {
+    addOrSetAttribute(name: string, array: TypedArray, itemSize: number) {
         const attribute = this.getAttribute(name);
         if (attribute) {
             attribute.setArray(array);
@@ -329,19 +341,19 @@ export abstract class BufferGeometryBase extends GeometryBase {
         }
     }
 
-    public getAttribute(name: string): BufferAttribute | undefined {
+    getAttribute(name: string): BufferAttribute | undefined {
         return this.attributes[name];
     }
     /**
      * Remove specified {@link attributes| attributes} from geometry.
      * @param {string} name the name of target attributes.
      */
-    public removeAttribute(name: string) {
+    removeAttribute(name: string) {
         delete this.attributes[name];
         return this;
     }
 
-    public removeAndDestroyAttribute(name: string) {
+    removeAndDestroyAttribute(name: string) {
         if (this.attributes[name]) {
             this.attributes[name].destroy();
         }
@@ -352,7 +364,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * Find the group which the vertex belong to.
      * @param {number} index Queried vertex index.
      */
-    public getGroupByVertexIndex(index: number): {
+    getGroupByVertexIndex(index: number): {
         group: BufferGroup;
         groupIndex: number;
     } {
@@ -372,7 +384,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * Change the value of {@link drawRange| drawRange}.
      * @deprecated
      */
-    public setDrawRange(start: number, count: number): void {
+    setDrawRange(start: number, count: number): void {
         this.drawRange.start = start;
         this.drawRange.count = count;
     }
@@ -396,7 +408,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * Computes bounding box according to vertexes, updating boundingBox attribute.
      * Bounding boxes aren't computed by default. They need to be explicitly computed, otherwise they are null.
      */
-    public computeBoundingBox(): void {
+    computeBoundingBox(): void {
         if (this.checkRefreshBoundingBoxFast()) {
             return;
         }
@@ -421,7 +433,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * Computes bounding sphere according to vertexes, updating boundingSphere attribute.
      * Bounding spheres aren't computed by default. They need to be explicitly computed, otherwise they are null.
      */
-    public computeBoundingSphere(): void {
+    computeBoundingSphere(): void {
         if (this.checkRefreshBoundingSphereFast()) {
             return;
         }
@@ -460,7 +472,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * This method need override in derived classes to copy extended data.
      * @param {Object3D} source the data source.
      */
-    public copy(source: BufferGeometryBase): BufferGeometryBase {
+    copy(source: BufferGeometryBase): BufferGeometryBase {
         let name, i, l;
 
         // reset
@@ -513,7 +525,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
         return this;
     }
 
-    public _computeGroups(geometry: Geometry): void {
+    _computeGroups(geometry: Geometry): void {
         let group: BufferGroup | undefined = undefined;
         const groups: BufferGroup[] = [];
         let materialIndex = 0;
@@ -540,7 +552,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
     /**
      * UUID of this BufferGeometries instance. This gets automatically assigned, so this shouldn't be edited.
      */
-    public getUUID() {
+    getUUID() {
         return this.uuid;
     }
     /**
@@ -548,7 +560,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * @param {Serializer} ctx this parameter has not supported external Serializer yet.
      * It may cause that this method can not be used directly.
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<BufferGeometry>(['name', 'index']);
         ctx.putRaw('groups', ctx.deepClone(this.groups));
         ctx.putRaw('parameters', ctx.deepClone(this.parameters));
@@ -566,7 +578,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
      * @param {Deserializer} ctx this parameter has not supported external Deserializer yet.
      * It may cause that this method can not be used directly.
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         const data = ctx.readRaw('data');
         // support old data(convert geometry to buffer geometry)
         if (data && data.faces !== undefined) {
@@ -610,17 +622,17 @@ export abstract class BufferGeometryBase extends GeometryBase {
     /**
      * Clear the current geometry's data in memory.
      */
-    public freeGPU() {
+    freeGPU() {
         this.emit(GeometryDisposeEvent, this);
         ContentBridge.bufferGeometryFreeGPU(this);
     }
 
-    public destroy() {
+    destroy() {
         super.destroy();
         ContentBridge.bufferGeometryDestroy(this as any);
     }
 
-    public destroyAttributes() {
+    destroyAttributes() {
         const attributes = Object.values(this.attributes);
         for (let i = 0; i < attributes.length; i++) {
             attributes[i].destroy();
@@ -630,7 +642,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
         }
     }
 
-    public freeAttributesGpuResource() {
+    freeAttributesGpuResource() {
         const attributes = Object.values(this.attributes);
         for (let i = 0; i < attributes.length; i++) {
             attributes[i].freeGPU();
@@ -640,17 +652,17 @@ export abstract class BufferGeometryBase extends GeometryBase {
         }
     }
 
-    public destroyAllResourcesOwned() {
+    destroyAllResourcesOwned() {
         this.destroyAttributes();
         this.destroy();
     }
 
-    public freeAllGpuResourceOwned() {
+    freeAllGpuResourceOwned() {
         this.freeAttributesGpuResource();
         this.freeGPU();
     }
 
-    public forceCastTopology<R extends Topology>(): BufferGeometry<R> {
+    forceCastTopology<R extends Topology>(): BufferGeometry<R> {
         return this as any as BufferGeometry<R>;
     }
 }
@@ -664,18 +676,33 @@ enum PrimitiveTopology {
 }
 
 interface Topology { __topologyTypeMark: PrimitiveTopology }
+/**
+ * Topology marker for triangle-list buffer geometry.
+ */
 export class TriangleList implements Topology { __topologyTypeMark: PrimitiveTopology.Triangle; __tl: boolean; }
+/**
+ * Topology marker for line-list buffer geometry.
+ */
 export class LineList implements Topology { __topologyTypeMark: PrimitiveTopology.Line; __ll: boolean; }
+/**
+ * Topology marker for line-strip buffer geometry.
+ */
 export class LineStrip implements Topology { __topologyTypeMark: PrimitiveTopology.LineStrip; __ls: boolean; }
+/**
+ * Topology marker for point-list buffer geometry.
+ */
 export class PointList implements Topology { __topologyTypeMark: PrimitiveTopology.Point; __pl: boolean; }
 
+/**
+ * GPU-friendly geometry container backed by buffer attributes.
+ */
 export class BufferGeometry<T extends Topology = TriangleList> extends BufferGeometryBase {
     __topologyMark: T;
 
     /**
     * Create a clone of this instance.
     */
-    public clone(): BufferGeometry<T> {
+    clone(): BufferGeometry<T> {
         return new BufferGeometry().copy(this) as BufferGeometry<T>;
     }
 }

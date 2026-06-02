@@ -5,14 +5,17 @@ import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPo
 import { materialProperty } from '../../../ContentAPI';
 import { SceneMaterial } from '../base';
 
+/**
+ * Material that shades meshes by their normals.
+ */
 export class MeshNormalMaterial extends SceneMaterial {
-    public className() {
+    className() {
         return 'MeshNormalMaterial';
     }
     @materialProperty()
-    public isUsingWorldSpace = true;
+    isUsingWorldSpace = true;
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         b.addVarying(ShaderVaryingTypes.fragNormal)
             .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = vec4((vNormal + vec3(1.))/ 2., 1.0);');
 
@@ -23,13 +26,13 @@ export class MeshNormalMaterial extends SceneMaterial {
         }
     }
 
-    public updateShadingUniforms(_: WGLProgram) { }
+    updateShadingUniforms(_: WGLProgram) { }
 
-    public clone() {
+    clone() {
         return new MeshNormalMaterial().copy(this);
     }
 
-    public copy(m: MeshNormalMaterial) {
+    copy(m: MeshNormalMaterial) {
         this.isUsingWorldSpace = m.isUsingWorldSpace;
         return this;
     }

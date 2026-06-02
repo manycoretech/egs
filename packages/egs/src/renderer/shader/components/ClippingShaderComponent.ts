@@ -11,8 +11,11 @@ import { ContentBridge, materialProperty } from '../../../ContentAPI';
 
 const viewNormalMatrix = new Matrix3();
 
+/**
+ * Shader component that applies clipping-plane logic to a material.
+ */
 export class ClippingShaderComponent extends SharedShaderComponent {
-    public className() {
+    className() {
         return 'ClippingShaderComponent';
     }
 
@@ -37,7 +40,7 @@ export class ClippingShaderComponent extends SharedShaderComponent {
         this.updateClipping();
     }
 
-    public updateClipping() {
+    updateClipping() {
         if (this._clippingPlanes.length * 4 !== this.transformedPlanes.length) {
             this.broadcastToRecompile();
         }
@@ -53,16 +56,16 @@ export class ClippingShaderComponent extends SharedShaderComponent {
         return this._clippingPlanes.length;
     }
 
-    public copy(other: ClippingShaderComponent) {
+    copy(other: ClippingShaderComponent) {
         this._clippingPlanes = other._clippingPlanes.slice();
         return this;
     }
 
-    public clone() {
+    clone() {
         return new ClippingShaderComponent().copy(this);
     }
 
-    public updatePlane(camera: Camera3D) {
+    updatePlane(camera: Camera3D) {
         const viewMatrix = camera.matrixWorldInverse;
         viewNormalMatrix.getNormalMatrix(viewMatrix);
         this._clippingPlanes.forEach((p, i) => {
@@ -74,7 +77,7 @@ export class ClippingShaderComponent extends SharedShaderComponent {
         });
     }
 
-    public extendShaderShape(builder: ShaderBuilder): void {
+    extendShaderShape(builder: ShaderBuilder): void {
         if (this.planeCount === 0) {
             return;
         }
@@ -88,10 +91,10 @@ export class ClippingShaderComponent extends SharedShaderComponent {
     }
             `);
     }
-    public extendShaderShading(_builder: ShaderBuilder): void {
+    extendShaderShading(_builder: ShaderBuilder): void {
     }
 
-    public updateShapeUniforms(program: WGLProgram) {
+    updateShapeUniforms(program: WGLProgram) {
         if (this.planeCount === 0) {
             return;
         }
@@ -100,14 +103,14 @@ export class ClippingShaderComponent extends SharedShaderComponent {
         program.setUniform(`${this.uniformName}[0]`, this.transformedPlanes);
     }
 
-    public generateShaderKey() {
+    generateShaderKey() {
         return this._clippingPlanes.length + '';
     }
-    public computeShapeKey() {
+    computeShapeKey() {
         return this._clippingPlanes.length + '';
     }
 
-    public serialize(ctx: Serializer<any>): void {
+    serialize(ctx: Serializer<any>): void {
         const planesData = this._clippingPlanes.map(plane => {
             return {
                 normal: plane.normal.getSerializeData(),
@@ -116,7 +119,7 @@ export class ClippingShaderComponent extends SharedShaderComponent {
         });
         ctx.putRaw('clippingPlanes', planesData);
     }
-    public deserialize(ctx: Deserializer): void | Promise<void> {
+    deserialize(ctx: Deserializer): void | Promise<void> {
         const planesData = ctx.readRaw('clippingPlanes');
         if (planesData) {
             planesData.forEach((data: any) => {

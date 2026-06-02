@@ -38,23 +38,23 @@ export class DrivenShadingMaterial extends DrivenMaterial {
     outlineSolidColor: Color = new Color(1, 1, 1);
 
     @materialProperty()
-    public toonColor = new Color(1.0, 1.0, 1.0);
+    toonColor = new Color(1.0, 1.0, 1.0);
     @materialProperty()
-    public diffuseColor = new Color(0.12, 0.12, 0.12);
+    diffuseColor = new Color(0.12, 0.12, 0.12);
     @materialProperty()
-    public colorGradation = 24;
+    colorGradation = 24;
     @materialProperty()
-    public smoothnessMin = 0.32;
+    smoothnessMin = 0.32;
     @materialProperty()
-    public smoothnessMax = 0.34;
+    smoothnessMax = 0.34;
 
     @materialProperty()
-    public planarShadowMaxGroundHeight = 50.0;
+    planarShadowMaxGroundHeight = 50.0;
     @materialProperty()
-    public planarShadowMaxGroundThickness = 50.0;
+    planarShadowMaxGroundThickness = 50.0;
 
     @materialProperty()
-    public shadowMatrix: Matrix4 = new Matrix4();
+    shadowMatrix: Matrix4 = new Matrix4();
     @materialProperty()
-    public shadowIntensity = 0.5;
+    shadowIntensity = 0.5;
 }

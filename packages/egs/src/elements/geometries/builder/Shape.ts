@@ -14,7 +14,7 @@ export function shape(param: ShapeShapeParameter): BufferGeometry {
 }
 
 class ShapeBufferGeometry extends BufferGeometry {
-    public parameters: {
+    parameters: {
         shapes: Shape | Shape[],
         curveSegments: number
         flipY?: boolean

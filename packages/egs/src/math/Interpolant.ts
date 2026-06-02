@@ -9,19 +9,19 @@ export class Interpolant {
     /**
      * Array of positions.
      */
-    public parameterPositions: any;
+    parameterPositions: any;
     /**
      * Array of samples.
      */
-    public sampleValues: any;
+    sampleValues: any;
     /**
      * Number of samples.
      */
-    public valueSize: number;
+    valueSize: number;
     /**
      * Buffer to store the interpolation results.
      */
-    public resultBuffer: any;
+    resultBuffer: any;
     private _cacheIndex: number;
     private settings: Nullable<InterpolantSetting> = null; // optional, subclass-specific settings structure
     protected DefaultSettings_: InterpolantSetting = {
@@ -52,7 +52,7 @@ export class Interpolant {
     /**
      * Evaluate the interpolant at position `t`.
      */
-    public evaluate(t: number): any {
+    evaluate(t: number): any {
         const pp = this.parameterPositions;
         let i1 = this._cacheIndex,
             t1 = pp[i1],

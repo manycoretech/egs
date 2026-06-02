@@ -17,7 +17,7 @@ export function lathe(params: Partial<LatheShapeParameter>): BufferGeometry {
 }
 
 export class LatheBufferGeometry extends BufferGeometry {
-    public parameters: {
+    parameters: {
         points: Vector2[];
         segments: number;
         phiStart: number;

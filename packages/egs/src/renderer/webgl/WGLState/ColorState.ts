@@ -11,7 +11,7 @@ export class ColorState {
         this.setClear(0, 0, 0, 1);
     }
 
-    public setMask(red: boolean, green: boolean = red, blue: boolean = red, alpha: boolean = red): void {
+    setMask(red: boolean, green: boolean = red, blue: boolean = red, alpha: boolean = red): void {
         const currentColorMask = this.currentColorMask;
         if (
             currentColorMask[0] !== red ||
@@ -27,7 +27,7 @@ export class ColorState {
         }
     }
 
-    public setClear(r: number, g: number, b: number, a: number, premultipliedAlpha?: boolean): void {
+    setClear(r: number, g: number, b: number, a: number, premultipliedAlpha?: boolean): void {
         if (premultipliedAlpha === true) {
             r *= a;
             g *= a;
@@ -40,7 +40,7 @@ export class ColorState {
         }
     }
 
-    public reset() {
+    reset() {
         this.currentColorClear.set(-1, 0, 0, 0); // set to invalid state
     }
 }

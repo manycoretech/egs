@@ -9,27 +9,27 @@ export class RoundedRectangle extends Shape {
     /**
      * The X coordinate of the upper-left corner of the rounded rectangle.
      */
-    public x: number;
+    x: number;
     /**
      * The Y coordinate of the upper-left corner of the rounded rectangle.
      */
-    public y: number;
+    y: number;
     /**
      * The overall width of this rounded rectangle.
      */
-    public width: number;
+    width: number;
     /**
      * The overall height of this rounded rectangle.
      */
-    public height: number;
+    height: number;
     /**
      * Controls the radius of the rounded corners.
      */
-    public radius: number;
+    radius: number;
     /**
      * The type of the object, mainly used to avoid 'instanceof' checks.
      */
-    public type = 'RoundedRectangle';
+    type = 'RoundedRectangle';
     /**
      * @param x The X coordinate of the upper-left corner of the rounded rectangle
      * @param y The Y coordinate of the upper-left corner of the rounded rectangle
@@ -49,34 +49,34 @@ export class RoundedRectangle extends Shape {
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<RoundedRectangle>(['x', 'y', 'width', 'height', 'radius']);
     }
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<RoundedRectangle>(['x', 'y', 'width', 'height', 'radius']);
     }
     /**
      * The name of instance's class.
      */
-    public className(): string {
+    className(): string {
         return 'RoundedRectangle';
     }
     /**
      * Creates a clone of this Rounded Rectangle.
      * @return a copy of the rounded rectangle
      */
-    public clone(): RoundedRectangle {
+    clone(): RoundedRectangle {
         return new RoundedRectangle(this.x, this.y, this.width, this.height, this.radius);
     }
     /**
      * Add this roundedRectangle to drawing.
      */
-    public draw() {
+    draw() {
         const x = this.x;
         const y = this.y;
         const width = this.width;
@@ -101,7 +101,7 @@ export class RoundedRectangle extends Shape {
      * @param y The Y coordinate of the point to test.
      * @return Whether the x/y coordinates are within this Rounded Rectangle.
      */
-    public contains(x: number, y: number): boolean {
+    contains(x: number, y: number): boolean {
         if (this.width <= 0 || this.height <= 0) {
             return false;
         }

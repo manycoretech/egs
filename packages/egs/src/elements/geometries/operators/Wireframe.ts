@@ -12,7 +12,7 @@ export function createWireframe(geometry: GeometryBase): BufferGeometry<LineList
  * This can be used as a helper object to view a Geometry object as a wireframe.
  */
 export class WireframeBufferGeometry extends BufferGeometry<LineList> {
-    public type = 'WireframeBufferGeometry';
+    type = 'WireframeBufferGeometry';
     /**
      * @param geometry Any geometry object.
      */

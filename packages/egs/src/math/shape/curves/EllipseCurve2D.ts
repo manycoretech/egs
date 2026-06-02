@@ -5,16 +5,16 @@ import { Serializer, Deserializer } from '../../../utils/Serialization';
  * Creates a 2d curve in the shape of an ellipse. Setting the xRadius equal to the yRadius will result in a circle.
  */
 export class EllipseCurve2D extends Curve2D {
-    public aX: number;
-    public aY: number;
-    public xRadius: number;
-    public yRadius: number;
-    public aStartAngle: number;
-    public aEndAngle: number;
-    public aClockwise: boolean;
-    public aRotation: number;
-    public isEllipseCurve2D = true;
-    public divisions?: number;
+    aX: number;
+    aY: number;
+    xRadius: number;
+    yRadius: number;
+    aStartAngle: number;
+    aEndAngle: number;
+    aClockwise: boolean;
+    aRotation: number;
+    isEllipseCurve2D = true;
+    divisions?: number;
 
     /**
      * @param { number } aX The X center of the ellipse. Default is 0.
@@ -46,19 +46,19 @@ export class EllipseCurve2D extends Curve2D {
         this.divisions = divisions;
     }
 
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<EllipseCurve2D>(['aX', 'aY', 'xRadius', 'yRadius', 'aStartAngle', 'aEndAngle', 'aClockwise', 'aRotation']);
     }
 
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         ctx.reads<EllipseCurve2D>(['aX', 'aY', 'xRadius', 'yRadius', 'aStartAngle', 'aEndAngle', 'aClockwise', 'aRotation']);
     }
 
-    public className(): string {
+    className(): string {
         return 'EllipseCurve2D';
     }
 
-    public getPoints(divisions?: number) {
+    getPoints(divisions?: number) {
         if (divisions === undefined) {
             divisions = this.divisions;
         }
@@ -66,7 +66,7 @@ export class EllipseCurve2D extends Curve2D {
         return points;
     }
 
-    public getPoint(t: number, optionalTarget?: Vector2): Vector2 {
+    getPoint(t: number, optionalTarget?: Vector2): Vector2 {
         const point = optionalTarget || new Vector2();
         const twoPi = Math.PI * 2;
         let deltaAngle = this.aEndAngle - this.aStartAngle;
@@ -113,11 +113,11 @@ export class EllipseCurve2D extends Curve2D {
         return point.set(x, y);
     }
 
-    public clone() {
+    clone() {
         return new EllipseCurve2D().copy(this);
     }
 
-    public copy(source: EllipseCurve2D) {
+    copy(source: EllipseCurve2D) {
         super.copy(source);
         this.aX = source.aX;
         this.aY = source.aY;

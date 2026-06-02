@@ -15,7 +15,7 @@ export class Quaternion {
      * Check the type whether it belongs to Matrix3.
      * This value should not be changed by user.
      */
-    public isQuaternion = true;
+    isQuaternion = true;
 
     constructor(x?: number, y?: number, z?: number, w?: number) {
         this._x = x || 0;
@@ -26,7 +26,7 @@ export class Quaternion {
     /**
      * The function will be called when {@link _x| x}, {@link _y| y} {@link _z| z} and {@link _w| w} is changed.
      */
-    public onChangeCallback() { }
+    onChangeCallback() { }
 
     get x(): number {
         return this._x;
@@ -74,7 +74,7 @@ export class Quaternion {
      * @param qb The other quaternion rotation.
      * @param t interpolation factor in the closed interval [0, 1].
      */
-    public static slerp(qa: Quaternion, qb: Quaternion, qm: Quaternion, t: number): Quaternion {
+    static slerp(qa: Quaternion, qb: Quaternion, qm: Quaternion, t: number): Quaternion {
         return qm.copy(qa).slerp(qb, t);
     }
     /**
@@ -87,7 +87,7 @@ export class Quaternion {
      * @param srcOffset1 An offset into the array `src1`.
      * @param t Normalized interpolation factor (between 0 and 1).
      */
-    public static slerpFlat(dst: number[], dstOffset: number, src0: number[], srcOffset0: number, src1: number[], srcOffset1: number, t: number): void {
+    static slerpFlat(dst: number[], dstOffset: number, src0: number[], srcOffset0: number, src1: number[], srcOffset1: number, t: number): void {
         // fuzz-free, array-based Quaternion SLERP operation
         let x0 = src0[srcOffset0 + 0],
             y0 = src0[srcOffset0 + 1],
@@ -132,7 +132,7 @@ export class Quaternion {
     /**
      * Sets {@link x| x}, {@link y| y}, {@link z| z}, {@link w| w} properties of this quaternion.
      */
-    public set(x: number, y: number, z: number, w: number): Quaternion {
+    set(x: number, y: number, z: number, w: number): Quaternion {
         this._x = x;
         this._y = y;
         this._z = z;
@@ -143,13 +143,13 @@ export class Quaternion {
     /**
      * Creates a new Quaternion with identical {@link x| x}, {@link y| y},{@link z| z} and {@link w| w} properties to this one.
      */
-    public clone(): Quaternion {
+    clone(): Quaternion {
         return new Quaternion(this._x, this._y, this._z, this._w);
     }
     /**
      * Copies the {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} properties of {@link Quaternion| q} into this quaternion.
      */
-    public copy(quaternion: Quaternion): Quaternion {
+    copy(quaternion: Quaternion): Quaternion {
         this._x = quaternion.x;
         this._y = quaternion.y;
         this._z = quaternion.z;
@@ -160,7 +160,7 @@ export class Quaternion {
     /**
      * Sets this quaternion from the rotation specified by {@link Euler| Euler} angle.
      */
-    public setFromEuler(euler: Euler, update?: boolean): Quaternion {
+    setFromEuler(euler: Euler, update?: boolean): Quaternion {
         const x = euler.x;
         const y = euler.y;
         const z = euler.z;
@@ -237,7 +237,7 @@ export class Quaternion {
      * @param Axis is assumed to be normalized.
      * @param angle is in radians.
      */
-    public setFromAxisAngle(axis: Vector3, angle: number): Quaternion {
+    setFromAxisAngle(axis: Vector3, angle: number): Quaternion {
         // http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm
         // assumes axis is normalized
         const halfAngle = angle / 2;
@@ -254,7 +254,7 @@ export class Quaternion {
      * Adapted from the method {@link http://www.euclideanspace.com/maths/geometry/rotations/conversions/angleToQuaternion/index.htm| here}.
      * @param m a {@link Matrix4| Matrix4} of which the upper 3x3 of matrix is a pure {@link https://en.wikipedia.org/wiki/Rotation_matrix| rotation matrix}.
      */
-    public setFromRotationMatrix(m: Matrix4): Quaternion {
+    setFromRotationMatrix(m: Matrix4): Quaternion {
         // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
         // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
         const te = m._elements;
@@ -297,7 +297,7 @@ export class Quaternion {
      * Adapted from the method {@link http://lolengine.net/blog/2013/09/18/beautiful-maths-quaternion-from-vectors| here}.
      * {@link Vector3| vFrom} and {@link Vector3| vTo} are assumed to be normalized.
      */
-    public setFromUnitVectors(vFrom: Vector3, vTo: Vector3): Quaternion {
+    setFromUnitVectors(vFrom: Vector3, vTo: Vector3): Quaternion {
         // assumes direction vectors vFrom and vTo are normalized
         let r;
         const EPS = 0.000001;
@@ -321,7 +321,7 @@ export class Quaternion {
     /**
      * @internal
      */
-    public inverse(): Quaternion {
+    inverse(): Quaternion {
         // quaternion is assumed to have unit length
         return this.conjugate();
     }
@@ -329,7 +329,7 @@ export class Quaternion {
      * Returns the rotational conjugate of this quaternion. The conjugate of a quaternion
      * represents the same rotation in the opposite direction about the rotational axis.
      */
-    public conjugate(): Quaternion {
+    conjugate(): Quaternion {
         this._x *= - 1;
         this._y *= - 1;
         this._z *= - 1;
@@ -339,7 +339,7 @@ export class Quaternion {
     /**
      * Calculates the {@link https://en.wikipedia.org/wiki/Dot_product| dot product} of quaternions {@link Quaternion| v} and this one.
      */
-    public dot(v: Quaternion): number {
+    dot(v: Quaternion): number {
         return this._x * v._x + this._y * v._y + this._z * v._z + this._w * v._w;
     }
     /**
@@ -348,20 +348,20 @@ export class Quaternion {
      * This can be useful if you are comparing the lengths of two quaternions,
      * as this is a slightly more efficient calculation than {@link length| length}().
      */
-    public lengthSq(): number {
+    lengthSq(): number {
         return this._x * this._x + this._y * this._y + this._z * this._z + this._w * this._w;
     }
     /**
      * Computes the Euclidean length (straight-line length) of this quaternion, considered as a 4 dimensional vector.
      */
-    public length(): number {
+    length(): number {
         return Math.sqrt(this._x * this._x + this._y * this._y + this._z * this._z + this._w * this._w);
     }
     /**
      * Normalizes this quaternion - that is, calculated the quaternion that performs the same rotation as this one,
      * but has {@link length| length} equal to `1`.
      */
-    public normalize(): Quaternion {
+    normalize(): Quaternion {
         let l = this.length();
         if (l === 0) {
             this._x = 0;
@@ -381,20 +381,20 @@ export class Quaternion {
     /**
      * Multiplies this quaternion by {@link Quaternion| q}.
      */
-    public multiply(q: Quaternion): Quaternion {
+    multiply(q: Quaternion): Quaternion {
         return this.multiplyQuaternions(this, q);
     }
     /**
      * Pre-multiplies this quaternion by {@link Quaternion| q}.
      */
-    public premultiply(q: Quaternion): Quaternion {
+    premultiply(q: Quaternion): Quaternion {
         return this.multiplyQuaternions(q, this);
     }
     /**
      * Sets this quaternion to {@link Quaternion| a} x {@link Quaternion| b}.
      * Adapted from the method outlined {@link http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/code/index.htm| here}.
      */
-    public multiplyQuaternions(a: Quaternion, b: Quaternion): Quaternion {
+    multiplyQuaternions(a: Quaternion, b: Quaternion): Quaternion {
         // from http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/code/index.htm
         const qax = a._x, qay = a._y, qaz = a._z, qaw = a._w,
             qbx = b._x, qby = b._y, qbz = b._z, qbw = b._w;
@@ -417,7 +417,7 @@ export class Quaternion {
      * @param qb The other quaternion rotation.
      * @param t interpolation factor in the closed interval [0, 1].
      */
-    public slerp(qb: Quaternion, t: number): Quaternion {
+    slerp(qb: Quaternion, t: number): Quaternion {
         if (t === 0) {
             return this;
         }
@@ -471,7 +471,7 @@ export class Quaternion {
      * {@link Quaternion| v} to the equivalent properties of this quaternion to determine if they represent the same rotation.
      * @param v Quaternion that this quaternion will be compared to.
      */
-    public equals(quaternion: Quaternion): boolean {
+    equals(quaternion: Quaternion): boolean {
         return (quaternion._x === this._x) && (quaternion._y === this._y) && (quaternion._z === this._z) && (quaternion._w === this._w);
     }
     /**
@@ -479,7 +479,7 @@ export class Quaternion {
      * @param array array of format (x, y, z, w) used to construct the quaternion.
      * @param offset (optional) an offset into the array.
      */
-    public fromArray(array: ArrayLike<number>, offset?: number): Quaternion {
+    fromArray(array: ArrayLike<number>, offset?: number): Quaternion {
         if (offset === undefined) {
             offset = 0;
         }
@@ -495,7 +495,7 @@ export class Quaternion {
      * @param array An optional array to store the quaternion. If not specified, a new array will be created.
      * @param offset (optional) if specified, the result will be copied into this array.
      */
-    public toArray(array?: number[], offset?: number): number[] {
+    toArray(array?: number[], offset?: number): number[] {
         if (array === undefined) {
             array = [];
         }
@@ -511,7 +511,7 @@ export class Quaternion {
     /**
      * A method to call {@link onChangeCallback| onChangeCallback}.
      */
-    public onChange(callback: Function): Quaternion {
+    onChange(callback: Function): Quaternion {
         (this.onChangeCallback as any) = callback;
         return this;
     }

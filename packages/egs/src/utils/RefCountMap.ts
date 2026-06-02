@@ -4,11 +4,11 @@ interface RefC<T> {
 }
 
 export class RefCountMap<K, V>{
-    public map: Map<K, RefC<V>> = new Map();
+    map: Map<K, RefC<V>> = new Map();
 
-    public onValueRemove = (_v: V) => { };
+    onValueRemove = (_v: V) => { };
 
-    public getValue(key: K) {
+    getValue(key: K) {
         const record = this.map.get(key);
         if (record) {
             return record.item;
@@ -16,7 +16,7 @@ export class RefCountMap<K, V>{
         return;
     }
 
-    public add(key: K, value: V) {
+    add(key: K, value: V) {
         const old = this.map.get(key);
         if (old !== undefined) {
             old.count++;
@@ -27,7 +27,7 @@ export class RefCountMap<K, V>{
         }
     }
 
-    public delete(key: K) {
+    delete(key: K) {
         const old = this.map.get(key);
         if (old !== undefined) {
             if (old.count === 1) {
@@ -39,11 +39,11 @@ export class RefCountMap<K, V>{
         }
     }
 
-    public forEach(v: (value: V) => any) {
+    forEach(v: (value: V) => any) {
         this.map.forEach(r => v(r.item));
     }
 
-    public clear() {
+    clear() {
         this.forEach(v => this.onValueRemove(v));
         this.map.clear();
     }

@@ -6,6 +6,9 @@ import { HighlightGroup } from './fx/plugins/Highlight';
 import { SnapshotResult } from './snapshot/SnapshotResult';
 import { IRange } from './utils/Utils';
 
+/**
+ * Context object for viewport
+ */
 export interface IViewerContext {
     /**
      * @internal
@@ -17,6 +20,9 @@ export interface IViewerContext {
     snapshotRenderResult(range?: IRange): Promise<SnapshotResult> | undefined;
 }
 
+/**
+ * Creates a viewer context for a viewer and viewport.
+ */
 export function createViewerContext(viewer: Viewer, viewport: Viewport = viewer.defaultViewport): IViewerContext {
     return {
         viewer,

@@ -49,7 +49,7 @@ export class SnapshotRenderer {
         this.renderer = renderer;
         this.onRendererChanged(renderer);
     }
-    public destroy() {
+    destroy() {
         this.postPipeline.destroy();
         this.camera.destroy();
         this.defaultScene.destroy();
@@ -58,11 +58,11 @@ export class SnapshotRenderer {
     private postPipeline: PostPipeline;
     private pipelineConfig: DeprecatedPipelineConfig;
 
-    public backgroundColor = new Color();
-    public backgroundAlpha = 0;
-    public defaultAdjustMaxSideSize = 500;
-    public extraPaddingForEffect = 1;
-    public skipSceneVisible = false;
+    backgroundColor = new Color();
+    backgroundAlpha = 0;
+    defaultAdjustMaxSideSize = 500;
+    extraPaddingForEffect = 1;
+    skipSceneVisible = false;
 
     private camera = new OrthographicCamera();
     getCamera(): Readonly<OrthographicCamera> {
@@ -99,7 +99,7 @@ export class SnapshotRenderer {
     /**
      * @internal
      */
-    public onRendererChanged(renderer: IRenderer) {
+    onRendererChanged(renderer: IRenderer) {
         if (this.postPipeline) {
             this.postPipeline.updateRenderer(renderer);
             this.postPipeline.resetContentCache();
@@ -113,7 +113,7 @@ export class SnapshotRenderer {
     /**
      * Set RenderMode and AO effect for snapshot rendering.
      */
-    public setEffectConfig(
+    setEffectConfig(
         mode: RenderMode,
         isAOEnabled: boolean = false,
         isDeferredEnabled: boolean = false,
@@ -145,13 +145,13 @@ export class SnapshotRenderer {
         pipeline.resetContentCache();
     }
 
-    public setCameraLayer(layers: Layers) {
+    setCameraLayer(layers: Layers) {
         this.camera.layers.copy(layers);
     }
     /**
      * A function to define the width and height of snapshot.
      */
-    public resolutionAdjustor = (size: Size) => {
+    resolutionAdjustor = (size: Size) => {
         const max = this.defaultAdjustMaxSideSize;
         const sizeMax = Math.max(size.width, size.height);
         if (sizeMax > max) {
@@ -354,7 +354,7 @@ export class SnapshotRenderer {
     /**
      * @deprecated use `renderWithOverrideMaterialAsync` instead, sync function will unavailable in webgpu version
      */
-    public renderWithOverrideMaterial(object: Object3D, direction: SnapshotAxisDirection, material: Material, config?: SnapshotRenderConfig): SnapshotResult {
+    renderWithOverrideMaterial(object: Object3D, direction: SnapshotAxisDirection, material: Material, config?: SnapshotRenderConfig): SnapshotResult {
         logger.error('SnapshotRenderer.renderWithOverrideMaterial is deprecated, use renderWithOverrideMaterialAsync instead.');
         return this.renderWithOverrideMaterialImpl((renderer, target, range, box, camera) => {
             const resultBuffer = this.readPixels(renderer, target, range);
@@ -368,7 +368,7 @@ export class SnapshotRenderer {
         }, object, direction, material, config);
     }
 
-    public async renderWithOverrideMaterialAsync(object: Object3D, direction: SnapshotAxisDirection, material: Material, config?: SnapshotRenderConfig): Promise<SnapshotResult> {
+    async renderWithOverrideMaterialAsync(object: Object3D, direction: SnapshotAxisDirection, material: Material, config?: SnapshotRenderConfig): Promise<SnapshotResult> {
         if (this.renderer.rendererStatus.state === RendererState.Initializing) {
             await this.renderer.rendererStatus.initialized;
         }
@@ -388,7 +388,7 @@ export class SnapshotRenderer {
     /**
      * @deprecated use `renderAsync` instead, sync function will unavailable in webgpu version
      */
-    public render(object: Object3D, direction: SnapshotAxisDirection, scene?: Scene3D, config?: SnapshotRenderConfig): SnapshotResult {
+    render(object: Object3D, direction: SnapshotAxisDirection, scene?: Scene3D, config?: SnapshotRenderConfig): SnapshotResult {
         logger.error('SnapshotRenderer.render is deprecated, use renderAsync instead.');
         let userScene: Scene3D | undefined = scene;
         const enableBackup = new Map();
@@ -436,7 +436,7 @@ export class SnapshotRenderer {
         return result;
     }
 
-    public async renderAsync(object: Object3D, direction: SnapshotAxisDirection, scene?: Scene3D, config?: SnapshotRenderConfig): Promise<SnapshotResult> {
+    async renderAsync(object: Object3D, direction: SnapshotAxisDirection, scene?: Scene3D, config?: SnapshotRenderConfig): Promise<SnapshotResult> {
         if (this.renderer.rendererStatus.state === RendererState.Initializing) {
             await this.renderer.rendererStatus.initialized;
         }
@@ -556,7 +556,7 @@ export class SnapshotRenderer {
     /**
      * @deprecated use `renderCustomViewAsync` instead, sync function will unavailable in webgpu version
      */
-    public renderCustomView(object: Object3D | Object3D[], camera: Camera3D, resolution: Size): SnapshotResult {
+    renderCustomView(object: Object3D | Object3D[], camera: Camera3D, resolution: Size): SnapshotResult {
         logger.error('SnapshotRenderer.renderCustomView is deprecated, use renderCustomViewAsync instead.');
         return this.renderCustomViewImpl(target => {
             const resultBuffer = this.readPixels(this.renderer, target, { x: 0, y: 0, width: resolution.width, height: resolution.height });
@@ -567,7 +567,7 @@ export class SnapshotRenderer {
         }, object, camera, resolution);
     }
 
-    public async renderCustomViewAsync(object: Object3D | Object3D[], camera: Camera3D, resolution: Size): Promise<SnapshotResult> {
+    async renderCustomViewAsync(object: Object3D | Object3D[], camera: Camera3D, resolution: Size): Promise<SnapshotResult> {
         if (this.renderer.rendererStatus.state === RendererState.Initializing) {
             await this.renderer.rendererStatus.initialized;
         }

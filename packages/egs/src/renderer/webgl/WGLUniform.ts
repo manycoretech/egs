@@ -138,7 +138,7 @@ export class WGLUniform {
     private diff: Function;
     private copy: Function;
 
-    public static isCheckingDiff = true;
+    static isCheckingDiff = true;
     constructor(gl: WebGLRenderingContext | WebGL2RenderingContext, name: string, type: WebGLShaderDataType, location: WebGLUniformLocation) {
         this.name = name;
         this.gl = gl;
@@ -148,7 +148,7 @@ export class WGLUniform {
         this.copy = getCorrectCopy(type);
     }
 
-    public upload(value: UniformUploadTypes): void {
+    upload(value: UniformUploadTypes): void {
         if (this.currentData === undefined) {
             if (typeof value === 'number' || typeof value === 'boolean') {
                 this.currentData = value;

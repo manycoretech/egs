@@ -14,6 +14,9 @@ import { ContentBridge } from '../../ContentAPI';
 import { singleton } from '../../utils/Utils';
 import { Serializer, Deserializer } from '../../utils/Serialization';
 
+/**
+ * Mipmapped texture data for one cube-map side.
+ */
 export type TextureCubeSide = TextureMipmapGroup<Texture2DCommonLayer>;
 
 const urls = [px, nx, py, ny, pz, nz];

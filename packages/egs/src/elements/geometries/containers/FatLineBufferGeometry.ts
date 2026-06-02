@@ -19,7 +19,7 @@ export class FatLineBufferGeometry extends InstancedBufferGeometry {
      * Used to check type of this or extended instance.
      * This value should not be changed by user.
      */
-    public isLineSegmentsGeometry = true;
+    isLineSegmentsGeometry = true;
     private _fallback_geometry: BufferGeometry<LineList>;
 
     get fallback(): BufferGeometry<LineList> {
@@ -55,7 +55,7 @@ export class FatLineBufferGeometry extends InstancedBufferGeometry {
      * Apply the given matrix to vertexes data.
      * @return this object.
      */
-    public applyMatrix(matrix: Matrix4): FatLineBufferGeometry {
+    applyMatrix(matrix: Matrix4): FatLineBufferGeometry {
         const start = this.instanceStart;
         const end = this.instanceEnd;
 
@@ -77,7 +77,7 @@ export class FatLineBufferGeometry extends InstancedBufferGeometry {
      * @param { Float32Array } lineSegments the segments data store as Float32Array.
      * @return this object.
      */
-    public setPositions(lineSegments: Float32Array): FatLineBufferGeometry {
+    setPositions(lineSegments: Float32Array): FatLineBufferGeometry {
         this._fallback_geometry.addOrSetAttribute('position', lineSegments, 3);
         const instanceStart = [];
         const instanceEnd = [];
@@ -104,7 +104,7 @@ export class FatLineBufferGeometry extends InstancedBufferGeometry {
     /**
      * Recalculate the bounding box for this geometry.
      */
-    public computeBoundingBox(): void {
+    computeBoundingBox(): void {
         if (this.boundingBox === null) {
             this.boundingBox = new Box3();
         }
@@ -121,7 +121,7 @@ export class FatLineBufferGeometry extends InstancedBufferGeometry {
     /**
      * Recalculate the bounding sphere for this geometry.
      */
-    public computeBoundingSphere(): void {
+    computeBoundingSphere(): void {
         if (this.boundingSphere === null) {
             this.boundingSphere = new Sphere();
         }
@@ -153,7 +153,7 @@ export class FatLineBufferGeometry extends InstancedBufferGeometry {
     /**
      * Clear the current geometry's data in memory.
      */
-    public freeGPU() {
+    freeGPU() {
         super.freeGPU();
         this.fallback.freeGPU();
     }

@@ -32,9 +32,9 @@ const EXTENSION_LIST = Object.keys(WebGLExtEnums);
 // WGLExtensions is a static class provides a feature with only one instance
 // which check if an extension is supported by the browser or hardware.
 export class WGLExtensions {
-    public _extensions: { [index: string]: any } = {};
+    _extensions: { [index: string]: any } = {};
 
-    public get(name: WebGLExtEnums) {
+    get(name: WebGLExtEnums) {
         return this._extensions[name];
     }
 

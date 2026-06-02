@@ -16,8 +16,8 @@ import { TextureCompression } from '../../../fx/plugins/PipelinePlugin';
 export class RenderProxyManager {
     private scene: Scene3D;
 
-    public staticFrameDirtyId = 0; // mark the static group-frame-cache dirty
-    public isProxyChanged = false; // when proxy been updated, we don't want to trigger a new render automatically, so we use another state.
+    staticFrameDirtyId = 0; // mark the static group-frame-cache dirty
+    isProxyChanged = false; // when proxy been updated, we don't want to trigger a new render automatically, so we use another state.
 
     // the analyser of free renderable
     private freeDynamicAnalyser = new DynamicAnalyser();
@@ -44,7 +44,7 @@ export class RenderProxyManager {
     }
 
     // use a global ticker
-    public tick() {
+    tick() {
         const timestamp = performance.now();
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             ManagedContentBridge.sceneTick(this.scene, timestamp);
@@ -181,7 +181,7 @@ export class RenderProxyManager {
     }
 
     // when obj has anything changed, we need invalidate proxy it if it's proxyed
-    public onObjectChange(obj: Drawable): void {
+    onObjectChange(obj: Drawable): void {
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             return;
         }
@@ -191,7 +191,7 @@ export class RenderProxyManager {
         this.meshMergePool.onObjectUpdate(obj);
     }
 
-    public onObjectAdd(obj: Drawable) {
+    onObjectAdd(obj: Drawable) {
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             return;
         }
@@ -201,7 +201,7 @@ export class RenderProxyManager {
         obj.clearChangeMark();
     }
 
-    public onObjectDelete(obj: Drawable) {
+    onObjectDelete(obj: Drawable) {
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             return;
         }
@@ -213,7 +213,7 @@ export class RenderProxyManager {
         obj.clearChangeMark();
     }
 
-    public maintain() {
+    maintain() {
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             return;
         }
@@ -222,7 +222,7 @@ export class RenderProxyManager {
         this.isProxyChanged = this.isProxyChanged || changed;
     }
 
-    public proxyFree() {
+    proxyFree() {
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             ManagedContentBridge.sceneOptimize(this.scene);
             return;
@@ -239,7 +239,7 @@ export class RenderProxyManager {
             this.isProxyChanged;
     }
 
-    public cleanDrawableListCache() {
+    cleanDrawableListCache() {
         if (this.drawableListAllCache) {
             this.drawableListAllCache.destroy();
             this.drawableListAllCache = undefined;
@@ -252,7 +252,7 @@ export class RenderProxyManager {
 
     private isLastBatchUseProxy = true;
     private drawableListAllCache?: DrawableList;
-    public generateDrawableList(isUseProxy: boolean): DrawableList {
+    generateDrawableList(isUseProxy: boolean): DrawableList {
         if (!this.isCachedDrawableListDirty(isUseProxy)) {
             return this.drawableListAllCache!;
         }
@@ -279,7 +279,7 @@ export class RenderProxyManager {
     }
 
     private overlayDrawableListCache?: DrawableList;
-    public generateOverlayDrawableList(): DrawableList {
+    generateOverlayDrawableList(): DrawableList {
         if (this.overlayDrawableListCache && !this.scene.anyDrawableChanged) {
             return this.overlayDrawableListCache;
         }
@@ -296,7 +296,7 @@ export class RenderProxyManager {
         return drawableList;
     }
 
-    public generateDynamicList(camera: Camera3D) {
+    generateDynamicList(camera: Camera3D) {
         this.scene.update();
         if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
             const list = new ProjectedDrawcallList(new DrawableList(), [], [], camera);
@@ -311,7 +311,7 @@ export class RenderProxyManager {
         return dynamicList.project(camera, undefined, undefined, DrawcallListClassifyList.opaque);
     }
 
-    public generateStaticList(camera: Camera3D) {
+    generateStaticList(camera: Camera3D) {
         this.scene.update();
         if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
             const list = new ProjectedDrawcallList(new DrawableList(), [], [], camera);

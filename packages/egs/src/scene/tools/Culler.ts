@@ -6,11 +6,11 @@ import { Camera3D } from '../cameras/Camera3D';
 import { Drawable } from '../drawables/Drawable';
 
 export class Culler {
-    public enableFrustumCulling = false;
+    enableFrustumCulling = false;
     private frustum = new Frustum();
     private projScreenMatrix = new Matrix4();
 
-    public enableDetailCulling = false;
+    enableDetailCulling = false;
     private pixelsOfDistOne = 0;
     private cameraWorldPosition = new Vector3();
 
@@ -18,7 +18,7 @@ export class Culler {
      * @internal
      * camera should updated
      */
-    public update(camera: Camera3D) {
+    update(camera: Camera3D) {
         this.enableFrustumCulling = camera.enableFrustumCulling;
         this.enableDetailCulling = camera.enableDetailCulling;
         camera.updateMatrixWorld();
@@ -31,7 +31,7 @@ export class Culler {
     /**
      * @internal
      */
-    public queryCulling = (item: Drawable) => {
+    queryCulling = (item: Drawable) => {
         if (this.enableDetailCulling && this.queryDetailCulling(item)) {
             return false;
         }

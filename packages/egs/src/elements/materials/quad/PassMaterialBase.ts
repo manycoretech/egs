@@ -12,7 +12,7 @@ export abstract class PassQuadMaterialBase extends Material {
         });
     }
 
-    public extendShaderShape(builder: ShaderBuilder) {
+    extendShaderShape(builder: ShaderBuilder) {
         builder
             .inject(ShaderInjectionTypes.gl_Position, 'gl_Position = vec4(position, 1.0);')
             .addVarying(ShaderVaryingTypes.fragUV);
@@ -22,18 +22,18 @@ export abstract class PassQuadMaterialBase extends Material {
         return 'PassQuadMaterialBase';
     }
 
-    public computeShapeKey() {
+    computeShapeKey() {
         // PassQuadMaterialBase
         return 'q';
     }
 
-    public updateShapeUniforms(_1: WGLProgram) { }
+    updateShapeUniforms(_1: WGLProgram) { }
 
-    public copy(_: PassQuadMaterialBase) {
+    copy(_: PassQuadMaterialBase) {
         return this;
     }
 
-    public clone() {
+    clone() {
         return this;
     }
 }
@@ -48,21 +48,21 @@ export abstract class PassPointsMaterialBase extends Material {
         });
     }
 
-    public extendShaderShape(_builder: ShaderBuilder) {
+    extendShaderShape(_builder: ShaderBuilder) {
     }
 
-    public computeShapeKey() {
+    computeShapeKey() {
         // PassPointsMaterialBase
         return 'p';
     }
 
-    public updateShapeUniforms(_1: WGLProgram) { }
+    updateShapeUniforms(_1: WGLProgram) { }
 
-    public copy(_: PassPointsMaterialBase) {
+    copy(_: PassPointsMaterialBase) {
         return this;
     }
 
-    public clone() {
+    clone() {
         return this;
     }
 }

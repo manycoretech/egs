@@ -12,17 +12,17 @@ export class Vector2 implements Vector {
      * the x value of this vector.
      * @defaultValue `0`.
      */
-    public x: number;
+    x: number;
     /**
      * the y value of this vector.
      * @defaultValue `0`.
      */
-    public y: number;
+    y: number;
     /**
      * Check the type whether it belongs to Vector2.
      * This value should not be changed by user.
      */
-    public isVector2 = true;
+    isVector2 = true;
 
     constructor(_x?: number, _y?: number) {
         this.x = _x || 0;
@@ -31,13 +31,13 @@ export class Vector2 implements Vector {
     /**
      * @internal
      */
-    public getSerializeData() {
+    getSerializeData() {
         return this.toArray();
     }
     /**
      * @internal
      */
-    public setSerializeData(value: any): void {
+    setSerializeData(value: any): void {
         this.fromArray(value);
     }
     /**
@@ -63,7 +63,7 @@ export class Vector2 implements Vector {
     /**
      * Sets the {@link x| x} and {@link y| y} components of this vector.
      */
-    public set(x: number, y: number): Vector2 {
+    set(x: number, y: number): Vector2 {
         this.x = x;
         this.y = y;
         return this;
@@ -71,7 +71,7 @@ export class Vector2 implements Vector {
     /**
      * Sets the {@link x| x} and {@link y| y} values of this vector both equal to scalar.
      */
-    public setScalar(scalar: number): Vector2 {
+    setScalar(scalar: number): Vector2 {
         this.x = scalar;
         this.y = scalar;
         return this;
@@ -79,14 +79,14 @@ export class Vector2 implements Vector {
     /**
      * Replaces this vector's {@link x| x} value with {@link Float| x}.
      */
-    public setX(x: number): Vector2 {
+    setX(x: number): Vector2 {
         this.x = x;
         return this;
     }
     /**
      * Replaces this vector's {@link y| y} value with {@link Float| y}.
      */
-    public setY(y: number): Vector2 {
+    setY(y: number): Vector2 {
         this.y = y;
         return this;
     }
@@ -94,7 +94,7 @@ export class Vector2 implements Vector {
      * If index equals 0 set {@link x| x} to {@link Float| value}.
      * If index equals 1 set {@link y| y} to {@link Float| value}.
      */
-    public setComponent(index: number, value: number): Vector2 {
+    setComponent(index: number, value: number): Vector2 {
         switch (index) {
             case 0: this.x = value;
                 break;
@@ -110,7 +110,7 @@ export class Vector2 implements Vector {
      * If index equals 1 returns the {@link y| y} value.
      * @param index 0 or 1.
      */
-    public getComponent(index: number): number {
+    getComponent(index: number): number {
         switch (index) {
             case 0:
                 return this.x;
@@ -123,16 +123,16 @@ export class Vector2 implements Vector {
     /**
      * Returns a new Vector2 with the same {@link x| x} and {@link y| y} values as this one.
      */
-    public clone(): Vector2 {
+    clone(): Vector2 {
         return new Vector2(this.x, this.y);
     }
-    public cloneReadonly() {
+    cloneReadonly() {
         return this.clone() as any as ReadonlyVector2;
     }
     /**
      * Copies the values of the passed Vector2's {@link x| x} and {@link y| y} properties to this Vector2.
      */
-    public copy(v: Vector2): Vector2 {
+    copy(v: Vector2): Vector2 {
         this.x = v.x;
         this.y = v.y;
         return this;
@@ -140,7 +140,7 @@ export class Vector2 implements Vector {
     /**
      * Adds {@link Vector2| v} to this vector.
      */
-    public add(v: Vector2): Vector2 {
+    add(v: Vector2): Vector2 {
         this.x += v.x;
         this.y += v.y;
         return this;
@@ -148,7 +148,7 @@ export class Vector2 implements Vector {
     /**
      * Adds the scalar value s to this vector's {@link x| x} and {@link y| y} values.
      */
-    public addScalar(s: number): Vector2 {
+    addScalar(s: number): Vector2 {
         this.x += s;
         this.y += s;
         return this;
@@ -156,7 +156,7 @@ export class Vector2 implements Vector {
     /**
      * Sets this vector to {@link Vector2| a} + {@link Vector2| b}.
      */
-    public addVectors(a: Vector2, b: Vector2): Vector2 {
+    addVectors(a: Vector2, b: Vector2): Vector2 {
         this.x = a.x + b.x;
         this.y = a.y + b.y;
         return this;
@@ -164,7 +164,7 @@ export class Vector2 implements Vector {
     /**
      * Adds the multiple of {@link Vector2| v} and s to this vector.
      */
-    public addScaledVector(v: Vector2, s: number): Vector2 {
+    addScaledVector(v: Vector2, s: number): Vector2 {
         this.x += v.x * s;
         this.y += v.y * s;
         return this;
@@ -172,7 +172,7 @@ export class Vector2 implements Vector {
     /**
      * Subtracts {@link Vector2| v} from this vector.
      */
-    public sub(v: Vector2): Vector2 {
+    sub(v: Vector2): Vector2 {
         this.x -= v.x;
         this.y -= v.y;
         return this;
@@ -180,7 +180,7 @@ export class Vector2 implements Vector {
     /**
      * Subtracts s from this vector's {@link x| x} and {@link y| y} components.
      */
-    public subScalar(s: number): Vector2 {
+    subScalar(s: number): Vector2 {
         this.x -= s;
         this.y -= s;
         return this;
@@ -188,7 +188,7 @@ export class Vector2 implements Vector {
     /**
      * Sets this vector to {@link Vector2| a} - {@link Vector2| b}.
      */
-    public subVectors(a: Vector2, b: Vector2): Vector2 {
+    subVectors(a: Vector2, b: Vector2): Vector2 {
         this.x = a.x - b.x;
         this.y = a.y - b.y;
         return this;
@@ -196,7 +196,7 @@ export class Vector2 implements Vector {
     /**
      * Multiplies this vector by {@link Vector2| v}.
      */
-    public multiply(v: Vector2): Vector2 {
+    multiply(v: Vector2): Vector2 {
         this.x *= v.x;
         this.y *= v.y;
         return this;
@@ -204,7 +204,7 @@ export class Vector2 implements Vector {
     /**
      * Multiplies this vector by scalar s.
      */
-    public multiplyScalar(scalar: number): Vector2 {
+    multiplyScalar(scalar: number): Vector2 {
         this.x *= scalar;
         this.y *= scalar;
         return this;
@@ -212,7 +212,7 @@ export class Vector2 implements Vector {
     /**
      * Divides this vector by {@link Vector2| v}.
      */
-    public divide(v: Vector2): Vector2 {
+    divide(v: Vector2): Vector2 {
         this.x /= v.x;
         this.y /= v.y;
         return this;
@@ -221,13 +221,13 @@ export class Vector2 implements Vector {
      * Divides this vector by scalar s.<br />
      * Sets vector to `( 0, 0 )` if s = 0.
      */
-    public divideScalar(scalar: number): Vector2 {
+    divideScalar(scalar: number): Vector2 {
         return this.multiplyScalar(1 / scalar);
     }
     /**
      * Multiplies this vector (with an implicit 1 as the 3rd component) by m.
      */
-    public applyMatrix3(m: Matrix3): Vector2 {
+    applyMatrix3(m: Matrix3): Vector2 {
         const x = this.x;
         const y = this.y;
         const e = m._elements;
@@ -243,7 +243,7 @@ export class Vector2 implements Vector {
     /**
      * Multiplies this vector (with an implicit 1 as the 4rd component) by m.
      */
-    public applyMatrix4(m: Matrix4): Vector2 {
+    applyMatrix4(m: Matrix4): Vector2 {
         const x = this.x;
         const y = this.y;
         const e = m._elements;
@@ -257,7 +257,7 @@ export class Vector2 implements Vector {
      * @param min the minimum x and y values.
      * @param max the maximum x and y values in the desired range.
      */
-    public min(v: Vector2): Vector2 {
+    min(v: Vector2): Vector2 {
         this.x = Math.min(this.x, v.x);
         this.y = Math.min(this.y, v.y);
         return this;
@@ -268,7 +268,7 @@ export class Vector2 implements Vector {
      * @param min the minimum x and y values.
      * @param max the maximum x and y values in the desired range.
      */
-    public max(v: Vector2): Vector2 {
+    max(v: Vector2): Vector2 {
         this.x = Math.max(this.x, v.x);
         this.y = Math.max(this.y, v.y);
         return this;
@@ -279,7 +279,7 @@ export class Vector2 implements Vector {
      * @param min the minimum x and y values.
      * @param max the maximum x and y values in the desired range.
      */
-    public clamp(min: Vector2, max: Vector2): Vector2 {
+    clamp(min: Vector2, max: Vector2): Vector2 {
         // assumes min < max, component-wise
         this.x = Math.max(min.x, Math.min(max.x, this.x));
         this.y = Math.max(min.y, Math.min(max.y, this.y));
@@ -291,7 +291,7 @@ export class Vector2 implements Vector {
      * @param min the minimum value the components will be clamped to.
      * @param max the maximum value the components will be clamped to.
      */
-    public clampScalar(minVal: number, maxVal: number): Vector2 {
+    clampScalar(minVal: number, maxVal: number): Vector2 {
         tmp1Vec2.set(minVal, minVal);
         tmp2Vec2.set(maxVal, maxVal);
         return this.clamp(tmp1Vec2, tmp2Vec2);
@@ -302,14 +302,14 @@ export class Vector2 implements Vector {
      * @param min the minimum value the length will be clamped to.
      * @param max the maximum value the length will be clamped to.
      */
-    public clampLength(min: number, max: number): Vector2 {
+    clampLength(min: number, max: number): Vector2 {
         const length = this.length();
         return this.divideScalar(length || 1).multiplyScalar(Math.max(min, Math.min(max, length)));
     }
     /**
      * The components of this vector are rounded down to the nearest integer value.
      */
-    public floor(): Vector2 {
+    floor(): Vector2 {
         this.x = Math.floor(this.x);
         this.y = Math.floor(this.y);
         return this;
@@ -317,7 +317,7 @@ export class Vector2 implements Vector {
     /**
      * The {@link x| x} and {@link y| y} components of this vector are rounded up to the nearest integer value.
      */
-    public ceil(): Vector2 {
+    ceil(): Vector2 {
         this.x = Math.ceil(this.x);
         this.y = Math.ceil(this.y);
         return this;
@@ -325,7 +325,7 @@ export class Vector2 implements Vector {
     /**
      * The components of this vector are rounded to the nearest integer value.
      */
-    public round(): Vector2 {
+    round(): Vector2 {
         this.x = Math.round(this.x);
         this.y = Math.round(this.y);
         return this;
@@ -333,7 +333,7 @@ export class Vector2 implements Vector {
     /**
      * The components of this vector are rounded towards zero (up if negative, down if positive) to an integer value.
      */
-    public roundToZero(): Vector2 {
+    roundToZero(): Vector2 {
         this.x = (this.x < 0) ? Math.ceil(this.x) : Math.floor(this.x);
         this.y = (this.y < 0) ? Math.ceil(this.y) : Math.floor(this.y);
         return this;
@@ -341,7 +341,7 @@ export class Vector2 implements Vector {
     /**
      * Inverts this vector - i.e. sets x = -x and y = -y.
      */
-    public negate(): Vector2 {
+    negate(): Vector2 {
         this.x = - this.x;
         this.y = - this.y;
         return this;
@@ -349,46 +349,46 @@ export class Vector2 implements Vector {
     /**
      * Calculates the {@link https://en.wikipedia.org/wiki/Dot_product| dot product} of this vector and {@link Vector2| v}.
      */
-    public dot(v: Vector2): number {
+    dot(v: Vector2): number {
         return this.x * v.x + this.y * v.y;
     }
     /**
      * Calculates the cross product of this vector and {@link Vector2| v}.
      * @tips that a 'cross-product' in 2D is not well-defined. This function computes a geometric cross-product often used in 2D graphics
      */
-    public cross(v: Vector2): number {
+    cross(v: Vector2): number {
         return this.x * v.y - this.y * v.x;
     }
     /**
      * Computes the square of the {@link https://en.wikipedia.org/wiki/Euclidean_distance| Euclidean length } (straight-line length) from (0, 0) to (x, y).
      * If you are comparing the lengths of vectors, you should compare the length squared instead as it is slightly more efficient to calculate.
      */
-    public lengthSq(): number {
+    lengthSq(): number {
         return this.x * this.x + this.y * this.y;
     }
     /**
      * Computes the Euclidean length (straight-line length) from (0, 0) to (x, y).
      */
-    public length(): number {
+    length(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
     /**
      * Computes the {@link http://en.wikipedia.org/wiki/Taxicab_geometry| Manhattan length } of this vector.
      */
-    public manhattanLength(): number {
+    manhattanLength(): number {
         return Math.abs(this.x) + Math.abs(this.y);
     }
     /**
      * Converts this vector to a {@link https://en.wikipedia.org/wiki/Unit_vector| unit vector }.
      * that is, sets it equal to a vector with the same direction as this one, but {@link length| length} 1.
      */
-    public normalize(): Vector2 {
+    normalize(): Vector2 {
         return this.divideScalar(this.length() || 1);
     }
     /**
      * Computes the angle in radians of this vector with respect to the positive x-axis.
      */
-    public angle(): number {
+    angle(): number {
         // computes the angle in radians with respect to the positive x-axis
         let angle = Math.atan2(this.y, this.x);
         if (angle < 0) {
@@ -399,7 +399,7 @@ export class Vector2 implements Vector {
     /**
      * Computes the distance from this vector to {@link Vector2| v}.
      */
-    public distanceTo(v: Vector2): number {
+    distanceTo(v: Vector2): number {
         return Math.sqrt(this.distanceToSquared(v));
     }
     /**
@@ -407,7 +407,7 @@ export class Vector2 implements Vector {
      * If you are just comparing the distance with another distance,
      * you should compare the distance squared instead as it is slightly more efficient to calculate.
      */
-    public distanceToSquared(v: Vector2): number {
+    distanceToSquared(v: Vector2): number {
         const dx = this.x - v.x;
         const dy = this.y - v.y;
         return dx * dx + dy * dy;
@@ -415,13 +415,13 @@ export class Vector2 implements Vector {
     /**
      * Computes the {@link https://en.wikipedia.org/wiki/Taxicab_geometry| Manhattan distance} from this vector to {@link Vector2| v}.
      */
-    public manhattanDistanceTo(v: Vector2): number {
+    manhattanDistanceTo(v: Vector2): number {
         return Math.abs(this.x - v.x) + Math.abs(this.y - v.y);
     }
     /**
      * Sets this vector to a vector with given length the same direction as this one.
      */
-    public setLength(length: number): Vector2 {
+    setLength(length: number): Vector2 {
         return this.normalize().multiplyScalar(length);
     }
     /**
@@ -430,7 +430,7 @@ export class Vector2 implements Vector {
      * @param v {@link Vector2| Vector2} to interpolate towards.
      * @param alpha interpolation factor, typically in the closed interval [0, 1].
      */
-    public lerp(v: Vector2, alpha: number): Vector2 {
+    lerp(v: Vector2, alpha: number): Vector2 {
         this.x += (v.x - this.x) * alpha;
         this.y += (v.y - this.y) * alpha;
         return this;
@@ -443,13 +443,13 @@ export class Vector2 implements Vector {
      * @param v2 {@link Vector2| Vector2} to interpolate towards.
      * @param alpha interpolation factor, typically in the closed interval [0, 1].
      */
-    public lerpVectors(v1: Vector2, v2: Vector2, alpha: number): Vector2 {
+    lerpVectors(v1: Vector2, v2: Vector2, alpha: number): Vector2 {
         return this.subVectors(v2, v1).multiplyScalar(alpha).add(v1);
     }
     /**
      * Checks for strict equality of this vector and {@link Vector2| v}.
      */
-    public equals(v: Vector2): boolean {
+    equals(v: Vector2): boolean {
         return ((v.x === this.x) && (v.y === this.y));
     }
     /**
@@ -458,7 +458,7 @@ export class Vector2 implements Vector {
      * @param offset (optional) offset into the array.
      * @defaultValue is 0.
      */
-    public fromArray(array: ArrayLike<number>, offset?: number): Vector2 {
+    fromArray(array: ArrayLike<number>, offset?: number): Vector2 {
         if (offset === undefined) {
             offset = 0;
         }
@@ -469,7 +469,7 @@ export class Vector2 implements Vector {
     /**
      * There are 2 elements in this vector.
      */
-    public getNumberCount() {
+    getNumberCount() {
         return 2;
     }
     /**
@@ -477,7 +477,7 @@ export class Vector2 implements Vector {
      * @param array (optional) array to store this vector to. If this is not provided, a new array will be created.
      * @param offset (optional) optional offset into the array.
      */
-    public toArray(array?: number[], offset?: number): number[] {
+    toArray(array?: number[], offset?: number): number[] {
         if (array === undefined) {
             array = [];
         }
@@ -494,7 +494,7 @@ export class Vector2 implements Vector {
      * @param attribute the source attribute.
      * @param index index in the attribute.
      */
-    public fromBufferAttribute(attribute: { getX: (number: number) => number, getY: (number: number) => number, }, index: number, offset?: number): Vector2 {
+    fromBufferAttribute(attribute: { getX: (number: number) => number, getY: (number: number) => number, }, index: number, offset?: number): Vector2 {
         if (offset !== undefined) {
             logger.warn('EGS.Vector2: offset has been removed from .fromBufferAttribute().');
         }
@@ -508,7 +508,7 @@ export class Vector2 implements Vector {
      * @param center the point around which to rotate.
      * @param angle the angle to rotate, in radians.
      */
-    public rotateAround(center: Vector2, angle: number): Vector2 {
+    rotateAround(center: Vector2, angle: number): Vector2 {
         const c = Math.cos(angle);
         const s = Math.sin(angle);
         const x = this.x - center.x;
@@ -518,7 +518,7 @@ export class Vector2 implements Vector {
         return this;
     }
 
-    public intoSize(): Size {
+    intoSize(): Size {
         return {
             width: this.x,
             height: this.y
@@ -526,6 +526,9 @@ export class Vector2 implements Vector {
     }
 }
 
+/**
+ * Readonly view of the public Vector2 API.
+ */
 export type ReadonlyVector2 = PickReadonly<Vector2,
     'x' | 'y' | 'width' | 'height' | 'isVector2' | 'dot' | 'cross' | 'lengthSq' | 'length' | 'angle' |
     'manhattanLength' | 'distanceTo' | 'distanceToSquared' | 'manhattanDistanceTo' | 'getNumberCount' | 'equals' | 'toArray' | 'intoSize'>;

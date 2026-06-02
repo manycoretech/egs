@@ -4,7 +4,7 @@ export function createShaderBlock(source: string) {
 }
 
 export class ShaderBlock {
-    public source: string;
+    source: string;
     constructor(str: string) {
         this.source = str;
     }

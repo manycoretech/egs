@@ -7,15 +7,15 @@ import { Texture } from '../../textures/Texture';
 
 export class MixPlanarShadowMaterial extends PassQuadMaterialBase {
     @materialProperty()
-    public tDiffuse: Texture;
+    tDiffuse: Texture;
     @materialProperty()
-    public occlusionMap: Texture;
+    occlusionMap: Texture;
 
-    public className() {
+    className() {
         return 'MixPlanarShadowMaterial';
     }
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         b
             .addUniform('tDiffuse', WebGLShaderDataType.Sampler2D)
             .addUniform('occlusionMap', WebGLShaderDataType.Sampler2D)
@@ -26,7 +26,7 @@ export class MixPlanarShadowMaterial extends PassQuadMaterialBase {
             `);
     }
 
-    public updateShadingUniforms(p: WGLProgram) {
+    updateShadingUniforms(p: WGLProgram) {
         p.setTexture2D('tDiffuse', this.tDiffuse);
         p.setTexture2D('occlusionMap', this.occlusionMap);
     }

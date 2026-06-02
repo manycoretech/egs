@@ -2,16 +2,25 @@ import { Box3 } from '../math/Box3';
 import { Size } from '../utils/Utils';
 import { Matrix4 } from '../math/Matrix4';
 
+/**
+ * Result states returned by snapshot rendering.
+ */
 export enum SnapshotResultResultType {
     Success,
     Empty,
     Error,
 }
 
+/**
+ * Camera matrices captured with a snapshot result.
+ */
 export interface SnapshotCameraInfo {
     projectionMatrix: Matrix4,
     worldMatrix: Matrix4
 }
+/**
+ * Result object returned from snapshot rendering.
+ */
 export class SnapshotResult {
     type: SnapshotResultResultType = SnapshotResultResultType.Success;
     reason?: any;

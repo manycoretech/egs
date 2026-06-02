@@ -10,16 +10,18 @@ export const GeometryShapeChanged = new EventType<GeometryBase>();
 export const GeometryContentChanged = new EventType<GeometryBase>();
 
 let geometryId = 0; // Geometry uses even numbers as Id
-// This class is a base class of every Geometry and BufferGeometry.
-// All of Geometry and BufferGeometry must implement the abstract function for engine in order to correctly accelerate render.
+/**
+ * This class is a base class of every Geometry and BufferGeometry.
+ * All of Geometry and BufferGeometry must implement the abstract function for engine in order to correctly accelerate render.
+ */
 export abstract class GeometryBase extends ElementEventDispatcher
     implements SerializerableDelegatedAsReference, ElementsWithGPUResource {
-    public id = (geometryId += 2);
+    id = (geometryId += 2);
 
     protected boundingBox: Nullable<Box3> = null;
     protected boundingSphere: Nullable<Sphere> = null;
 
-    public getUUID() {
+    getUUID() {
         return this.uuid;
     }
     abstract computeBoundingBox(): void;
@@ -33,28 +35,28 @@ export abstract class GeometryBase extends ElementEventDispatcher
 
     abstract clone(): GeometryBase;
 
-    public getBoundingBox() {
+    getBoundingBox() {
         if (this.boundingBox === null) {
             this.computeBoundingBox();
         }
         return this.boundingBox!;
     }
 
-    public getBoundingSphere() {
+    getBoundingSphere() {
         if (this.boundingSphere === null) {
             this.computeBoundingSphere();
         }
         return this.boundingSphere!;
     }
 
-    public notifyShapeChanged() {
+    notifyShapeChanged() {
         this.boundingBox = null;
         this.boundingSphere = null;
         this.emit(GeometryShapeChanged, this);
         this.emit(GeometryContentChanged, this);
     }
 
-    public notifyGeometryContentChange() {
+    notifyGeometryContentChange() {
         this.freeGPU();
         this.emit(GeometryContentChanged, this);
     }

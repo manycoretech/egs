@@ -45,43 +45,43 @@ export abstract class ShaderComponent implements SerializerableDelegated {
 // Any class inherits this class means the class will use some parameters components
 // inside a shader which will be shared around different shaders such as light stuff.
 export abstract class SharedShaderComponent extends ShaderComponent {
-    public serialize(_: Serializer<any>): void { }
-    public deserialize(_: Deserializer): void | Promise<void> { }
+    serialize(_: Serializer<any>): void { }
+    deserialize(_: Deserializer): void | Promise<void> { }
 
-    public referenceSet: Set<Material> = new Set();
+    referenceSet: Set<Material> = new Set();
 
-    public className() {
+    className() {
         logger.unreachable('className must exist');
         return 'SharedShaderComponent';
     }
 
-    public clearAllRef() {
+    clearAllRef() {
         this.referenceSet.clear();
     }
 
-    public attachMaterial(m: Material) {
+    attachMaterial(m: Material) {
         this.referenceSet.add(m);
     }
 
-    public detachMaterial(m: Material) {
+    detachMaterial(m: Material) {
         this.referenceSet.delete(m);
     }
 
-    public broadcastToRecompile() {
+    broadcastToRecompile() {
         this.referenceSet.forEach(m => m.notifyRecompileShader());
     }
 
-    public broadcastToPropertyChanged() {
+    broadcastToPropertyChanged() {
         this.referenceSet.forEach(m => m.notifyMaterialPropertyChanged());
     }
 
     abstract extendShaderShading(builder: ShaderBuilder): void;
-    public updateImpl(_camera: Camera3D): boolean {
+    updateImpl(_camera: Camera3D): boolean {
         // empty impl
         return true;
     }
-    public dirtyKey = -1;
-    public update(camera: Camera3D) {
+    dirtyKey = -1;
+    update(camera: Camera3D) {
         const changed = this.updateImpl(camera);
         if (changed) {
             this.dirtyKey = Math.random();

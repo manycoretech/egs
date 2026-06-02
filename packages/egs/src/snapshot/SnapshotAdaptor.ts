@@ -5,8 +5,8 @@ import { Camera3D } from '../scene/cameras/Camera3D';
 import { Nullable } from '../utils/Utils';
 
 export class SnapShotAdaptor extends SceneAdaptor {
-    public objectToSnapShot = new DrawableList();
-    public objectToSnapShotProjected: Nullable<ProjectedDrawcallList> = null;
+    objectToSnapShot = new DrawableList();
+    objectToSnapShotProjected: Nullable<ProjectedDrawcallList> = null;
 
     constructor(camera: Camera3D, objectToSnapShot: DrawableList, scene: Scene3D) {
         super(scene, camera);

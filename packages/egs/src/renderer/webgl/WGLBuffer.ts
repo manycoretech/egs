@@ -18,7 +18,7 @@ export interface WGLBufferData {
 // If a buffer is created, a WebGLBuffer object with information of data type and bytes would be returned.
 // This class instances will be manged by BufferManager.
 export class WGLBuffer {
-    public static createWGLBufferData(gl: WebGLRenderingContext | WebGL2RenderingContext, attribute: BufferAttribute, bufferType: number): WGLBufferData {
+    static createWGLBufferData(gl: WebGLRenderingContext | WebGL2RenderingContext, attribute: BufferAttribute, bufferType: number): WGLBufferData {
         const array = attribute.array;
         const usage = attribute.dynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 
@@ -66,7 +66,7 @@ export class WGLBuffer {
         };
     }
 
-    public static updateWGLBufferData(gl: WebGLRenderingContext | WebGL2RenderingContext, buffer: WebGLBuffer, attribute: BufferAttribute, bufferType: number): void {
+    static updateWGLBufferData(gl: WebGLRenderingContext | WebGL2RenderingContext, buffer: WebGLBuffer, attribute: BufferAttribute, bufferType: number): void {
         const array = attribute.array;
         const updateRange = attribute.updateRange;
         gl.bindBuffer(bufferType, buffer);

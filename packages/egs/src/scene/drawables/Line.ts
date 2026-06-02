@@ -24,15 +24,15 @@ export class Line<M extends Material = Material> extends Drawable<M, BufferGeome
      * Check the type whether it belongs to Line.
      * This value should not be changed by user.
      */
-    public isLine = true;
+    isLine = true;
     /**
      * Decisive attribute to draw this object as continuous line.
      */
-    public drawMode = DrawMode.LineStrip;
+    drawMode = DrawMode.LineStrip;
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'Line';
     }
 
@@ -49,14 +49,14 @@ export class Line<M extends Material = Material> extends Drawable<M, BufferGeome
      * @param {Raycaster} raycaster the instance of Raycaster is used to get the data for calculation.
      * @param {Intersection} intersects the result will be stored here.
      */
-    public raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]) {
+    raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]) {
         raycastLine(raycaster, intersects, this, false);
     }
 
     /**
      * Return a clone of this object.
      */
-    public clone(recursive?: boolean): Line<M> {
+    clone(recursive?: boolean): Line<M> {
         return new Line(this.geometry, this._material).copy(this, recursive);
     }
 }

@@ -23,20 +23,20 @@ export class TextureState {
         }
     }
 
-    public activeTexture(slot: number) {
+    activeTexture(slot: number) {
         if (this.currentTextureSlot !== slot) {
             this.gl.activeTexture(slot);
             this.currentTextureSlot = slot;
         }
     }
 
-    public bindTextureAndActiveForUploading(webglType: WebGLTextureType, webglTexture: WebGLTexture) {
+    bindTextureAndActiveForUploading(webglType: WebGLTextureType, webglTexture: WebGLTexture) {
         const lastSlot = this.gl.TEXTURE0 + WGLCapabilities.MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1;
         this.activeTexture(lastSlot);
         this.bindTextureAt(webglType, webglTexture, lastSlot);
     }
 
-    public bindTextureAt(webglType: WebGLTextureType, webglTexture: WebGLTexture, slot: number) {
+    bindTextureAt(webglType: WebGLTextureType, webglTexture: WebGLTexture, slot: number) {
         let boundTexture = this.currentBindTextures[slot];
         if (boundTexture === undefined) {
             boundTexture = { type: undefined, texture: undefined };
@@ -50,11 +50,11 @@ export class TextureState {
         }
     }
 
-    public resetSlotIndex() {
+    resetSlotIndex() {
         this.slot = 0;
     }
 
-    public getFreeSlot(): number {
+    getFreeSlot(): number {
         const slot = this.slot;
         if (this.slot > WGLCapabilities.MAX_COMBINED_TEXTURE_IMAGE_UNITS) {
             logger.webglError('EGS: Trying to use ' + this.slot + ' texture units while this GPU supports only ' + WGLCapabilities.MAX_TEXTURES);

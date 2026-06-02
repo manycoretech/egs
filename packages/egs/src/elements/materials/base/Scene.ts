@@ -17,9 +17,12 @@ export abstract class SceneMaterial extends Material {
     updateShapeUniforms(_1: WGLProgram, _: ShaderComponentRegistry) { }
 }
 
+/**
+ * Base material class for objects that support scene clipping.
+ */
 export abstract class SceneClipMaterial extends SceneMaterial {
     @materialProperty()
-    public enableSceneClipping = false;
+    enableSceneClipping = false;
 
     extendShaderShape(builder: ShaderBuilder, r: ShaderComponentRegistry) {
         super.extendShaderShape(builder, r);
@@ -41,7 +44,7 @@ export abstract class SceneClipMaterial extends SceneMaterial {
         }
     }
 
-    public freeGPU() {
+    freeGPU() {
         super.freeGPU();
         ShaderComponentRegistry.global.forEach((s: any) => s.clipping.detachMaterial(this));
     }
@@ -49,7 +52,7 @@ export abstract class SceneClipMaterial extends SceneMaterial {
 
 export abstract class ScenePopLODMaterial extends SceneClipMaterial {
     // @shaderComponentInMaterial() //TODO circular dependency
-    public pop: Nullable<PopShaderComponent> = new PopShaderComponent();
+    pop: Nullable<PopShaderComponent> = new PopShaderComponent();
     extendShaderShape(builder: ShaderBuilder, r: ShaderComponentRegistry) {
         super.extendShaderShape(builder, r);
         if (this.pop !== null) { this.pop.extendShaderShape(builder); }
@@ -59,11 +62,11 @@ export abstract class ScenePopLODMaterial extends SceneClipMaterial {
         return super.computeShapeKey(r) + (this.pop ? 'p' : '');
     }
 
-    public generateShaderKey(r: ShaderComponentRegistry): string {
+    generateShaderKey(r: ShaderComponentRegistry): string {
         return super.generateShaderKey(r) + (this.pop ? 'p' : '');
     }
 
-    public copyBase(other: ScenePopLODMaterial) {
+    copyBase(other: ScenePopLODMaterial) {
         super.copyBase(other);
         copyItem(this, other, 'pop');
         return this;

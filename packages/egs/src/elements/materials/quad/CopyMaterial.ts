@@ -9,26 +9,26 @@ import { materialProperty } from '../../../ContentAPI';
 
 export class CopyMaterial extends PassQuadMaterialBase {
     @materialProperty()
-    public tDiffuse: Texture;
+    tDiffuse: Texture;
     @materialProperty()
-    public opacity = 1;
+    opacity = 1;
     @materialProperty()
-    public isRepeat = true;
+    isRepeat = true;
     @materialProperty()
-    public matrix = new Matrix3();
+    matrix = new Matrix3();
 
-    public className() {
+    className() {
         return 'CopyMaterial';
     }
 
-    public extendShaderShape(builder: ShaderBuilder) {
+    extendShaderShape(builder: ShaderBuilder) {
         builder.addVarying(ShaderVaryingTypes.fragUV)
             .addUniform('uvTransform', WebGLShaderDataType.Mat3)
             .inject(ShaderInjectionTypes.vary_uv, 'vUv = (uvTransform * vec3(uv, 1.)).xy;')
             .inject(ShaderInjectionTypes.gl_Position, 'gl_Position = vec4(position, 1.0);');
     }
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         b.addUniform('tDiffuse', WebGLShaderDataType.Sampler2D)
             .addUniform('opacity', WebGLShaderDataType.Float)
             .addUniform('uIsRepeat', WebGLShaderDataType.Float)
@@ -40,12 +40,12 @@ export class CopyMaterial extends PassQuadMaterialBase {
             `);
     }
 
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setTexture2D('tDiffuse', this.tDiffuse);
         program.setUniform('opacity', this.opacity);
     }
 
-    public updateShapeUniforms(p: WGLProgram) {
+    updateShapeUniforms(p: WGLProgram) {
         p.setUniform('uvTransform', this.matrix);
         p.setUniform('uIsRepeat', this.isRepeat ? 1.0 : 0.0);
     }
@@ -53,15 +53,15 @@ export class CopyMaterial extends PassQuadMaterialBase {
 
 export class CopyColorAndDepthMaterial extends CopyMaterial {
     @materialProperty()
-    public depth: Texture;
-    public depthTest = true;
-    public depthWrite = true;
+    depth: Texture;
+    depthTest = true;
+    depthWrite = true;
 
-    public className() {
+    className() {
         return 'CopyColorAndDepthMaterial';
     }
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         super.extendShaderShading(b);
         b
             .addUniform('tDepth', WebGLShaderDataType.Sampler2D)
@@ -69,7 +69,7 @@ export class CopyColorAndDepthMaterial extends CopyMaterial {
             .inject(ShaderInjectionTypes.gl_FragDepthEXT, 'gl_FragDepthEXT = texture2D(tDepth, vUv).x;');
     }
 
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         super.updateShadingUniforms(program);
         program.setTexture2D('tDepth', this.depth);
     }
@@ -77,15 +77,15 @@ export class CopyColorAndDepthMaterial extends CopyMaterial {
 
 export class MixColorAndDepthMaterial extends CopyMaterial {
     @materialProperty()
-    public depth: Texture;
+    depth: Texture;
 
-    public blending = Blending.NoBlending;
+    blending = Blending.NoBlending;
 
-    public className() {
+    className() {
         return 'MixColorAndDepthMaterial';
     }
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         super.extendShaderShading(b);
         b
             .addUniform('tDepth', WebGLShaderDataType.Sampler2D)
@@ -104,7 +104,7 @@ export class MixColorAndDepthMaterial extends CopyMaterial {
             `);
     }
 
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         super.updateShadingUniforms(program);
         program.setTexture2D('tDepth', this.depth);
     }
@@ -113,22 +113,22 @@ export class MixColorAndDepthMaterial extends CopyMaterial {
 
 export class CopyDepthMaterial extends PassQuadMaterialBase {
     @materialProperty()
-    public depth: Texture;
-    public depthTest = true;
-    public depthWrite = true;
-    public colorWrite = false;
+    depth: Texture;
+    depthTest = true;
+    depthWrite = true;
+    colorWrite = false;
 
-    public className() {
+    className() {
         return 'CopyDepthMaterial';
     }
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         b.addUniform('tDepth', WebGLShaderDataType.Sampler2D)
             .addExtension(ShaderExtensionTypes.GL_EXT_frag_depth)
             .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragDepthEXT = texture2D(tDepth, vUv).x;');
     }
 
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setTexture2D('tDepth', this.depth);
     }
 }

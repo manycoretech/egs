@@ -29,16 +29,16 @@ export class WGLIndexedBufferRenderer {
         }
     }
 
-    public setMode(value: number): void {
+    setMode(value: number): void {
         this.mode = value;
     }
 
-    public setIndex(value: WGLBufferData): void {
+    setIndex(value: WGLBufferData): void {
         this.type = value.type;
         this.bytesPerElement = value.bytesPerElement;
     }
 
-    public render(object: Drawable, start: number, count: number): void {
+    render(object: Drawable, start: number, count: number): void {
         this.gl.drawElements(this.mode, count, this.type, start * this.bytesPerElement);
         this.infoRender.addDrawcall(object);
         this.infoRender.vertices += count;
@@ -47,7 +47,7 @@ export class WGLIndexedBufferRenderer {
         }
     }
 
-    public renderInstances(object: Drawable, geometry: InstancedBufferGeometry, start: number, count: number): void {
+    renderInstances(object: Drawable, geometry: InstancedBufferGeometry, start: number, count: number): void {
         if (WGLCapabilities.IS_WEBGL2) {
             (this.gl as WebGL2RenderingContext).drawElementsInstanced(this.mode, count, this.type, start * this.bytesPerElement, geometry.instancedCount);
         } else {

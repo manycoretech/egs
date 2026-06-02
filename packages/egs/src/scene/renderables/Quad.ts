@@ -21,15 +21,15 @@ export class Quad implements Renderable {
     /**
      * @internal
      */
-    public get geometry(): FullScreenTriangleBufferGeometry {
+    get geometry(): FullScreenTriangleBufferGeometry {
         return this.quad.geometry as FullScreenTriangleBufferGeometry;
     }
 
-    public setMaterial(mat: Material) {
+    setMaterial(mat: Material) {
         this.quad.setOnlyMaterial(mat);
     }
 
-    public config(renderer: IRenderer) {
+    config(renderer: IRenderer) {
         this.geometry.updateUV(renderer.backend === RendererBackend.WEBGPU_WASM);
         return true;
     }
@@ -38,7 +38,7 @@ export class Quad implements Renderable {
         this.quad.geometry = geometry;
     }
 
-    public render(renderer: IRenderer) {
+    render(renderer: IRenderer) {
         const oldCamera = renderer.getCurrentCamera();
         renderer.useCamera(this.quadCamera);
         renderer.setMaterialUploadDirty();
@@ -67,13 +67,13 @@ export class Quad implements Renderable {
         }
     }
 
-    public renderDeferredWithMaterial<L extends Light>(renderer: IRenderer, scene: Scene3D, lights: L[], deferLightMaterial: DeferredLightBase<L>, before?: (light: L) => void, shadowMode: ShadowMode = ShadowMode.EnableAll) {
+    renderDeferredWithMaterial<L extends Light>(renderer: IRenderer, scene: Scene3D, lights: L[], deferLightMaterial: DeferredLightBase<L>, before?: (light: L) => void, shadowMode: ShadowMode = ShadowMode.EnableAll) {
         deferLightMaterial.setResult();
         this.setMaterial(deferLightMaterial);
         this.renderDeferred(renderer, scene, lights, before, shadowMode);
     }
 
-    public destroy() {
+    destroy() {
         this.quadCamera.destroy();
         this.quad.geometry.destroyAllResourcesOwned();
         this.quad.destroy();

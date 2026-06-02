@@ -7,17 +7,17 @@ import { materialProperty } from '../../../ContentAPI';
 
 export class TAAMaterial extends PassQuadMaterialBase {
     @materialProperty()
-    public sampleCount = 0;
+    sampleCount = 0;
     @materialProperty()
-    public current: Texture;
+    current: Texture;
     @materialProperty()
-    public history: Texture;
+    history: Texture;
 
-    public className() {
+    className() {
         return 'TAAMaterial';
     }
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         b.addUniform('sampleCount', WebGLShaderDataType.Float)
             .addUniform('history', WebGLShaderDataType.Sampler2D)
             .addUniform('current', WebGLShaderDataType.Sampler2D)
@@ -27,7 +27,7 @@ export class TAAMaterial extends PassQuadMaterialBase {
             gl_FragColor = (oldColor * sampleCount + color) / (sampleCount + 1.0);`);
     }
 
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setTexture2D('history', this.history);
         program.setTexture2D('current', this.current);
         program.setUniform('sampleCount', this.sampleCount);

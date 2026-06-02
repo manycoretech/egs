@@ -10,12 +10,12 @@ export class InstancedBufferAttribute<T extends TypedArray = TypedArray> extends
      * A value of two means that each value is used for two consecutive instances (and so on).
      * Default is *1*.
      */
-    public meshPerAttribute: number;
+    meshPerAttribute: number;
     /**
      * Used to check type of this or extended instance.
      * This value should not be changed by user.
      */
-    public isInstancedBufferAttribute = true;
+    isInstancedBufferAttribute = true;
 
     constructor(data: T, itemSize: number, meshPerAttribute?: number) {
         super(data, itemSize);
@@ -25,7 +25,7 @@ export class InstancedBufferAttribute<T extends TypedArray = TypedArray> extends
      * Copy the data to this object from source.
      * @param { InstancedBufferAttribute } source the data source.
      */
-    public copy(source: InstancedBufferAttribute) {
+    copy(source: InstancedBufferAttribute) {
         super.copy(source);
         this.meshPerAttribute = source.meshPerAttribute;
         return this;

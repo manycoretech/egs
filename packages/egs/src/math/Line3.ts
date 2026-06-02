@@ -9,11 +9,11 @@ export class Line3 {
     /**
      * {@link Vector3| Vector3} representing the start point of the line.
      */
-    public start: Vector3;
+    start: Vector3;
     /**
      * {@link Vector3| Vector3} representing the end point of the line.
      */
-    public end: Vector3;
+    end: Vector3;
 
     constructor(start?: Vector3, end?: Vector3) {
         this.start = (start !== undefined) ? start : new Vector3();
@@ -24,7 +24,7 @@ export class Line3 {
      * @param start set the {@link start | start} of the line.
      * @param end set the {@link end | end} of the line.
      */
-    public set(start: Vector3, end: Vector3): Line3 {
+    set(start: Vector3, end: Vector3): Line3 {
         this.start.copy(start);
         this.end.copy(end);
         return this;
@@ -32,13 +32,13 @@ export class Line3 {
     /**
      * Returns a new {@link Line3 | Line3} with the same {@link start | start} and {@link end | end} vectors as this one.
      */
-    public clone(): Line3 {
+    clone(): Line3 {
         return new Line3().copy(this);
     }
     /**
      * Copies the passed line's {@link start | start} and {@link end | end} vectors to this line.
      */
-    public copy(line: Line3): Line3 {
+    copy(line: Line3): Line3 {
         this.start.copy(line.start);
         this.end.copy(line.end);
         return this;
@@ -47,28 +47,28 @@ export class Line3 {
      * Returns the center of the line segment.
      * @param target the result will be copied into this Vector3.
      */
-    public getCenter(target: Vector3): Vector3 {
+    getCenter(target: Vector3): Vector3 {
         return target.addVectors(this.start, this.end).multiplyScalar(0.5);
     }
     /**
      * Returns the delta vector of the line segment ({@link end | end} vector minus the {@link start | start} vector).
      * @param target the result will be copied into this Vector3.
      */
-    public delta(target: Vector3): Vector3 {
+    delta(target: Vector3): Vector3 {
         return target.subVectors(this.end, this.start);
     }
     /**
      * Returns the square of the {@link https://en.wikipedia.org/wiki/Euclidean_distance | Euclidean distance}
      * (straight-line distance) between the line's {@link start | start} and {@link end | end} vectors.
      */
-    public distanceSq(): number {
+    distanceSq(): number {
         return this.start.distanceToSquared(this.end);
     }
     /**
      * Returns the {@link https://en.wikipedia.org/wiki/Euclidean_distance | Euclidean distance}
      * (straight-line distance) between the line's {@link start | start} and {@link end | end} points.
      */
-    public distance(): number {
+    distance(): number {
         return this.start.distanceTo(this.end);
     }
     /**
@@ -77,7 +77,7 @@ export class Line3 {
      * @param t Use values 0-1 to return a position along the line segment.
      * @param target the result will be copied into this Vector3.
      */
-    public at(t: number, target: Vector3): Vector3 {
+    at(t: number, target: Vector3): Vector3 {
         return this.delta(target).multiplyScalar(t).add(this.start);
     }
     /**
@@ -86,7 +86,7 @@ export class Line3 {
      * @param point the point for which to return a point parameter.
      * @param clampToLine Whether to clamp the result to the range [0, 1].
      */
-    public closestPointToPointParameter(point: Vector3, clampToLine?: boolean): number {
+    closestPointToPointParameter(point: Vector3, clampToLine?: boolean): number {
         tmp1Vec3.subVectors(point, this.start);
         tmp2Vec3.subVectors(this.end, this.start);
         const startEnd2 = tmp2Vec3.dot(tmp2Vec3);
@@ -103,14 +103,14 @@ export class Line3 {
      * @param clampToLine whether to clamp the returned value to the line segment.
      * @param target the result will be copied into this Vector3.
      */
-    public closestPointToPoint(point: Vector3, clampToLine: boolean, target: Vector3): Vector3 {
+    closestPointToPoint(point: Vector3, clampToLine: boolean, target: Vector3): Vector3 {
         const t = this.closestPointToPointParameter(point, clampToLine);
         return this.delta(target).multiplyScalar(t).add(this.start);
     }
     /**
      * Applies a matrix transform to the line segment.
      */
-    public applyMatrix4(matrix: Matrix4): Line3 {
+    applyMatrix4(matrix: Matrix4): Line3 {
         this.start.applyMatrix4(matrix);
         this.end.applyMatrix4(matrix);
         return this;
@@ -119,7 +119,7 @@ export class Line3 {
      * Returns true if both line's {@link start| start} and {@link end| end} points are equal.
      * @param line {@link Line3| Line3} to compare with this one.
      */
-    public equals(line: Line3): boolean {
+    equals(line: Line3): boolean {
         return line.start.equals(this.start) && line.end.equals(this.end);
     }
 }

@@ -295,7 +295,7 @@ export class Renderer extends EventDispatcher implements IRenderer {
         this.renderPass.viewport.copy(this._currentViewport);
     }
 
-    public setViewportInRenderPass(x: number, y: number, width: number, height: number) {
+    setViewportInRenderPass(x: number, y: number, width: number, height: number) {
         if (!this.renderPass.active) {
             return;
         }

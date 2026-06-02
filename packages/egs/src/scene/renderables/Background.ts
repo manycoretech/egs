@@ -16,8 +16,15 @@ import { Quaternion } from '../../math/Quaternion';
 import { Vector3 } from '../../math/Vector3';
 import { readonlyMath } from '../../math/Readonly';
 
+/**
+ * Union of supported viewer background configurations.
+ * @deprecated
+ */
 export type Background = SolidColorBackground | BasicBackground | SkyBackground | GradientBackground | EnvMapBackground;
 
+/**
+ * Background modes supported by the viewer.
+ */
 export enum BackgroundMode {
     BasicBackground = 'basic',
     /**
@@ -29,16 +36,28 @@ export enum BackgroundMode {
     EnvMapBackground = 'env',
 }
 
+/**
+ * Parameters for a solid-color background.
+ * @deprecated
+ */
 export interface SolidColorBackgroundParameter {
     color: Color,
     alpha: number,
 }
 
+/**
+ * Parameters for a vertical gradient background.
+ * @deprecated
+ */
 export interface GradientBackgroundParameter {
     skyColor: Color,
     groundColor: Color,
 }
 
+/**
+ * Parameters for a procedural sky background.
+ * @deprecated
+ */
 export interface SkyBackgroundParameter {
     enableSkyMap: boolean,
     luminance: number,
@@ -48,6 +67,10 @@ export interface SkyBackgroundParameter {
     mieDirectionalG: number,
 }
 
+/**
+ * Parameters for an environment-map background.
+ * @deprecated
+ */
 export interface EnvMapBackgroundParameter {
     texture: Texture,
     luma: number,
@@ -55,12 +78,20 @@ export interface EnvMapBackgroundParameter {
     horizonRotation: number,
 }
 
+/**
+ * Parameters for the legacy basic background mode.
+ * @deprecated
+ */
 export interface BasicBackgroundParameter {
     color: Color,
     alpha: number,
     texture: Texture,
 }
 
+/**
+ * Background mode and partial parameters applied to a viewer.
+ * @deprecated
+ */
 export interface BackgroundParameter {
     mode: BackgroundMode,
     parameter?: Partial<

@@ -19,10 +19,10 @@ import { lightProperty } from '../../ContentAPI';
  */
 const defaultTarget = singleton(() => new Object3D());
 export class DirectionalLight extends Light {
-    public viewMatrix: Matrix4 = new Matrix4();
-    public invViewMatrix: Matrix4 = new Matrix4();
+    viewMatrix: Matrix4 = new Matrix4();
+    invViewMatrix: Matrix4 = new Matrix4();
 
-    public static get DEFAULT_TARGET() {
+    static get DEFAULT_TARGET() {
         return defaultTarget();
     }
     /**
@@ -44,7 +44,7 @@ export class DirectionalLight extends Light {
      * Check the type whether it belongs to PerspectiveCamera.
      * This value should not be changed by user.
      */
-    public isDirectionalLight = true;
+    isDirectionalLight = true;
     private vector3 = new Vector3();
     private uniforms = {
         direction: new Vector3(),
@@ -54,12 +54,12 @@ export class DirectionalLight extends Light {
      * Use this attribute to set the shadow's config.
      * @remarks See example '3d shadow' for more details.
      */
-    public shadow = new DirectionalShadow(this);
-    public isShadowNeedsUpdate = true;
+    shadow = new DirectionalShadow(this);
+    isShadowNeedsUpdate = true;
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'DirectionalLight';
     }
 
@@ -74,31 +74,31 @@ export class DirectionalLight extends Light {
      * @param {Light} source the data source.
      * @param {boolean} recursive if true, descendants of the object are also cloned. Default is true.
      */
-    public copy(source: DirectionalLight, recursive?: boolean) {
+    copy(source: DirectionalLight, recursive?: boolean) {
         super.copy(source, recursive);
         this.shadow.copy(source.shadow);
         return this;
     }
-    public clone(recursive?: boolean) {
+    clone(recursive?: boolean) {
         return new DirectionalLight().copy(this, recursive);
     }
     /**
      * @internal
      */
-    public refreshUniforms(viewMatrix: Matrix4) {
+    refreshUniforms(viewMatrix: Matrix4) {
         this.uniforms.color.copy(this.color).multiplyScalar(this.intensity);
         this.uniforms.direction.setFromMatrixPosition(this.matrixWorld);
         this.vector3 = this.target.position;
         this.uniforms.direction.sub(this.vector3).transformDirection(viewMatrix);
     }
 
-    public updateUniformForForward(program: WGLProgram, index: number) {
+    updateUniformForForward(program: WGLProgram, index: number) {
         const lightPrefix = `directionalLights[${index}]`;
         const shadowPrefix = `directionalLightShadowsInfo[${index}]`;
         this.updateUniformByPrefix(program, lightPrefix, shadowPrefix);
     }
 
-    public updateUniformForDefer(program: WGLProgram) {
+    updateUniformForDefer(program: WGLProgram) {
         if (this.shadow.enabled) {
             program.setUniform('viewMatrix', this.viewMatrix);
         }
@@ -109,13 +109,13 @@ export class DirectionalLight extends Light {
         this.shadow.updateMapUniform(program, 'directionalShadowMap');
     }
 
-    public updateUniformByPrefix(program: WGLProgram, lightPrefix: string, shadowPrefix: string) {
+    updateUniformByPrefix(program: WGLProgram, lightPrefix: string, shadowPrefix: string) {
         program.setUniform(lightPrefix + '.direction', this.uniforms.direction);
         program.setUniform(lightPrefix + '.color', this.uniforms.color);
         this.shadow.updateUniforms(program, shadowPrefix);
     }
 
-    public destroy() {
+    destroy() {
         super.destroy();
         if (this.target) {
             this.target.destroy();
@@ -128,7 +128,7 @@ export class DirectionalLight extends Light {
      * @param {Deserializer} ctx an instance give the method to take the data for attribute.
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<DirectionalLight>(['target', 'shadow']);
     }
@@ -137,18 +137,18 @@ export class DirectionalLight extends Light {
      * @param {Serializer} ctx an instance used to store the data of scene objects.
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<DirectionalLight>(['target', 'shadow']);
     }
     /**
      * @internal
      */
-    public static getLightCollectShader() {
+    static getLightCollectShader() {
         return directionLightCollect;
     }
 
-    public static getHeader(isArray: boolean) {
+    static getHeader(isArray: boolean) {
         if (isArray) {
             return 'uniform DirectionalLight directionalLights[ NUM_DIR_LIGHTS ];';
         } else {
@@ -159,7 +159,7 @@ export class DirectionalLight extends Light {
     /**
      * @internal
      */
-    public static getShaderInclude() {
+    static getShaderInclude() {
         return directionalLightInclude;
     }
 }

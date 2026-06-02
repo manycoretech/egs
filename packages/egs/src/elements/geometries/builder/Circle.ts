@@ -15,7 +15,7 @@ export function circle(param: Partial<CircleShapeParameter>): BufferGeometry {
 }
 
 class CircleBufferGeometry extends BufferGeometry {
-    public parameters: {
+    parameters: {
         radius: number;
         segments: number;
         thetaStart: number;

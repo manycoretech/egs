@@ -19,7 +19,7 @@ export class LineBasicMaterial extends SceneClipMaterial {
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'LineBasicMaterial';
     }
 
@@ -31,11 +31,11 @@ export class LineBasicMaterial extends SceneClipMaterial {
      * Let color become to gradient from one end to another end.
      */
     @materialProperty()
-    public enableVertexColor = false;
+    enableVertexColor = false;
     /**
      * @deprecated
      */
-    public bias = 0;
+    bias = 0;
     /**
      * The basic color of lines.
      * @tips change the color by {@link setValues| setValues()} that is a better way.
@@ -46,14 +46,14 @@ export class LineBasicMaterial extends SceneClipMaterial {
      * Generate a key to make engine know user changes attribute {@link enableVertexColor| enableVertexColor}.
      * This method may override in extended class.
      */
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) + this.enableVertexColor;
     }
     /**
      * Change the corresponding attribute according to the values of given {@link LineBasicMaterialParameters| parameters}.
      * @param {LineBasicMaterialParameters} values a object of specified type contains parameters.
      */
-    public setValues(values?: LineBasicMaterialParameters) {
+    setValues(values?: LineBasicMaterialParameters) {
         if (values === undefined) {
             return;
         }
@@ -63,7 +63,7 @@ export class LineBasicMaterial extends SceneClipMaterial {
     /**
      * @internal
      */
-    public updateShadingUniforms(program: WGLProgram): void {
+    updateShadingUniforms(program: WGLProgram): void {
         if (!this.enableVertexColor) {
             this.color.updateShadingUniforms(program);
         }
@@ -72,7 +72,7 @@ export class LineBasicMaterial extends SceneClipMaterial {
     /**
      * @internal
      */
-    public extendShaderShading(b: ShaderBuilder, _r: ShaderComponentRegistry) {
+    extendShaderShading(b: ShaderBuilder, _r: ShaderComponentRegistry) {
         b
             .when(this.enableVertexColor, b => b.addVarying(ShaderVaryingTypes.vertexColor)
                 .inject(ShaderInjectionTypes.channel_color, 'color.rgb  *= vColor;')
@@ -84,7 +84,7 @@ export class LineBasicMaterial extends SceneClipMaterial {
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx an instance used to store the data of scene objects.
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<LineBasicMaterial>(['color', 'enableVertexColor']);
     }
@@ -92,7 +92,7 @@ export class LineBasicMaterial extends SceneClipMaterial {
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx an instance give the method to take the data for attribute.
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<LineBasicMaterial>(['color', 'enableVertexColor']);
     }
@@ -100,7 +100,7 @@ export class LineBasicMaterial extends SceneClipMaterial {
      * Copy the data to this instance from other instance.
      * @param {LineBasicMaterial} other the source of copied data.
      */
-    public copy(other: LineBasicMaterial) {
+    copy(other: LineBasicMaterial) {
         super.copyBase(other);
         this.color.copy(other.color);
         return this;
@@ -108,7 +108,7 @@ export class LineBasicMaterial extends SceneClipMaterial {
     /**
      * Return a cloned instance of this class.
      */
-    public clone() {
+    clone() {
         return new LineBasicMaterial().copy(this);
     }
 }
@@ -123,7 +123,7 @@ export class LineDashedMaterial extends LineBasicMaterial {
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'LineDashedMaterial';
     }
     constructor(p?: LineDashedMaterialParameters) {
@@ -134,18 +134,18 @@ export class LineDashedMaterial extends LineBasicMaterial {
      * Use this instance to set dash's length.
      */
     @shaderComponentInMaterial()
-    public dash = new LineDash();
+    dash = new LineDash();
     /**
      * If this value is set to true, this object's scale do not change with zoom of camera.
      * @defaultValue `false`
      */
     @materialProperty()
-    public enableViewIndependentDashScale = false;
+    enableViewIndependentDashScale = false;
     /**
      * Change the corresponding attribute according to the values of given {@link LineDashedMaterialParameters| parameters}.
      * @param {LineDashedMaterialParameters} values a object of specified type contains parameters.
      */
-    public setValues(values?: LineDashedMaterialParameters) {
+    setValues(values?: LineDashedMaterialParameters) {
         if (values === undefined) {
             return;
         }
@@ -155,28 +155,28 @@ export class LineDashedMaterial extends LineBasicMaterial {
     /**
      * @internal
      */
-    public extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {
+    extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {
         super.extendShaderShape(builder, _);
         builder.extend(this.dash);
     }
     /**
      * @internal
      */
-    public computeShapeKey(_: ShaderComponentRegistry) {
+    computeShapeKey(_: ShaderComponentRegistry) {
         // LineDashedMaterial
         return super.computeShapeKey(_) + 'd';
     }
     /**
      * @internal
      */
-    public updateShapeUniforms(p: WGLProgram, _: ShaderComponentRegistry) {
+    updateShapeUniforms(p: WGLProgram, _: ShaderComponentRegistry) {
         this.dash.updateShadingUniforms(p);
     }
     /**
      * This method will be used automatically before
      * @param {Renderer} renderer instance of renderer for engine.
      */
-    public onBeforeRender = (renderer: Renderer) => {
+    onBeforeRender = (renderer: Renderer) => {
         if (!this.enableViewIndependentDashScale) {
             return;
         }
@@ -188,7 +188,7 @@ export class LineDashedMaterial extends LineBasicMaterial {
      * Copy the data to this instance from other instance.
      * @param {LineDashedMaterial} other the source of copied data.
      */
-    public copy(other: LineDashedMaterial) {
+    copy(other: LineDashedMaterial) {
         super.copy(other);
         this.dash.copy(other.dash);
         return this;
@@ -196,14 +196,14 @@ export class LineDashedMaterial extends LineBasicMaterial {
     /**
      * Return a cloned instance of this class.
      */
-    public clone() {
+    clone() {
         return new LineDashedMaterial().copy(this);
     }
     /**
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx an instance used to store the data of scene objects.
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<LineDashedMaterial>(['dash']);
     }
@@ -211,7 +211,7 @@ export class LineDashedMaterial extends LineBasicMaterial {
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx an instance give the method to take the data for attribute.
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<LineDashedMaterial>(['dash']);
     }
@@ -229,26 +229,26 @@ export class ColorWithAlpha extends ShaderComponent {
      * Determine the color's rgb.
      */
     @materialProperty()
-    public color = readonlyMath.color();
+    color = readonlyMath.color();
     /**
      * Determine the alpha of color's rgba.
      */
     @materialProperty()
-    public opacity = 1;
+    opacity = 1;
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'ColorWithAlpha';
     }
     /**
      * Change the corresponding attribute according to the values of given {@link ColorWithAlphaParam| parameters}.
      * @param {ColorWithAlphaParam} values a object of specified type contains parameters.
      */
-    public setValues(param: ColorWithAlphaParam) {
+    setValues(param: ColorWithAlphaParam) {
         Utils.copyProperties(colorWithAlphaKeys, this, param);
     }
-    public extendShaderShading(builder: ShaderBuilder) {
+    extendShaderShading(builder: ShaderBuilder) {
         builder
             .addUniform('color', WebGLShaderDataType.Vec3)
             .addUniform('opacity', WebGLShaderDataType.Float)
@@ -257,7 +257,7 @@ export class ColorWithAlpha extends ShaderComponent {
     /**
      * @internal
      */
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setUniform('color', this.color);
         program.setUniform('opacity', this.opacity);
     }
@@ -265,21 +265,21 @@ export class ColorWithAlpha extends ShaderComponent {
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx an instance used to store the data of scene objects.
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<ColorWithAlpha>(['color', 'opacity']);
     }
     /**
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx an instance give the method to take the data for attribute.
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         ctx.reads<ColorWithAlpha>(['color', 'opacity']);
     }
     /**
      * Copy the data to this instance from other instance.
      * @param {ColorWithAlpha} other the source of copied data.
      */
-    public copy(other: ColorWithAlpha) {
+    copy(other: ColorWithAlpha) {
         this.color = other.color;
         this.opacity = other.opacity;
         return this;
@@ -287,7 +287,7 @@ export class ColorWithAlpha extends ShaderComponent {
     /**
      * Return a cloned instance of this class.
      */
-    public clone() {
+    clone() {
         return new ColorWithAlpha().copy(this);
     }
 }
@@ -311,31 +311,31 @@ export class LineDash extends ShaderComponent {
      * This parameter influence the length both of gaps and segments.
      */
     @materialProperty()
-    public scale = 1;
+    scale = 1;
     /**
      * This parameter influence the length of gaps.
      */
     @materialProperty()
-    public gapSize = 2;
+    gapSize = 2;
     /**
      * This parameter influence the length of segments.
      */
     @materialProperty()
-    public dashSize = 1;
+    dashSize = 1;
 
     /**
      * secondary gap
      * @defaultValue 0
      */
     @materialProperty()
-    public gapSize2 = 0;
+    gapSize2 = 0;
 
     /**
     * secondary dash
     * @defaultValue 0
     */
     @materialProperty()
-    public dashSize2 = 0;
+    dashSize2 = 0;
 
     /**
      * This parameter influence the length of one dash with one gap and segment.
@@ -343,40 +343,40 @@ export class LineDash extends ShaderComponent {
      * It is automatically updated when the zoom of camera is changed.
      */
     @materialProperty()
-    public viewScale = 1;
+    viewScale = 1;
 
     /**
      * This material can not be used to instanced object.
      */
-    public useInstance = false;
+    useInstance = false;
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'LineDash';
     }
     /**
      * Change the corresponding attribute according to the values of given {@link LineDashParam | parameters}.
      * @param {LineDashParam} values a object of specified type contains parameters.
      */
-    public setValues(param: LineDashParam) {
+    setValues(param: LineDashParam) {
         Utils.copyProperties(lineDashParamKeys, this, param);
     }
     /**
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx an instance used to store the data of scene objects.
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<LineDash>(['scale', 'gapSize', 'dashSize', 'viewScale', 'gapSize2', 'dashSize2']);
     }
     /**
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx an instance give the method to take the data for attribute.
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         ctx.reads<LineDash>(['scale', 'gapSize', 'dashSize', 'viewScale', 'gapSize2', 'dashSize2']);
     }
-    public extendShaderShading(builder: ShaderBuilder) {
+    extendShaderShading(builder: ShaderBuilder) {
         builder
             .addUniform('scale', WebGLShaderDataType.Float)
             .addUniform('totalSize', WebGLShaderDataType.Float)
@@ -400,7 +400,7 @@ export class LineDash extends ShaderComponent {
     /**
      * @internal
      */
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setUniform('scale', this.scale);
         program.setUniform('totalSize', (this.gapSize + this.dashSize + this.gapSize2 + this.dashSize2) * this.viewScale);
         program.setUniform('gapSize', this.gapSize * this.viewScale);
@@ -411,7 +411,7 @@ export class LineDash extends ShaderComponent {
      * Copy the data to this instance from other instance.
      * @param {LineDash} other the source of copied data.
      */
-    public copy(other: LineDash) {
+    copy(other: LineDash) {
         this.scale = other.scale;
         this.gapSize = other.gapSize;
         this.dashSize = other.dashSize;
@@ -423,7 +423,7 @@ export class LineDash extends ShaderComponent {
     /**
      * Return a cloned instance of this class.
      */
-    public clone() {
+    clone() {
         return new LineDash().copy(this);
     }
 }

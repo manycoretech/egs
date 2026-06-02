@@ -1,15 +1,15 @@
 export class RefObjectMap<K, V>{
-    public map: Map<K, Set<V>> = new Map();
+    map: Map<K, Set<V>> = new Map();
 
-    public clear() {
+    clear() {
         this.map.clear();
     }
 
-    public has(key: K) {
+    has(key: K) {
         return this.map.has(key);
     }
 
-    public add(key: K, value: V) {
+    add(key: K, value: V) {
         const old = this.map.get(key);
         if (old !== undefined) {
             old.add(value);
@@ -18,7 +18,7 @@ export class RefObjectMap<K, V>{
         }
     }
 
-    public delete(key: K, value: V) {
+    delete(key: K, value: V) {
         const old = this.map.get(key);
         if (old !== undefined) {
             old.delete(value);
@@ -28,7 +28,7 @@ export class RefObjectMap<K, V>{
         }
     }
 
-    public forEachValueByKey(key: K, visitor: (v: V) => void) {
+    forEachValueByKey(key: K, visitor: (v: V) => void) {
         const set = this.map.get(key);
         if (set !== undefined) {
             set.forEach(visitor);

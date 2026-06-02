@@ -16,19 +16,19 @@ export class Path extends Curve2D {
     /**
      * Store all the drawn curves into this.
      */
-    public curves: Curve2D[];
+    curves: Curve2D[];
     /**
      * Automatically closes the path.
      */
-    public autoClose: boolean;
+    autoClose: boolean;
     /**
      * Cache values if curves and cache array are same length.
      */
-    public cacheLengths?: number[];
+    cacheLengths?: number[];
     /**
      * Record the latest point's position.
      */
-    public currentPoint: Vector2;
+    currentPoint: Vector2;
 
     constructor(points?: Vector2[]) {
         super();
@@ -43,33 +43,33 @@ export class Path extends Curve2D {
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Path>(['curves', 'autoClose']);
     }
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<Path>(['curves', 'autoClose']);
     }
     /**
      * The name of instance's class.
      */
-    public className(): string {
+    className(): string {
         return 'Path';
     }
     /**
      * Add a curve to this path.
      */
-    public add(curve: Curve2D): void {
+    add(curve: Curve2D): void {
         this.curves.push(curve);
     }
     /**
      * Add a line curve if start and end of lines are not connected.
      */
-    public closePath(): void {
+    closePath(): void {
         const startPoint = this.curves[0].getPoint(0);
         const endPoint = this.curves[this.curves.length - 1].getPoint(1);
 
@@ -81,7 +81,7 @@ export class Path extends Curve2D {
      * Return the point at specified position index of whole curves.
      * @param t proportion from 0 - 1.
      */
-    public getPoint(t: number): Vector2 {
+    getPoint(t: number): Vector2 {
         const d = t * this.getLength();
         const curveLengths = this.getCurveLengths();
         let i = 0;
@@ -103,7 +103,7 @@ export class Path extends Curve2D {
      * We cannot use the default {@link getPoint| getPoint} with getLength() because in curve,
      * getLength() depends on getPoint() but in {@link getPoint| getPoint} depends on getLength().
      */
-    public getLength(): number {
+    getLength(): number {
         const lens = this.getCurveLengths();
         return lens[lens.length - 1];
     }
@@ -111,7 +111,7 @@ export class Path extends Curve2D {
      * Compute lengths and cache them.
      * We cannot overwrite getLengths() because UtoT mapping uses it.
      */
-    public updateArcLengths(): void {
+    updateArcLengths(): void {
         this.needsUpdate = true;
         this.cacheLengths = undefined;
         this.getCurveLengths();
@@ -119,7 +119,7 @@ export class Path extends Curve2D {
     /**
      * Return the length of every curves.
      */
-    public getCurveLengths(): number[] {
+    getCurveLengths(): number[] {
         // We use cache values if curves and cache array are same length
         if (this.cacheLengths && this.cacheLengths.length === this.curves.length) {
             return this.cacheLengths;
@@ -141,7 +141,7 @@ export class Path extends Curve2D {
      * Each pair of points has same space between them.
      * Default return 40 points.
      */
-    public getSpacedPoints(divisions?: number): Vector2[] {
+    getSpacedPoints(divisions?: number): Vector2[] {
         if (divisions === undefined) {
             divisions = 40;
         }
@@ -159,7 +159,7 @@ export class Path extends Curve2D {
     /**
      * Return all points from all {@link curves| curves}.
      */
-    public getPoints(divisions?: number): Vector2[] {
+    getPoints(divisions?: number): Vector2[] {
         const points: Vector2[] = [];
         let last: Vector2 | undefined;
 
@@ -188,24 +188,24 @@ export class Path extends Curve2D {
     /**
      * Use line to connect points one by one.
      */
-    public setFromPoints(points: Vector2[]): void {
+    setFromPoints(points: Vector2[]): void {
         this.moveTo(points[0].x, points[0].y);
         for (let i = 1, l = points.length; i < l; i++) {
             this.lineTo(points[i].x, points[i].y);
         }
     }
 
-    public moveTo(x: number, y: number): void {
+    moveTo(x: number, y: number): void {
         this.currentPoint.set(x, y); // TODO consider referencing vectors instead of copying?
     }
 
-    public lineTo(x: number, y: number): void {
+    lineTo(x: number, y: number): void {
         const curve = new LineCurve2D(this.currentPoint.clone(), new Vector2(x, y));
         this.curves.push(curve);
         this.currentPoint.set(x, y);
     }
 
-    public quadraticCurveTo(aCPx: number, aCPy: number, aX: number, aY: number): void {
+    quadraticCurveTo(aCPx: number, aCPy: number, aX: number, aY: number): void {
         const curve = new QuadraticBezierCurve2D(
             this.currentPoint.clone(),
             new Vector2(aCPx, aCPy),
@@ -215,7 +215,7 @@ export class Path extends Curve2D {
         this.currentPoint.set(aX, aY);
     }
 
-    public bezierCurveTo(aCP1x: number, aCP1y: number, aCP2x: number, aCP2y: number, aX: number, aY: number): void {
+    bezierCurveTo(aCP1x: number, aCP1y: number, aCP2x: number, aCP2y: number, aX: number, aY: number): void {
         const curve = new CubicBezierCurve2D(
             this.currentPoint.clone(),
             new Vector2(aCP1x, aCP1y),
@@ -226,32 +226,32 @@ export class Path extends Curve2D {
         this.currentPoint.set(aX, aY);
     }
 
-    public splineThru(pts: Vector2[]): void {
+    splineThru(pts: Vector2[]): void {
         const npts = [this.currentPoint.clone()].concat(pts);
         const curve = new SplineCurve2D(npts);
         this.curves.push(curve);
         this.currentPoint.copy(pts[pts.length - 1]);
     }
 
-    public arc(aX: number, aY: number, aRadius?: number, aStartAngle?: number, aEndAngle?: number, aClockwise?: boolean, divisions?: number, isFill?: boolean): void {
+    arc(aX: number, aY: number, aRadius?: number, aStartAngle?: number, aEndAngle?: number, aClockwise?: boolean, divisions?: number, isFill?: boolean): void {
         const x0 = this.currentPoint.x;
         const y0 = this.currentPoint.y;
 
         this.absArc(aX + x0, aY + y0, aRadius, aStartAngle, aEndAngle, aClockwise, divisions, isFill);
     }
 
-    public absArc(aX: number, aY: number, aRadius?: number, aStartAngle?: number, aEndAngle?: number, aClockwise?: boolean, divisions?: number, isFill?: boolean): void {
+    absArc(aX: number, aY: number, aRadius?: number, aStartAngle?: number, aEndAngle?: number, aClockwise?: boolean, divisions?: number, isFill?: boolean): void {
         this.absEllipse(aX, aY, aRadius, aRadius, aStartAngle, aEndAngle, aClockwise, undefined, divisions, isFill);
     }
 
-    public ellipse(aX: number, aY: number, xRadius: number, yRadius: number, aStartAngle: number, aEndAngle: number, aClockwise: boolean, aRotation: number, isFill?: boolean): void {
+    ellipse(aX: number, aY: number, xRadius: number, yRadius: number, aStartAngle: number, aEndAngle: number, aClockwise: boolean, aRotation: number, isFill?: boolean): void {
         const x0 = this.currentPoint.x;
         const y0 = this.currentPoint.y;
 
         this.absEllipse(aX + x0, aY + y0, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation, undefined, isFill);
     }
 
-    public absEllipse(aX?: number, aY?: number, xRadius?: number, yRadius?: number, aStartAngle?: number, aEndAngle?: number, aClockwise?: boolean, aRotation?: number, divisions?: number, isFill = false): void {
+    absEllipse(aX?: number, aY?: number, xRadius?: number, yRadius?: number, aStartAngle?: number, aEndAngle?: number, aClockwise?: boolean, aRotation?: number, divisions?: number, isFill = false): void {
         const curve = new EllipseCurve2D(aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation, divisions);
         isFill = isFill || this.curves.length > 0;
         if (isFill) {
@@ -267,7 +267,7 @@ export class Path extends Curve2D {
         this.currentPoint.copy(lastPoint);
     }
 
-    public getBounds(bounds = new Box2()) {
+    getBounds(bounds = new Box2()) {
         const temp = new Box2();
         this.curves.reduce((pv, cv) => {
             cv.getBounds(temp);
@@ -277,11 +277,11 @@ export class Path extends Curve2D {
         return bounds;
     }
 
-    public clone() {
+    clone() {
         return new Path().copy(this);
     }
 
-    public copy(source: Path) {
+    copy(source: Path) {
         super.copy(source);
         this.curves = [];
         for (let i = 0, l = source.curves.length; i < l; i++) {
@@ -293,7 +293,7 @@ export class Path extends Curve2D {
         return this;
     }
 
-    public toJSON(): any {
+    toJSON(): any {
         const data = super.toJSON();
         data.autoClose = this.autoClose;
         data.curves = [];
@@ -306,7 +306,7 @@ export class Path extends Curve2D {
         return data;
     }
 
-    public fromJSON(json: any) {
+    fromJSON(json: any) {
         super.fromJSON.call(this, json);
         this.autoClose = json.autoClose;
         this.curves = [];

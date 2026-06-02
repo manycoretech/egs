@@ -17,16 +17,16 @@ export function tube(params: Partial<TubeShapeParameter>): BufferGeometry {
 }
 
 export class TubeBufferGeometry extends BufferGeometry {
-    public parameters: {
+    parameters: {
         path: Curve<Vector3>;
         tubularSegments: number;
         radius: number;
         radialSegments: number;
         closed: boolean;
     };
-    public tangents: Vector3[];
-    public normals: Vector3[];
-    public biNormals: Vector3[];
+    tangents: Vector3[];
+    normals: Vector3[];
+    biNormals: Vector3[];
     /**
      * @param path A path that inherits from the Curve base class.
      * @param tubularSegments The number of segments that make up the tube, default is 64.

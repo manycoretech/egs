@@ -7,36 +7,36 @@ import { logger } from '../../../utils/Logger';
 
 export class ProxyItemModification<T extends Drawable>{
     // this sets is exclusive;
-    public added: Set<T> = new Set();
-    public changed: Set<T> = new Set();
+    added: Set<T> = new Set();
+    changed: Set<T> = new Set();
     // see applyModification
-    public invalidChanged: Set<T> = new Set();
-    public delete: Set<T> = new Set();
+    invalidChanged: Set<T> = new Set();
+    delete: Set<T> = new Set();
 
     get isNothingChanged() {
         return this.added.size === 0 && this.changed.size === 0 && this.delete.size === 0;
     }
 
-    public notifyChanged(item: T) {
+    notifyChanged(item: T) {
         if (this.added.has(item) || this.delete.has(item)) {
             return;
         }
         this.changed.add(item);
     }
 
-    public notifyDelete(item: T) {
+    notifyDelete(item: T) {
         this.added.delete(item);
         this.changed.delete(item);
         this.delete.add(item);
     }
 
-    public notifyNew(item: T) {
+    notifyNew(item: T) {
         this.delete.delete(item);
         this.changed.delete(item);
         this.added.add(item);
     }
 
-    public reset() {
+    reset() {
         this.added.clear();
         this.changed.clear();
         this.delete.clear();
@@ -106,14 +106,14 @@ export abstract class ProxyOptimizer<T extends Drawable, P extends Drawable>{
         }
     }
 
-    public onObjectUpdate(obj: Drawable) {
+    onObjectUpdate(obj: Drawable) {
         this.pickModification(obj, (m, o, p) => {
             m.notifyChanged(o);
             this.dynamicAnalyser.onObjectChange(p);
         });
     }
 
-    public onObjectDelete(obj: Drawable) {
+    onObjectDelete(obj: Drawable) {
         this.pickModification(obj, (m, o, p) => {
             m.notifyDelete(o);
             this.dynamicAnalyser.onObjectChange(p);
@@ -133,7 +133,7 @@ export abstract class ProxyOptimizer<T extends Drawable, P extends Drawable>{
         this.dropProxyResource(p);
     }
 
-    public maintain(freeRenderables: DrawableSet, createProxyEnable: boolean = false): boolean {
+    maintain(freeRenderables: DrawableSet, createProxyEnable: boolean = false): boolean {
         if (!this.enable || !(createProxyEnable || this.isDirty)) {
             return false;
         }

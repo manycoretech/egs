@@ -14,12 +14,18 @@ import { ContentBridge, materialProperty } from '../../../ContentAPI';
 import { Capabilities } from '../../Capabilities';
 import { TextureV2 } from '../../../elements/textures/TextureV2';
 
+/**
+ * Environment-map combine operation for IBL shading.
+ */
 export enum CombineOperation {
     Multiply = 0,
     Mix = 1,
     Add = 2,
 }
 
+/**
+ * Environment texture layout used by IBL shader components.
+ */
 export enum EnvTextureType {
     Cube,
     Equirec,

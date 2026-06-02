@@ -15,14 +15,14 @@ export class DepthState {
         this.setClear(1);
     }
 
-    public setMask(depthMask: boolean): void {
+    setMask(depthMask: boolean): void {
         if (this.currentDepthMask !== depthMask) {
             this.gl.depthMask(depthMask);
             this.currentDepthMask = depthMask;
         }
     }
 
-    public setFunc(depthFunc: DepthModes): void {
+    setFunc(depthFunc: DepthModes): void {
         if (this.currentDepthFunc !== depthFunc) {
             switch (depthFunc) {
                 case DepthModes.NeverDepth:
@@ -56,14 +56,14 @@ export class DepthState {
         }
     }
 
-    public setClear(depth: number): void {
+    setClear(depth: number): void {
         if (this.currentDepthClear !== depth) {
             this.gl.clearDepth(depth);
             this.currentDepthClear = depth;
         }
     }
 
-    public reset(): void {
+    reset(): void {
         this.currentDepthMask = null;
         this.currentDepthFunc = null;
         this.currentDepthClear = null;

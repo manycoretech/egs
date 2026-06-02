@@ -17,23 +17,23 @@ export type FatLineMaterialParameter = ConvertMaterialParameters<Pick<FatLineMat
  * This material is specifically used to draw line or dash-line which has width more than 1 pixel.
  */
 export class FatLineMaterial extends SceneClipMaterial {
-    public fallback = new LineBasicMaterial();
+    fallback = new LineBasicMaterial();
     @shaderComponentInMaterial()
-    public color = new ColorWithAlpha();
+    color = new ColorWithAlpha();
     @materialProperty()
-    public enableDash = false;
+    enableDash = false;
     @shaderComponentInMaterial()
-    public dash = new LineDash();
+    dash = new LineDash();
     @materialProperty()
-    public fatLineWidth = 1;
+    fatLineWidth = 1;
     @materialProperty()
-    public enableViewIndependentDashScale = false;
+    enableViewIndependentDashScale = false;
 
-    public className() {
+    className() {
         return 'FatLineMaterial';
     }
 
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) + this.enableDash;
     }
 
@@ -47,7 +47,7 @@ export class FatLineMaterial extends SceneClipMaterial {
      * This method will be used automatically before
      * @param {Renderer} renderer instance of renderer for engine.
      */
-    public onBeforeRender = (renderer: Renderer) => {
+    onBeforeRender = (renderer: Renderer) => {
         if (!this.enableViewIndependentDashScale) {
             return;
         }
@@ -56,7 +56,7 @@ export class FatLineMaterial extends SceneClipMaterial {
         this.dash.viewScale = camera.getViewIndependentScaleRatio(object.z, renderer.getDrawingBufferSize().height);
     };
 
-    public setValues(p?: FatLineMaterialParameter) {
+    setValues(p?: FatLineMaterialParameter) {
         if (p === undefined) {
             return;
         }
@@ -67,7 +67,7 @@ export class FatLineMaterial extends SceneClipMaterial {
         this.fallback.setValues(p);
     }
 
-    public updateShapeUniforms(program: WGLProgram, r: ShaderComponentRegistry) {
+    updateShapeUniforms(program: WGLProgram, r: ShaderComponentRegistry) {
         super.updateShapeUniforms(program, r);
         program.setUniform('fatLineWidth', this.fatLineWidth);
         if (this.enableDash) {
@@ -75,19 +75,19 @@ export class FatLineMaterial extends SceneClipMaterial {
         }
     }
 
-    public updateShadingUniforms(program: WGLProgram): void {
+    updateShadingUniforms(program: WGLProgram): void {
         this.color.updateShadingUniforms(program);
     }
 
-    public extendShaderShading(builder: ShaderBuilder) {
+    extendShaderShading(builder: ShaderBuilder) {
         builder.extend(this.color);
     }
 
-    public computeShapeKey(r: ShaderComponentRegistry) {
+    computeShapeKey(r: ShaderComponentRegistry) {
         return super.computeShapeKey(r) + 'fat';
     }
 
-    public extendShaderShape(builder: ShaderBuilder, registry: ShaderComponentRegistry) {
+    extendShaderShape(builder: ShaderBuilder, registry: ShaderComponentRegistry) {
         super.extendShaderShape(builder, registry);
         builder
             .addVarying(ShaderVaryingTypes.fragUV)
@@ -101,7 +101,7 @@ export class FatLineMaterial extends SceneClipMaterial {
             .when(this.enableDash, b => b.extend(this.dash));
     }
 
-    public copy(other: FatLineMaterial) {
+    copy(other: FatLineMaterial) {
         super.copyBase(other);
         this.color.copy(other.color);
         this.dash.copy(other.dash);
@@ -109,17 +109,17 @@ export class FatLineMaterial extends SceneClipMaterial {
         return this;
     }
 
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<FatLineMaterial>(['color', 'dash', 'fatLineWidth', 'enableDash']);
     }
 
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<FatLineMaterial>(['color', 'dash', 'fatLineWidth', 'enableDash']);
     }
 
-    public clone() {
+    clone() {
         return new FatLineMaterial().copy(this);
     }
 }

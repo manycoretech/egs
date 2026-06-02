@@ -24,8 +24,8 @@ export class SkinnedMesh<M extends Material = Material, T extends SourceTexture 
 
     readonly isSkinnedMesh: boolean = true;
 
-    public boneMatricesTexture: Nullable<T> = null;
-    public boneMatricesBuffer: Nullable<Float32Array> = null;
+    boneMatricesTexture: Nullable<T> = null;
+    boneMatricesBuffer: Nullable<Float32Array> = null;
 
     private boundingBox: Nullable<Box3> = null;
     private boneBoundingBoxes: Box3[] = [];
@@ -59,7 +59,7 @@ export class SkinnedMesh<M extends Material = Material, T extends SourceTexture 
     /**
      * Special raycast for skinned mesh
      */
-    public raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]): void {
+    raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]): void {
         if (this.isBound) {
             const boneBox = new Box3();
             const count = this.boneBoundingBoxes.length;
@@ -91,7 +91,7 @@ export class SkinnedMesh<M extends Material = Material, T extends SourceTexture 
     /**
      * Copy skinned mesh with shared skeleton.
      */
-    public copy(source: SkinnedMesh<M, T>, recursive?: boolean): this {
+    copy(source: SkinnedMesh<M, T>, recursive?: boolean): this {
         super.copy(source, recursive);
         this.boneMatricesTexture = source.boneMatricesTexture;
         this.boneMatricesBuffer = source.boneMatricesBuffer;
@@ -103,7 +103,7 @@ export class SkinnedMesh<M extends Material = Material, T extends SourceTexture 
     /**
      * Clone skinned mesh with shared skeleton.
      */
-    public clone(recursive?: boolean): SkinnedMesh<M, T> {
+    clone(recursive?: boolean): SkinnedMesh<M, T> {
         return new SkinnedMesh<M, T>().copy(this, recursive);
     }
 
@@ -111,7 +111,7 @@ export class SkinnedMesh<M extends Material = Material, T extends SourceTexture 
      * Bind skeleton to skinned mesh by bone texture in skeleton
      * @internal
      */
-    public bind(texture: T) {
+    bind(texture: T) {
         this.boneMatricesTexture = texture;
         if (texture instanceof Texture2D) {
             this.boneMatricesBuffer = (texture as Texture2D).source.main.source as Float32Array;
@@ -163,7 +163,7 @@ export class SkinnedMesh<M extends Material = Material, T extends SourceTexture 
      * Update local bboxes when bones change
      * @internal
      */
-    public updateLocalBounding() {
+    updateLocalBounding() {
         if (this.isBound) {
             if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
                 this.boundingBox = ManagedContentBridge.meshGetLocalBBox(this);
@@ -181,7 +181,7 @@ export class SkinnedMesh<M extends Material = Material, T extends SourceTexture 
         }
     }
 
-    public updateBoundings(): void {
+    updateBoundings(): void {
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             this.updateWorldMatrix(true, false);
         }
@@ -193,7 +193,7 @@ export class SkinnedMesh<M extends Material = Material, T extends SourceTexture 
     /**
      * Compute animated position
      */
-    public applyBoneTransform(index: number, vector: Vector3) {
+    applyBoneTransform(index: number, vector: Vector3) {
         const geometry = this.geometry;
 
         const _joints = new Vector4();
@@ -220,7 +220,7 @@ export class SkinnedMesh<M extends Material = Material, T extends SourceTexture 
     /**
      * Update bone matrices and local bounding
      */
-    public update() {
+    update() {
         // better way to get bone matrix in texture?
         ContentBridge.skinnedMeshSyncBoneMatrices(this);
         this.updateLocalBounding();
@@ -231,7 +231,7 @@ export class SkinnedMesh<M extends Material = Material, T extends SourceTexture 
     /**
      * get local bbox which is not only related to geometry
      */
-    public getBoundingBox(): Box3 {
+    getBoundingBox(): Box3 {
         if (this.boundingBox === null) {
             this.updateLocalBounding();
         }

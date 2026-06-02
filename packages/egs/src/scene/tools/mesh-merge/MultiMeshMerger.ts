@@ -9,19 +9,19 @@ import { logger } from '../../../utils/Logger';
 import { mergeBufferGeometries } from '../../../elements/geometries/operators/Index';
 
 export class MultiMeshMerger extends DrawcallMerger<Mesh, Material, BufferGeometry> {
-    public downcastInputDrawable(input: Drawable): input is Mesh {
+    downcastInputDrawable(input: Drawable): input is Mesh {
         return TypeAssert.isMesh(input);
     }
 
-    public downcastInputMaterial(_: Material): _ is Material {
+    downcastInputMaterial(_: Material): _ is Material {
         return true;
     }
 
-    public downcastInputGeometry(input: GeometryBase): input is BufferGeometry {
+    downcastInputGeometry(input: GeometryBase): input is BufferGeometry {
         return TypeAssert.isBufferGeometry(input);
     }
 
-    public decideNextDrawcall(drawcall: MergeDrawcallSource<Mesh, Material, BufferGeometry>): void {
+    decideNextDrawcall(drawcall: MergeDrawcallSource<Mesh, Material, BufferGeometry>): void {
         if (this.mergeGroup.length === 0) {
             this.mergeGroup.push([]);
         }
@@ -29,7 +29,7 @@ export class MultiMeshMerger extends DrawcallMerger<Mesh, Material, BufferGeomet
         lastGroup.push(drawcall);
     }
 
-    public extraCheck(inputs: Drawable[]) {
+    extraCheck(inputs: Drawable[]) {
         const geometryLayout = inputs[0].geometry.getAttributeLayoutKey();
         for (let i = 0; i < inputs.length; i++) {
             const mesh = inputs[i];
@@ -49,7 +49,7 @@ export class MultiMeshMerger extends DrawcallMerger<Mesh, Material, BufferGeomet
         return true;
     }
 
-    public mergeImpl(group: Array<MergeDrawcallSource<Mesh, Material, BufferGeometry>>): Mesh | null {
+    mergeImpl(group: Array<MergeDrawcallSource<Mesh, Material, BufferGeometry>>): Mesh | null {
         const material = group[0].material as Material;
         const filtered = group.filter(g => g.drawable.netVisibility);
         if (filtered.length > 0) {

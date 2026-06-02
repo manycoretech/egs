@@ -6,11 +6,11 @@ export class InstancedBufferGeometry extends BufferGeometry {
      * Used to check type of this or extended instance.
      * This value should not be changed by user.
      */
-    public isInstancedBufferGeometry = true;
+    isInstancedBufferGeometry = true;
     /**
      * The type of this instance.
      */
-    public type = 'InstancedBufferGeometry';
+    type = 'InstancedBufferGeometry';
     /**
      * The number of instanced object.
      */
@@ -27,7 +27,7 @@ export class InstancedBufferGeometry extends BufferGeometry {
      * This method need override in derived classes to copy extended data.
      * @param {InstancedBufferGeometry} source the data source.
      */
-    public copy(source: InstancedBufferGeometry) {
+    copy(source: InstancedBufferGeometry) {
         super.copy(source);
         this.instancedCount = source.instancedCount;
         return this;
@@ -35,7 +35,7 @@ export class InstancedBufferGeometry extends BufferGeometry {
     /**
      * Create a clone of this instance.
      */
-    public clone() {
+    clone() {
         return new InstancedBufferGeometry().copy(this);
     }
 }

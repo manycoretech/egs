@@ -5,6 +5,9 @@ import { Vector3 } from './Vector3';
 import { Vector4 } from './Vector4';
 import { Matrix3 } from './Matrix3';
 
+/**
+ * Factory helpers that create readonly math value wrappers.
+ */
 export const readonlyMath = {
     color: function color(color_or_r?: string | Color | number, g?: number, b?: number) {
         return new Color(color_or_r, g, b).cloneReadonly();

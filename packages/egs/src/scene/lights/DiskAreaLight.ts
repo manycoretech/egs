@@ -10,13 +10,13 @@ import { lightProperty } from '../../ContentAPI';
 const matrix42 = new Matrix4();
 const matrix4 = new Matrix4();
 export class DiskAreaLight extends AreaLight {
-    public isDiskAreaLight = true;
+    isDiskAreaLight = true;
     @lightProperty()
-    public width: number;
+    width: number;
     @lightProperty()
-    public height: number;
+    height: number;
     @lightProperty()
-    public specularStrength: number;
+    specularStrength: number;
     private uniforms = {
         position: new Vector3(),
         color: new Color(),
@@ -28,7 +28,7 @@ export class DiskAreaLight extends AreaLight {
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'DiskAreaLight';
     }
 
@@ -39,7 +39,7 @@ export class DiskAreaLight extends AreaLight {
         this.specularStrength = specularStrength ? specularStrength : 0;
     }
 
-    public copy(source: DiskAreaLight, recursive?: boolean) {
+    copy(source: DiskAreaLight, recursive?: boolean) {
         super.copy(source, recursive);
         this.width = source.width;
         this.height = source.height;
@@ -47,13 +47,13 @@ export class DiskAreaLight extends AreaLight {
         return this;
     }
 
-    public clone(recursive?: boolean) {
+    clone(recursive?: boolean) {
         return new DiskAreaLight().copy(this, recursive);
     }
     /**
      * @internal
      */
-    public refreshUniforms(viewMatrix: Matrix4) {
+    refreshUniforms(viewMatrix: Matrix4) {
         this.uniforms.color.copy(this.color).multiplyScalar(this.intensity);
         this.uniforms.position.setFromMatrixPosition(this.matrixWorld).applyMatrix4(viewMatrix);
         this.uniforms.halfWidth.set(this.width * 0.5, 0, 0);
@@ -69,17 +69,17 @@ export class DiskAreaLight extends AreaLight {
     /**
      * @internal
      */
-    public updateUniformForForward(program: WGLProgram, index: number) {
+    updateUniformForForward(program: WGLProgram, index: number) {
         this.updateUniformByPrefix(program, `diskAreaLights[${index}]`);
     }
 
-    public updateUniformForDefer(program: WGLProgram) {
+    updateUniformForDefer(program: WGLProgram) {
         this.updateUniformByPrefix(program, 'diskAreaLight');
         program.setTexture2D('ltc_1', DiskAreaLight.ltc_1_texture);
         program.setTexture2D('ltc_2', DiskAreaLight.ltc_2_texture);
     }
 
-    public updateUniformByPrefix(program: WGLProgram, prefix: string) {
+    updateUniformByPrefix(program: WGLProgram, prefix: string) {
         program.setUniform(prefix + '.halfWidth', this.uniforms.halfWidth);
         program.setUniform(prefix + '.halfHeight', this.uniforms.halfHeight);
         program.setUniform(prefix + '.color', this.uniforms.color);
@@ -87,7 +87,7 @@ export class DiskAreaLight extends AreaLight {
         program.setUniform(prefix + '.specularStrength', this.uniforms.specularStrength);
     }
 
-    public static getHeader(isArray: boolean) {
+    static getHeader(isArray: boolean) {
         if (isArray) {
             return 'uniform DiskAreaLight diskAreaLights[ NUM_DISK_AREA_LIGHTS ];';
         } else {
@@ -98,27 +98,27 @@ export class DiskAreaLight extends AreaLight {
     /**
      * @internal
      */
-    public static getLightCollectShader() {
+    static getLightCollectShader() {
         return diskAreaLightCollect;
     }
     /**
      * @internal
      */
-    public static getShaderInclude() {
+    static getShaderInclude() {
         return diskAreaLightInclude;
     }
 
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<DiskAreaLight>(['width', 'height', 'specularStrength']);
     }
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<DiskAreaLight>(['width', 'height', 'specularStrength']);
     }

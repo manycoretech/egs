@@ -32,7 +32,7 @@ export class Layers extends EventDispatcher {
      * Set membership to layer, and remove membership all other layers.
      * @param channel an integer from 0 to 31.
      */
-    public set(channel: number) {
+    set(channel: number) {
         this.mask = 1 << channel | 0;
         return this;
     }
@@ -40,7 +40,7 @@ export class Layers extends EventDispatcher {
      * Add membership of this layer.
      * @param channel an integer from 0 to 31.
      */
-    public enable(channel: number) {
+    enable(channel: number) {
         this.mask |= 1 << channel | 0;
         return this;
     }
@@ -48,7 +48,7 @@ export class Layers extends EventDispatcher {
      * Toggle membership of layer.
      * @param channel an integer from 0 to 31.
      */
-    public toggle(channel: number) {
+    toggle(channel: number) {
         this.mask ^= 1 << channel | 0;
         return this;
     }
@@ -56,7 +56,7 @@ export class Layers extends EventDispatcher {
      * Remove membership of this layer.
      * @param channel an integer from 0 to 31.
      */
-    public disable(channel: number) {
+    disable(channel: number) {
         this.mask &= ~(1 << channel | 0);
         return this;
     }
@@ -64,31 +64,31 @@ export class Layers extends EventDispatcher {
      * Returns true if this and the passed layers object are members of the same set of layers.
      * @param layers a Layers object.
      */
-    public test(layers: Layers) {
+    test(layers: Layers) {
         return (this._mask & layers._mask) !== 0;
     }
     /**
      * @internal
      */
-    public getSerializeData() {
+    getSerializeData() {
         return this._mask;
     }
     /**
      * @internal
      */
-    public setSerializeData(value: number) {
+    setSerializeData(value: number) {
         this.mask = value;
     }
     /**
      * Copies the {@link mask| mask} of given layers to this.
      */
-    public copy(value: Layers) {
+    copy(value: Layers) {
         this.mask = value._mask;
     }
     /**
      * Returns a new Layers with the same {@link mask| mask} as this one.
      */
-    public clone() {
+    clone() {
         const layers = new Layers();
         layers._mask = this._mask;
         layers.isDefault = this.isDefault;

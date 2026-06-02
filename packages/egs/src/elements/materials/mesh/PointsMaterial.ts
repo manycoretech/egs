@@ -22,7 +22,7 @@ export class PointsMaterial extends Material {
         this.setValues(p);
     }
 
-    public setValues(values?: PointsMaterialParameters) {
+    setValues(values?: PointsMaterialParameters) {
         if (values === undefined) {
             return;
         }
@@ -35,19 +35,19 @@ export class PointsMaterial extends Material {
     /**
      * @deprecated will not work.
      */
-    public size = 1;
+    size = 1;
     @shaderComponentInMaterial()
-    public color = new ColorWithAlpha();
+    color = new ColorWithAlpha();
     @materialProperty()
-    public enableSizeAttenuation = true;
+    enableSizeAttenuation = true;
     @materialProperty()
-    public enableVertexColor: boolean = false;
+    enableVertexColor: boolean = false;
 
-    public className() {
+    className() {
         return 'PointsMaterial';
     }
 
-    public extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {
+    extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {
         builder
             .useCamera()
             .addUniform('size', WebGLShaderDataType.Float)
@@ -57,19 +57,19 @@ export class PointsMaterial extends Material {
                     .addUniform('scale', WebGLShaderDataType.Float));
     }
 
-    public computeShapeKey(_: ShaderComponentRegistry) {
+    computeShapeKey(_: ShaderComponentRegistry) {
         // PointsMaterial
         return 'cp' + (this.enableSizeAttenuation ? '0' : '1');
     }
 
-    public updateShapeUniforms(p: WGLProgram, _: ShaderComponentRegistry) {
+    updateShapeUniforms(p: WGLProgram, _: ShaderComponentRegistry) {
         if (this.enableSizeAttenuation) {
             p.setUniform('scale', p.renderState.builtUniforms.resolution.height * 0.5);
         }
         p.setUniform('size', window.devicePixelRatio * this.size);
     }
 
-    public extendShaderShading(b: ShaderBuilder, _: ShaderComponentRegistry) {
+    extendShaderShading(b: ShaderBuilder, _: ShaderComponentRegistry) {
         b.when(this.enableVertexColor, b =>
             b.addVarying(ShaderVaryingTypes.vertexColor)
                 .inject(ShaderInjectionTypes.channel_color, 'color.rgb *= vColor;')
@@ -79,21 +79,21 @@ export class PointsMaterial extends Material {
         );
     }
 
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
             .bool(this.enableSizeAttenuation)
             .bool(this.enableVertexColor)
             .getKey();
     }
 
-    public updateShadingUniforms(p: WGLProgram, _: ShaderComponentRegistry) {
+    updateShadingUniforms(p: WGLProgram, _: ShaderComponentRegistry) {
         if (this.enableVertexColor) {
             return;
         }
         this.color.updateShadingUniforms(p);
     }
 
-    public copy(other: PointsMaterial) {
+    copy(other: PointsMaterial) {
         super.copyBase(other);
         this.color.copy(other.color);
         this.size = other.size;
@@ -101,16 +101,16 @@ export class PointsMaterial extends Material {
         return this;
     }
 
-    public clone() {
+    clone() {
         return new PointsMaterial().copy(this);
     }
 
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<PointsMaterial>(['color', 'enableSizeAttenuation', 'size', 'enableVertexColor']);
     }
 
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<PointsMaterial>(['color', 'enableSizeAttenuation', 'size', 'enableVertexColor']);
     }

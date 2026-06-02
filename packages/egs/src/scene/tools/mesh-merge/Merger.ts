@@ -144,7 +144,7 @@ export abstract class DrawcallMerger<
         }
     }
 
-    public merge(inputs: Drawable[]): Nullable<T[]> {
+    merge(inputs: Drawable[]): Nullable<T[]> {
         this.reset();
 
         // input and checking merge source

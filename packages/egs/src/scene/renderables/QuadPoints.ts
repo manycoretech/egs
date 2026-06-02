@@ -9,13 +9,13 @@ import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
 export class QuadPoints implements Renderable {
     private quadPointsCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);
     private quadPoints: Points = new Points();
-    public quadWidth: number;
+    quadWidth: number;
 
-    public setMaterial(mat: Material) {
+    setMaterial(mat: Material) {
         this.quadPoints.setMaterials(mat);
     }
 
-    public setGeometry(n: number) {
+    setGeometry(n: number) {
         if (this.quadWidth === n) {
             return;
         }
@@ -35,11 +35,11 @@ export class QuadPoints implements Renderable {
         this.quadPoints.geometry = pointGeometry.forceCastTopology();
     }
 
-    public config(_: IRenderer) {
+    config(_: IRenderer) {
         return true;
     }
 
-    public render(renderer: IRenderer) {
+    render(renderer: IRenderer) {
         const oldCamera = renderer.getCurrentCamera();
         renderer.useCamera(this.quadPointsCamera);
         renderer.setMaterialUploadDirty();

@@ -100,22 +100,22 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
      * Check the type whether it belongs to Mesh.
      * This value should not be changed by user.
      */
-    public isMesh = true;
+    isMesh = true;
     /**
     * Mark this mesh use origin material in transparent mode
     */
     @drawableState()
-    public useOriginMaterialInTransparentMode = false;
+    useOriginMaterialInTransparentMode = false;
     /**
      * The type of this Object3D.
      */
-    public type = 'Mesh';
+    type = 'Mesh';
     /**
      * Bind edges to a mesh.
      * Since the material is same, so all the groups will be combined together here.
      */
-    public edges: Nullable<LineSegments> = null;
-    public _syncedEdgeThreshold = -1;
+    edges: Nullable<LineSegments> = null;
+    _syncedEdgeThreshold = -1;
 
     private _instanceKey: Nullable<string> = null;
     /**
@@ -154,7 +154,7 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'Mesh';
     }
     /**
@@ -163,7 +163,7 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
      * It may cause that this method can not be used directly.
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Mesh>(['instanceKey', 'mergeKey']);
     }
@@ -173,7 +173,7 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
      * It may cause that this method can not be used directly.
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<Mesh>(['instanceKey', 'mergeKey']);
     }
@@ -189,14 +189,14 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
      * @param {Camera3D} camera the camera which is used in current frame.
      * @param {number} viewHeight the height of canvas.
      */
-    public updateRenderInfo(camera: Camera3D, viewHeight: number) {
+    updateRenderInfo(camera: Camera3D, viewHeight: number) {
         super.updateRenderInfo(camera, viewHeight);
         this.frontFaceCW = this.normalMatrix.determinant() < 0;
     }
     /**
      * If user change the data of geometry, use this method to refresh the data.
      */
-    public setGeometryChanged() {
+    setGeometryChanged() {
         super.setGeometryChanged();
         if (this.edges) {
             this.edges.geometry.freeGPU();
@@ -207,7 +207,7 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
      * If user change the data of geometry, use this method to refresh referring data.
      * @remarks See {@link Drawable.onReferencedGeometryContentChange| onReferencedGeometryContentChange()} for more details.
      */
-    public onReferencedGeometryContentChange() {
+    onReferencedGeometryContentChange() {
         super.onReferencedGeometryContentChange();
         if (this.edges) {
             this.edges = null;
@@ -219,17 +219,17 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
      * This method need override in derived classes to copy extended data.
      * @param {Mesh} source the data source.
      */
-    public copy(source: Mesh<M, G>, recursive?: boolean) {
+    copy(source: Mesh<M, G>, recursive?: boolean) {
         super.copy(source, recursive);
         return this;
     }
     /**
      * Return a clone of this object.
      */
-    public clone(recursive?: boolean): Mesh<M, G> {
+    clone(recursive?: boolean): Mesh<M, G> {
         return new Mesh(this.geometry, this._material).copy(this, recursive);
     }
-    public destroy() {
+    destroy() {
         super.destroy();
         if (this.edges) {
             this.edges.geometry.destroyAllResourcesOwned();
@@ -243,7 +243,7 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
      * @param {Raycaster} raycaster the instance of Raycaster is used to get the data for calculation.
      * @param {Intersection} intersects the result will be stored here.
      */
-    public raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]) {
+    raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]) {
         const geometry = this.geometry;
         const material = this._material;
         const matrixWorld = this.matrixWorld;

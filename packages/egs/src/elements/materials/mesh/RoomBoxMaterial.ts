@@ -14,6 +14,9 @@ export type RoomBoxMaterialParameter<T extends TextureV2 | Texture2D = Texture2D
     texture?: T,
 };
 
+/**
+ * Material that renders a textured room-box environment.
+ */
 export class RoomBoxMaterial<T extends TextureV2 | Texture2D = Texture2D> extends SceneMaterial {
     @materialProperty()
     texture: T;

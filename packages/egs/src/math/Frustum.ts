@@ -7,15 +7,18 @@ import { Object3D } from '../scene/Object3D';
 import { Sprite } from '../scene/drawables/Sprite';
 import { PerspectiveCamera } from '../scene/cameras/PerspectiveCamera';
 
+/**
+ * Viewing frustum represented by six clipping planes.
+ */
 export class Frustum {
     /**
      * Array of 6 {@link Plane| planes}.
      */
-    public planes: Plane[];
+    planes: Plane[];
     /**
      * The eight vertex's position of frustum
      */
-    public corners: Vector3[];
+    corners: Vector3[];
 
     constructor(p0?: Plane, p1?: Plane, p2?: Plane, p3?: Plane, p4?: Plane, p5?: Plane) {
         this.planes = [
@@ -42,7 +45,7 @@ export class Frustum {
      * Sets the frustum from the passed planes. No plane order is implied.
      * Note that this method only copies the values from the given objects.
      */
-    public set(p0: Plane, p1: Plane, p2: Plane, p3: Plane, p4: Plane, p5: Plane): Frustum {
+    set(p0: Plane, p1: Plane, p2: Plane, p3: Plane, p4: Plane, p5: Plane): Frustum {
         const planes = this.planes;
         planes[0].copy(p0);
         planes[1].copy(p1);
@@ -55,14 +58,14 @@ export class Frustum {
     /**
      * Return a new Frustum with the same parameters as this one.
      */
-    public clone(): Frustum {
+    clone(): Frustum {
         return new Frustum().copy(this);
     }
     /**
      * Copies the properties of the passed {@link Frustum| frustum} into this one.
      * @param frustum The frustum to copy.
      */
-    public copy(frustum: Frustum): Frustum {
+    copy(frustum: Frustum): Frustum {
         const planes = this.planes;
         for (let i = 0; i < 6; i++) {
             planes[i].copy(frustum.planes[i]);
@@ -72,13 +75,13 @@ export class Frustum {
     /**
      * Return the {@link corners| corners}.
      */
-    public getCorners(): Vector3[] {
+    getCorners(): Vector3[] {
         return this.corners;
     }
     /**
      * Sets the frustum by a transform matrix.
      */
-    public setFromMatrix(m: Matrix4): Frustum {
+    setFromMatrix(m: Matrix4): Frustum {
         const planes = this.planes;
         const me = m._elements;
         const me0 = me[0], me1 = me[1], me2 = me[2], me3 = me[3],
@@ -108,7 +111,7 @@ export class Frustum {
      * Checks whether the {@link Object3D| object}'s {@link BufferGeometry.boundingSphere| bounding} is intersecting the frustum.
      * Note that the object must have a {@link BufferGeometry| geometry} so that the bounding sphere can be calculated.
      */
-    public intersectsObject(object: Object3D): boolean {
+    intersectsObject(object: Object3D): boolean {
         const geometry = (object as any).geometry;
         if (geometry.boundingSphere === null) {
             geometry.computeBoundingSphere();
@@ -119,7 +122,7 @@ export class Frustum {
     /**
      * Checks whether the {@link Sprite| sprite} is intersecting the frustum.
      */
-    public intersectsSprite(sprite: Sprite): boolean {
+    intersectsSprite(sprite: Sprite): boolean {
         tmpSphere.center.set(0, 0, 0);
         tmpSphere.radius = 0.7071067811865476;
         tmpSphere.applyMatrix4(sprite.matrixWorld);
@@ -129,7 +132,7 @@ export class Frustum {
      * Return true if {@link Sphere| sphere} intersects with this frustum.
      * @param sphere {@link Sphere| Sphere} to check for intersection.
      */
-    public intersectsSphere(sphere: Sphere): boolean {
+    intersectsSphere(sphere: Sphere): boolean {
         const planes = this.planes;
         const center = sphere.center;
         const negRadius = - sphere.radius;
@@ -145,7 +148,7 @@ export class Frustum {
      * Return true if {@link Box3| box} intersects with this frustum.
      * @param box {@link Box3| Box3} to check for intersection.
      */
-    public intersectsBox(box: Box3): boolean {
+    intersectsBox(box: Box3): boolean {
         const planes = this.planes;
         const boxMaxX =  box.max.x;
         const boxMaxY = box.max.y;
@@ -171,7 +174,7 @@ export class Frustum {
      * Checks to see if the frustum contains the {@link Vector3| point}.
      * @param point {@link Vector3| Vector3} to test.
      */
-    public containsPoint(point: Vector3): boolean {
+    containsPoint(point: Vector3): boolean {
         const planes = this.planes;
         for (let i = 0; i < 6; i++) {
             if (planes[i].distanceToPoint(point) < 0) {
@@ -183,7 +186,7 @@ export class Frustum {
     /**
      * Return a value to represent the closest distance between camera and box, if there are any part of bos inside the frustum.
      */
-    public getCameraClosestDistanceFromBoxes(camera: PerspectiveCamera, boxes: Box3[]) {
+    getCameraClosestDistanceFromBoxes(camera: PerspectiveCamera, boxes: Box3[]) {
         const points = [];
         this.setFromMatrix(tmpMat4.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
         cameraPos.setFromMatrixPosition(camera.matrixWorld);
@@ -228,10 +231,10 @@ const pointTmp = new Vector3();
 
 // pure line, no start or end
 class Line {
-    public constant = new Vector3();
-    public direction = new Vector3();
+    constant = new Vector3();
+    direction = new Vector3();
 
-    public update(point1: Vector3, point2: Vector3) {
+    update(point1: Vector3, point2: Vector3) {
         this.constant.copy(point1);
         const length = this.direction.copy(point2).sub(this.constant).length();
         if (length < 0.0001) {
@@ -244,7 +247,7 @@ class Line {
 
     // https://www.cnblogs.com/xiangtingshen/p/12329951.html
 
-    public static lineIntersect(line1: Line, line2: Line, point: Vector3) {
+    static lineIntersect(line1: Line, line2: Line, point: Vector3) {
         const startPointSeg = new Vector3().copy(line2.constant).sub(line1.constant);
         const vecS1 = new Vector3().copy(line1.direction).cross(line2.direction);
         const vecS2 = new Vector3().copy(startPointSeg).cross(line2.direction);

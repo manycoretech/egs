@@ -29,7 +29,7 @@ export interface MergedMeshData {
 
 export class PopMeshMergeManager {
     private _enabled: boolean = false;
-    public checkMap: RefCountMap<string, MergedMeshData> = new RefCountMap(); // map to merged mesh;
+    checkMap: RefCountMap<string, MergedMeshData> = new RefCountMap(); // map to merged mesh;
 
     constructor() {
         this.checkMap.onValueRemove = combine => {
@@ -128,7 +128,7 @@ export class PopMeshMergeManager {
         return true;
     }
 
-    public merge(mesh: PopMesh): Nullable<MergedMeshData> {
+    merge(mesh: PopMesh): Nullable<MergedMeshData> {
         if (mesh.popMergeCacheKey !== null) {
             this.checkMap.delete(mesh.popMergeCacheKey);
             mesh.popMergeCacheKey = null;
@@ -158,7 +158,7 @@ export class PopMeshMergeManager {
         return newCreated;
     }
 
-    public clear(): void {
+    clear(): void {
         this.checkMap.clear();
     }
 }

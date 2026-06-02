@@ -11,17 +11,17 @@ import { Texture } from '../../textures/Texture';
 
 export class BlurPassMaterial extends PassQuadMaterialBase {
     @materialProperty()
-    public tDiffuse: Texture;
+    tDiffuse: Texture;
     @materialProperty()
-    public weights = _Math.ComputeGaussianWeights(4);
+    weights = _Math.ComputeGaussianWeights(4);
     @materialProperty()
-    public texelSize = readonlyMath.vec2();
+    texelSize = readonlyMath.vec2();
     @materialProperty()
-    public direction = readonlyMath.vec2(1, 0);
-    public kernelSize = 9;
+    direction = readonlyMath.vec2(1, 0);
+    kernelSize = 9;
     private kernelRadius = 4;
 
-    public className() {
+    className() {
         return 'BlurPassMaterial';
     }
 
@@ -29,7 +29,7 @@ export class BlurPassMaterial extends PassQuadMaterialBase {
         return this.kernelRadius;
     }
 
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) + this.kernelRadius;
     }
 
@@ -42,10 +42,10 @@ export class BlurPassMaterial extends PassQuadMaterialBase {
         this.notifyRecompileShader();
     }
 
-    public setTexelSize(width: number, height: number) {
+    setTexelSize(width: number, height: number) {
         this.texelSize = readonlyMath.vec2(1 / width, 1 / height);
     }
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         b.addUniform('tDiffuse', WebGLShaderDataType.Sampler2D)
             .addUniformArray('weights', WebGLShaderDataType.Float, this.weights.length)
             .addUniform('texelSize', WebGLShaderDataType.Vec2)
@@ -67,7 +67,7 @@ export class BlurPassMaterial extends PassQuadMaterialBase {
 
     }
 
-    public updateShadingUniforms(p: WGLProgram) {
+    updateShadingUniforms(p: WGLProgram) {
         p.setTexture2D('tDiffuse', this.tDiffuse);
         p.setUniform('weights[0]', this.weights);
         p.setUniform('texelSize', this.texelSize);

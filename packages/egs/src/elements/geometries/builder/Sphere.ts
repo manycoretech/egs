@@ -17,7 +17,7 @@ export function sphere(param: Partial<SphereShapeParameter>): BufferGeometry {
 }
 
 export class SphereBufferGeometry extends BufferGeometry {
-    public parameters: {
+    parameters: {
         radius: number;
         widthSegments: number;
         heightSegments: number;

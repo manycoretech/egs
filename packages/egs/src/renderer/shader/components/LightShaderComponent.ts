@@ -44,45 +44,45 @@ export interface LightMaterialComponent {
 
 const tempPointVec = new Vector3();
 export class LightShaderComponent extends SharedShaderComponent {
-    public lights: Set<Light> = new Set();
-    public enabled_light = 0;
-    public lightHashKeyPrevious: string;
-    public onlyDirectLight = false;
-    public activeLayers?: Layers;
+    lights: Set<Light> = new Set();
+    enabled_light = 0;
+    lightHashKeyPrevious: string;
+    onlyDirectLight = false;
+    activeLayers?: Layers;
 
-    public className() {
+    className() {
         return 'LightShaderComponent';
     }
 
-    public pointLights: PointLight[] = [];
-    public pointShadowLength = 0;
+    pointLights: PointLight[] = [];
+    pointShadowLength = 0;
     get hasPointShadow() {
         return this.pointShadowLength > 0;
     }
-    public getNthShadowPointLight(n: number) {
+    getNthShadowPointLight(n: number) {
         // pointLights sorted that all shadow enabled is in front
         return this.pointLights[n];
     }
 
-    public spotLights: SpotLight[] = [];
-    public spotShadowLength = 0;
+    spotLights: SpotLight[] = [];
+    spotShadowLength = 0;
     get hasSpotShadow() {
         return this.spotShadowLength > 0;
     }
-    public getNthShadowSpotLight(n: number) {
+    getNthShadowSpotLight(n: number) {
         return this.spotLights[n];
     }
 
-    public directionalLights: DirectionalLight[] = [];
-    public directionalShadowLength = 0;
+    directionalLights: DirectionalLight[] = [];
+    directionalShadowLength = 0;
     get hasDirectionalShadow() {
         return this.directionalShadowLength > 0;
     }
-    public getNthShadowDirectionalLight(n: number) {
+    getNthShadowDirectionalLight(n: number) {
         return this.directionalLights[n];
     }
 
-    public createShadowMetaInfo() {
+    createShadowMetaInfo() {
         return {
             directionalShadowCount: this.directionalShadowLength,
             pointShadowCount: this.pointShadowLength,
@@ -90,12 +90,12 @@ export class LightShaderComponent extends SharedShaderComponent {
         };
     }
 
-    public rectAreaLights: RectAreaLight[] = [];
-    public diskAreaLights: DiskAreaLight[] = [];
-    public ambientLight: Nullable<AmbientLight> = null;
-    public hemiLights: HemisphereLight[] = [];
+    rectAreaLights: RectAreaLight[] = [];
+    diskAreaLights: DiskAreaLight[] = [];
+    ambientLight: Nullable<AmbientLight> = null;
+    hemiLights: HemisphereLight[] = [];
 
-    public updateImpl(camera: Camera3D) {
+    updateImpl(camera: Camera3D) {
         if (this.ambientLight) {
             this.ambientLight.refreshUniforms();
         }
@@ -107,7 +107,7 @@ export class LightShaderComponent extends SharedShaderComponent {
         return true;
     }
 
-    public lightAndShadowHashKey() {
+    lightAndShadowHashKey() {
         return `
 p${this.pointLights.length
             } s${this.spotLights.length
@@ -120,7 +120,7 @@ p${this.pointLights.length
     }
 
     // this only use for graph selection
-    public shadowHashKey() {
+    shadowHashKey() {
         return `
 ds ${this.directionalShadowLength
             } ss ${this.spotShadowLength
@@ -134,7 +134,7 @@ ds ${this.directionalShadowLength
             this.hasPointShadow;
     }
 
-    public clear() {
+    clear() {
         this.pointLights = [];
         this.spotLights = [];
         this.directionalLights = [];
@@ -144,18 +144,18 @@ ds ${this.directionalShadowLength
         this.diskAreaLights = [];
     }
 
-    public dispose() {
+    dispose() {
         this.clear();
         this.clearAllRef();
     }
 
-    public setupOnlyLightSetForLaterRecollecting(lights: Set<Light>) {
+    setupOnlyLightSetForLaterRecollecting(lights: Set<Light>) {
         this.clear();
         this.lights = lights;
     }
 
     // lights selected for transparency in defer rendering
-    public collectDynamicForwardLightsByDrawable(drawable: Drawable) {
+    collectDynamicForwardLightsByDrawable(drawable: Drawable) {
         this.clear();
         let pointLightMax = Infinity;
         this.lights.forEach(l => {
@@ -190,7 +190,7 @@ ds ${this.directionalShadowLength
     }
 
     // lights update from a scene;
-    public collectLights(lights: Set<Light>) {
+    collectLights(lights: Set<Light>) {
         this.clear();
         this.lights = lights;
         this.enabled_light = 0;
@@ -225,7 +225,7 @@ ds ${this.directionalShadowLength
         this.collectLightImpl();
     }
 
-    public collectLightImpl() {
+    collectLightImpl() {
         const lightHashKeyPrevious = this.lightHashKeyPrevious;
 
         {
@@ -253,7 +253,7 @@ ds ${this.directionalShadowLength
         }
     }
 
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         if (this.ambientLight) {
             this.ambientLight.updateUniforms(program);
         }
@@ -264,7 +264,7 @@ ds ${this.directionalShadowLength
         this.diskAreaLights.forEach((l, i) => { l.updateUniformForForward(program, i); });
     }
 
-    public updateShadowMapUniforms(program: WGLProgram) {
+    updateShadowMapUniforms(program: WGLProgram) {
         if (this.hasDirectionalShadow) {
             const textures = this.directionalLights.map(l => l.shadow.getMapOrDefault());
             program.setArrayTexture2D(`directionalShadowMap[0]`, textures);
@@ -287,7 +287,7 @@ ds ${this.directionalShadowLength
         }
     }
 
-    public extendShaderShading(builder: ShaderBuilder) {
+    extendShaderShading(builder: ShaderBuilder) {
         if (this.onlyDirectLight) {
             builder.addFragDefine('#define DEBUG_INCIDENT');
         }
@@ -365,7 +365,7 @@ ds ${this.directionalShadowLength
         builder.addShaderStrProcess(s => unrollLoops(s));
     }
 
-    public RE_Direct(_builder: ShaderBuilder, mat: LightMaterialComponent) {
+    RE_Direct(_builder: ShaderBuilder, mat: LightMaterialComponent) {
         if (mat.RE_Direct === undefined) {
             return '';
         }
@@ -376,7 +376,7 @@ ds ${this.directionalShadowLength
         `;
     }
 
-    public RE_Direct_RectArea(_builder: ShaderBuilder, mat: LightMaterialComponent) {
+    RE_Direct_RectArea(_builder: ShaderBuilder, mat: LightMaterialComponent) {
         if (mat.RE_Direct_RectArea === undefined) {
             return '';
         }
@@ -385,7 +385,7 @@ ds ${this.directionalShadowLength
         `;
     }
 
-    public RE_Direct_DiskArea(_builder: ShaderBuilder, mat: LightMaterialComponent) {
+    RE_Direct_DiskArea(_builder: ShaderBuilder, mat: LightMaterialComponent) {
         if (mat.RE_Direct_DiskArea === undefined) {
             return '';
         }
@@ -394,7 +394,7 @@ ds ${this.directionalShadowLength
         `;
     }
 
-    public RE_IndirectDiffuse(builder: ShaderBuilder, mat: LightMaterialComponent) {
+    RE_IndirectDiffuse(builder: ShaderBuilder, mat: LightMaterialComponent) {
         if (mat.RE_IndirectDiffuse === undefined) {
             return '';
         }
@@ -429,7 +429,7 @@ ds ${this.directionalShadowLength
         `;
     }
 
-    public RE_IndirectSpecular(builder: ShaderBuilder, mat: LightMaterialComponent) {
+    RE_IndirectSpecular(builder: ShaderBuilder, mat: LightMaterialComponent) {
         if (mat.RE_IndirectSpecular === undefined) {
             return '';
         }
@@ -451,7 +451,7 @@ ds ${this.directionalShadowLength
         `;
     }
 
-    public buildLightCollector(builder: ShaderBuilder) {
+    buildLightCollector(builder: ShaderBuilder) {
         if (builder.lightComponent === null) {
             logger.unreachable('cant find lightable material for light component');
             return 'gl_FragColor = vec4(1.0);';
@@ -505,10 +505,10 @@ ds ${this.directionalShadowLength
     `;
         return lightCollector;
     }
-    public copy(other: LightShaderComponent) {
+    copy(other: LightShaderComponent) {
         return other;
     }
-    public clone() {
+    clone() {
         return new LightShaderComponent().copy(this);
     }
 }

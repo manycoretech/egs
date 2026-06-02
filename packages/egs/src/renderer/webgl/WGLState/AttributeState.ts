@@ -17,17 +17,17 @@ export class AttributeState {
         this.extensions = extensions;
     }
 
-    public initAttributes(): void {
+    initAttributes(): void {
         for (let i = 0, l = this.newAttributes.length; i < l; i++) {
             this.newAttributes[i] = 0;
         }
     }
 
-    public enableAttribute(attributeLocation: number): void {
+    enableAttribute(attributeLocation: number): void {
         this.enableAttributeAndDivisor(attributeLocation, 0);
     }
 
-    public enableAttributeAndDivisor(attributeLocation: number, meshPerAttribute: number): void {
+    enableAttributeAndDivisor(attributeLocation: number, meshPerAttribute: number): void {
         // we don't need to set this when VAO is enabled, it's kind of local thing
         if (WGLCapabilities.IS_SUPPORT_VAO) {
             this.gl.enableVertexAttribArray(attributeLocation);
@@ -46,7 +46,7 @@ export class AttributeState {
         }
     }
 
-    public disableUnusedAttributes(): void {
+    disableUnusedAttributes(): void {
         for (let i = 0, l = this.enabledAttributes.length; i !== l; ++i) {
             if (this.enabledAttributes[i] !== this.newAttributes[i]) {
                 this.gl.disableVertexAttribArray(i);
@@ -55,7 +55,7 @@ export class AttributeState {
         }
     }
 
-    public reset() {
+    reset() {
         for (let i = 0; i < this.enabledAttributes.length; i++) {
             if (this.enabledAttributes[i] === 1) {
                 this.gl.disableVertexAttribArray(i);

@@ -10,11 +10,11 @@ export class Polygon extends Shape {
     /**
      * The type of the object, mainly used to avoid 'instanceof' checks.
      */
-    public type = 'Polygon';
+    type = 'Polygon';
     /**
      * @param points This can be an array of Points.
      */
-    public points: number[] = [];
+    points: number[] = [];
 
     constructor(points: number[] = []) {
 
@@ -25,27 +25,27 @@ export class Polygon extends Shape {
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Polygon>(['points']);
     }
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<Polygon>(['points']);
     }
     /**
      * The name of instance's class.
      */
-    public className(): string {
+    className(): string {
         return 'Polygon';
     }
     /**
      * Add this polygon to drawing.
      */
-    public draw() {
+    draw() {
         const points = this.points;
         if (points.length === 0) {
             return;
@@ -61,7 +61,7 @@ export class Polygon extends Shape {
      * Creates a clone of this polygon.
      * @return a copy of the polygon
      */
-    public clone(): Polygon {
+    clone(): Polygon {
         const points = this.points.slice();
         const polygon = new Polygon(points);
 
@@ -73,7 +73,7 @@ export class Polygon extends Shape {
      * @param y The Y coordinate of the point to test.
      * @return Whether the x/y coordinates are within this polygon.
      */
-    public contains(x: number, y: number): boolean {
+    contains(x: number, y: number): boolean {
         let inside = false;
 
         // https://github.com/substack/point-in-polygon/blob/master/index.js

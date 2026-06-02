@@ -92,6 +92,9 @@ export enum WebGLPixelFormat {
     DepthStencil = 0x84F9,
 }
 
+/**
+ * Returns the number of color channels in a WebGL pixel format.
+ */
 export function getWebGLPixelFormatChannelSize(t: WebGLPixelFormat): number {
     switch (t) {
         case WebGLPixelFormat.Red:
@@ -118,6 +121,9 @@ export function getWebGLPixelFormatChannelSize(t: WebGLPixelFormat): number {
     }
 }
 
+/**
+ * Additional WebGL blending source factors.
+ */
 export enum WebGLBlendingSrc {
     SrcAlphaSaturate = 0x0308,
 }

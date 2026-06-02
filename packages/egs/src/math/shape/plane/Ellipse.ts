@@ -10,27 +10,27 @@ export class Ellipse extends Shape {
     /**
      * The X coordinate of the center of this ellipse.
      */
-    public x: number;
+    x: number;
     /**
      * The Y coordinate of the center of this ellipse.
      */
-    public y: number;
+    y: number;
     /**
     * The half width of this ellipse.
     */
-    public halfWidth: number;
+    halfWidth: number;
     /**
      * The half height of this ellipse.
      */
-    public halfHeight: number;
+    halfHeight: number;
     /**
      * @param divisions The number of segments in the ellipse.
      */
-    public divisions?: number;
+    divisions?: number;
     /**
      * The type of the object, mainly used to avoid 'instanceof' checks.
      */
-    public readonly type = 'Ellipse';
+    readonly type = 'Ellipse';
     /**
      * The type of the object, mainly used to avoid 'instanceof' checks.
      * @param x The X coordinate of the center of this ellipse.
@@ -51,33 +51,33 @@ export class Ellipse extends Shape {
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Ellipse>(['x', 'y', 'halfWidth', 'halfHeight']);
     }
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<Ellipse>(['x', 'y', 'halfWidth', 'halfHeight']);
     }
     /**
      * The name of instance's class.
      */
-    public className(): string {
+    className(): string {
         return 'Ellipse';
     }
     /**
      * Creates a clone of this Ellipse instance.
      */
-    public clone(): Ellipse {
+    clone(): Ellipse {
         return new Ellipse(this.x, this.y, this.halfWidth, this.halfHeight);
     }
     /**
      * Add this ellipse to drawing.
      */
-    public draw() {
+    draw() {
         this.absEllipse(this.x, this.y, this.halfWidth, this.halfHeight, undefined, undefined, undefined, undefined, this.divisions);
         this.autoClose = true;
     }
@@ -87,7 +87,7 @@ export class Ellipse extends Shape {
      * @param y The Y coordinate of the point to test.
      * @return Whether the x/y coords are within this ellipse.
      */
-    public contains(x: number, y: number): boolean {
+    contains(x: number, y: number): boolean {
         if (this.halfWidth <= 0 || this.halfHeight <= 0) {
             return false;
         }
@@ -104,7 +104,7 @@ export class Ellipse extends Shape {
     /**
      * Returns the framing rectangle of the ellipse as a Rectangle object.
      */
-    public getBounds(bounds = new Box2()) {
+    getBounds(bounds = new Box2()) {
         bounds.min.set(this.x - this.halfWidth, this.y - this.halfHeight);
         bounds.max.set(this.x + this.halfWidth, this.y + this.halfHeight);
         return bounds;

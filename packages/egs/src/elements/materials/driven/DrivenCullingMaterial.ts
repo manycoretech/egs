@@ -16,14 +16,14 @@ export class DrivenCullingMaterial extends DrivenMaterial {
     @materialProperty()
     enableTriCulling: boolean = true;
     @materialProperty()
-    public occlusionCullingBias = 0;
+    occlusionCullingBias = 0;
     @materialProperty()
-    public planarShadowMaxGroundHeight = 50.0;
+    planarShadowMaxGroundHeight = 50.0;
     @materialProperty()
-    public planarShadowMatrix: Matrix4 = new Matrix4();
+    planarShadowMatrix: Matrix4 = new Matrix4();
 
     @materialProperty()
-    public depthPyramid: RenderAttachment | null = null;
+    depthPyramid: RenderAttachment | null = null;
 
     className(): string {
         return 'DrivenCullingMaterial';

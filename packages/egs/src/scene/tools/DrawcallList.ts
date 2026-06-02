@@ -36,7 +36,7 @@ export class FilteredDrawcallList implements Renderable {
 
     constructor(readonly list: ProjectedDrawcallList) { }
 
-    public config(_: IRenderer) {
+    config(_: IRenderer) {
         return true;
     }
 
@@ -138,7 +138,7 @@ export enum RenderObjectsType {
 }
 
 export class ProjectedDrawcallList implements Renderable {
-    public extraDrawcallList = new Map<number, Drawcall[]>();
+    extraDrawcallList = new Map<number, Drawcall[]>();
 
     constructor(
         readonly list: DrawableList,
@@ -147,10 +147,10 @@ export class ProjectedDrawcallList implements Renderable {
         private camera: Camera3D,
     ) { }
 
-    public useOnce = true;
+    useOnce = true;
     private destroyed = false;
 
-    public destroy() {
+    destroy() {
         if (!this.destroyed) {
             PipelineContentBridge.drawcallListDestroy(this);
             this.destroyed = true;
@@ -166,11 +166,11 @@ export class ProjectedDrawcallList implements Renderable {
         }
     }
 
-    public config(_: IRenderer) {
+    config(_: IRenderer) {
         return true;
     }
 
-    public getRenderListLength(type: RenderObjectsType) {
+    getRenderListLength(type: RenderObjectsType) {
         if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
             return PipelineContentBridge.getRenderListLength(this, type) ?? 0;
         } else {
@@ -178,7 +178,7 @@ export class ProjectedDrawcallList implements Renderable {
         }
     }
 
-    public render(renderer: IRenderer, renderObjectsType: RenderObjectsType = RenderObjectsType.Default, filter?: IPipelineFilter<Drawcall>) {
+    render(renderer: IRenderer, renderObjectsType: RenderObjectsType = RenderObjectsType.Default, filter?: IPipelineFilter<Drawcall>) {
         if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
             PipelineContentBridge.renderDrawcallList(this, renderer, renderObjectsType, filter);
         } else {
@@ -201,7 +201,7 @@ export class ProjectedDrawcallList implements Renderable {
         }
     }
 
-    public filterBy(f: () => IPipelineFilter<Drawcall>): FilteredDrawcallList {
+    filterBy(f: () => IPipelineFilter<Drawcall>): FilteredDrawcallList {
         const list = new FilteredDrawcallList(this);
         list.filter = f();
         return list;
@@ -224,7 +224,7 @@ export class DrawableList {
         return this._lodEnabled;
     }
 
-    public destroy() {
+    destroy() {
         if (!this.destroyed) {
             PipelineContentBridge.drawableListDestroy(this);
             this.destroyed = true;
@@ -233,11 +233,11 @@ export class DrawableList {
 
     list: Drawable[] = [];
 
-    public push(d: Drawable) {
+    push(d: Drawable) {
         this.list.push(d);
     }
 
-    public filter(f: () => IPipelineFilter<Drawable>, forceExecJS: boolean = false): DrawableList {
+    filter(f: () => IPipelineFilter<Drawable>, forceExecJS: boolean = false): DrawableList {
         const list = new DrawableList();
         const filter = f();
         const enablePipelineProxy = PipelineContentAPIForRenderingAndFilteringEnabled();
@@ -256,7 +256,7 @@ export class DrawableList {
         return list;
     }
 
-    public filterMap(f: Mapper<Drawable>): DrawableList {
+    filterMap(f: Mapper<Drawable>): DrawableList {
         const list = new DrawableList();
         this.list.forEach(item => {
             const r = f(item);
@@ -267,7 +267,7 @@ export class DrawableList {
         return list;
     }
 
-    public project(
+    project(
         camera: Camera3D,
         isCulledByCamera = true,
         viewHeight = windowHeight,
@@ -300,14 +300,14 @@ export class DrawableList {
         }
     }
 
-    public updateRenderInfoInList(camera: Camera3D, viewHeight: number) {
+    updateRenderInfoInList(camera: Camera3D, viewHeight: number) {
         for (let i = 0, list = this.list, l = list.length; i < l; i++) {
             const object = list[i];
             object.updateRenderInfo(camera, viewHeight);
         }
     }
 
-    public updateLODs(camera: Camera3D, viewHeight: number) {
+    updateLODs(camera: Camera3D, viewHeight: number) {
         popRefreshId++;
         if (TypeAssert.isPerspectiveCamera(camera)) {
             const pixelsOfDistOne = camera.getPixelsOfDistOne();
@@ -322,13 +322,13 @@ export class DrawableList {
         return this;
     }
 
-    public forEach(f: (item: Drawable, index: number) => any): void {
+    forEach(f: (item: Drawable, index: number) => any): void {
         for (let i = 0, list = this.list, l = list.length; i < l; i++) {
             f(list[i], i);
         }
     }
 
-    public getCameraClosestDistance(camera: PerspectiveCamera) {
+    getCameraClosestDistance(camera: PerspectiveCamera) {
         if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
             ContentBridge.sceneNodeSyncMatrix(camera);
             return PipelineContentBridge.drawcallListGetCameraClosestDistance(this, camera) ?? 1;

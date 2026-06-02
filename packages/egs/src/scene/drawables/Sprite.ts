@@ -57,20 +57,20 @@ export class Sprite extends Drawable<SpriteMaterial, BufferGeometry> {
      * A value of (0.5, 0.5) corresponds to the midpoint of the sprite.
      * A value of (0, 0) corresponds to the lower left corner of the sprite. The default is (0.5, 0.5).
      */
-    public center: Vector2;// = new Vector2(0.5, 0.5);
+    center: Vector2;// = new Vector2(0.5, 0.5);
     /**
      * The type of this Object3D.
      */
-    public type: 'Sprite';
+    type: 'Sprite';
     /**
      * Check the type whether it belongs to Sprite.
      * This value should not be changed by user.
      */
-    public isSprite: true;
+    isSprite: true;
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'Sprite';
     }
 
@@ -88,7 +88,7 @@ export class Sprite extends Drawable<SpriteMaterial, BufferGeometry> {
      * @param {Raycaster} raycaster the instance of Raycaster is used to get the data for calculation.
      * @param {Intersection} intersects the result will be stored here.
      */
-    public raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]) {
+    raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]) {
         const camera = raycaster._camera;
         if (!camera) {
             return;
@@ -154,14 +154,14 @@ export class Sprite extends Drawable<SpriteMaterial, BufferGeometry> {
     /**
      * Return a cloned instance of this class.
      */
-    public clone(): Sprite {
+    clone(): Sprite {
         return new Sprite(this.expectOnlyMaterial()).copy(this);
     }
     /**
      * Copy the data to this instance from other instance.
      * @param {Sprite} other the source of copied data
      */
-    public copy(source: Sprite) {
+    copy(source: Sprite) {
         super.copy(source);
         if (source.center !== undefined) { this.center.copy(source.center); }
         return this;
@@ -170,7 +170,7 @@ export class Sprite extends Drawable<SpriteMaterial, BufferGeometry> {
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx an instance used to store the data of scene objects.
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Sprite>([
             'center'
@@ -180,7 +180,7 @@ export class Sprite extends Drawable<SpriteMaterial, BufferGeometry> {
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx an instance give the method to take the data for attribute.
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<Sprite>([
             'center'

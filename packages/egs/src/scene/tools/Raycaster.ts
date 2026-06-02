@@ -77,36 +77,36 @@ export class Raycaster {
     /**
      * The Ray used for the raycasting.
      */
-    public ray: Ray;
+    ray: Ray;
     /**
      * The near factor of the raycaster.
      * This value indicates which objects can be discarded based on the distance.
      * This value shouldn't be negative and should be smaller than the far property.
      */
-    public near: number;
+    near: number;
     /**
      * The far factor of the raycaster.
      * This value indicates which objects can be discarded based on the distance.
      * This value shouldn't be negative and should be larger than the near property.
      */
-    public far: number;
+    far: number;
     /**
      * The precision factor of the raycaster when intersecting Line objects.
      */
-    public linePrecision = 1;
+    linePrecision = 1;
     /**
      * The distance threshold to check a point's intersection.
      */
-    public pointThreshold = 1;
+    pointThreshold = 1;
 
-    public layers = new Layers();
+    layers = new Layers();
     /**
      * Accept some difference when picked point do not locate on the line or points
      */
-    public enableScreenSpaceTolerance = false;
+    enableScreenSpaceTolerance = false;
 
-    public _camera: Nullable<Camera3D> = null;
-    public _viewHeight = 1000;
+    _camera: Nullable<Camera3D> = null;
+    _viewHeight = 1000;
 
     constructor(origin?: Vector3, direction?: Vector3, near = 0, far = Infinity) {
         this.ray = new Ray(origin, direction);
@@ -118,7 +118,7 @@ export class Raycaster {
      * @param origin The origin vector where the ray casts from.
      * @param direction The normalized direction vector that gives direction to the ray.
      */
-    public set(origin: Vector3, direction: Vector3) {
+    set(origin: Vector3, direction: Vector3) {
         this.ray.set(origin, direction);
         this.near = 0;
         this.far = Infinity;
@@ -129,7 +129,7 @@ export class Raycaster {
      * @param camera used to decide a way of casting the ray.
      * @param {number} viewHeight the hight of view window.
      */
-    public setFromCamera(coords: Vector2, camera: Camera3D, viewHeight?: number) {
+    setFromCamera(coords: Vector2, camera: Camera3D, viewHeight?: number) {
         if (viewHeight === undefined) {
             viewHeight = window.innerHeight;
         }
@@ -145,7 +145,7 @@ export class Raycaster {
     /**
      * @internal
      */
-    public getScreenLineToleranceSq(distance: number): number {
+    getScreenLineToleranceSq(distance: number): number {
         if (!this._camera) {
             return 0;
         }
@@ -155,7 +155,7 @@ export class Raycaster {
     /**
      * @internal
      */
-    public getPointTolerance(distance: number): number {
+    getPointTolerance(distance: number): number {
         if (!this._camera) {
             return 0;
         }
@@ -169,7 +169,7 @@ export class Raycaster {
      * @param recursive put children of given object into calculation together.
      * @param intersects if given, the result will be store here.
      */
-    public intersectObject(object: Object3D, recursive: boolean, intersects: Intersection[] = []) {
+    intersectObject(object: Object3D, recursive: boolean, intersects: Intersection[] = []) {
         intersectObject(object, this, intersects, recursive);
         return intersects.sort(ascSort);
     }
@@ -179,7 +179,7 @@ export class Raycaster {
      * @param recursive put children of objects into calculation together.
      * @param intersects if given, the result will be store here.
      */
-    public intersectObjects(objects: Object3D[], recursive: boolean, intersects: Intersection[] = []) {
+    intersectObjects(objects: Object3D[], recursive: boolean, intersects: Intersection[] = []) {
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             ManagedContentBridge.raycastList(objects, recursive, intersects, this);
         } else {
@@ -190,7 +190,7 @@ export class Raycaster {
         return intersects.sort(ascSort);
     }
 
-    public raycastScene(scene: Scene3D, intersects: Intersection[]) {
+    raycastScene(scene: Scene3D, intersects: Intersection[]) {
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             ManagedContentBridge.raycastScene(scene, intersects, this);
         } else {

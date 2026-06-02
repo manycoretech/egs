@@ -33,11 +33,20 @@ export type RendererParameters = Required<Pick<WebGLContextAttributes,
 export type CtxLostInfo = ResourceStatistics & {
     manual: boolean;
 };
+/**
+ * Event emitted when the rendering context is lost.
+ */
 export const ContextLostEvent = new EventType<CtxLostInfo>();
 export const ContextRestoreEvent = new EventType();
+/**
+ * Event emitted when context restoration fails after a loss.
+ */
 export const ContextLostRestoreFailedEvent = new EventType();
 export const MemoryGrowFailed = new EventType();
 
+/**
+ * Renderer memory usage reported by the engine backend.
+ */
 export interface MemoryInfo {
     wasm_total_size: number;
 
@@ -60,6 +69,9 @@ export interface MemoryInfo {
     ubo_allocated: number;
 }
 
+/**
+ * Renderer backends.
+ */
 export enum RendererBackend {
     WEBGL_JS = 'WEBGL_JS',
     // @deprecated webgl1 on wasm has been disabled. will not use this enum value anymore.

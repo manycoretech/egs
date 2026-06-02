@@ -28,6 +28,9 @@ export interface DrivenCullingConfig {
     triCullingEnabled: boolean,
     occlusionCullingBias: number,
 }
+/**
+ * Texture compression supported by render time compression
+ */
 export enum TextureCompression {
     None = 0,
     BC3,

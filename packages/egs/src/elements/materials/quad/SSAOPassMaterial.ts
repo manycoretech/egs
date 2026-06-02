@@ -9,25 +9,25 @@ import { materialProperty } from '../../../ContentAPI';
 
 export class SSAOPassMaterial extends PassQuadMaterialBase {
     @materialProperty()
-    public normalMap: Texture;
+    normalMap: Texture;
     @materialProperty()
-    public depthMap: Texture;
+    depthMap: Texture;
 
     @materialProperty()
-    public bias = 0.01;
+    bias = 0.01;
     @materialProperty()
-    public radius = 0.5;
+    radius = 0.5;
     @materialProperty()
     private intensityDivR6 = 0.5 / Math.pow(0.5, 6);
     @materialProperty()
-    public projectionScale = 1.0;
+    projectionScale = 1.0;
 
     @materialProperty()
-    public cameraInverseProjectionMatrix = readonlyMath.mat4();
+    cameraInverseProjectionMatrix = readonlyMath.mat4();
     @materialProperty()
-    public texelSize = readonlyMath.vec2(1, 1);
+    texelSize = readonlyMath.vec2(1, 1);
 
-    public className() {
+    className() {
         return 'SSAOPassMaterial';
     }
 
@@ -40,11 +40,11 @@ export class SSAOPassMaterial extends PassQuadMaterialBase {
         return this._intensity;
     }
 
-    public setTexelSize(width: number, height: number) {
+    setTexelSize(width: number, height: number) {
         this.texelSize = readonlyMath.vec2(1 / width, 1 / height);
     }
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         b.addExtension(ShaderExtensionTypes.derivatives)
             .addUniform('depthMap', WebGLShaderDataType.Sampler2D)
             .addUniform('radius', WebGLShaderDataType.Float)
@@ -57,7 +57,7 @@ export class SSAOPassMaterial extends PassQuadMaterialBase {
             .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = ssao();');
     }
 
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setTexture2D('depthMap', this.depthMap);
         program.setUniform('radius', this.radius);
         program.setUniform('bias', this.bias);

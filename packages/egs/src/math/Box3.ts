@@ -16,25 +16,25 @@ export class Box3 {
      * {@link Vector3| Vector3} representing the lower (x, y, z) boundary of the box.
      * @defaultValue ( + Infinity, + Infinity, + Infinity ).
      */
-    public min: Vector3;
+    min: Vector3;
     /**
      * {@link Vector3| Vector3} representing the upper (x, y, z) boundary of the box.
      * @defaultValue ( - Infinity, - Infinity, - Infinity ).
      */
-    public max: Vector3;
+    max: Vector3;
     /**
      * An array of {@link Plane| Planes} represents the six faces of the box.
      */
-    public planes: Plane[];
+    planes: Plane[];
     /**
      * The position of eight box's vertexes.
      */
-    public corners: Vector3[];
+    corners: Vector3[];
     /**
      * Check the type whether it belongs to Box3.
      * This value should not be changed by user.
      */
-    public isBox3 = true;
+    isBox3 = true;
 
     constructor(min?: Vector3, max?: Vector3) {
         this.min = min ?? new Vector3(+ Infinity, + Infinity, + Infinity);
@@ -64,7 +64,7 @@ export class Box3 {
      * @param min {@link Vector3| Vector3} representing the lower (x, y, z) boundary of the box.
      * @param max {@link Vector3| Vector3} representing the lower upper (x, y, z) boundary of the box.
      */
-    public set(min: Vector3, max: Vector3): Box3 {
+    set(min: Vector3, max: Vector3): Box3 {
         this.min.copy(min);
         this.max.copy(max);
         return this;
@@ -73,7 +73,7 @@ export class Box3 {
      * Sets the upper and lower bounds of this box to include all of the data in `array`.
      * @param array An array of position data that the resulting box will envelop.
      */
-    public setFromArray(array: ArrayLike<number>): Box3 {
+    setFromArray(array: ArrayLike<number>): Box3 {
         let minX = +Infinity;
         let minY = +Infinity;
         let minZ = +Infinity;
@@ -113,7 +113,7 @@ export class Box3 {
      * Sets the upper and lower bounds of this box to include all of the data in {@link BufferAttribute| attribute}.
      * @param attribute A buffer attribute of position data that the resulting box will envelop.
      */
-    public setFromBufferAttribute(attribute: BufferAttribute): Box3 {
+    setFromBufferAttribute(attribute: BufferAttribute): Box3 {
         let minX = +Infinity;
         let minY = +Infinity;
         let minZ = +Infinity;
@@ -162,7 +162,7 @@ export class Box3 {
      * @param start The start attributes of range.
      * @param count The count of attributes in range.
      */
-    public setFromBufferAttributeRange(attribute: BufferAttribute, start: number, count: number): Box3 {
+    setFromBufferAttributeRange(attribute: BufferAttribute, start: number, count: number): Box3 {
         let minX = +Infinity;
         let minY = +Infinity;
         let minZ = +Infinity;
@@ -205,7 +205,7 @@ export class Box3 {
      * @param start The start indexes of range.
      * @param count The count of indexes in range.
      */
-    public setFromIndexBufferAttributeRange(positionAttribute: BufferAttribute, indexAttribute: BufferAttribute, start: number, count: number): Box3 {
+    setFromIndexBufferAttributeRange(positionAttribute: BufferAttribute, indexAttribute: BufferAttribute, start: number, count: number): Box3 {
         let minX = +Infinity;
         let minY = +Infinity;
         let minZ = +Infinity;
@@ -247,7 +247,7 @@ export class Box3 {
      * Sets the upper and lower bounds of this box to include all of the points in {@link Array| points}.
      * @param points Array of {@link Vector3| Vector3s} that the resulting box will contain.
      */
-    public setFromPoints(_points: Vector3[]): Box3 {
+    setFromPoints(_points: Vector3[]): Box3 {
         this.makeEmpty();
         for (let i = 0, il = _points.length; i < il; i++) {
             this.expandByPoint(_points[i]);
@@ -259,7 +259,7 @@ export class Box3 {
      * @param center Desired center position of the box.
      * @param size Desired x, y and z dimensions of the box.
      */
-    public setFromCenterAndSize(_center: Vector3, size: Vector3): Box3 {
+    setFromCenterAndSize(_center: Vector3, size: Vector3): Box3 {
         const halfSize = tmpVec3.copy(size).multiplyScalar(0.5);
         this.min.copy(_center).sub(halfSize);
         this.max.copy(_center).add(halfSize);
@@ -271,21 +271,21 @@ export class Box3 {
      * The function may result in a larger box than strictly necessary.
      * @param object {@link Object3D| Object3D} to compute the bounding box of.
      */
-    public setFromObject(object: Object3D): Box3 {
+    setFromObject(object: Object3D): Box3 {
         this.makeEmpty();
         return this.expandByObject(object);
     }
     /**
      * Returns a new {@link Box3| Box3} with the same {@link min| min} and {@link max| max} as this clone.
      */
-    public clone(): Box3 {
+    clone(): Box3 {
         return new Box3().copy(this);
     }
     /**
      * Copies the {@link min| min} and {@link max| max} from {@link Box3| box} to this box.
      * @param box {@link Box3| Box3} to copy.
      */
-    public copy(box: Box3): Box3 {
+    copy(box: Box3): Box3 {
         this.min.copy(box.min);
         this.max.copy(box.max);
         return this;
@@ -293,7 +293,7 @@ export class Box3 {
     /**
      * Makes this box empty.
      */
-    public makeEmpty(): Box3 {
+    makeEmpty(): Box3 {
         this.min.x = this.min.y = this.min.z = + Infinity;
         this.max.x = this.max.y = this.max.z = - Infinity;
         return this;
@@ -302,7 +302,7 @@ export class Box3 {
      * Returns true if this box includes zero points within its bounds.
      * Note that a box with equal lower and upper bounds still includes one point, the one both bounds share.
      */
-    public isEmpty(): boolean {
+    isEmpty(): boolean {
         // this is a more robust check for empty than ( volume <= 0 ) because volume can get positive with two negative axes
         return (this.max.x < this.min.x) || (this.max.y < this.min.y) || (this.max.z < this.min.z);
     }
@@ -310,7 +310,7 @@ export class Box3 {
      * Returns the center point of the box as a {@link Vector3| Vector3}.
      * @param target the result will be copied into this Vector3.
      */
-    public getCenter(target: Vector3): Vector3 {
+    getCenter(target: Vector3): Vector3 {
         return this.isEmpty() ? target.set(0, 0, 0) : target.addVectors(this.min, this.max).multiplyScalar(0.5);
     }
     /**
@@ -318,14 +318,14 @@ export class Box3 {
      * this method returns the center whatever the values of box' {@link min| min} is over than {@link max| max}.
      * @param target the result will be copied into this Vector3.
      */
-    public getCenterUnsafe(target: Vector3) {
+    getCenterUnsafe(target: Vector3) {
         target.addVectors(this.min, this.max).multiplyScalar(0.5);
     }
     /**
      * Returns the width, height and depth of this box.
      * @param target the result will be copied into this Vector3.
      */
-    public getSize(target?: Vector3): Vector3 {
+    getSize(target?: Vector3): Vector3 {
         if (target === undefined) {
             target = new Vector3();
         }
@@ -334,7 +334,7 @@ export class Box3 {
     /**
      * Return the position of eight box's vertexes.
      */
-    public getCorners() {
+    getCorners() {
         this.corners[0].set(this.min.x, this.min.y, this.min.z);
         this.corners[1].set(this.max.x, this.min.y, this.min.z);
         this.corners[2].set(this.max.x, this.max.y, this.min.z);
@@ -348,7 +348,7 @@ export class Box3 {
     /**
      * Return an array of planes of eight box's surface.
      */
-    public getPlanes() {
+    getPlanes() {
         this.planes[0].constant = this.min.x;
         this.planes[1].constant = this.min.y;
         this.planes[2].constant = this.min.z;
@@ -361,7 +361,7 @@ export class Box3 {
      * Expands the boundaries of this box to include {@link Vector3| point}.
      * @param point {@link Vector3| Vector3} that should be included in the box.
      */
-    public expandByPoint(point: Vector3): Box3 {
+    expandByPoint(point: Vector3): Box3 {
         this.min.min(point);
         this.max.max(point);
         return this;
@@ -373,7 +373,7 @@ export class Box3 {
      * The depth of this box will be expanded by the z component of *vector* in both directions.
      * @param vector {@link Vector3| Vector3} to expand the box by.
      */
-    public expandByVector(vector: Vector3): Box3 {
+    expandByVector(vector: Vector3): Box3 {
         this.min.sub(vector);
         this.max.add(vector);
         return this;
@@ -383,7 +383,7 @@ export class Box3 {
      * If negative, the dimensions of the box will be contracted.
      * @param scalar Distance to expand the box by.
      */
-    public expandByScalar(scalar: number): Box3 {
+    expandByScalar(scalar: number): Box3 {
         this.min.addScalar(-scalar);
         this.max.addScalar(scalar);
         return this;
@@ -394,7 +394,7 @@ export class Box3 {
      * The function may result in a larger box than strictly necessary.
      * @param object {@link Object3D| Object3D} to expand the box by.
      */
-    public expandByObject(object: Object3D): Box3 {
+    expandByObject(object: Object3D): Box3 {
         // Computes the world-axis-aligned bounding box of an object (including its children),
         // accounting for both the object's, and children's, world transforms
         object.updateMatrixWorld(true);
@@ -461,7 +461,7 @@ export class Box3 {
      * @param triangle {@link Triangle| Triangle} to check for intersection against.
      * Determines whether or not this box intersects {@link Triangle| triangle}.
      */
-    public intersectsTriangle(triangle: Triangle): boolean {
+    intersectsTriangle(triangle: Triangle): boolean {
         if (this.isEmpty()) {
             return false;
         }
@@ -508,7 +508,7 @@ export class Box3 {
      * Return true if the specified {@link Vector3| point} lies within or on the boundaries of this box.
      * @param point {@link Vector3| Vector3} to check for inclusion.
      */
-    public containsPoint(point: Vector3): boolean {
+    containsPoint(point: Vector3): boolean {
         return point.x < this.min.x || point.x > this.max.x ||
             point.y < this.min.y || point.y > this.max.y ||
             point.z < this.min.z || point.z > this.max.z ? false : true;
@@ -517,7 +517,7 @@ export class Box3 {
      * Return true if this box includes the entirety of {@link Box3| box}. If this and {@link Box3| box} are identical, this function also returns true.
      * @param box {@link Box3| Box3} to test for inclusion.
      */
-    public containsBox(box: Box3): boolean {
+    containsBox(box: Box3): boolean {
         return this.min.x <= box.min.x && box.max.x <= this.max.x &&
             this.min.y <= box.min.y && box.max.y <= this.max.y &&
             this.min.z <= box.min.z && box.max.z <= this.max.z;
@@ -527,7 +527,7 @@ export class Box3 {
      * @param point {@link Vector3| Vector3}.
      * @param target the result will be copied into this Vector3.
      */
-    public getParameter(point: Vector3, target: Vector3): Vector3 {
+    getParameter(point: Vector3, target: Vector3): Vector3 {
         return target.set(
             (point.x - this.min.x) / (this.max.x - this.min.x),
             (point.y - this.min.y) / (this.max.y - this.min.y),
@@ -538,7 +538,7 @@ export class Box3 {
      * {@link Box3| box} Box to check for intersection against.
      * Determines whether or not this box intersects {@link Box3| box}.
      */
-    public intersectsBox(box: Box3): boolean {
+    intersectsBox(box: Box3): boolean {
         // using 6 splitting planes to rule out intersections.
         return box.max.x < this.min.x || box.min.x > this.max.x ||
             box.max.y < this.min.y || box.min.y > this.max.y ||
@@ -548,7 +548,7 @@ export class Box3 {
      * Determines whether or not this box intersects {@link Sphere| sphere}.
      * @param sphere {@link Sphere| Sphere} to check for intersection against.
      */
-    public intersectsSphere(sphere: Sphere): boolean {
+    intersectsSphere(sphere: Sphere): boolean {
         // Find the point on the AABB closest to the sphere center.
         this.clampPoint(sphere.center, tmpVec3);
 
@@ -559,7 +559,7 @@ export class Box3 {
      * Determines whether or not this box intersects {@link Plane| plane}.
      * @param plane {@link Plane| Plane} to check for intersection against.
      */
-    public intersectsPlane(plane: Plane): boolean {
+    intersectsPlane(plane: Plane): boolean {
         // We compute the minimum and maximum dot product values. If those values
         // are on the same side (back or front) of the plane, then there is no intersection.
         let min, max;
@@ -593,7 +593,7 @@ export class Box3 {
      * @param point {@link Vector3| Vector3} to clamp.
      * @param target the result will be copied into this Vector3.
      */
-    public clampPoint(point: Vector3, target: Vector3): Vector3 {
+    clampPoint(point: Vector3, target: Vector3): Vector3 {
         return target.copy(point).clamp(this.min, this.max);
     }
     /**
@@ -601,7 +601,7 @@ export class Box3 {
      * @param point {@link Vector3| Vector3} to measure distance to.
      * @return the distance from any edge of this box to the specified point.
      */
-    public distanceToPoint(point: Vector3): number {
+    distanceToPoint(point: Vector3): number {
         const clampedPoint = tmpVec3.copy(point).clamp(this.min, this.max);
         return clampedPoint.sub(point).length();
     }
@@ -609,7 +609,7 @@ export class Box3 {
      * Gets a {@link Sphere| Sphere} that bounds the box.
      * @param target the result will be copied into this Sphere.
      */
-    public getBoundingSphere(target: Sphere): Sphere {
+    getBoundingSphere(target: Sphere): Sphere {
         this.getCenter(target.center);
         target.radius = this.getSize(tmpVec3).length() * 0.5;
         return target;
@@ -620,7 +620,7 @@ export class Box3 {
      * lower bounds. If there's no overlap, makes this box empty.
      * @param Box to intersect with.
      */
-    public intersect(box: Box3): Box3 {
+    intersect(box: Box3): Box3 {
         this.min.max(box.min);
         this.max.min(box.max);
         // ensure that if there is no overlap, the result is fully empty, not slightly empty with non-inf/+inf
@@ -635,7 +635,7 @@ export class Box3 {
      * two boxes' upper bounds and the lower bound of this box to the lesser of the two boxes' lower bounds.
      * @param box Box that will be unioned with this box.
      */
-    public union(box: Box3): Box3 {
+    union(box: Box3): Box3 {
         this.min.min(box.min);
         this.max.max(box.max);
         return this;
@@ -643,13 +643,13 @@ export class Box3 {
     /**
      * If NaN exists in three values of min and max, return true.
      */
-    public hasNan(): boolean {
+    hasNan(): boolean {
         return this.min.hasNan() || this.max.hasNan();
     }
     /**
      * Check the given box is valid and let this box can contain it.
      */
-    public unionSafe(box: Box3): Box3 {
+    unionSafe(box: Box3): Box3 {
         if (box.hasNan()) {
             return this;
         }
@@ -661,7 +661,7 @@ export class Box3 {
      * Transforms this Box3 with the supplied matrix.
      * @param matrix The {@link Matrix4| Matrix4} to apply.
      */
-    public applyMatrix4(matrix: Matrix4): Box3 {
+    applyMatrix4(matrix: Matrix4): Box3 {
         // transform of empty box is an empty box.
         if (this.isEmpty()) {
             return this;
@@ -682,7 +682,7 @@ export class Box3 {
      * Adds {@link Vector3| offset} to both the upper and lower bounds of this box, effectively moving this box {@link Vector3| offset} units in 3D space.
      * @param offset Direction and distance of offset.
      */
-    public translate(offset: Vector3): Box3 {
+    translate(offset: Vector3): Box3 {
         this.min.add(offset);
         this.max.add(offset);
         return this;
@@ -691,13 +691,13 @@ export class Box3 {
      * Return true if this box and {@link Box3| box} share the same lower and upper bounds.
      * @param box Box to compare with this one.
      */
-    public equals(box: Box3): boolean {
+    equals(box: Box3): boolean {
         return box.min.equals(this.min) && box.max.equals(this.max);
     }
     /**
      * Return the Bounding on plane XY.
      */
-    public toBox2(box2 = new Box2()) {
+    toBox2(box2 = new Box2()) {
         box2.min.set(this.min.x, this.min.y);
         box2.max.set(this.max.x, this.max.y);
         return box2;

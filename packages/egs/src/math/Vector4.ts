@@ -11,27 +11,27 @@ export class Vector4 {
      * the x value of this vector.
      * @defaultValue `0`.
      */
-    public x: number;
+    x: number;
     /**
      * the y value of this vector.
      * @defaultValue `0`.
      */
-    public y: number;
+    y: number;
     /**
      * the z value of this vector.
      * @defaultValue `0`.
      */
-    public z: number;
+    z: number;
     /**
      * the w value of this vector.
      * @defaultValue `0`.
      */
-    public w: number;
+    w: number;
     /**
      * Check the type whether it belongs to Vector4.
      * This value should not be changed by user.
      */
-    public isVector4 = true;
+    isVector4 = true;
 
     constructor(_x?: number, _y?: number, _z?: number, _w?: number) {
         this.x = _x || 0;
@@ -42,19 +42,19 @@ export class Vector4 {
     /**
      * @internal
      */
-    public getSerializeData() {
+    getSerializeData() {
         return this.toArray();
     }
     /**
      * @internal
      */
-    public setSerializeData(value: any): void {
+    setSerializeData(value: any): void {
         this.fromArray(value);
     }
     /**
      * Sets the {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} components of this vector.
      */
-    public set(x: number, y: number, z: number, w: number): Vector4 {
+    set(x: number, y: number, z: number, w: number): Vector4 {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -64,7 +64,7 @@ export class Vector4 {
     /**
      * Sets the {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values of this vector both equal to scalar.
      */
-    public setScalar(scalar: number): Vector4 {
+    setScalar(scalar: number): Vector4 {
         this.x = scalar;
         this.y = scalar;
         this.z = scalar;
@@ -74,28 +74,28 @@ export class Vector4 {
     /**
      * Replaces this vector's {@link x| x} value with x.
      */
-    public setX(x: number): Vector4 {
+    setX(x: number): Vector4 {
         this.x = x;
         return this;
     }
     /**
      * Replaces this vector's {@link y| y} value with y.
      */
-    public setY(y: number): Vector4 {
+    setY(y: number): Vector4 {
         this.y = y;
         return this;
     }
     /**
      * Replaces this vector's {@link z| z} value with z.
      */
-    public setZ(z: number): Vector4 {
+    setZ(z: number): Vector4 {
         this.z = z;
         return this;
     }
     /**
      * Replaces this vector's {@link w| w} value with w.
      */
-    public setW(w: number): Vector4 {
+    setW(w: number): Vector4 {
         this.w = w;
         return this;
     }
@@ -106,7 +106,7 @@ export class Vector4 {
      * If index equals 3 set {@link w| w} to value.
      * @param index 0, 1 or 2.
      */
-    public setComponent(index: number, value: number): Vector4 {
+    setComponent(index: number, value: number): Vector4 {
         switch (index) {
             case 0: this.x = value;
                 break;
@@ -128,7 +128,7 @@ export class Vector4 {
      * If index equals 3 returns the {@link w| w} value.
      * @param index 0, 1, 2 or 3.
      */
-    public getComponent(index: number): number {
+    getComponent(index: number): number {
         switch (index) {
             case 0:
                 return this.x;
@@ -145,16 +145,16 @@ export class Vector4 {
     /**
      * Returns a new Vector4 with the same {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values as this one.
      */
-    public clone(): Vector4 {
+    clone(): Vector4 {
         return new Vector4(this.x, this.y, this.z, this.w);
     }
-    public cloneReadonly() {
+    cloneReadonly() {
         return this.clone() as any as ReadonlyVector4;
     }
     /**
      * Copies the values of the passed Vector4's {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} properties to this Vector4.
      */
-    public copy(v: Vector4): Vector4 {
+    copy(v: Vector4): Vector4 {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
@@ -164,7 +164,7 @@ export class Vector4 {
     /**
      * Adds {@link Vector4| v} to this vector.
      */
-    public add(v: Vector4): Vector4 {
+    add(v: Vector4): Vector4 {
         this.x += v.x;
         this.y += v.y;
         this.z += v.z;
@@ -174,7 +174,7 @@ export class Vector4 {
     /**
      * Adds the scalar value s to this vector's {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values.
      */
-    public addScalar(s: number): Vector4 {
+    addScalar(s: number): Vector4 {
         this.x += s;
         this.y += s;
         this.z += s;
@@ -184,7 +184,7 @@ export class Vector4 {
     /**
      * Sets this vector to {@link Vector4| a} + {@link Vector4| b}.
      */
-    public addVectors(a: Vector4, b: Vector4): Vector4 {
+    addVectors(a: Vector4, b: Vector4): Vector4 {
         this.x = a.x + b.x;
         this.y = a.y + b.y;
         this.z = a.z + b.z;
@@ -194,7 +194,7 @@ export class Vector4 {
     /**
      * Adds the multiple of {@link Vector4| v} and s to this vector.
      */
-    public addScaledVector(v: Vector4, s: number): Vector4 {
+    addScaledVector(v: Vector4, s: number): Vector4 {
         this.x += v.x * s;
         this.y += v.y * s;
         this.z += v.z * s;
@@ -204,7 +204,7 @@ export class Vector4 {
     /**
      * Subtracts {@link Vector4| v} from this vector.
      */
-    public sub(v: Vector4): Vector4 {
+    sub(v: Vector4): Vector4 {
         this.x -= v.x;
         this.y -= v.y;
         this.z -= v.z;
@@ -214,7 +214,7 @@ export class Vector4 {
     /**
      * Subtracts s from this vector's {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} components.
      */
-    public subScalar(s: number): Vector4 {
+    subScalar(s: number): Vector4 {
         this.x -= s;
         this.y -= s;
         this.z -= s;
@@ -224,7 +224,7 @@ export class Vector4 {
     /**
      * Sets this vector to {@link Vector4| a} - {@link Vector4| b}.
      */
-    public subVectors(a: Vector4, b: Vector4): Vector4 {
+    subVectors(a: Vector4, b: Vector4): Vector4 {
         this.x = a.x - b.x;
         this.y = a.y - b.y;
         this.z = a.z - b.z;
@@ -234,7 +234,7 @@ export class Vector4 {
     /**
      * Multiplies this vector by scalar s.
      */
-    public multiplyScalar(scalar: number): Vector4 {
+    multiplyScalar(scalar: number): Vector4 {
         this.x *= scalar;
         this.y *= scalar;
         this.z *= scalar;
@@ -244,7 +244,7 @@ export class Vector4 {
     /**
      * Multiplies this vector by 4 x 4 {@link Matrix4| m}.
      */
-    public applyMatrix4(m: Matrix4): Vector4 {
+    applyMatrix4(m: Matrix4): Vector4 {
         const x = this.x;
         const y = this.y;
         const z = this.z;
@@ -260,7 +260,7 @@ export class Vector4 {
      * Divides this vector by scalar s.
      * Sets vector to `( 0, 0, 0, 0 )` if `s = 0`.
      */
-    public divideScalar(scalar: number): Vector4 {
+    divideScalar(scalar: number): Vector4 {
         return this.multiplyScalar(1 / scalar);
     }
     /**
@@ -269,7 +269,7 @@ export class Vector4 {
      * @param min the minimum {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values.
      * @param max the maximum {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values in the desired range.
      */
-    public min(v: Vector4): Vector4 {
+    min(v: Vector4): Vector4 {
         this.x = Math.min(this.x, v.x);
         this.y = Math.min(this.y, v.y);
         this.z = Math.min(this.z, v.z);
@@ -282,7 +282,7 @@ export class Vector4 {
      * @param min the minimum {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values.
      * @param max the maximum {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values in the desired range.
      */
-    public max(v: Vector4): Vector4 {
+    max(v: Vector4): Vector4 {
         this.x = Math.max(this.x, v.x);
         this.y = Math.max(this.y, v.y);
         this.z = Math.max(this.z, v.z);
@@ -295,7 +295,7 @@ export class Vector4 {
      * @param min the minimum {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values.
      * @param max the maximum {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values in the desired range.
      */
-    public clamp(min: Vector4, max: Vector4): Vector4 {
+    clamp(min: Vector4, max: Vector4): Vector4 {
         // assumes min < max, component-wise
         this.x = Math.max(min.x, Math.min(max.x, this.x));
         this.y = Math.max(min.y, Math.min(max.y, this.y));
@@ -309,7 +309,7 @@ export class Vector4 {
      * @param min the minimum {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values.
      * @param max the maximum {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values in the desired range.
      */
-    public clampScalar(minVal: number, maxVal: number): Vector4 {
+    clampScalar(minVal: number, maxVal: number): Vector4 {
         tempMin.set(minVal, minVal, minVal, minVal);
         tempMax.set(maxVal, maxVal, maxVal, maxVal);
         return this.clamp(tempMin, tempMax);
@@ -320,14 +320,14 @@ export class Vector4 {
      * @param min the minimum {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values.
      * @param max the maximum {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} values in the desired range.
      */
-    public clampLength(min: number, max: number): Vector4 {
+    clampLength(min: number, max: number): Vector4 {
         const length = this.length();
         return this.divideScalar(length || 1).multiplyScalar(Math.max(min, Math.min(max, length)));
     }
     /**
      * The components of this vector are rounded down to the nearest integer value.
      */
-    public floor(): Vector4 {
+    floor(): Vector4 {
         this.x = Math.floor(this.x);
         this.y = Math.floor(this.y);
         this.z = Math.floor(this.z);
@@ -337,7 +337,7 @@ export class Vector4 {
     /**
      * The {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} components of this vector are rounded up to the nearest integer value.
      */
-    public ceil(): Vector4 {
+    ceil(): Vector4 {
         this.x = Math.ceil(this.x);
         this.y = Math.ceil(this.y);
         this.z = Math.ceil(this.z);
@@ -347,7 +347,7 @@ export class Vector4 {
     /**
      * The components of this vector are rounded to the nearest integer value.
      */
-    public round(): Vector4 {
+    round(): Vector4 {
         this.x = Math.round(this.x);
         this.y = Math.round(this.y);
         this.z = Math.round(this.z);
@@ -357,7 +357,7 @@ export class Vector4 {
     /**
      * The components of this vector are rounded towards zero (up if negative, down if positive) to an integer value.
      */
-    public roundToZero(): Vector4 {
+    roundToZero(): Vector4 {
         this.x = (this.x < 0) ? Math.ceil(this.x) : Math.floor(this.x);
         this.y = (this.y < 0) ? Math.ceil(this.y) : Math.floor(this.y);
         this.z = (this.z < 0) ? Math.ceil(this.z) : Math.floor(this.z);
@@ -367,7 +367,7 @@ export class Vector4 {
     /**
      * Inverts this vector - i.e. sets x = -x, y = -y, z = -z and w = -w.
      */
-    public negate(): Vector4 {
+    negate(): Vector4 {
         this.x = - this.x;
         this.y = - this.y;
         this.z = - this.z;
@@ -377,7 +377,7 @@ export class Vector4 {
     /**
      * Calculates the {@link https://en.wikipedia.org/wiki/Dot_product| dot product} of this vector and {@link Vector4| v}.
      */
-    public dot(v: Vector4): number {
+    dot(v: Vector4): number {
         return this.x * v.x + this.y * v.y + this.z * v.z + this.w * v.w;
     }
     /**
@@ -385,32 +385,32 @@ export class Vector4 {
      * (straight-line length) from (0, 0, 0, 0) to (x, y, z, w).
      * If you are comparing the lengths of vectors, you should compare the length squared instead as it is slightly more efficient to calculate.
      */
-    public lengthSq(): number {
+    lengthSq(): number {
         return this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w;
     }
     /**
      * Computes the Euclidean length (straight-line length) from (0, 0, 0, 0) to (x, y, z, w).
      */
-    public length(): number {
+    length(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
     }
     /**
      * Computes the {@link http://en.wikipedia.org/wiki/Taxicab_geometry| Manhattan length } of this vector.
      */
-    public manhattanLength(): number {
+    manhattanLength(): number {
         return Math.abs(this.x) + Math.abs(this.y) + Math.abs(this.z) + Math.abs(this.w);
     }
     /**
      * Converts this vector to a {@link https://en.wikipedia.org/wiki/Unit_vector| unit vector }
      * - that is, sets it equal to a vector with the same direction as this one, but {@link length| length} 1.
      */
-    public normalize(): Vector4 {
+    normalize(): Vector4 {
         return this.divideScalar(this.length() || 1);
     }
     /**
      * Sets this vector to a vector with given length the same direction as this one.
      */
-    public setLength(length: number): Vector4 {
+    setLength(length: number): Vector4 {
         return this.normalize().multiplyScalar(length);
     }
     /**
@@ -419,7 +419,7 @@ export class Vector4 {
      * @param v {@link Vector4| Vector4} to interpolate towards.
      * @param alpha interpolation factor, typically in the closed interval [0, 1].
      */
-    public lerp(v: Vector4, alpha: number): Vector4 {
+    lerp(v: Vector4, alpha: number): Vector4 {
         this.x += (v.x - this.x) * alpha;
         this.y += (v.y - this.y) * alpha;
         this.z += (v.z - this.z) * alpha;
@@ -434,20 +434,20 @@ export class Vector4 {
      * @param v2 {@link Vector4| Vector4} to interpolate towards.
      * @param alpha interpolation factor, typically in the closed interval [0, 1].
      */
-    public lerpVectors(v1: Vector4, v2: Vector4, alpha: number): Vector4 {
+    lerpVectors(v1: Vector4, v2: Vector4, alpha: number): Vector4 {
         return this.subVectors(v2, v1).multiplyScalar(alpha).add(v1);
     }
     /**
      * Checks for strict equality of this vector and {@link Vector4| v}.
      */
-    public equals(v: Vector4): boolean {
+    equals(v: Vector4): boolean {
         return ((v.x === this.x) && (v.y === this.y) && (v.z === this.z) && (v.w === this.w));
     }
     /**
      * Sets the {@link x| x}, {@link y| y} and {@link z| z} components of this vector to the quaternion's axis and {@link w| w} to the angle.
      * @param q a normalized {@link Quaterion| Quaterion}
      */
-    public setAxisAngleFromQuaternion(q: Quaternion): Vector4 {
+    setAxisAngleFromQuaternion(q: Quaternion): Vector4 {
         // http://www.euclideanspace.com/maths/geometry/rotations/conversions/quaternionToAngle/index.htm
         // q is assumed to be normalized
         this.w = 2 * Math.acos(q.w);
@@ -467,7 +467,7 @@ export class Vector4 {
      * {@link Matrix4| m} a {@link Matrix4| Matrix4} of which the upper left 3x3 matrix is a pure rotation matrix.
      * Sets the {@link x| x}, {@link y| y} and {@link z| z} to the axis of rotation and {@link w| w} to the angle.
      */
-    public setAxisAngleFromRotationMatrix(m: Matrix4): Vector4 {
+    setAxisAngleFromRotationMatrix(m: Matrix4): Vector4 {
         // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToAngle/index.htm
         // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
         let angle: number;
@@ -572,7 +572,7 @@ export class Vector4 {
      * @param offset (optional) offset into the array.
      * @defaultValue `0`.
      */
-    public fromArray(array: ArrayLike<number>, offset?: number): Vector4 {
+    fromArray(array: ArrayLike<number>, offset?: number): Vector4 {
         if (offset === undefined) {
             offset = 0;
         }
@@ -586,7 +586,7 @@ export class Vector4 {
     /**
      * There are 4 elements in this vector.
      */
-    public getNumberCount() {
+    getNumberCount() {
         return 4;
     }
     /**
@@ -594,7 +594,7 @@ export class Vector4 {
      * @param array (optional) array to store this vector to. If this is not provided, a new array will be created.
      * @param offset (optional) optional offset into the array.
      */
-    public toArray(array?: number[], offset?: number): number[] {
+    toArray(array?: number[], offset?: number): number[] {
         if (array === undefined) {
             array = [];
         }
@@ -612,7 +612,7 @@ export class Vector4 {
      * @param attribute the source attribute.
      * @param index index in the attribute.
      */
-    public fromBufferAttribute(attribute: BufferAttribute, index: number): Vector4 {
+    fromBufferAttribute(attribute: BufferAttribute, index: number): Vector4 {
         this.x = attribute.getX(index);
         this.y = attribute.getY(index);
         this.z = attribute.getZ(index);
@@ -621,6 +621,9 @@ export class Vector4 {
     }
 }
 
+/**
+ * Readonly view of the public Vector4 API.
+ */
 export type ReadonlyVector4 = PickReadonly<Vector4,
     'x' | 'y' | 'z' | 'w' | 'dot' | 'lengthSq' |
     'length' | 'manhattanLength' | 'getNumberCount' | 'equals' | 'toArray'>;

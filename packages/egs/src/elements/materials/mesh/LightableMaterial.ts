@@ -8,28 +8,28 @@ import { ScenePopLODMaterial } from '../base';
 import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 
 export abstract class LightableMaterial extends ScenePopLODMaterial {
-    public isLightableMaterial = true;
+    isLightableMaterial = true;
     @materialProperty()
-    public flatShadingNormal = false;
+    flatShadingNormal = false;
 
-    public freeGPU() {
+    freeGPU() {
         super.freeGPU();
         ShaderComponentRegistry.global.forEach(s => s.light.detachMaterial(this));
     }
 
-    public extendShaderShading(b: ShaderBuilder, _r: ShaderComponentRegistry) {
+    extendShaderShading(b: ShaderBuilder, _r: ShaderComponentRegistry) {
         if (this.side === Side.DoubleSide) {
             b.addFragDefine('#define DOUBLE_SIDE');
         }
         b.flatShadingNormal = this.flatShadingNormal;
     }
 
-    public extendShaderShape(b: ShaderBuilder, r: ShaderComponentRegistry) {
+    extendShaderShape(b: ShaderBuilder, r: ShaderComponentRegistry) {
         super.extendShaderShape(b, r);
         b.flatShadingNormal = this.flatShadingNormal;
     }
 
-    public getLightSystem(registry: ShaderComponentRegistry): LightShaderComponent {
+    getLightSystem(registry: ShaderComponentRegistry): LightShaderComponent {
         if (registry.tooManyLightsForForward()) {
             if (this.transparent || !registry.isDeferMode) {
                 registry.dynamicForwardLight.attachMaterial(this);
@@ -44,7 +44,7 @@ export abstract class LightableMaterial extends ScenePopLODMaterial {
         }
     }
 
-    public updateShadingUniforms(program: WGLProgram, r: ShaderComponentRegistry): void {
+    updateShadingUniforms(program: WGLProgram, r: ShaderComponentRegistry): void {
         const lightComponent = this.getLightSystem(r);
         if (lightComponent.dirtyKey !== program.uniformSkipTag.get('light')) {
             lightComponent.updateShadingUniforms(program);
@@ -58,7 +58,7 @@ export abstract class LightableMaterial extends ScenePopLODMaterial {
         lightComponent.updateShadowMapUniforms(program);
     }
 
-    public generateShaderKey(r: ShaderComponentRegistry): string {
+    generateShaderKey(r: ShaderComponentRegistry): string {
         return super.generateShaderKey(r) + this.getLightSystem(r).lightAndShadowHashKey() + this.flatShadingNormal;
     }
 

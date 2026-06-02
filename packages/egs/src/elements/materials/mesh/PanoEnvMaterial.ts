@@ -29,24 +29,27 @@ abstract class PanoBackGroundMaterial extends Material {
     updateShapeUniforms(_1: WGLProgram, _: ShaderComponentRegistry) { }
 }
 
+/**
+ * Per-model color and depth parameters for panoramic environment materials.
+ */
 export class ModelParameter {
-    public static shaderStruct = `
+    static shaderStruct = `
     struct ColorParams {
         vec4 color;
         float depth;
     };
     `;
 
-    public static shaderEffect = `
+    static shaderEffect = `
     vec4 applySelectEffect(vec4 color, ColorParams params) {
         return vec4(color.xyz * params.color.a + params.color.xyz * (1.0 - params.color.a), 1.0);
     }
     `;
 
-    public color = new Vector4(1, 1, 1, 0.5);
-    public depth = 0;
+    color = new Vector4(1, 1, 1, 0.5);
+    depth = 0;
 
-    public updateUniforms(program: WGLProgram, prefix: string) {
+    updateUniforms(program: WGLProgram, prefix: string) {
         program.setUniform(prefix + '.color', this.color);
         program.setUniform(prefix + '.depth', this.depth);
     }
@@ -55,15 +58,15 @@ export class ModelParameter {
  * This class is used to update parameter for {@link PanoEnvMapMaterial | PanoEnvMapMaterial }.
  */
 export class GlobalParams {
-    public brightness = 0;
-    public contrast = 0;
-    public saturation = 0;
-    public hue = 0;
-    public b = 1;
-    public r = 1;
-    public g = 1;
+    brightness = 0;
+    contrast = 0;
+    saturation = 0;
+    hue = 0;
+    b = 1;
+    r = 1;
+    g = 1;
 
-    public updateUniforms(program: WGLProgram, prefix: string) {
+    updateUniforms(program: WGLProgram, prefix: string) {
         program.setUniform(prefix + '.brightness', this.brightness);
         program.setUniform(prefix + '.contrast', this.contrast);
         program.setUniform(prefix + '.saturation', this.saturation);
@@ -74,11 +77,14 @@ export class GlobalParams {
     }
 }
 
+/**
+ * Material that renders selection identifiers from a cube-map background.
+ */
 export class PanoSelectionMaterial extends PanoBackGroundMaterial {
     @materialProperty()
-    public indexBackground: TextureCube;
+    indexBackground: TextureCube;
 
-    public className(): string {
+    className(): string {
         return 'PanoSelectionMaterial';
     }
 
@@ -92,34 +98,37 @@ export class PanoSelectionMaterial extends PanoBackGroundMaterial {
             `);
     }
 
-    public traverseTexture(visitor: (tex: Texture) => void) {
+    traverseTexture(visitor: (tex: Texture) => void) {
         super.traverseTexture(visitor);
         Utils.visitTexture([this.indexBackground], visitor);
     }
 
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setTextureCube('indexBackground', this.indexBackground);
     }
 
-    public clone(): PanoSelectionMaterial {
+    clone(): PanoSelectionMaterial {
         return new PanoSelectionMaterial().copy(this);
     }
 
-    public copy(other: PanoSelectionMaterial) {
+    copy(other: PanoSelectionMaterial) {
         super.copyBase(other);
         return this;
     }
 }
 
+/**
+ * Material that renders a panoramic environment map with selectable regions.
+ */
 export class PanoEnvMapMaterial extends PanoBackGroundMaterial {
     @materialProperty()
-    public cubeMapBackground: TextureCube;
+    cubeMapBackground: TextureCube;
     @materialProperty()
-    public indexBackground: TextureCube;
+    indexBackground: TextureCube;
     @materialProperty()
-    public selectedColorId = Number.MAX_SAFE_INTEGER;
+    selectedColorId = Number.MAX_SAFE_INTEGER;
     @materialProperty()
-    public hoverColor = readonlyMath.vec3(1, 1, 1);
+    hoverColor = readonlyMath.vec3(1, 1, 1);
 
     // updateGlobalParams() to upload to wasm
     @materialPropertyDeclare()
@@ -149,7 +158,7 @@ export class PanoEnvMapMaterial extends PanoBackGroundMaterial {
         ContentBridge.materialSetProperty(this, 'params', value);
     }
 
-    public className(): string {
+    className(): string {
         return 'PanoEnvMapMaterial';
     }
 
@@ -159,7 +168,7 @@ export class PanoEnvMapMaterial extends PanoBackGroundMaterial {
     }
     `;
 
-    public updateShadingUniforms(program: WGLProgram, _: ShaderComponentRegistry) {
+    updateShadingUniforms(program: WGLProgram, _: ShaderComponentRegistry) {
         program.setTextureCube('cubeMapBackground', this.cubeMapBackground);
         program.setTextureCube('indexBackground', this.indexBackground);
         this.globalParams.updateUniforms(program, 'globalParams');
@@ -170,16 +179,16 @@ export class PanoEnvMapMaterial extends PanoBackGroundMaterial {
         program.setUniform('hoverColor', this.hoverColor);
     }
 
-    public traverseTexture(visitor: (tex: Texture) => void) {
+    traverseTexture(visitor: (tex: Texture) => void) {
         super.traverseTexture(visitor);
         Utils.visitTexture([this.cubeMapBackground, this.indexBackground], visitor);
     }
 
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) + this.params.length;
     }
 
-    public extendShaderShading(b: ShaderBuilder, _: ShaderComponentRegistry) {
+    extendShaderShading(b: ShaderBuilder, _: ShaderComponentRegistry) {
         b.addUniform('cubeMapBackground', WebGLShaderDataType.SamplerCube)
             .addUniform('indexBackground', WebGLShaderDataType.SamplerCube)
             .addUniform('selectedColorId', WebGLShaderDataType.Float)
@@ -234,11 +243,11 @@ export class PanoEnvMapMaterial extends PanoBackGroundMaterial {
 
     }
 
-    public clone(): PanoEnvMapMaterial {
+    clone(): PanoEnvMapMaterial {
         return new PanoEnvMapMaterial();
     }
 
-    public copy(other: PanoEnvMapMaterial) {
+    copy(other: PanoEnvMapMaterial) {
         super.copyBase(other);
         return this;
     }

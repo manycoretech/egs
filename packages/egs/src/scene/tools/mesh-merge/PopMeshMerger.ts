@@ -29,24 +29,24 @@ function generateAccumulate(array: number[]): number[] {
 }
 
 export class PopMeshMerger extends DrawcallMerger<PopMesh, MeshPhongMaterial, PopBufferGeometry> {
-    public downcastInputDrawable(input: Drawable): input is PopMesh {
+    downcastInputDrawable(input: Drawable): input is PopMesh {
         return TypeAssert.isPopMesh(input);
     }
 
-    public downcastInputMaterial(input: Material): input is MeshPhongMaterial {
+    downcastInputMaterial(input: Material): input is MeshPhongMaterial {
         return TypeAssert.isMeshPhongMaterial(input);
     }
 
-    public downcastInputGeometry(input: GeometryBase): input is PopBufferGeometry {
+    downcastInputGeometry(input: GeometryBase): input is PopBufferGeometry {
         return TypeAssert.isBufferGeometry(input);
     }
     static MAX_COMBINED_TEXTURE = 8;
 
-    public extraCheck(inputs: Drawable[]) {
+    extraCheck(inputs: Drawable[]) {
         return inputs.length === 1;
     }
 
-    public decideNextDrawcall(drawcall: MergeDrawcallSource<PopMesh, MeshPhongMaterial, PopBufferGeometry>): void {
+    decideNextDrawcall(drawcall: MergeDrawcallSource<PopMesh, MeshPhongMaterial, PopBufferGeometry>): void {
         if (this.mergeGroup.length === 0) {
             this.mergeGroup.push([]);
         }
@@ -76,7 +76,7 @@ export class PopMeshMerger extends DrawcallMerger<PopMesh, MeshPhongMaterial, Po
     private resultMesh: Nullable<PopMesh> = null;
     private newGeometry: Nullable<PopBufferGeometry> = null;
 
-    public reset() {
+    reset() {
         super.reset();
         this.textureCounter = 0;
         this.modelBlockOffset = 0;
@@ -92,14 +92,14 @@ export class PopMeshMerger extends DrawcallMerger<PopMesh, MeshPhongMaterial, Po
     }
 
     // if the split result shows no effect, just return the origin mesh
-    public earlyReturn(group: Array<Array<MergeDrawcallSource<PopMesh, MeshPhongMaterial, PopBufferGeometry>>>) {
+    earlyReturn(group: Array<Array<MergeDrawcallSource<PopMesh, MeshPhongMaterial, PopBufferGeometry>>>) {
         if (group.length === this.inputs[0].materials.length) {
             return true;
         }
         return false;
     }
 
-    public mergeImpl(group: Array<MergeDrawcallSource<PopMesh, MeshPhongMaterial, PopBufferGeometry>>): Nullable<PopMesh> {
+    mergeImpl(group: Array<MergeDrawcallSource<PopMesh, MeshPhongMaterial, PopBufferGeometry>>): Nullable<PopMesh> {
         const pivot = group[0];
 
         // merging the first group
@@ -189,7 +189,7 @@ export class PopMeshMerger extends DrawcallMerger<PopMesh, MeshPhongMaterial, Po
         return null;
     }
 
-    public afterMerge(): void {
+    afterMerge(): void {
         // assemble the result mesh
         const newGeometry = this.newGeometry!;
         newGeometry.index = new BufferAttribute(this.newIndexAttribute!, 1);

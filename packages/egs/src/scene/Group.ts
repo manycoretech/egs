@@ -9,15 +9,15 @@ export class Group extends Object3D {
     /**
      * The type of current {@link Object3D| Object3D }.
      */
-    public type = 'Group';
+    type = 'Group';
     /**
      * Used to assert type of this instance.
      */
-    public isGroup = true;
+    isGroup = true;
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'Group';
     }
 }

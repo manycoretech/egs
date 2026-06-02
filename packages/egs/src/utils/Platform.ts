@@ -1,15 +1,15 @@
 export class Platform {
     private static instance: Platform;
 
-    public desktop: boolean = false;
-    public mobile: boolean = false;
-    public ios: boolean = false;
-    public android: boolean = false;
-    public windows: boolean = false;
-    public openHarmony: boolean = false;
-    public isSafari: boolean = false;
-    public isChromeMac = false;
-    public ua = '';
+    desktop: boolean = false;
+    mobile: boolean = false;
+    ios: boolean = false;
+    android: boolean = false;
+    windows: boolean = false;
+    openHarmony: boolean = false;
+    isSafari: boolean = false;
+    isChromeMac = false;
+    ua = '';
 
     constructor() {
         const ua = navigator.userAgent;
@@ -46,7 +46,7 @@ export class Platform {
         }
     }
 
-    public static getInstance(): Platform {
+    static getInstance(): Platform {
         return Platform.instance || (Platform.instance = new Platform());
     }
 }

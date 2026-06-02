@@ -5,14 +5,14 @@ import { createShaderBlock } from '../builders/ShaderBlock';
 import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
 
 export class SkinningShaderComponent extends ShaderComponent {
-    public className() {
+    className() {
         return 'SkinningShaderComponent';
     }
 
-    public extendShaderShading(_builder: ShaderBuilder): void {
+    extendShaderShading(_builder: ShaderBuilder): void {
     }
 
-    public extendShaderShape(builder: ShaderBuilder) {
+    extendShaderShape(builder: ShaderBuilder) {
         builder
             .addDefaultAttribute(ShaderAttributeTypes.joints)
             .addDefaultAttribute(ShaderAttributeTypes.weights)
@@ -24,21 +24,21 @@ export class SkinningShaderComponent extends ShaderComponent {
             );
     }
 
-    public computeShapeKey(): string {
+    computeShapeKey(): string {
         return 'skin';
     }
 
-    public copy(_: SkinningShaderComponent) {
+    copy(_: SkinningShaderComponent) {
         return this;
     }
 
-    public clone() {
+    clone() {
         return new SkinningShaderComponent().copy(this);
     }
 
-    public serialize(_ctx: Serializer<any>): void {
+    serialize(_ctx: Serializer<any>): void {
     }
-    public deserialize(_ctx: Deserializer): void | Promise<void> {
+    deserialize(_ctx: Deserializer): void | Promise<void> {
     }
 }
 

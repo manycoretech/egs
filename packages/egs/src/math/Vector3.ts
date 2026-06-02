@@ -17,22 +17,22 @@ export class Vector3 implements Vector {
      * the x value of this vector.
      * @defaultValue `0`.
      */
-    public x: number;
+    x: number;
     /**
      * the y value of this vector.
      * @defaultValue `0`.
      */
-    public y: number;
+    y: number;
     /**
      * the z value of this vector.
      * @defaultValue `0`.
      */
-    public z: number;
+    z: number;
     /**
      * Check the type whether it belongs to Vector3.
      * This value should not be changed by user.
      */
-    public isVector3 = true;
+    isVector3 = true;
 
     constructor(_x?: number, _y?: number, _z?: number) {
         this.x = _x || 0;
@@ -42,25 +42,25 @@ export class Vector3 implements Vector {
     /**
      * If NaN exists in three elements, return true.
      */
-    public hasNan(): boolean {
+    hasNan(): boolean {
         return isNaN(this.x) || isNaN(this.y) || isNaN(this.z);
     }
     /**
      * @internal
      */
-    public getSerializeData() {
+    getSerializeData() {
         return this.toArray();
     }
     /**
      * @internal
      */
-    public setSerializeData(value: any): void {
+    setSerializeData(value: any): void {
         this.fromArray(value);
     }
     /**
      * Set the {@link x| x}, {@link y| y} and {@link z| z} components of this vector.
      */
-    public set(x: number, y: number, z: number): Vector3 {
+    set(x: number, y: number, z: number): Vector3 {
         this.x = x;
         this.y = y;
         this.z = z;
@@ -69,7 +69,7 @@ export class Vector3 implements Vector {
     /**
      * Set the {@link x| x}, {@link y| y} and {@link z| z} values of this vector both equal to scalar.
      */
-    public setScalar(scalar: number): Vector3 {
+    setScalar(scalar: number): Vector3 {
         this.x = scalar;
         this.y = scalar;
         this.z = scalar;
@@ -78,21 +78,21 @@ export class Vector3 implements Vector {
     /**
      * Replace this vector's {@link x| x} value with x.
      */
-    public setX(x: number): Vector3 {
+    setX(x: number): Vector3 {
         this.x = x;
         return this;
     }
     /**
      * Replace this vector's {@link y| y} value with y.
      */
-    public setY(y: number): Vector3 {
+    setY(y: number): Vector3 {
         this.y = y;
         return this;
     }
     /**
      * Replace this vector's {@link z| z} value with z.
      */
-    public setZ(z: number): Vector3 {
+    setZ(z: number): Vector3 {
         this.z = z;
         return this;
     }
@@ -101,7 +101,7 @@ export class Vector3 implements Vector {
      * If index equals 1 set {@link y| y} to {@link Float| value}.
      * If index equals 2 set {@link z| z} to {@link Float| value}.
      */
-    public setComponent(index: number, value: number): Vector3 {
+    setComponent(index: number, value: number): Vector3 {
         switch (index) {
             case 0: this.x = value;
                 break;
@@ -120,7 +120,7 @@ export class Vector3 implements Vector {
      * If index equals 2 returns the {@link z| z} value.
      * @param index 0, 1 or 2.
      */
-    public getComponent(index: number): number {
+    getComponent(index: number): number {
         switch (index) {
             case 0: return this.x;
             case 1: return this.y;
@@ -131,22 +131,22 @@ export class Vector3 implements Vector {
     /**
      * Returns a new vector3 with the same {@link x| x}, {@link y| y} and {@link z| z} values as this one.
      */
-    public clone(): Vector3 {
+    clone(): Vector3 {
         return new Vector3(this.x, this.y, this.z);
     }
-    public cloneReadonly() {
+    cloneReadonly() {
         return this.clone() as any as ReadonlyVector3;
     }
     /**
      * Copies the values of the passed vector3's {@link x| x}, {@link y| y} and {@link z| z} properties to this vector3.
      */
-    public copy(v: Vector3): Vector3 {
+    copy(v: Vector3): Vector3 {
         return this.set(v.x, v.y, v.z);
     }
     /**
      * Adds {@link Vector3| v} to this vector.
      */
-    public add(v: Vector3): Vector3 {
+    add(v: Vector3): Vector3 {
         this.x += v.x;
         this.y += v.y;
         this.z += v.z;
@@ -155,7 +155,7 @@ export class Vector3 implements Vector {
     /**
      * Adds the scalar value s to this vector's {@link x| x}, {@link y| y} and {@link z| z} values.
      */
-    public addScalar(s: number): Vector3 {
+    addScalar(s: number): Vector3 {
         this.x += s;
         this.y += s;
         this.z += s;
@@ -164,7 +164,7 @@ export class Vector3 implements Vector {
     /**
      * Sets this vector to {@link Vector3| a} + {@link Vector3| b}.
      */
-    public addVectors(a: Vector3, b: Vector3): Vector3 {
+    addVectors(a: Vector3, b: Vector3): Vector3 {
         this.x = a.x + b.x;
         this.y = a.y + b.y;
         this.z = a.z + b.z;
@@ -173,7 +173,7 @@ export class Vector3 implements Vector {
     /**
      * Adds the multiple of {@link Vector3| v} and s to this vector.
      */
-    public addScaledVector(v: Vector3, s: number): Vector3 {
+    addScaledVector(v: Vector3, s: number): Vector3 {
         this.x += v.x * s;
         this.y += v.y * s;
         this.z += v.z * s;
@@ -182,7 +182,7 @@ export class Vector3 implements Vector {
     /**
      * Subtracts {@link Vector3| v} from this vector.
      */
-    public sub(v: Vector3): Vector3 {
+    sub(v: Vector3): Vector3 {
         this.x -= v.x;
         this.y -= v.y;
         this.z -= v.z;
@@ -191,7 +191,7 @@ export class Vector3 implements Vector {
     /**
      * Subtracts s from this vector's {@link x| x}, {@link y| y} and {@link z| z} components.
      */
-    public subScalar(s: number): Vector3 {
+    subScalar(s: number): Vector3 {
         this.x -= s;
         this.y -= s;
         this.z -= s;
@@ -200,7 +200,7 @@ export class Vector3 implements Vector {
     /**
      * Sets this vector to {@link Vector3| a} - {@link Vector3| b}.
      */
-    public subVectors(a: Vector3, b: Vector3): Vector3 {
+    subVectors(a: Vector3, b: Vector3): Vector3 {
         this.x = a.x - b.x;
         this.y = a.y - b.y;
         this.z = a.z - b.z;
@@ -209,7 +209,7 @@ export class Vector3 implements Vector {
     /**
      * Multiplies this vector by {@link Vector3| v}.
      */
-    public multiply(v: Vector3): Vector3 {
+    multiply(v: Vector3): Vector3 {
         this.x *= v.x;
         this.y *= v.y;
         this.z *= v.z;
@@ -218,7 +218,7 @@ export class Vector3 implements Vector {
     /**
      * Multiplies this vector by scalar s.
      */
-    public multiplyScalar(scalar: number): Vector3 {
+    multiplyScalar(scalar: number): Vector3 {
         this.x *= scalar;
         this.y *= scalar;
         this.z *= scalar;
@@ -227,7 +227,7 @@ export class Vector3 implements Vector {
     /**
      * Sets this vector equal to {@link Vector3| a} * {@link Vector3| b}, component-wise.
      */
-    public multiplyVectors(a: Vector3, b: Vector3): Vector3 {
+    multiplyVectors(a: Vector3, b: Vector3): Vector3 {
         this.x = a.x * b.x;
         this.y = a.y * b.y;
         this.z = a.z * b.z;
@@ -236,7 +236,7 @@ export class Vector3 implements Vector {
     /**
      * Multiplies this vector by {@link Matrix3| m}
      */
-    public applyMatrix3(m: Matrix3): Vector3 {
+    applyMatrix3(m: Matrix3): Vector3 {
         const x = this.x;
         const y = this.y;
         const z = this.z;
@@ -249,7 +249,7 @@ export class Vector3 implements Vector {
     /**
      * Multiplies this vector (with an implicit 1 in the 4th dimension) and m, and divides by perspective.
      */
-    public applyMatrix4(m: Matrix4): Vector3 {
+    applyMatrix4(m: Matrix4): Vector3 {
         const x = this.x;
         const y = this.y;
         const z = this.z;
@@ -263,7 +263,7 @@ export class Vector3 implements Vector {
     /**
      * Applies a {@link Quaternion| Quaternion} transform to this vector.
      */
-    public applyQuaternion(q: Quaternion): Vector3 {
+    applyQuaternion(q: Quaternion): Vector3 {
         const x = this.x;
         const y = this.y;
         const z = this.z;
@@ -288,14 +288,14 @@ export class Vector3 implements Vector {
      * Projects this vector from world space into the camera's normalized device coordinate (NDC) space.
      * @param camera camera to use in the projection.
      */
-    public project(camera: Camera3D): Vector3 {
+    project(camera: Camera3D): Vector3 {
         return this.applyMatrix4(camera.matrixWorldInverse).applyMatrix4(camera.projectionMatrix);
     }
     /**
      * Projects this vector from the camera's normalized device coordinate (NDC) space into world space.
      * @param camera camera to use in the projection.
      */
-    public unproject(camera: Camera3D): Vector3 {
+    unproject(camera: Camera3D): Vector3 {
         if (!tmpMat) {
             tmpMat = new Matrix4();
         }
@@ -305,7 +305,7 @@ export class Vector3 implements Vector {
     /**
      * Transforms the direction of this vector by a matrix (the upper left 3 x 3 subset of a {@link Matrix4| m}) and then {@link normalize| normalizes} the result.
      */
-    public transformDirection(m: Matrix4): Vector3 {
+    transformDirection(m: Matrix4): Vector3 {
         // input: EGS.Matrix4 affine matrix
         // vector interpreted as a direction
         const x = this.x;
@@ -320,7 +320,7 @@ export class Vector3 implements Vector {
     /**
      * Divides this vector by {@link Vector3| v}.
      */
-    public divide(v: Vector3): Vector3 {
+    divide(v: Vector3): Vector3 {
         this.x /= v.x;
         this.y /= v.y;
         this.z /= v.z;
@@ -330,7 +330,7 @@ export class Vector3 implements Vector {
      * Divides this vector by scalar s.
      * Sets vector to `( 0, 0, 0 )` if `s = 0`.
      */
-    public divideScalar(scalar: number): Vector3 {
+    divideScalar(scalar: number): Vector3 {
         return this.multiplyScalar(1 / scalar);
     }
     /**
@@ -339,7 +339,7 @@ export class Vector3 implements Vector {
      * @param min the minimum {@link x| x}, {@link y| y} and {@link z| z} values.
      * @param max the maximum {@link x| x}, {@link y| y} and {@link z| z} values in the desired range.
      */
-    public min(v: Vector3): Vector3 {
+    min(v: Vector3): Vector3 {
         this.x = Math.min(this.x, v.x);
         this.y = Math.min(this.y, v.y);
         this.z = Math.min(this.z, v.z);
@@ -351,7 +351,7 @@ export class Vector3 implements Vector {
      * @param min the minimum {@link x| x}, {@link y| y} and {@link z| z} values.
      * @param max the maximum {@link x| x}, {@link y| y} and {@link z| z} values in the desired range.
      */
-    public max(v: Vector3): Vector3 {
+    max(v: Vector3): Vector3 {
         this.x = Math.max(this.x, v.x);
         this.y = Math.max(this.y, v.y);
         this.z = Math.max(this.z, v.z);
@@ -363,7 +363,7 @@ export class Vector3 implements Vector {
      * @param min the minimum {@link x| x}, {@link y| y} and {@link z| z} values.
      * @param max the maximum {@link x| x}, {@link y| y} and {@link z| z} values in the desired range.
      */
-    public clamp(min: Vector3, max: Vector3): Vector3 {
+    clamp(min: Vector3, max: Vector3): Vector3 {
         // assumes min < max, component-wise
         this.x = Math.max(min.x, Math.min(max.x, this.x));
         this.y = Math.max(min.y, Math.min(max.y, this.y));
@@ -376,7 +376,7 @@ export class Vector3 implements Vector {
      * @param min the minimum value the components will be clamped to.
      * @param max the maximum value the components will be clamped to.
      */
-    public clampScalar(minVal: number, maxVal: number): Vector3 {
+    clampScalar(minVal: number, maxVal: number): Vector3 {
         tmp1Vec3.set(minVal, minVal, minVal);
         tmp2Vec3.set(maxVal, maxVal, maxVal);
         return this.clamp(tmp1Vec3, tmp2Vec3);
@@ -387,14 +387,14 @@ export class Vector3 implements Vector {
      * @param min the minimum value the length will be clamped to.
      * @param max the maximum value the length will be clamped to.
      */
-    public clampLength(min: number, max: number): Vector3 {
+    clampLength(min: number, max: number): Vector3 {
         const length = this.length();
         return this.divideScalar(length || 1).multiplyScalar(Math.max(min, Math.min(max, length)));
     }
     /**
      * The components of this vector are rounded down to the nearest integer value.
      */
-    public floor(): Vector3 {
+    floor(): Vector3 {
         this.x = Math.floor(this.x);
         this.y = Math.floor(this.y);
         this.z = Math.floor(this.z);
@@ -403,7 +403,7 @@ export class Vector3 implements Vector {
     /**
      * The {@link x| x}, {@link y| y} and {@link z| z} components of this vector are rounded up to the nearest integer value.
      */
-    public ceil(): Vector3 {
+    ceil(): Vector3 {
         this.x = Math.ceil(this.x);
         this.y = Math.ceil(this.y);
         this.z = Math.ceil(this.z);
@@ -412,7 +412,7 @@ export class Vector3 implements Vector {
     /**
      * The components of this vector are rounded to the nearest integer value.
      */
-    public round(): Vector3 {
+    round(): Vector3 {
         this.x = Math.round(this.x);
         this.y = Math.round(this.y);
         this.z = Math.round(this.z);
@@ -421,7 +421,7 @@ export class Vector3 implements Vector {
     /**
      * The components of this vector are rounded towards zero (up if negative, down if positive) to an integer value.
      */
-    public roundToZero(): Vector3 {
+    roundToZero(): Vector3 {
         this.x = (this.x < 0) ? Math.ceil(this.x) : Math.floor(this.x);
         this.y = (this.y < 0) ? Math.ceil(this.y) : Math.floor(this.y);
         this.z = (this.z < 0) ? Math.ceil(this.z) : Math.floor(this.z);
@@ -430,7 +430,7 @@ export class Vector3 implements Vector {
     /**
      * Inverts this vector - i.e. sets x = -x, y = -y and z = -z.
      */
-    public negate(): Vector3 {
+    negate(): Vector3 {
         this.x = - this.x;
         this.y = - this.y;
         this.z = - this.z;
@@ -439,7 +439,7 @@ export class Vector3 implements Vector {
     /**
      * Calculate the {@link https://en.wikipedia.org/wiki/Dot_product| dot product} of this vector and {@link Vector3| v}.
      */
-    public dot(v: Vector3): number {
+    dot(v: Vector3): number {
         return this.x * v.x + this.y * v.y + this.z * v.z;
     }
     /**
@@ -447,32 +447,32 @@ export class Vector3 implements Vector {
      * (straight-line length) from (0, 0, 0) to (x, y, z). If you are 	comparing the lengths of
      * vectors, you should compare the length squared instead as it is slightly more efficient to calculate.
      */
-    public lengthSq(): number {
+    lengthSq(): number {
         return this.x * this.x + this.y * this.y + this.z * this.z;
     }
     /**
      * Computes the Euclidean length (straight-line length) from (0, 0, 0) to (x, y, z).
      */
-    public length(): number {
+    length(): number {
         return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
     }
     /**
      * Computes the {@link http://en.wikipedia.org/wiki/Taxicab_geometry| Manhattan length} of this vector.
      */
-    public manhattanLength(): number {
+    manhattanLength(): number {
         return Math.abs(this.x) + Math.abs(this.y) + Math.abs(this.z);
     }
     /**
      * Convert this vector to a {@link https://en.wikipedia.org/wiki/Unit_vector| unit vector}
      * - that is, sets it equal to a vector with the same direction as this one, but {@link length| length} 1.
      */
-    public normalize(): Vector3 {
+    normalize(): Vector3 {
         return this.divideScalar(this.length() || 1);
     }
     /**
      * Sets this vector to a vector with given length the same direction as this one.
      */
-    public setLength(length: number): Vector3 {
+    setLength(length: number): Vector3 {
         return this.normalize().multiplyScalar(length);
     }
     /**
@@ -481,7 +481,7 @@ export class Vector3 implements Vector {
      * @param v {@link Vector3| Vector3} to interpolate towards.
      * @param alpha interpolation factor, typically in the closed interval [0, 1].
      */
-    public lerp(v: Vector3, alpha: number): Vector3 {
+    lerp(v: Vector3, alpha: number): Vector3 {
         this.x += (v.x - this.x) * alpha;
         this.y += (v.y - this.y) * alpha;
         this.z += (v.z - this.z) * alpha;
@@ -495,19 +495,19 @@ export class Vector3 implements Vector {
      * @param v2 {@link Vector3| Vector3} to interpolate towards.
      * @param alpha interpolation factor, typically in the closed interval [0, 1].
      */
-    public lerpVectors(v1: Vector3, v2: Vector3, alpha: number): Vector3 {
+    lerpVectors(v1: Vector3, v2: Vector3, alpha: number): Vector3 {
         return this.subVectors(v2, v1).multiplyScalar(alpha).add(v1);
     }
     /**
      * Sets this vector to {@link https://en.wikipedia.org/wiki/Cross_product| cross product} of itself and {@link Vector3| v}.
      */
-    public cross(v: Vector3): Vector3 {
+    cross(v: Vector3): Vector3 {
         return this.crossVectors(this, v);
     }
     /**
      * Sets this vector to cross product of {@link Vector3| a} and {@link Vector3| b}.
      */
-    public crossVectors(a: Vector3, b: Vector3): Vector3 {
+    crossVectors(a: Vector3, b: Vector3): Vector3 {
         const ax = a.x;
         const ay = a.y;
         const az = a.z;
@@ -523,7 +523,7 @@ export class Vector3 implements Vector {
     /**
      * {@link https://en.wikipedia.org/wiki/Vector_projection| Projects} this vector onto {@link Vector3| vector}.
      */
-    public projectOnVector(vector: Vector3): Vector3 {
+    projectOnVector(vector: Vector3): Vector3 {
         const scalar = vector.dot(this) / vector.lengthSq();
         return this.copy(vector).multiplyScalar(scalar);
     }
@@ -531,7 +531,7 @@ export class Vector3 implements Vector {
      * {@link https://en.wikipedia.org/wiki/Vector_projection| Projects} this vector onto a plane by subtracting this vector projected onto the plane's normal from this vector.
      * @param planeNormal A vector representing a plane normal.
      */
-    public projectOnPlane(planeNormal: Vector3): Vector3 {
+    projectOnPlane(planeNormal: Vector3): Vector3 {
         tmp1Vec3.copy(this).projectOnVector(planeNormal);
         return this.sub(tmp1Vec3);
     }
@@ -540,7 +540,7 @@ export class Vector3 implements Vector {
      * Normal is assumed to have unit length.
      * @param normal the normal to the reflecting plane.
      */
-    public reflect(normal: Vector3): Vector3 {
+    reflect(normal: Vector3): Vector3 {
         // reflect incident vector off plane orthogonal to normal
         // normal is assumed to have unit length
         return this.sub(tmp1Vec3.copy(normal).multiplyScalar(2 * this.dot(normal)));
@@ -548,7 +548,7 @@ export class Vector3 implements Vector {
     /**
      * Returns the angle between this vector and vector {@link Vector3| v} in radians.
      */
-    public angleTo(v: Vector3): number {
+    angleTo(v: Vector3): number {
         const theta = this.dot(v) / (Math.sqrt(this.lengthSq() * v.lengthSq()));
         // clamp, to handle numerical problems
         return Math.acos(_Math.clamp(theta, - 1, 1));
@@ -556,7 +556,7 @@ export class Vector3 implements Vector {
     /**
      * Computes the distance from this vector to {@link Vector3| v}.
      */
-    public distanceTo(v: Vector3): number {
+    distanceTo(v: Vector3): number {
         return Math.sqrt(this.distanceToSquared(v));
     }
     /**
@@ -564,7 +564,7 @@ export class Vector3 implements Vector {
      * If you are just comparing the distance with another distance,
      * you should compare the distance squared instead as it is slightly more efficient to calculate.
      */
-    public distanceToSquared(v: Vector3): number {
+    distanceToSquared(v: Vector3): number {
         const dx = this.x - v.x;
         const dy = this.y - v.y;
         const dz = this.z - v.z;
@@ -573,19 +573,19 @@ export class Vector3 implements Vector {
     /**
      * Computes the {@link https://en.wikipedia.org/wiki/Taxicab_geometry| Manhattan distance} from this vector to {@link Vector3| v}.
      */
-    public manhattanDistanceTo(v: Vector3): number {
+    manhattanDistanceTo(v: Vector3): number {
         return Math.abs(this.x - v.x) + Math.abs(this.y - v.y) + Math.abs(this.z - v.z);
     }
     /**
      * Sets this vector from the spherical coordinates {@link Spherical| s}.
      */
-    public setFromSpherical(s: Spherical): Vector3 {
+    setFromSpherical(s: Spherical): Vector3 {
         return this.setFromSphericalCoords(s.radius, s.phi, s.theta);
     }
     /**
      * Sets this vector from the spherical coordinates {@link Spherical| radius}, {@link Spherical| phi} and {@link Spherical| theta}.
      */
-    public setFromSphericalCoords(radius: number, phi: number, theta: number): Vector3 {
+    setFromSphericalCoords(radius: number, phi: number, theta: number): Vector3 {
         const sinPhiRadius = Math.sin(phi) * radius;
         this.x = sinPhiRadius * Math.sin(theta);
         this.y = Math.cos(phi) * radius;
@@ -595,13 +595,13 @@ export class Vector3 implements Vector {
     /**
      * Sets this vector from the cylindrical coordinates {@link Cylindrical| c}.
      */
-    public setFromCylindrical(c: Cylindrical): Vector3 {
+    setFromCylindrical(c: Cylindrical): Vector3 {
         return this.setFromCylindricalCoords(c.radius, c.theta, c.y);
     }
     /**
      * Sets this vector from the cylindrical coordinates {@link Cylindrical| radius}, {@link Cylindrical| theta} and {@link Cylindrical| y}.
      */
-    public setFromCylindricalCoords(radius: number, theta: number, y: number): Vector3 {
+    setFromCylindricalCoords(radius: number, theta: number, y: number): Vector3 {
         this.x = radius * Math.sin(theta);
         this.y = y;
         this.z = radius * Math.cos(theta);
@@ -610,7 +610,7 @@ export class Vector3 implements Vector {
     /**
      * Sets this vector to the position elements of the {@link https://en.wikipedia.org/wiki/Transformation_matrix| transformation matrix} {@link Matrix4| m}.
      */
-    public setFromMatrixPosition(m: Matrix4): Vector3 {
+    setFromMatrixPosition(m: Matrix4): Vector3 {
         const e = m._elements;
         this.x = e[12];
         this.y = e[13];
@@ -620,13 +620,13 @@ export class Vector3 implements Vector {
     /**
      * Sets this vector's {@link x| x}, {@link y| y} and {@link z| z} components from {@link Integer| index} column of {@link Matrix4| matrix}.
      */
-    public setFromMatrixColumn(matrix: Matrix4, index: number): Vector3 {
+    setFromMatrixColumn(matrix: Matrix4, index: number): Vector3 {
         return this.fromArray(matrix._elements, index * 4);
     }
     /**
      * Sets this vector to the scale elements of the {@link https://en.wikipedia.org/wiki/Transformation_matrix| transformation matrix} {@link Matrix4| m}.
      */
-    public setFromMatrixScale(m: Matrix4): Vector3 {
+    setFromMatrixScale(m: Matrix4): Vector3 {
         const sx = this.setFromMatrixColumn(m, 0).length();
         const sy = this.setFromMatrixColumn(m, 1).length();
         const sz = this.setFromMatrixColumn(m, 2).length();
@@ -638,7 +638,7 @@ export class Vector3 implements Vector {
     /**
      * Checks for strict equality of this vector and {@link Vector3| v}.
      */
-    public equals(v: Vector3): boolean {
+    equals(v: Vector3): boolean {
         return ((v.x === this.x) && (v.y === this.y) && (v.z === this.z));
     }
     /**
@@ -647,7 +647,7 @@ export class Vector3 implements Vector {
      * @param offset ( optional) offset into the array.
      * @defaultValue `0`.
      */
-    public fromArray(array: ArrayLike<number>, offset?: number): Vector3 {
+    fromArray(array: ArrayLike<number>, offset?: number): Vector3 {
         if (offset === undefined) {
             offset = 0;
         }
@@ -659,14 +659,14 @@ export class Vector3 implements Vector {
     /**
      * There are 3 elements in this vector.
      */
-    public getNumberCount() { return 3; }
+    getNumberCount() { return 3; }
     /**
      * Returns an array [x, y, z], or copies x, y and z into the provided array.
      * @param array (optional) array to store this vector to.
      * If this is not provided a new array will be created.
      * @param offset (optional) optional offset into the array.
      */
-    public toArray(array?: number[], offset?: number): number[] {
+    toArray(array?: number[], offset?: number): number[] {
         if (array === undefined) {
             array = [];
         }
@@ -683,7 +683,7 @@ export class Vector3 implements Vector {
      * @param attribute the source attribute.
      * @param index index in the attribute.
      */
-    public fromBufferAttribute(attribute: BufferAttribute, index: number): Vector3 {
+    fromBufferAttribute(attribute: BufferAttribute, index: number): Vector3 {
         this.x = attribute.getX(index);
         this.y = attribute.getY(index);
         this.z = attribute.getZ(index);
@@ -691,6 +691,9 @@ export class Vector3 implements Vector {
     }
 }
 
+/**
+ * Readonly view of the public Vector3 API.
+ */
 export type ReadonlyVector3 = PickReadonly<Vector3,
     'x' | 'y' | 'z' | 'dot' | 'angleTo' | 'lengthSq' | 'length' | 'distanceTo' |
     'manhattanLength' | 'distanceToSquared' | 'manhattanDistanceTo' | 'getNumberCount' | 'equals' | 'toArray'>;

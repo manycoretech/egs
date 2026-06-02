@@ -52,6 +52,9 @@ export enum TextureDataType {
     UnsignedInt2101010Type = 0x8368,
 }
 
+/**
+ * Returns the byte size of one texture channel.
+ */
 export function getTextureDataTypeSize(t: TextureDataType) {
     switch (t) {
         case TextureDataType.UnsignedByteType: return 1;

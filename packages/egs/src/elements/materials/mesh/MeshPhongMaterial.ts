@@ -34,9 +34,9 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      */
     static DefaultSceneClipEnabled: boolean = true;
 
-    public readonly isSupportDeferred: true = true;
+    readonly isSupportDeferred: true = true;
 
-    public static constructMaterialFromGBufferForLight(): string {
+    static constructMaterialFromGBufferForLight(): string {
         return `
         BlinnPhongMaterial material;
         material.diffuseColor = texture2D(c2, vUv).xyz;
@@ -46,13 +46,13 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
         `;
     }
 
-    public static extendDeferredLight(builder: ShaderBuilder) {
+    static extendDeferredLight(builder: ShaderBuilder) {
         builder
             .addFragment(BRDFSpecularBlinnPhong)
             .addFragment(BlinnPhong);
     }
 
-    public extendEncodeDeferred(builder: ShaderBuilder) {
+    extendEncodeDeferred(builder: ShaderBuilder) {
         builder
             .when(this.side === Side.DoubleSide, b =>
                 b.addFragDefine('#define DOUBLE_SIDE'))
@@ -75,7 +75,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
             .inject(ShaderInjectionTypes.frag_any, 'fragOut2 = vec4(specular, specularStrength);');
     }
 
-    public updateDeferredUniform(p: WGLProgram) {
+    updateDeferredUniform(p: WGLProgram) {
         this.UBO.updateWebGL(p);
         if (this.texture !== null) {
             p.setTexture2D('map', this.texture);
@@ -92,14 +92,14 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'MeshPhongMaterial';
     }
     /**
      * Check the type whether it belongs to MeshPhongMaterial.
      * This value should not be changed by user.
      */
-    public isMeshPhongMaterial = true;
+    isMeshPhongMaterial = true;
 
     constructor(p?: MeshPhongMaterialParameters<T>) {
         super();
@@ -127,13 +127,13 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * Use texture cover object, if it is given.
      */
     @materialProperty()
-    public texture: Nullable<T> = null;
+    texture: Nullable<T> = null;
     /**
      * Apply opacity texture to change the transparency on object's some part.
      * The opacity is decided by the value of texture's red channel.
      */
     @materialProperty()
-    public opacityTex: Nullable<T> = null;
+    opacityTex: Nullable<T> = null;
     /**
      * The color of specular. This value and color of light influence the color of the edge part of specular area together.
      */
@@ -173,7 +173,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * Change the corresponding attribute according to the values of given {@link MeshPhongMaterialParameters| parameters}.
      * @param {MeshPhongMaterialParameters} values a object of specified type contains parameters.
      */
-    public setValues(values?: MeshPhongMaterialParameters<T>) {
+    setValues(values?: MeshPhongMaterialParameters<T>) {
         if (values === undefined) {
             return;
         }
@@ -181,7 +181,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
         Utils.copyPropertiesAndCheckRecompile(keys, ['texture', 'opacityTex'], this, values);
     }
 
-    public traverseTexture(visitor: (tex: Texture) => void) {
+    traverseTexture(visitor: (tex: Texture) => void) {
         super.traverseTexture(visitor);
         Utils.visitTexture([this.texture, this.opacityTex], visitor);
     }
@@ -189,7 +189,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * Execute the given method for every ubo.
      * @param {function} _visitor a method to process ubo.
      */
-    public traverseUBO(visitor: (ubo: UniformBlockObject) => void) {
+    traverseUBO(visitor: (ubo: UniformBlockObject) => void) {
         visitor(this.UBO);
     }
     /**
@@ -197,7 +197,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * This method may override in extended class.
      * @internal
      */
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         const keyBuilder = HashKeyBuilder.getInstance()
             .hasItem(this.texture)
             .hasItem(this.opacityTex)
@@ -208,7 +208,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * Copy the data to this instance from other instance.
      * @param {MeshPhongMaterial} other the source of copied data
      */
-    public copy(other: MeshPhongMaterial<T>) {
+    copy(other: MeshPhongMaterial<T>) {
         super.copyBase(other);
         this.color = other.color;
         this.texture = other.texture;
@@ -223,14 +223,14 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * Return a cloned instance of this class.
      */
-    public clone() {
+    clone() {
         return new MeshPhongMaterial<T>().copy(this);
     }
     /**
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx an instance used to store the data of scene objects.
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<MeshPhongMaterial>(['color', 'texture', 'specular', 'opacity', 'opacityTex', 'shininess', 'specularStrength', 'uvTransform']);
     }
@@ -238,7 +238,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx an instance give the method to take the data for attribute.
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<MeshPhongMaterial>(['color', 'texture', 'specular', 'opacity', 'opacityTex', 'shininess', 'specularStrength', 'uvTransform']);
     }
@@ -246,7 +246,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * Change the uv data by this matrix.
      */
     @materialProperty()
-    public _uvTransform = readonlyMath.mat3();
+    _uvTransform = readonlyMath.mat3();
     get uvTransform() { return this.UBO.getItem('uvTransformColor'); }
     set uvTransform(v: ReadonlyMatrix3) {
         this.UBO.setItem('uvTransformColor', v);
@@ -256,7 +256,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * @internal
      */
-    public updateShadingUniforms(program: WGLProgram, r: ShaderComponentRegistry): void {
+    updateShadingUniforms(program: WGLProgram, r: ShaderComponentRegistry): void {
         super.updateShadingUniforms(program, r);
 
         this.UBO.updateWebGL(program);
@@ -273,7 +273,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * @internal
      */
-    public extendShaderShading(b: ShaderBuilder, r: ShaderComponentRegistry) {
+    extendShaderShading(b: ShaderBuilder, r: ShaderComponentRegistry) {
         super.extendShaderShading(b, r);
         const lightComponent = this.getLightSystem(r);
         b.addUBO(this.UBO)
@@ -318,7 +318,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * @internal
      */
-    public generateMaterialForLight() {
+    generateMaterialForLight() {
         return `
         BlinnPhongMaterial material;
         material.diffuseColor = color;
@@ -330,25 +330,25 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * @internal
      */
-    public RE_Direct(): string {
+    RE_Direct(): string {
         return '#define RE_Direct RE_Direct_BlinnPhong';
     }
     /**
      * @internal
      */
-    public RE_Direct_RectArea(): string {
+    RE_Direct_RectArea(): string {
         return '#define RE_Direct_RectArea RE_Direct_RectArea_BlinnPhong';
     }
     /**
      * @internal
      */
-    public RE_Direct_DiskArea(): string {
+    RE_Direct_DiskArea(): string {
         return '#define RE_Direct_DiskArea RE_Direct_DiskArea_BlinnPhong';
     }
     /**
      * @internal
      */
-    public RE_IndirectDiffuse(): string {
+    RE_IndirectDiffuse(): string {
         return '#define RE_IndirectDiffuse RE_IndirectDiffuse_BlinnPhong';
     }
 }
@@ -360,6 +360,9 @@ vec2 encodeNormal(vec3 n) {
 }
 `);
 
+/**
+ * Shader block containing shared Blinn-Phong area-light helpers.
+ */
 export const AreaBlinnPhong = createShaderBlock(`
 mat3 transposeMat3( const in mat3 m ) {
     mat3 tmp;
@@ -383,6 +386,9 @@ vec2 LTC_Uv( const in vec3 N, const in vec3 V, const in float roughness ) {
     return uv;
 }
 `);
+/**
+ * Shader block for rectangle area-light Blinn-Phong evaluation.
+ */
 export const RectAreaBlinnPhong = createShaderBlock(`
 vec3 LTC_EdgeVectorFormFactor( const in vec3 v1, const in vec3 v2 ) {
     float x = dot(v1, v2);
@@ -486,6 +492,9 @@ void RE_Direct_RectArea_BlinnPhong(const in RectAreaLight rectAreaLight, const i
 #define RE_Direct_RectArea       RE_Direct_RectArea_BlinnPhong
 `);
 
+/**
+ * Shader block for disk area-light Blinn-Phong evaluation.
+ */
 export const DiskAreaBlinnPhong = createShaderBlock(`
 float sqr(float x) { return x * x; }
 

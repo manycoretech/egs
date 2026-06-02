@@ -13,12 +13,12 @@ import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
 // let maxLevelPrecision = 0
 // so maxLevelPosition = gridPosition * vertexGridSize + vertexConstant.
 export class PopShaderComponent extends ShaderComponent {
-    public className() {
+    className() {
         return 'PopShaderComponent';
     }
 
-    public extendShaderShading(_builder: ShaderBuilder) { }
-    public extendShaderShape(builder: ShaderBuilder) {
+    extendShaderShading(_builder: ShaderBuilder) { }
+    extendShaderShape(builder: ShaderBuilder) {
         builder
             .addGlobalUniform(BuiltInUniformTypes.lodInfo)
             .addVertex(ShaderBlockPool.PopComponentTransform)
@@ -27,18 +27,18 @@ export class PopShaderComponent extends ShaderComponent {
             );
     }
 
-    public computeShapeKey(): string {
+    computeShapeKey(): string {
         return 'pop';
     }
 
-    public copy(_: PopShaderComponent) {
+    copy(_: PopShaderComponent) {
         return this;
     }
 
-    public clone() {
+    clone() {
         return new PopShaderComponent().copy(this);
     }
 
-    public serialize(_ctx: Serializer<any>): void { }
-    public deserialize(_ctx: Deserializer): void | Promise<void> { }
+    serialize(_ctx: Serializer<any>): void { }
+    deserialize(_ctx: Deserializer): void | Promise<void> { }
 }

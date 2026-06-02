@@ -56,40 +56,40 @@ export function drawQuad(m: Material, quad: Quad = quadGetter()): RenderSource {
 }
 
 export class RendererAdaptor {
-    public renderer: IRenderer;
-    public width: number = 1920; // just default value
-    public height: number = 1080;
-    public activeResources: Map<string, Texture>; // uniformName, resource
+    renderer: IRenderer;
+    width: number = 1920; // just default value
+    height: number = 1080;
+    activeResources: Map<string, Texture>; // uniformName, resource
 
     constructor(renderer: IRenderer) {
         this.renderer = renderer;
     }
 
-    public setSize(width: number, height: number) {
+    setSize(width: number, height: number) {
         this.width = width;
         this.height = height;
     }
 
-    public setClearColor(color: Vector4) {
+    setClearColor(color: Vector4) {
         this.renderer.setClearColor(new Color(color.x, color.y, color.z), color.w);
     }
 
-    public render(renderable: Renderable) {
+    render(renderable: Renderable) {
         this.renderer.renderRenderable(renderable);
     }
 
-    public clear(color: boolean, depth: boolean, stencil: boolean = false) {
+    clear(color: boolean, depth: boolean, stencil: boolean = false) {
         if (!depth && !color && !stencil) {
             return;
         }
         this.renderer.clear(color, depth, stencil);
     }
 
-    public setRenderTarget(target: RenderTarget, resolveTarget?: RenderTarget) {
+    setRenderTarget(target: RenderTarget, resolveTarget?: RenderTarget) {
         this.renderer.setRenderTarget(target, resolveTarget);
     }
 
-    public setRenderToScreen() {
+    setRenderToScreen() {
         this.renderer.setRenderTarget();
     }
 }

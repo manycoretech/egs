@@ -6,17 +6,17 @@ export class Cylindrical {
     /**
      * The radius of bottom cycle.
      */
-    public radius: number;
+    radius: number;
     /**
      * counterclockwise angle in the x-z plane measured in radians from the positive z-axis.
      * @defaultValue `0`.
      */
-    public theta: number;
+    theta: number;
     /**
      * height above the x-z plane.
      * @defaultValue `0`.
      */
-    public y: number;
+    y: number;
 
     constructor(radius?: number, theta?: number, y?: number) {
         this.radius = (radius !== undefined) ? radius : 1.0; // distance from the origin to a point in the x-z plane
@@ -27,7 +27,7 @@ export class Cylindrical {
     /**
      * Sets values of this cylinder's {@link radius| radius}, {@link theta| theta} and {@link y| y} properties.
      */
-    public set(radius: number, theta: number, y: number): Cylindrical {
+    set(radius: number, theta: number, y: number): Cylindrical {
         this.radius = radius;
         this.theta = theta;
         this.y = y;
@@ -36,13 +36,13 @@ export class Cylindrical {
     /**
      * Returns a new cylinder with the same {@link radius| radius}, {@link theta| theta} and {@link y| y} properties as this one.
      */
-    public clone(): Cylindrical {
+    clone(): Cylindrical {
         return new Cylindrical().copy(this);
     }
     /**
      * Copies the values of the passed cylinder's {@link radius| radius}, {@link theta| theta} and {@link y| y} properties to this cylinder.
      */
-    public copy(other: Cylindrical): Cylindrical {
+    copy(other: Cylindrical): Cylindrical {
         this.radius = other.radius;
         this.theta = other.theta;
         this.y = other.y;
@@ -51,13 +51,13 @@ export class Cylindrical {
     /**
      * Sets values of this cylinder's {@link radius| radius}, {@link theta| theta} and {@link y| y} properties from the {@link Vector3| Vector3}.
      */
-    public setFromVector3(v: Vector3): Cylindrical {
+    setFromVector3(v: Vector3): Cylindrical {
         return this.setFromCartesianCoords(v.x, v.y, v.z);
     }
     /**
      * Sets values of this cylinder's {@link radius| radius}, {@link theta| theta} and {@link y| y} properties from Cartesian coordinates.
      */
-    public setFromCartesianCoords(x: number, y: number, z: number): Cylindrical {
+    setFromCartesianCoords(x: number, y: number, z: number): Cylindrical {
         this.radius = Math.sqrt(x * x + z * z);
         this.theta = Math.atan2(x, z);
         this.y = y;

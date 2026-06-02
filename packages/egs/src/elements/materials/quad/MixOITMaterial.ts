@@ -8,9 +8,9 @@ import { Blending, BlendingFactor } from '../../../utils/Constants';
 
 export class MixOITMaterial extends PassQuadMaterialBase {
     @materialProperty()
-    public accumColor: Texture;
+    accumColor: Texture;
     @materialProperty()
-    public accumAlpha: Texture;
+    accumAlpha: Texture;
 
     constructor() {
         super({
@@ -20,11 +20,11 @@ export class MixOITMaterial extends PassQuadMaterialBase {
         });
     }
 
-    public className() {
+    className() {
         return 'MixOITMaterial';
     }
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         b
             .addVarying(ShaderVaryingTypes.fragUV)
             .addUniform('tAccumColor', WebGLShaderDataType.Sampler2D)
@@ -39,7 +39,7 @@ export class MixOITMaterial extends PassQuadMaterialBase {
             `);
     }
 
-    public updateShadingUniforms(p: WGLProgram) {
+    updateShadingUniforms(p: WGLProgram) {
         p.setTexture2D('tAccumColor', this.accumColor);
         p.setTexture2D('tAccumAlpha', this.accumAlpha);
     }

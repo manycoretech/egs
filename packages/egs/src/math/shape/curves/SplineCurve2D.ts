@@ -6,8 +6,8 @@ import { Serializer, Deserializer } from '../../../utils/Serialization';
  * Build spline curve by an array of controlling points.
  */
 export class SplineCurve2D extends Curve2D {
-    public points: Vector2[];
-    public isSplineCurve2D = true;
+    points: Vector2[];
+    isSplineCurve2D = true;
 
     constructor(points?: Vector2[]) {
         super();
@@ -15,19 +15,19 @@ export class SplineCurve2D extends Curve2D {
         this.points = points || [];
     }
 
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<SplineCurve2D>(['points']);
     }
 
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         ctx.reads<SplineCurve2D>(['points']);
     }
 
-    public className(): string {
+    className(): string {
         return 'SplineCurve2D';
     }
 
-    public getPointAt(t: number, optionalTarget?: Vector2): Vector2 {
+    getPointAt(t: number, optionalTarget?: Vector2): Vector2 {
         const point = optionalTarget || new Vector2();
         const points = this.points;
         const p = (points.length - 1) * t;
@@ -47,7 +47,7 @@ export class SplineCurve2D extends Curve2D {
         return point;
     }
 
-    public copy(source: SplineCurve2D) {
+    copy(source: SplineCurve2D) {
         this.arcLengthDivisions = source.arcLengthDivisions;
         this.points = [];
         for (let i = 0, l = source.points.length; i < l; i++) {
@@ -57,11 +57,11 @@ export class SplineCurve2D extends Curve2D {
         return this;
     }
 
-    public clone() {
+    clone() {
         return new SplineCurve2D().copy(this);
     }
 
-    public toJSON(): any {
+    toJSON(): any {
         const data = super.toJSON();
         data.points = [];
         for (let i = 0, l = this.points.length; i < l; i++) {
@@ -72,7 +72,7 @@ export class SplineCurve2D extends Curve2D {
         return data;
     }
 
-    public fromJSON(json: any) {
+    fromJSON(json: any) {
         super.fromJSON(json);
         this.points = [];
         for (let i = 0, l = json.points.length; i < l; i++) {

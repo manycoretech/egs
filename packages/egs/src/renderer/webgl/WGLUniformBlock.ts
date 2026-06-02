@@ -28,11 +28,11 @@ export class WGLUniformBlock {
         this.gl.uniformBlockBinding(program.program, this.uniformBlockIndex, this.uniformBlockIndex);
     }
 
-    public use(ubo: WebGLBuffer) {
+    use(ubo: WebGLBuffer) {
         this.UBOManager.bindUBO(ubo, this.bindPoint);
     }
 
-    public queryLayout() {
+    queryLayout() {
         const bufferByteLength: number = this.gl.getActiveUniformBlockParameter(
             this.program.program, this.bindPoint,
             this.gl.UNIFORM_BLOCK_DATA_SIZE);

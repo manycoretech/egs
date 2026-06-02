@@ -11,34 +11,34 @@ export abstract class Light extends Object3D {
     /**
      * The type of this Object3D.
      */
-    public type = 'Light';
+    type = 'Light';
     /**
      * Check the type whether it belongs to Light.
      * This value should not be changed by user.
      */
-    public isLight = true;
+    isLight = true;
     /**
      * Color of the light. This value can influence the color of model's surface according to the material.
      * Defaults to a new {@link Color | color } set to white, if not passed in the constructor.
      */
     @lightProperty()
-    public color: Color;
+    color: Color;
     /**
      * The light's intensity, or strength.
      * In physically correct mode, the product of color * intensity is interpreted as luminous intensity measured in candela.
      * @defaultValue `1`
      */
     @lightProperty()
-    public intensity: number;
+    intensity: number;
 
     @lightProperty('enabled')
     private _enabled: boolean;
 
-    public get enabled() {
+    get enabled() {
         return this._enabled;
     }
 
-    public set enabled(v: boolean) {
+    set enabled(v: boolean) {
         if (this._enabled !== v) {
             this._enabled = v;
         }
@@ -47,7 +47,7 @@ export abstract class Light extends Object3D {
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'Light';
     }
 
@@ -63,7 +63,7 @@ export abstract class Light extends Object3D {
      * This method need override in derived classes to copy extended data.
      * @param {Light} source the data source.
      */
-    public copy(source: Light, recursive?: boolean) {
+    copy(source: Light, recursive?: boolean) {
         super.copy(source, recursive);
         this.color.copy(source.color);
         this.intensity = source.intensity;
@@ -74,7 +74,7 @@ export abstract class Light extends Object3D {
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx an instance give the method to take the data for attribute.
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<Light>(['color', 'intensity', 'enabled']);
     }
@@ -82,7 +82,7 @@ export abstract class Light extends Object3D {
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx an instance used to store the data of scene objects.
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Light>(['color', 'intensity', 'enabled']);
     }

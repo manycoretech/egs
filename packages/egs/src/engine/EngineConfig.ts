@@ -16,6 +16,9 @@ export interface ConfigCell<T> {
     set: (value: T) => void;
 }
 
+/**
+ * Rendering modes supported by the viewer engine.
+ */
 export enum RenderMode {
     SHADING = 'SHADING',
     OUTLINE_ONLY = 'OUTLINE_ONLY',
@@ -27,6 +30,9 @@ export enum RenderMode {
     NORMAL = 'NORMAL',
 }
 
+/**
+ * Initialization options used when creating a viewer engine.
+ */
 export interface EngineInitializeConfig {
     name?: string;
     antialiasing?: boolean;
@@ -402,6 +408,9 @@ export function listenViewerConfigChange(
     });
 }
 
+/**
+ * Applies values from an plain viewer config object to config.
+ */
 export function setViewerConfig(data: IViewerConfig, config: ViewerConfig) {
     function setter(data: any, config: any) {
         for (const k in data) {

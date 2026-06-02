@@ -19,33 +19,33 @@ enum ThicknessCoord {
 }
 
 export class OutlineComputeMaterial extends PassQuadMaterialBase {
-    public transparent = false;
+    transparent = false;
     @materialProperty()
-    public indexNormalMap: Texture;
+    indexNormalMap: Texture;
     @materialProperty()
-    public texelSize = readonlyMath.vec2(1, 1);
+    texelSize = readonlyMath.vec2(1, 1);
     @materialProperty()
-    public depthMap: Nullable<Texture> = null;
+    depthMap: Nullable<Texture> = null;
     @materialProperty()
-    public cameraInverseProjectionMatrix = new Matrix4();
+    cameraInverseProjectionMatrix = new Matrix4();
     @materialProperty()
-    public highQuality = true;
+    highQuality = true;
     @materialProperty()
-    public enableDepth = true;
+    enableDepth = true;
     @materialProperty()
-    public edgeThickness = new Vector4(1, 1, 1, 1); // index, normal, depth, basic
+    edgeThickness = new Vector4(1, 1, 1, 1); // index, normal, depth, basic
     @materialProperty()
-    public coefficient = new Vector4(1, 1, 1, 1); // index, normal, depth, basic
+    coefficient = new Vector4(1, 1, 1, 1); // index, normal, depth, basic
 
-    public className() {
+    className() {
         return 'OutlineComputeMaterial';
     }
 
-    public setTexelSize(width: number, height: number) {
+    setTexelSize(width: number, height: number) {
         this.texelSize = readonlyMath.vec2(1 / width, 1 / height);
     }
 
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         const defaultThicknessCoord = (this.edgeThickness.x === this.edgeThickness.w) && (this.edgeThickness.y === this.edgeThickness.w) && (this.edgeThickness.z === this.edgeThickness.w);
         return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
             .bool(this.enableDepth)
@@ -54,7 +54,7 @@ export class OutlineComputeMaterial extends PassQuadMaterialBase {
             .getKey();
     }
 
-    public extendShaderShading(builder: ShaderBuilder) {
+    extendShaderShading(builder: ShaderBuilder) {
         builder
             .addFragDefine('#define NORMAL_BIAS 0.012')
             .addUniform('texelSize', WebGLShaderDataType.Vec2)
@@ -98,7 +98,7 @@ export class OutlineComputeMaterial extends PassQuadMaterialBase {
             .inject(ShaderInjectionTypes.gl_FragColor, buildOutlineFrag(this.highQuality, this.enableDepth, defaultThicknessCoord));
     }
 
-    public updateShadingUniforms(p: WGLProgram) {
+    updateShadingUniforms(p: WGLProgram) {
         p.setUniform('texelSize', this.texelSize);
         p.setUniform('edgeThickness', this.edgeThickness);
         p.setUniform('coefficient', this.coefficient);

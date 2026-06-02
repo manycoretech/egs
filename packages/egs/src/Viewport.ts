@@ -17,6 +17,9 @@ import { COMPOSITE_TARGET_NAME } from './fx/plugins/Composite';
 import { SnapshotResult } from './snapshot/SnapshotResult';
 import { DrivenCullingConfig } from './fx/plugins/PipelinePlugin';
 
+/**
+ * Named rendering viewport managed by a viewer.
+ */
 export class Viewport {
     readonly name: string;
     private isDestroyed = false;

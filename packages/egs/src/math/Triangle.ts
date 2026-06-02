@@ -9,17 +9,17 @@ export class Triangle {
      * The first corner of the triangle.
      * @defaultValue is (0, 0, 0).
      */
-    public a: Vector3;
+    a: Vector3;
     /**
      * The second corner of the triangle.
      * @defaultValue is (0, 0, 0).
      */
-    public b: Vector3;
+    b: Vector3;
     /**
      * The final corner of the triangle.
      * @defaultValue is (0, 0, 0).
      */
-    public c: Vector3;
+    c: Vector3;
 
     constructor(a?: Vector3, b?: Vector3, c?: Vector3) {
         this.a = (a !== undefined) ? a : new Vector3();
@@ -29,7 +29,7 @@ export class Triangle {
     /**
      * Calculate the {@link https://en.wikipedia.org/wiki/Normal_(geometry)| normal vector} of the triangle.
      */
-    public static getNormal(a: Vector3, b: Vector3, c: Vector3, target: Vector3): Vector3 {
+    static getNormal(a: Vector3, b: Vector3, c: Vector3, target: Vector3): Vector3 {
         target.subVectors(c, b);
         tmp1Vec3.subVectors(a, b);
         target.cross(tmp1Vec3);
@@ -43,7 +43,7 @@ export class Triangle {
     /**
      * Return a {@link https://en.wikipedia.org/wiki/Barycentric_coordinate_system| barycentric coordinate} from the given vector.
      */
-    public static getBarycoord(point: Vector3, a: Vector3, b: Vector3, c: Vector3, target: Vector3): Vector3 {
+    static getBarycoord(point: Vector3, a: Vector3, b: Vector3, c: Vector3, target: Vector3): Vector3 {
         tmp1Vec3.subVectors(c, a);
         tmp2Vec3.subVectors(b, a);
         tmp3Vec3.subVectors(point, a);
@@ -70,7 +70,7 @@ export class Triangle {
     /**
      * Returns true if the passed point, when projected onto the plane of the triangle, lies within the triangle.
      */
-    public static containsPoint(point: Vector3, a: Vector3, b: Vector3, c: Vector3): boolean {
+    static containsPoint(point: Vector3, a: Vector3, b: Vector3, c: Vector3): boolean {
         Triangle.getBarycoord(point, a, b, c, tmp1Vec3);
         return (tmp1Vec3.x >= 0) && (tmp1Vec3.y >= 0) && ((tmp1Vec3.x + tmp1Vec3.y) <= 1);
     }
@@ -78,7 +78,7 @@ export class Triangle {
      * Calculate the uv value of given point by a,b,c and their uv.
      * @param target the result will be stored here.
      */
-    public static getUV(point: Vector3, a: Vector3, b: Vector3, c: Vector3, uv1: Vector2, uv2: Vector2, uv3: Vector2, target: Vector2): Vector2 {
+    static getUV(point: Vector3, a: Vector3, b: Vector3, c: Vector3, uv1: Vector2, uv2: Vector2, uv3: Vector2, target: Vector2): Vector2 {
         this.getBarycoord(point, a, b, c, tmp1Vec3);
         target.set(0, 0);
         target.addScaledVector(uv1, tmp1Vec3.x);
@@ -90,7 +90,7 @@ export class Triangle {
      * Sets the triangle's {@link a| a}, {@link b| b} and {@link c| c} properties to the passed {@link Vector3| vector3}.<br>
      * Please note that this method only copies the values from the given objects.
      */
-    public set(a: Vector3, b: Vector3, c: Vector3): Triangle {
+    set(a: Vector3, b: Vector3, c: Vector3): Triangle {
         this.a.copy(a);
         this.b.copy(b);
         this.c.copy(c);
@@ -103,7 +103,7 @@ export class Triangle {
      * @param i1 {@link Integer| Integer} index.
      * @param i2 {@link Integer| Integer} index.
      */
-    public setFromPointsAndIndices(points: Vector3[], i0: number, i1: number, i2: number): Triangle {
+    setFromPointsAndIndices(points: Vector3[], i0: number, i1: number, i2: number): Triangle {
         this.a.copy(points[i0]);
         this.b.copy(points[i1]);
         this.c.copy(points[i2]);
@@ -112,13 +112,13 @@ export class Triangle {
     /**
      * Returns a new triangle with the same {@link a| a}, {@link b| b} and  {@link c| c} properties as this one.
      */
-    public clone(): Triangle {
+    clone(): Triangle {
         return new Triangle().copy(this);
     }
     /**
      * Copies the values of the passed triangle's {@link a| a}, {@link b| b} and {@link c| c} properties to this triangle.
      */
-    public copy(triangle: Triangle): Triangle {
+    copy(triangle: Triangle): Triangle {
         this.a.copy(triangle.a);
         this.b.copy(triangle.b);
         this.c.copy(triangle.c);
@@ -127,7 +127,7 @@ export class Triangle {
     /**
      * Return the area of the triangle.
      */
-    public getArea(): number {
+    getArea(): number {
         tmp1Vec3.subVectors(this.c, this.b);
         tmp2Vec3.subVectors(this.a, this.b);
         return tmp1Vec3.cross(tmp2Vec3).length() * 0.5;
@@ -136,52 +136,52 @@ export class Triangle {
      * Calculate the midpoint of the triangle.
      * @param target the result will be copied into this Vector3.
      */
-    public getMidpoint(target: Vector3): Vector3 {
+    getMidpoint(target: Vector3): Vector3 {
         return target.addVectors(this.a, this.b).add(this.c).multiplyScalar(1 / 3);
     }
     /**
      * Calculate the {@link https://en.wikipedia.org/wiki/Normal_(geometry)| normal vector } of the triangle.
      * @param target the result will be copied into this Vector3.
      */
-    public getNormal(target: Vector3): Vector3 {
+    getNormal(target: Vector3): Vector3 {
         return Triangle.getNormal(this.a, this.b, this.c, target);
     }
     /**
      * Use this triangle to calculate {@link Triangle.getBarycoord| barycentric coordinate}.
      */
-    public getBarycoord(point: Vector3, target: Vector3): Vector3 {
+    getBarycoord(point: Vector3, target: Vector3): Vector3 {
         return Triangle.getBarycoord(point, this.a, this.b, this.c, target);
     }
     /**
      * Returns true if the passed point, when projected onto the plane of the triangle, lies within the triangle.
      * @param point {@link Vector3| Vector3} to check.
      */
-    public containsPoint(point: Vector3): boolean {
+    containsPoint(point: Vector3): boolean {
         return Triangle.containsPoint(point, this.a, this.b, this.c);
     }
     /**
      * Use this triangle to calculate {@link Triangle.getUV| UV }.
      */
-    public getUV(point: Vector3, uv1: Vector2, uv2: Vector2, uv3: Vector2, result: Vector2): Vector2 {
+    getUV(point: Vector3, uv1: Vector2, uv2: Vector2, uv3: Vector2, result: Vector2): Vector2 {
         return Triangle.getUV(point, this.a, this.b, this.c, uv1, uv2, uv3, result);
     }
     /**
      * Determines whether or not this triangle intersects {@link Box3| box}.
      * @param box Box to check for intersection against.
      */
-    public intersectsBox(box: Box3): boolean {
+    intersectsBox(box: Box3): boolean {
         return box.intersectsTriangle(this);
     }
     /**
      * Returns true if the two triangles have identical {@link a| a}, {@link b| b} and {@link c| c} properties.
      */
-    public equals(triangle: Triangle): boolean {
+    equals(triangle: Triangle): boolean {
         return triangle.a.equals(this.a) && triangle.b.equals(this.b) && triangle.c.equals(this.c);
     }
     /**
      * Returns the closest point on the triangle to {@link Vector3| point}.
      */
-    public closestPointToPoint(p: Vector3, target: Vector3): Vector3 {
+    closestPointToPoint(p: Vector3, target: Vector3): Vector3 {
         const a = this.a;
         const b = this.b;
         const c = this.c;

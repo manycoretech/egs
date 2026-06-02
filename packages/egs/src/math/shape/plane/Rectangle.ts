@@ -9,41 +9,41 @@ export class Rectangle extends Shape {
     /**
      * The X coordinate of the upper-left corner of the rectangle.
      */
-    public x: number;
+    x: number;
     /**
      * The Y coordinate of the upper-left corner of the rectangle.
      */
-    public y: number;
+    y: number;
     /**
      * Width component.
      */
-    public width: number;
+    width: number;
     /**
      * Height component.
      */
-    public height: number;
+    height: number;
     /**
      * The type of the object, mainly used to avoid 'instanceof' checks.
      */
-    public readonly type = 'Rectangle';
+    readonly type = 'Rectangle';
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Rectangle>(['x', 'y', 'width', 'height']);
     }
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<Rectangle>(['x', 'y', 'width', 'height']);
     }
     /**
      * The name of instance's class.
      */
-    public className(): string {
+    className(): string {
         return 'Rectangle';
     }
     /**
@@ -64,7 +64,7 @@ export class Rectangle extends Shape {
      * Creates a clone of this Rectangle.
      * @return a copy of the rectangle.
      */
-    public clone(): Rectangle {
+    clone(): Rectangle {
         return new Rectangle(this.x, this.y, this.width, this.height);
     }
     /**
@@ -73,7 +73,7 @@ export class Rectangle extends Shape {
      * @param y The Y coordinate of the point to test.
      * @return Whether the x/y coordinates are within this Rectangle.
      */
-    public contains(x: number, y: number): boolean {
+    contains(x: number, y: number): boolean {
         if (this.width <= 0 || this.height <= 0) {
             return false;
         }
@@ -89,7 +89,7 @@ export class Rectangle extends Shape {
     /**
      * Add this rectangle to drawing.
      */
-    public draw() {
+    draw() {
         const x = this.x;
         const y = this.y;
         const width = this.width;

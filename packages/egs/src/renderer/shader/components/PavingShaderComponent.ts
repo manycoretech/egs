@@ -11,6 +11,9 @@ import { Serializer, Deserializer } from '../../../utils/Serialization';
 import { ContentBridge, materialProperty } from '../../../ContentAPI';
 import { TextureV2 } from '../../../elements/textures/TextureV2';
 
+/**
+ * Pattern layout methods supported by paving shader components.
+ */
 export enum PavingMethod {
     ContinuousStraight = 0,
     IPattern,
@@ -20,6 +23,9 @@ export enum PavingMethod {
     Fishbone,
 }
 
+/**
+ * Shader component that applies paving-style texture patterns.
+ */
 export class PavingShaderComponent<T extends TextureV2 | Texture2D = Texture2D> extends ShaderComponent {
     constructor() {
         super();
@@ -27,13 +33,13 @@ export class PavingShaderComponent<T extends TextureV2 | Texture2D = Texture2D> 
     }
 
     @materialProperty()
-    public tileTexture: Texture;
+    tileTexture: Texture;
     @materialProperty()
-    public tileSize = readonlyMath.vec2();
+    tileSize = readonlyMath.vec2();
     @materialProperty()
-    public outlineSize = readonlyMath.vec2();
+    outlineSize = readonlyMath.vec2();
     @materialProperty()
-    public tileCount: number;
+    tileCount: number;
 
     @materialProperty()
     private _randomTexture: T;
@@ -63,32 +69,32 @@ export class PavingShaderComponent<T extends TextureV2 | Texture2D = Texture2D> 
     }
 
     @materialProperty()
-    public gapTexture: Nullable<Texture> = null;
+    gapTexture: Nullable<Texture> = null;
     @materialProperty()
-    public gapSize: number = 10;
+    gapSize: number = 10;
     @materialProperty()
-    public gapColor = readonlyMath.color(0x0000ff);
+    gapColor = readonlyMath.color(0x0000ff);
     @materialProperty()
-    public isRealGap: number = 1.0;
+    isRealGap: number = 1.0;
 
     @materialProperty()
-    public alignPos = readonlyMath.vec2();
+    alignPos = readonlyMath.vec2();
     @materialProperty()
-    public offset = readonlyMath.vec2();
+    offset = readonlyMath.vec2();
     @materialProperty()
-    public rotateAngle: number = 0;
+    rotateAngle: number = 0;
 
     @materialProperty()
-    public pavingMethod: PavingMethod = PavingMethod.ContinuousStraight;
+    pavingMethod: PavingMethod = PavingMethod.ContinuousStraight;
 
     @materialProperty()
-    public fishboneAngle: number = 0;
+    fishboneAngle: number = 0;
 
-    public className() {
+    className() {
         return 'PavingShaderComponent';
     }
 
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setTexture2D('tileTexture', this.tileTexture);
         program.setUniform('tileSize', this.tileSize);
         program.setUniform('outlineSize', this.outlineSize);
@@ -114,7 +120,7 @@ export class PavingShaderComponent<T extends TextureV2 | Texture2D = Texture2D> 
         }
     }
 
-    public extendShaderShading(builder: ShaderBuilder) {
+    extendShaderShading(builder: ShaderBuilder) {
         builder
             .addUniform('tileTexture', WebGLShaderDataType.Sampler2D)
             .addUniform('tileSize', WebGLShaderDataType.Vec2)
@@ -141,14 +147,14 @@ export class PavingShaderComponent<T extends TextureV2 | Texture2D = Texture2D> 
             .inject(ShaderInjectionTypes.channel_color, buildFragment(this.gapTexture, this.pavingMethod, this.tileCount));
     }
 
-    public generateShaderKey() {
+    generateShaderKey() {
         let s = this.gapTexture === null ? '0' : '1';
         s += this.pavingMethod.toString();
         s += this.tileCount;
         return s;
     }
 
-    public copy(other: PavingShaderComponent<T>) {
+    copy(other: PavingShaderComponent<T>) {
         this.tileTexture = other.tileTexture;
         this.tileSize = other.tileSize;
         this.outlineSize = other.outlineSize;
@@ -171,15 +177,15 @@ export class PavingShaderComponent<T extends TextureV2 | Texture2D = Texture2D> 
         return this;
     }
 
-    public clone() {
+    clone() {
         return new PavingShaderComponent<T>().copy(this);
     }
 
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<PavingShaderComponent>(['tileTexture', 'tileSize', 'outlineSize', 'tileCount', 'randomTexture', 'gapSize', 'gapColor', 'isRealGap', 'alignPos', 'offset', 'pavingMethod']);
     }
 
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         return ctx.reads<PavingShaderComponent>(['tileTexture', 'tileSize', 'outlineSize', 'tileCount', 'randomTexture', 'gapSize', 'gapColor', 'isRealGap', 'alignPos', 'offset', 'pavingMethod']);
     }
 

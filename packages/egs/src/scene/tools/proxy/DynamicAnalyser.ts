@@ -14,7 +14,7 @@ export class DynamicAnalyser<T extends Drawable = Drawable>{
     private dynamicGroup: Set<T> = new Set();
     private dynamicConvertingGroup: Map<T, number> = new Map();
     private staticFrameGroup: Set<T> = new Set();
-    public onStaticFrameDirty = () => { };
+    onStaticFrameDirty = () => { };
 
     get staticFrameSize() {
         return this.staticFrameGroup.size;
@@ -24,7 +24,7 @@ export class DynamicAnalyser<T extends Drawable = Drawable>{
     // we need a outer ticker to update with every frame
     private lastConversionTimeStamp: number = 0;
     private currentTimeStamp: number = 0;
-    public tick(timeStamp: number) {
+    tick(timeStamp: number) {
         this.currentTimeStamp = timeStamp;
         if (this.currentTimeStamp - this.lastConversionTimeStamp > DynamicAnalyser.CONVERSION_CHECK_TIME_INTERVAL) {
             this.convert();
@@ -46,12 +46,12 @@ export class DynamicAnalyser<T extends Drawable = Drawable>{
         });
     }
 
-    public generateStaticDrawcallList(staticResult: DrawableList) {
+    generateStaticDrawcallList(staticResult: DrawableList) {
         const ext = extractorCreator(staticResult);
         this.staticFrameGroup.forEach(ext);
     }
 
-    public generateDynamicDrawcallList(dynamicResult: DrawableList) {
+    generateDynamicDrawcallList(dynamicResult: DrawableList) {
         const ext = extractorCreator(dynamicResult);
         this.dynamicGroup.forEach(ext);
         this.dynamicConvertingGroup.forEach((_, d) => {
@@ -62,7 +62,7 @@ export class DynamicAnalyser<T extends Drawable = Drawable>{
         });
     }
 
-    public onObjectChange(obj: T): void {
+    onObjectChange(obj: T): void {
         if (this.staticFrameGroup.has(obj)) {
             this.onStaticFrameDirty();
         }
@@ -70,7 +70,7 @@ export class DynamicAnalyser<T extends Drawable = Drawable>{
         this.onObjectAdd(obj);
     }
 
-    public onObjectAdd(obj: T) {
+    onObjectAdd(obj: T) {
         if (obj.isAlwaysDynamic) {
             this.dynamicGroup.add(obj);
         } else {
@@ -78,7 +78,7 @@ export class DynamicAnalyser<T extends Drawable = Drawable>{
         }
     }
 
-    public onObjectDelete(obj: T) {
+    onObjectDelete(obj: T) {
         if (this.staticFrameGroup.has(obj)) {
             this.onStaticFrameDirty();
         }

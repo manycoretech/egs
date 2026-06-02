@@ -14,19 +14,19 @@ import { TextureV2 } from '../../../elements/textures/TextureV2';
 // which takes sample from texture with the UV coordinates data.
 export class ColorShaderComponent<T extends Texture2D | TextureV2 = Texture2D> extends ShaderComponent {
     @materialProperty()
-    public color: ReadonlyColor = readonlyMath.color(0xffffff);
+    color: ReadonlyColor = readonlyMath.color(0xffffff);
     @materialProperty()
-    public texture: Nullable<T> = null;
+    texture: Nullable<T> = null;
 
     constructor() {
         super();
     }
 
-    public className() {
+    className() {
         return 'ColorShaderComponent';
     }
 
-    public extendShaderShading(builder: ShaderBuilder): void {
+    extendShaderShading(builder: ShaderBuilder): void {
         builder.addUniform('u_color', WebGLShaderDataType.Vec3)
             .inject(ShaderInjectionTypes.channel_color, 'color = u_color;');
 
@@ -37,28 +37,28 @@ export class ColorShaderComponent<T extends Texture2D | TextureV2 = Texture2D> e
         }
     }
 
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setUniform('u_color', this.color);
         if (this.texture !== null) {
             program.setTexture2D('map', this.texture);
         }
     }
 
-    public copy(other: ColorShaderComponent<T>) {
+    copy(other: ColorShaderComponent<T>) {
         this.color = other.color;
         this.texture = other.texture;
         return this;
     }
 
-    public clone() {
+    clone() {
         return new ColorShaderComponent<T>().copy(this);
     }
 
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<ColorShaderComponent>(['texture', 'color']);
     }
 
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         ctx.reads<ColorShaderComponent>(['texture', 'color']);
     }
 }

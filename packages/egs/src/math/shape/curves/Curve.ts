@@ -11,13 +11,13 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
     /**
      * The type of this curve.
      */
-    public type: string;
+    type: string;
     /**
      * Divide this curve into how many parts of segments
      */
-    public arcLengthDivisions: number;
-    public cacheArcLengths: number[];
-    public needsUpdate = false;
+    arcLengthDivisions: number;
+    cacheArcLengths: number[];
+    needsUpdate = false;
 
     private _uuid: string | null = null;
     get uuid() {
@@ -30,17 +30,17 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
         this._uuid = uuid;
     }
 
-    public getUUID(): string {
+    getUUID(): string {
         return this.uuid;
     }
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<Curve<any>>(['type', 'arcLengthDivisions']);
     }
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         ctx.reads<Curve<any>>(['type', 'arcLengthDivisions']);
     }
 
-    public className(): string {
+    className(): string {
         return 'Curve';
     }
 
@@ -51,21 +51,21 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
     /**
      * Returns a vector for point t of the curve where t is between 0 and 1.
      */
-    public getPoint(_t: number, _optionalTarget?: T): T {
+    getPoint(_t: number, _optionalTarget?: T): T {
         logger.warn('EGS.Curve: .getPoint() not implemented.');
         return null as any;
     }
     /**
      * Returns a vector for point at relative position in curve according to arc length.
      */
-    public getPointAt(u: number, optionalTarget?: T): T {
+    getPointAt(u: number, optionalTarget?: T): T {
         const t = this.getUtoTmapping(u);
         return this.getPoint(t, optionalTarget);
     }
     /**
      * Get sequence of points using getPoint(t).
      */
-    public getPoints(divisions?: number): T[] {
+    getPoints(divisions?: number): T[] {
         if (divisions === undefined) {
             divisions = Curve.segmentsCount(
                 this.getLength()
@@ -78,7 +78,7 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
         return points;
     }
 
-    public toArray(path: number[] = [], divisions?: number) {
+    toArray(path: number[] = [], divisions?: number) {
         const points = this.getPoints(divisions);
         points.reduce((pv: number[], cv) => {
             cv.toArray(pv);
@@ -89,7 +89,7 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
     /**
      * Get sequence of equi-spaced points using getPointAt(u)
      */
-    public getSpacedPoints(divisions?: number): T[] {
+    getSpacedPoints(divisions?: number): T[] {
         if (divisions === undefined) {
             divisions = 5;
         }
@@ -102,14 +102,14 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
     /**
      * Get total curve arc length
      */
-    public getLength(): number {
+    getLength(): number {
         const lengths = this.getLengths();
         return lengths[lengths.length - 1];
     }
     /**
      * Get list of cumulative segment lengths
      */
-    public getLengths(divisions?: number): number[] {
+    getLengths(divisions?: number): number[] {
         if (divisions === undefined) {
             divisions = this.arcLengthDivisions;
         }
@@ -139,14 +139,14 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
     /**
      * Update the cumulative segment distance cache
      */
-    public updateArcLengths(): void {
+    updateArcLengths(): void {
         this.needsUpdate = true;
         this.getLengths();
     }
     /**
      * Given u ( 0 .. 1 ), get a t to find p. This gives you points which are equi distance
      */
-    public getUtoTmapping(u: number, distance?: number): number {
+    getUtoTmapping(u: number, distance?: number): number {
         const arcLengths = this.getLengths();
         let i = 0;
         const il = arcLengths.length;
@@ -193,7 +193,7 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
      * Returns a unit vector tangent at t. If the subclassed curve do not implement its tangent derivation,
      * 2 points a small delta apart will be used to find its gradient which seems to give a reasonable approximation
      */
-    public getTangent(t: number): T {
+    getTangent(t: number): T {
         const delta = 0.0001;
         let t1 = t - delta;
         let t2 = t + delta;
@@ -216,14 +216,14 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
     /**
      * Returns tangent at equidistance point u on the curve.
      */
-    public getTangentAt(u: number): T {
+    getTangentAt(u: number): T {
         const t = this.getUtoTmapping(u);
         return this.getTangent(t);
     }
     /**
      * @remarks see {@link http://www.cs.indiana.edu/pub/techreports/TR425.pdf | Frenet Frames}
      */
-    public computeFrenetFrames(segments: number, closed: boolean): any {
+    computeFrenetFrames(segments: number, closed: boolean): any {
         const normal = new Vector3();
         const tangents: Vector3[] = [];
         const normals = [];
@@ -301,16 +301,16 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
         };
     }
 
-    public clone() {
+    clone() {
         return new Curve<T>().copy(this);
     }
 
-    public copy(source: Curve<T>) {
+    copy(source: Curve<T>) {
         this.arcLengthDivisions = source.arcLengthDivisions;
         return this;
     }
 
-    public toJSON(): any {
+    toJSON(): any {
         const data = {
             metadata: {
                 version: 4.5,
@@ -324,18 +324,18 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
         return data;
     }
 
-    public fromJSON(json: any): Curve<T> {
+    fromJSON(json: any): Curve<T> {
         this.arcLengthDivisions = json.arcLengthDivisions;
         return this;
     }
 
-    public static adaptive = true;
-    public static maxLength = 10;
-    public static minSegments = 8;
-    public static maxSegments = 2048;
-    public static epsilon = 0.0001;
+    static adaptive = true;
+    static maxLength = 10;
+    static minSegments = 8;
+    static maxSegments = 2048;
+    static epsilon = 0.0001;
 
-    public static segmentsCount(length: number, defaultSegments = 20) {
+    static segmentsCount(length: number, defaultSegments = 20) {
         if (!Curve.adaptive || !length || isNaN(length)) {
             return defaultSegments;
         }

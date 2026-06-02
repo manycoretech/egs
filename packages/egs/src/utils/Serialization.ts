@@ -62,14 +62,14 @@ function isObject(o: any): o is Object {
 }
 
 export class Serializer<T extends Serializerable = any>{
-    public serializedResource: { [index: string]: any } = {};
-    public buffer: ArrayBuffer[] = [];
-    public byteLengthAll = 0;
+    serializedResource: { [index: string]: any } = {};
+    buffer: ArrayBuffer[] = [];
+    byteLengthAll = 0;
     private serializeSource: T;
     private serializeTarget: any = {};
     private serializeTargetUuid: string;
 
-    public collectBuffer(data: TypedArray): CollectedBufferDescriptor {
+    collectBuffer(data: TypedArray): CollectedBufferDescriptor {
         const offset = this.byteLengthAll;
         const index = this.buffer.length;
         const realBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength);
@@ -83,17 +83,17 @@ export class Serializer<T extends Serializerable = any>{
         };
     }
 
-    public deepClone(value: any) {
+    deepClone(value: any) {
         return JSON.parse(JSON.stringify(value));
     }
 
     // for some inner browser type of not convenient to impl SerializerAble
-    public putRaw(key: string, value: any) {
+    putRaw(key: string, value: any) {
         this.serializeTarget[key] = value;
     }
 
     // write methods
-    public put(key: string, readKey = key) {
+    put(key: string, readKey = key) {
         // @ts-ignore
         const valueToSer = this.serializeSource[readKey];
         if (valueToSer === undefined) {
@@ -136,11 +136,11 @@ export class Serializer<T extends Serializerable = any>{
         return this;
     }
 
-    public puts<U>(keys: Array<SerializerablePartKeys<U>>) {
+    puts<U>(keys: Array<SerializerablePartKeys<U>>) {
         keys.forEach(key => this.put(key as unknown as string));
     }
 
-    public serialize(s: any): SerializeResult {
+    serialize(s: any): SerializeResult {
         // backup state in call stack
         const perviousSerializeSource = this.serializeSource;
         const perviousSerializeTarget = this.serializeTarget;
@@ -198,14 +198,14 @@ export class Serializer<T extends Serializerable = any>{
 export class SerializerMetaData {
     ctors = new Map<string, () => any>();
 
-    public registerCtor<T extends SerializerableDelegated>(key: string, builder: () => T) {
+    registerCtor<T extends SerializerableDelegated>(key: string, builder: () => T) {
         this.ctors.set(key, builder);
     }
 }
 
 export class Deserializer {
-    public meta: SerializerMetaData;
-    public promisePool: Array<Promise<void>> = [];
+    meta: SerializerMetaData;
+    promisePool: Array<Promise<void>> = [];
     private rawData: any;
     private deSerializedResource: Map<string, any> = new Map();
     private serializedData: any;
@@ -220,7 +220,7 @@ export class Deserializer {
         this.getSliced = isWholeBuffer ? this.getAttributeFromWholeBuffer : this.getAttributeFromSplitBuffer;
     }
 
-    public getBuffer(tag: CollectedBufferDescriptor): TypedArray {
+    getBuffer(tag: CollectedBufferDescriptor): TypedArray {
         const sliced = this.getSliced(tag);
         if (tag.type === 'Float32Array') {
             return new Float32Array(sliced);
@@ -233,16 +233,16 @@ export class Deserializer {
         }
     }
 
-    public readRaw(key: string) {
+    readRaw(key: string) {
         return this.serializedData[key];
     }
 
-    public getData() {
+    getData() {
         return this.serializedData;
     }
 
     // read methods
-    public read(key: string, writeKey = key): void | Promise<void> {
+    read(key: string, writeKey = key): void | Promise<void> {
         const container = this.deSerializeTarget[writeKey];
         const valueToDeSer = this.serializedData[key];
         if (valueToDeSer === undefined) {
@@ -299,7 +299,7 @@ export class Deserializer {
         }
     }
 
-    public reads<U>(keys: Array<SerializerablePartKeys<U>>): void | Promise<void> {
+    reads<U>(keys: Array<SerializerablePartKeys<U>>): void | Promise<void> {
         const promiseAttrsList: Array<Promise<void>> = [];
         keys.forEach(key => {
             const p = this.read(key as unknown as string);
@@ -320,14 +320,14 @@ export class Deserializer {
         }
     }
 
-    public readCustom(key: string) {
+    readCustom(key: string) {
         return this.serializedData[key];
     }
 
-    public readRawFromSource(id: string) {
+    readRawFromSource(id: string) {
         return this.rawData.resource[id].data;
     }
-    public deserialize<T extends SerializerableDelegated & Partial<ClassNamePreserved>>(seredData: any, container?: T): T | Promise<T> {
+    deserialize<T extends SerializerableDelegated & Partial<ClassNamePreserved>>(seredData: any, container?: T): T | Promise<T> {
         let realSeredData = seredData;
         if (seredData.typeName !== undefined) { // oh this is a ref type
             realSeredData = realSeredData.data;
@@ -391,7 +391,7 @@ export class Deserializer {
         return container;
     }
 
-    public deserializeObjectsById(rootId: string[]): Object3D[] {
+    deserializeObjectsById(rootId: string[]): Object3D[] {
         return rootId.map(id => {
             const seredData = this.rawData.resource[id];
             const container = this.meta.ctors.get(seredData.typeName)!();
@@ -400,7 +400,7 @@ export class Deserializer {
         });
     }
 
-    public async loadResourceAsync(onload: () => void) {
+    async loadResourceAsync(onload: () => void) {
         await Promise.all(this.promisePool).then(() => {
             onload();
         });

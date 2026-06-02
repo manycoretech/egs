@@ -132,6 +132,9 @@ interface SnapshotCtx {
     freeables: RenderTarget[];
 }
 
+/**
+ * Preset snapshot renderer configurations.
+ */
 export enum PresetRenderConfig {
     Default = 'default',
     Tool_2D = 'tool_2d', // only use in bim or yunDesign tool 2d view

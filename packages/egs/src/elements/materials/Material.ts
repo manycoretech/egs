@@ -16,10 +16,22 @@ import { logger } from '../../utils/Logger';
 
 let materialId = 0;
 
+/**
+ * Event emitted when a material is disposed.
+ */
 export const MaterialDisposeEvent = new EventType<Material>();
+/**
+ * Event emitted when a material property changes.
+ */
 export const MaterialPropertyChangeEvent = new EventType<Material>();
+/**
+ * Event emitted when a material needs shader recompilation.
+ */
 export const MaterialRecompileShaderEvent = new EventType<Material>();
 
+/**
+ * Copies one nullable material property from another instance.
+ */
 export function copyItem<T>(source: T, other: T, key: keyof T) {
     if (source[key] !== null && other[key] !== null) { (source[key] as any).copy(other[key]); }
     if (other[key] !== null && source[key] === null && (other[key] as any).clone) { source[key] = (other[key] as any).clone(); }
@@ -33,16 +45,9 @@ export type SubTypeMap<T, U, V> = Record<keyof PickedBySubType<T, U>, V> & NotPi
 
 export type ConvertMaterialParameters<T> = Partial<SubTypeMap<T, ReadonlyColor, number | string | ReadonlyColor>>;
 
-// for demo:
-// type a = {
-//     color?: Color,
-//     ?: number
-// }
-// type b = ConvertMaterialParameters<a>;
-
-// https://github.com/microsoft/TypeScript/issues/28046
-// todo! when we update compiler to 3.4 above, we can remove such repetition, and enforce type check better;
-
+/**
+ * Common parameter bag accepted by material constructors and setters.
+ */
 export type MaterialParameters = ConvertMaterialParameters<Pick<Material,
     'transparent' | 'visible' | 'side' | 'blending' | 'blendSrc' |
     'blendDst' | 'blendEquation' | 'blendSrcAlpha' | 'blendDstAlpha' |
@@ -59,6 +64,9 @@ const materialKeys = ['transparent', 'visible', 'side', 'blending', 'blendSrc',
     'stencilWriteMask', 'stencilFunc', 'stencilRef',
     'stencilFuncMask', 'stencilFail', 'stencilZFail', 'stencilZPass', 'stencilWrite'
 ];
+/**
+ * Render-state values shared by all materials.
+ */
 export interface MaterialState {
     transparent: boolean,
     visible: boolean,
@@ -94,6 +102,9 @@ export interface MaterialState {
     premultipliedAlpha: boolean,
 }
 
+/**
+ * Color transfer functions.
+ */
 export enum ColorTransfer {
     Linear, // do nothing.
     SrgbToLinear,

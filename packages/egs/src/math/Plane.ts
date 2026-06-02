@@ -14,12 +14,12 @@ export class Plane {
      * (optional) a unit length vector3 defining the normal of the plane.
      * @defaultValue `(1, 0, 0)`.
      */
-    public normal: Vector3;
+    normal: Vector3;
     /**
      * (optional) the signed distance from the origin to the plane.
      * @defaultValue `0`.
      */
-    public constant: number;
+    constant: number;
 
     constructor(normal?: Vector3, constant?: number) {
         this.normal = (normal !== undefined) ? normal : new Vector3(1, 0, 0);
@@ -31,7 +31,7 @@ export class Plane {
      * @param constant the signed distance from the origin to the plane.
      * @defaultValue `0`.
      */
-    public set(normal: Vector3, constant: number): Plane {
+    set(normal: Vector3, constant: number): Plane {
         this.normal.copy(normal);
         this.constant = constant;
         return this;
@@ -43,7 +43,7 @@ export class Plane {
      * @param z z value of the unit length normal vector.
      * @param w the value of the plane's {@link constant| constant} property.
      */
-    public setComponents(x: number, y: number, z: number, w: number): Plane {
+    setComponents(x: number, y: number, z: number, w: number): Plane {
         this.normal.set(x, y, z);
         this.constant = w;
         return this;
@@ -53,7 +53,7 @@ export class Plane {
      * @param normal a unit length {@link Vector3| Vector3} defining the normal of the plane.
      * @param point {@link Vector3| Vector3}.
      */
-    public setFromNormalAndCoplanarPoint(normal: Vector3, point: Vector3): Plane {
+    setFromNormalAndCoplanarPoint(normal: Vector3, point: Vector3): Plane {
         this.normal.copy(normal);
         this.constant = - point.dot(this.normal);
         return this;
@@ -65,7 +65,7 @@ export class Plane {
      * @param b second point on the plane.
      * @param c third point on the plane.
      */
-    public setFromCoplanarPoints(a: Vector3, b: Vector3, c: Vector3): Plane {
+    setFromCoplanarPoints(a: Vector3, b: Vector3, c: Vector3): Plane {
         const normal = tmp1Vec3.subVectors(c, b).cross(tmp2Vec3.subVectors(a, b)).normalize();
         // Q: should an error be thrown if normal is zero (e.g. degenerate plane)?
         this.setFromNormalAndCoplanarPoint(normal, a);
@@ -74,13 +74,13 @@ export class Plane {
     /**
      * Returns a new plane with the same {@link normal| normal} and {@link constant| constant} as this one.
      */
-    public clone(): Plane {
+    clone(): Plane {
         return new Plane().copy(this);
     }
     /**
      * Copies the values of the passed plane's {@link normal| normal} and {@link constant| constant} properties to this plane.
      */
-    public copy(plane: Plane): Plane {
+    copy(plane: Plane): Plane {
         this.normal.copy(plane.normal);
         this.constant = plane.constant;
         return this;
@@ -88,7 +88,7 @@ export class Plane {
     /**
      * Normalizes the {@link normal| normal} vector, and adjusts the {@link constant| constant} value accordingly.
      */
-    public normalize(): Plane {
+    normalize(): Plane {
         // Note: will lead to a divide by zero if the plane is invalid.
         const inverseNormalLength = 1.0 / this.normal.length();
         this.normal.multiplyScalar(inverseNormalLength);
@@ -98,7 +98,7 @@ export class Plane {
     /**
      * Negates both the normal vector and the constant.
      */
-    public negate(): Plane {
+    negate(): Plane {
         this.constant *= - 1;
         this.normal.negate();
         return this;
@@ -106,13 +106,13 @@ export class Plane {
     /**
      * Returns the signed distance from the {@link Vector3| point} to the plane.
      */
-    public distanceToPoint(point: Vector3): number {
+    distanceToPoint(point: Vector3): number {
         return this.normal.dot(point) + this.constant;
     }
     /**
      * Returns the signed distance from the {@link Sphere| sphere} to the plane.
      */
-    public distanceToSphere(sphere: Sphere): number {
+    distanceToSphere(sphere: Sphere): number {
         return this.distanceToPoint(sphere.center) - sphere.radius;
     }
     /**
@@ -120,7 +120,7 @@ export class Plane {
      * @param point the {@link Vector3| Vector3} to project onto the plane.
      * @param target the result will be copied into this Vector3.
      */
-    public projectPoint(point: Vector3, target: Vector3): Vector3 {
+    projectPoint(point: Vector3, target: Vector3): Vector3 {
         return target.copy(this.normal).multiplyScalar(- this.distanceToPoint(point)).add(point);
     }
     /**
@@ -129,7 +129,7 @@ export class Plane {
      * @param line the {@link Line3| Line3} to check for intersection.
      * @param target the result will be copied into this Vector3.
      */
-    public intersectLine(line: Line3, target: Vector3): Nullable<Vector3> {
+    intersectLine(line: Line3, target: Vector3): Nullable<Vector3> {
         const direction = line.delta(tmp1Vec3);
         const denominator = this.normal.dot(direction);
         if (denominator === 0) {
@@ -150,7 +150,7 @@ export class Plane {
      * Tests whether a line segment intersects with (passes through) the plane.
      * @param line the {@link Line3| Line3} to check for intersection.
      */
-    public intersectsLine(line: Line3): boolean {
+    intersectsLine(line: Line3): boolean {
         // Note: this tests if a line intersects the plane, not whether it (or its end-points) are coplanar with it.
         const startSign = this.distanceToPoint(line.start);
         const endSign = this.distanceToPoint(line.end);
@@ -160,14 +160,14 @@ export class Plane {
      * Determines whether or not this plane intersects {@link Box3| box}.
      * @param box the {@link Box3| Box3} to check for intersection.
      */
-    public intersectsBox(box: Box3): boolean {
+    intersectsBox(box: Box3): boolean {
         return box.intersectsPlane(this);
     }
     /**
      * Determines whether or not this plane intersects {@link Sphere| sphere}.
      * @param sphere the {@link Sphere| Sphere} to check for intersection.
      */
-    public intersectsSphere(sphere: Sphere): boolean {
+    intersectsSphere(sphere: Sphere): boolean {
         return sphere.intersectsPlane(this);
     }
     /**
@@ -175,7 +175,7 @@ export class Plane {
      * @return a {@link Vector3| Vector3} coplanar to the plane,
      * @param target the result will be copied into this Vector3.
      */
-    public coplanarPoint(target: Vector3): Vector3 {
+    coplanarPoint(target: Vector3): Vector3 {
         return target.copy(this.normal).multiplyScalar(- this.constant);
     }
     /**
@@ -187,7 +187,7 @@ export class Plane {
      * @param matrix the Matrix4 to apply.
      * @param optionalNormalMatrix (optional) pre-computed normal [Page:Matrix3] of the Matrix4 being applied.
      */
-    public applyMatrix4(matrix: Matrix4, optionalNormalMatrix?: Matrix3): Plane {
+    applyMatrix4(matrix: Matrix4, optionalNormalMatrix?: Matrix3): Plane {
         const normalMatrix = optionalNormalMatrix || tmpMat3.getNormalMatrix(matrix);
         const referencePoint = this.coplanarPoint(tmp1Vec3).applyMatrix4(matrix);
         const normal = this.normal.applyMatrix3(normalMatrix).normalize();
@@ -199,14 +199,14 @@ export class Plane {
      * @param offset the amount to move the plane by.
      * @tips that this only affects the plane constant and will not affect the normal vector.
      */
-    public translate(offset: Vector3): Plane {
+    translate(offset: Vector3): Plane {
         this.constant -= offset.dot(this.normal);
         return this;
     }
     /**
      * Checks to see if two planes are equal (their {@link normal| normal} and {@link .constant| constant} properties match).
      */
-    public equals(plane: Plane): boolean {
+    equals(plane: Plane): boolean {
         return plane.normal.equals(this.normal) && (plane.constant === this.constant);
     }
 }

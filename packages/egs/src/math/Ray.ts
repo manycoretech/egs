@@ -14,13 +14,13 @@ export class Ray {
      * The origin of the {@link Ray| Ray}.
      * @defaultValue is a {@link Vector3| Vector3} at `(0, 0, 0)`.
      */
-    public origin: Vector3;
+    origin: Vector3;
     /**
      * The direction of the {@link Ray| Ray}.
      * This must be normalized (with {@link Vector3.normalize| Vector3.normalize}) for the methods to operate properly.
      * @defaultValue is a {@link Vector3| Vector3} at `(0, 0, -1)`.
      */
-    public direction: Vector3;
+    direction: Vector3;
 
     constructor(origin?: Vector3, direction?: Vector3) {
         this.origin = (origin !== undefined) ? origin : new Vector3();
@@ -32,7 +32,7 @@ export class Ray {
      * @param origin the {@link origin| origin} of the {@link Ray| Ray}.
      * @param origin the {@link direction| direction} of the {@link Ray| Ray}.
      */
-    public set(origin: Vector3, direction: Vector3): Ray {
+    set(origin: Vector3, direction: Vector3): Ray {
         this.origin.copy(origin);
         this.direction.copy(direction);
         return this;
@@ -40,13 +40,13 @@ export class Ray {
     /**
      * Creates a new Ray with identical {@link origin| origin} and {@link direction| direction} to this one.
      */
-    public clone(): Ray {
+    clone(): Ray {
         return new Ray().copy(this);
     }
     /**
      * Copies the {@link origin| origin} and {@link direction| direction} properties of {@link Ray| ray} into this ray.
      */
-    public copy(ray: Ray): Ray {
+    copy(ray: Ray): Ray {
         this.origin.copy(ray.origin);
         this.direction.copy(ray.direction);
         return this;
@@ -56,14 +56,14 @@ export class Ray {
      * @param t the distance along the {@link Ray| Ray} to retrieve a position for.
      * @param target the result will be copied into this Vector3.
      */
-    public at(t: number, target: Vector3): Vector3 {
+    at(t: number, target: Vector3): Vector3 {
         return target.copy(this.direction).multiplyScalar(t).add(this.origin);
     }
     /**
      * Adjusts the direction of the ray to point at the vector in world coordinates.
      * @param v The {@link Vector3| Vector3} to look at.
      */
-    public lookAt(v: Vector3): Ray {
+    lookAt(v: Vector3): Ray {
         this.direction.copy(v).sub(this.origin).normalize();
         return this;
     }
@@ -71,7 +71,7 @@ export class Ray {
      * Shift the origin of this {@link Ray| Ray} along its direction by the distance given.
      * @param t The distance along the {@link Ray| Ray} to interpolate.
      */
-    public recast(t: number): Ray {
+    recast(t: number): Ray {
         this.origin.copy(this.at(t, tmp1Vec3));
         return this;
     }
@@ -80,7 +80,7 @@ export class Ray {
      * @param point the point to get the closest approach to.
      * @param target the result will be copied into this Vector3.
      */
-    public closestPointToPoint(point: Vector3, target: Vector3): Vector3 {
+    closestPointToPoint(point: Vector3, target: Vector3): Vector3 {
         target.subVectors(point, this.origin);
         const directionDistance = target.dot(this.direction);
         if (directionDistance < 0) {
@@ -92,14 +92,14 @@ export class Ray {
      * Get the distance of the closest approach between the {@link Ray| Ray} and the {@link Vector3| point}.
      * @param point {@link Vector3| Vector3} The {@link Vector3| Vector3} to compute a distance to.
      */
-    public distanceToPoint(point: Vector3): number {
+    distanceToPoint(point: Vector3): number {
         return Math.sqrt(this.distanceSqToPoint(point));
     }
     /**
      * Get the squared distance of the closest approach between the {@link Ray| Ray} and the {@link Vector3| Vector3}.
      * @param point the {@link Vector3| Vector3} to compute a distance to.
      */
-    public distanceSqToPoint(point: Vector3): number {
+    distanceSqToPoint(point: Vector3): number {
         const directionDistance = tmp1Vec3.subVectors(point, this.origin).dot(this.direction);
         // point behind the ray
         if (directionDistance < 0) {
@@ -115,7 +115,7 @@ export class Ray {
      * @param optionalPointOnRay (optional) if this is provided, it receives the point on this {@link Ray| Ray} that is closest to the segment.
      * @param optionalPointOnSegment - (optional) if this is provided, it receives the point on the line segment that is closest to this {@link Ray| Ray}.
      */
-    public distanceSqToSegment(v0: Vector3, v1: Vector3, optionalPointOnRay?: Vector3, optionalPointOnSegment?: Vector3): number {
+    distanceSqToSegment(v0: Vector3, v1: Vector3, optionalPointOnRay?: Vector3, optionalPointOnSegment?: Vector3): number {
         // from http://www.geometrictools.com/GTEngine/Include/Mathematics/GteDistRaySegment.h
         // It returns the min distance between the ray and the segment
         // defined by v0 and v1
@@ -195,7 +195,7 @@ export class Ray {
      * @param sphere the {@link Sphere| Sphere} to intersect with.
      * @param target the result will be copied into this Vector3.
      */
-    public intersectSphere(sphere: Sphere, target: Vector3): Nullable<Vector3> {
+    intersectSphere(sphere: Sphere, target: Vector3): Nullable<Vector3> {
         tmp1Vec3.subVectors(sphere.center, this.origin);
         const tca = tmp1Vec3.dot(this.direction);
         const d2 = tmp1Vec3.dot(tmp1Vec3) - tca * tca;
@@ -231,7 +231,7 @@ export class Ray {
     /**
      * Calculate the maximum distance between origin and one or two intersections if this ray through the sphere.
      */
-    public intersectSphereMaxDistance(sphere: Sphere): number {
+    intersectSphereMaxDistance(sphere: Sphere): number {
         tmp1Vec3.subVectors(sphere.center, this.origin);
         const tca = tmp1Vec3.dot(this.direction);
         const d2 = tmp1Vec3.dot(tmp1Vec3) - tca * tca;
@@ -251,21 +251,21 @@ export class Ray {
     /**
      * Calculate the length, which is the distance projected on the ray from given point to origin.
      */
-    public directionDistance(point: Vector3) {
+    directionDistance(point: Vector3) {
         return tmp1Vec3.subVectors(point, this.origin).dot(this.direction);
     }
     /**
      * Return true if this {@link Ray| Ray} intersects with the {@link Sphere| Sphere}.
      * @param sphere the {@link Sphere| Sphere} to intersect with
      */
-    public intersectsSphere(sphere: Sphere): boolean {
+    intersectsSphere(sphere: Sphere): boolean {
         return this.distanceSqToPoint(sphere.center) <= (sphere.radius * sphere.radius);
     }
     /**
      * Get the distance from {@link origin| origin} to the {@link Plane| Plane}, or *null* if the {@link Ray| Ray} doesn't intersect the {@link Plane| Plane}.
      * @param plane the {@link Plane| Plane} to get the distance to.
      */
-    public distanceToPlane(plane: Plane): Nullable<number> {
+    distanceToPlane(plane: Plane): Nullable<number> {
         const denominator = plane.normal.dot(this.direction);
         if (denominator === 0) {
             // line is coplanar, return origin
@@ -284,7 +284,7 @@ export class Ray {
      * @param plane the {@link Plane| Plane} to intersect with.
      * @param target the result will be copied into this Vector3.
      */
-    public intersectPlane(plane: Plane, target: Vector3): Nullable<Vector3> {
+    intersectPlane(plane: Plane, target: Vector3): Nullable<Vector3> {
         const t = this.distanceToPlane(plane);
         if (t === null) {
             return null;
@@ -295,7 +295,7 @@ export class Ray {
      * Return true if this {@link Ray| Ray} intersects with the {@link Plane| Plane}.
      * @param plane the {@link Plane| Plane} to intersect with.
      */
-    public intersectsPlane(plane: Plane): boolean {
+    intersectsPlane(plane: Plane): boolean {
         // check if the ray lies on the plane first
         const distToPoint = plane.distanceToPoint(this.origin);
         if (distToPoint === 0) {
@@ -313,7 +313,7 @@ export class Ray {
      * @param box the {@link Box3| Box3} to intersect with.
      * @param target the result will be copied into this Vector3.
      */
-    public intersectBox(box: Box3, target?: Vector3): Nullable<Vector3> {
+    intersectBox(box: Box3, target?: Vector3): Nullable<Vector3> {
         if (target === undefined) {
             target = new Vector3();
         }
@@ -375,14 +375,14 @@ export class Ray {
      * Return true if this {@link Ray| Ray} intersects with the {@link Box3| Box3}.
      * @param box the {@link Box3| Box3} to intersect with.
      */
-    public intersectsBox(box: Box3): boolean {
+    intersectsBox(box: Box3): boolean {
         return this.intersectBox(box, tmp1Vec3) !== null;
     }
     /**
      * Transform this {@link Ray| Ray} by the {@link Matrix4| Matrix4}.
      * @param matrix4 the {@link Matrix4| Matrix4} to apply to this {@link Ray| Ray}.
      */
-    public applyMatrix4(matrix4: Matrix4): Ray {
+    applyMatrix4(matrix4: Matrix4): Ray {
         this.origin.applyMatrix4(matrix4);
         this.direction.transformDirection(matrix4);
         return this;
@@ -391,7 +391,7 @@ export class Ray {
      * Returns true if this and the other {@link Ray| ray} have equal {@link origin| origin} and {@link direction| direction}.
      * @param ray the {@link Ray| Ray} to compare to.
      */
-    public equals(ray: Ray): boolean {
+    equals(ray: Ray): boolean {
         return ray.origin.equals(this.origin) && ray.direction.equals(this.direction);
     }
     /**
@@ -400,7 +400,7 @@ export class Ray {
      * @param backfaceCulling whether to use backface culling
      * @param target the result will be copied into this Vector3.
      */
-    public intersectTriangle(a: Vector3, b: Vector3, c: Vector3, backfaceCulling: boolean, target: Vector3): Nullable<Vector3> {
+    intersectTriangle(a: Vector3, b: Vector3, c: Vector3, backfaceCulling: boolean, target: Vector3): Nullable<Vector3> {
         // Compute the offset origin, edges, and normal.
         // let diff = new Vector3();
         // let edge1 = new Vector3();

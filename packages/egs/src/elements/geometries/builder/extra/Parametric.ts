@@ -14,7 +14,7 @@ export function Parametric(params: Partial<ParametricShapeParameter>): BufferGeo
 }
 
 export class ParametricBufferGeometry extends BufferGeometry {
-    public parameters: {
+    parameters: {
         func: (u: number, v: number, w: Vector3) => Vector3;
         slices: number;
         stacks: number;

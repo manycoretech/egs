@@ -21,43 +21,43 @@ interface Flattenable {
 // 'uniforms' stores the Uniform's name and data type in instance of ShaderInputDescriptor.
 // 'data' stores the value of each Uniform variable.
 export class UniformBlockObject {
-    public uniforms: ShaderInputDescriptor[] = [];
-    public uniformArrays: UniformArrayDescriptor[] = [];
-    public buffer: Nullable<Float32Array> = null;
-    public isDirty = true;
-    public version: number = 0;
-    public data: Map<string, UBOItem> = new Map();
-    public arrayData: Map<string, UBOItem> = new Map();
+    uniforms: ShaderInputDescriptor[] = [];
+    uniformArrays: UniformArrayDescriptor[] = [];
+    buffer: Nullable<Float32Array> = null;
+    isDirty = true;
+    version: number = 0;
+    data: Map<string, UBOItem> = new Map();
+    arrayData: Map<string, UBOItem> = new Map();
     readonly name: string;
 
     constructor(name: string) {
         this.name = name;
     }
 
-    public static spawn(name: string) {
+    static spawn(name: string) {
         return new UniformBlockObject(name);
     }
 
-    public createItem(name: string, type: WebGLShaderDataType, defaultValue: any) { // todo : constraint type to none texture type
+    createItem(name: string, type: WebGLShaderDataType, defaultValue: any) { // todo : constraint type to none texture type
         this.uniforms.push({ name, type });
         this.data.set(name, { value: defaultValue, offset: 0, isDirty: true });
         return this;
     }
 
-    public createItemArray(name: string, type: WebGLShaderDataType, length: number, defaultValue: any) {
+    createItemArray(name: string, type: WebGLShaderDataType, length: number, defaultValue: any) {
         this.uniformArrays.push({ length, des: { name, type } });
         this.arrayData.set(name, { value: defaultValue, offset: 0, isDirty: true });
         return this;
     }
 
-    public getDescriptor(): UniformBlockDescriptor {
+    getDescriptor(): UniformBlockDescriptor {
         return {
             name: this.name,
             uniforms: this.uniforms
         };
     }
 
-    public setItem(name: string, value: any) {
+    setItem(name: string, value: any) {
         const data = this.data.get(name);
         if (!data) {
             return;
@@ -72,11 +72,11 @@ export class UniformBlockObject {
         this.isDirty = true;
     }
 
-    public getItem(name: string): any {
+    getItem(name: string): any {
         return this.data.get(name)!.value;
     }
 
-    public getUBOBuffer(): Float32Array {
+    getUBOBuffer(): Float32Array {
         return this.buffer!;
     }
 
@@ -98,7 +98,7 @@ export class UniformBlockObject {
         }
     }
 
-    public updateWebGL(program: WGLProgram) {
+    updateWebGL(program: WGLProgram) {
         if (Capabilities.IS_WEBGL2) {
             if (this.isDirty) {
                 // set up buffer
@@ -150,7 +150,7 @@ export class UniformBlockObject {
         }
     }
 
-    public createShaderHeader(supportUBO: boolean) {
+    createShaderHeader(supportUBO: boolean) {
         const uniforms = createUniforms(this.uniforms);
         const uniformArrays = createUniformArrays(this.uniformArrays);
         if (supportUBO) {

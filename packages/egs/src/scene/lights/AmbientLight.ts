@@ -11,16 +11,16 @@ export class AmbientLight extends Light {
      * Check the type whether it belongs to PerspectiveCamera.
      * This value should not be changed by user.
      */
-    public isAmbientLight = true;
+    isAmbientLight = true;
     /**
      * This attribute calculate the final color by {@link intensity | intensity } and {@link color | color }
      */
-    public uniformColor = new Color();
+    uniformColor = new Color();
 
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'AmbientLight';
     }
 
@@ -30,17 +30,17 @@ export class AmbientLight extends Light {
     /**
      * @internal
      */
-    public refreshUniforms() {
+    refreshUniforms() {
         this.uniformColor.copy(this.color).multiplyScalar(this.intensity);
     }
     /**
      * @internal
      */
-    public updateUniforms(program: WGLProgram) {
+    updateUniforms(program: WGLProgram) {
         program.setUniform('ambientLightColor', this.uniformColor);
     }
 
-    public clone(recursive?: boolean): AmbientLight {
+    clone(recursive?: boolean): AmbientLight {
         return new AmbientLight().copy(this, recursive);
     }
 }

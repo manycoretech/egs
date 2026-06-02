@@ -7,17 +7,17 @@ export class Spherical {
     /**
      * the radius, or the {@link https://en.wikipedia.org/wiki/Euclidean_distance| Euclidean distance}.
      */
-    public radius: number;
+    radius: number;
     /**
      * polar angle in radians from the y (up) axis.
      * @defaultValue `0`.
      */
-    public phi: number;
+    phi: number;
     /**
      * equator angle in radians around the y (up) axis.
      * @defaultValue `0`.
      */
-    public theta: number;
+    theta: number;
 
     constructor(radius?: number, phi?: number, theta?: number) {
         this.radius = (radius !== undefined) ? radius : 1.0;
@@ -27,7 +27,7 @@ export class Spherical {
     /**
      * Sets values of this spherical's {@link radius| radius}, {@link phi| phi} and {@link theta| theta} properties.
      */
-    public set(radius: number, phi: number, theta: number): Spherical {
+    set(radius: number, phi: number, theta: number): Spherical {
         this.radius = radius;
         this.phi = phi;
         this.theta = theta;
@@ -36,13 +36,13 @@ export class Spherical {
     /**
      * Returns a new spherical with the same {@link radius| radius}, {@link phi| phi} and {@link theta| theta} properties as this one.
      */
-    public clone(): Spherical {
+    clone(): Spherical {
         return new Spherical().copy(this);
     }
     /**
      * Copies the values of the passed Spherical's {@link radius| radius}, {@link phi| phi} and {@link theta| theta} properties to this spherical.
      */
-    public copy(other: Spherical): Spherical {
+    copy(other: Spherical): Spherical {
         this.radius = other.radius;
         this.phi = other.phi;
         this.theta = other.theta;
@@ -51,7 +51,7 @@ export class Spherical {
     /**
      * Restricts the polar angle {@link phi| phi} to be between 0.000001 and pi - 0.000001.
      */
-    public makeSafe(): Spherical {
+    makeSafe(): Spherical {
         const EPS = 0.000001;
         this.phi = Math.max(EPS, Math.min(Math.PI - EPS, this.phi));
         return this;
@@ -59,13 +59,13 @@ export class Spherical {
     /**
      * Sets values of this spherical's {@link radius| radius}, {@link phi| phi} and {@link theta| theta} properties from the {@link Vector3| Vector3}.
      */
-    public setFromVector3(v: Vector3): Spherical {
+    setFromVector3(v: Vector3): Spherical {
         return this.setFromCartesianCoords(v.x, v.y, v.z);
     }
     /**
      * Sets values of this spherical's {@link radius| radius}, {@link phi| phi} and {@link theta| theta} properties from Cartesian coordinates.
      */
-    public setFromCartesianCoords(x: number, y: number, z: number): Spherical {
+    setFromCartesianCoords(x: number, y: number, z: number): Spherical {
         this.radius = Math.sqrt(x * x + y * y + z * z);
         if (this.radius === 0) {
             this.theta = 0;

@@ -17,11 +17,11 @@ export const enum BuiltInUniformTypes {
 }
 
 export class BuiltInUniforms {
-    public currentCamera: Camera3D;
-    public currentDrawable: Drawable;
-    public resolution: Vector2;
-    public cameraPosition: Vector3;
-    public isDrawableStaticChange: boolean;
+    currentCamera: Camera3D;
+    currentDrawable: Drawable;
+    resolution: Vector2;
+    cameraPosition: Vector3;
+    isDrawableStaticChange: boolean;
 
     constructor() {
         this.currentCamera = null!;

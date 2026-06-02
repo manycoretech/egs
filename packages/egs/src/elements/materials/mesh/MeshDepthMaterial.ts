@@ -7,21 +7,27 @@ import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry'
 import { materialProperty } from '../../../ContentAPI';
 import { SceneMaterial } from '../base';
 
+/**
+ * Depth packing modes supported by depth-only materials.
+ */
 export enum DepthPackingStrategies {
     BasicDepthPacking = 0,
     RGBADepthPacking = 1,
     NDC_DepthPacking = 2
 }
 
+/**
+ * Material that renders scene depth values.
+ */
 export class MeshDepthMaterial extends SceneMaterial {
     @materialProperty()
-    public depthPacking = DepthPackingStrategies.RGBADepthPacking;
+    depthPacking = DepthPackingStrategies.RGBADepthPacking;
 
-    public className() {
+    className() {
         return 'MeshDepthMaterial';
     }
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         b
             .addVaryingCustom('clipSpacePosition', WebGLShaderDataType.Vec4)
             .inject(ShaderInjectionTypes.vary_any, 'clipSpacePosition = projectionMatrix * mvPosition;')
@@ -30,19 +36,19 @@ export class MeshDepthMaterial extends SceneMaterial {
             .inject(ShaderInjectionTypes.gl_FragColor, makeDepth(this.depthPacking));
     }
 
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
             .raw(this.depthPacking)
             .getKey();
     }
 
-    public updateShadingUniforms(_: WGLProgram) { }
+    updateShadingUniforms(_: WGLProgram) { }
 
-    public clone() {
+    clone() {
         return new MeshDepthMaterial().copy(this);
     }
 
-    public copy(other: MeshDepthMaterial) {
+    copy(other: MeshDepthMaterial) {
         this.depthPacking = other.depthPacking;
         return this;
     }

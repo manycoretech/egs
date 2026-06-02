@@ -19,7 +19,7 @@ export class Ground implements Renderable {
     /**
      * Switch of drawing ground.
      */
-    public enabled = true;
+    enabled = true;
     private _size: number = 1000000;
     get size() {
         return this._size;
@@ -71,7 +71,7 @@ export class Ground implements Renderable {
         this.groundMesh.geometry = this.geometry;
     }
 
-    public render(renderer: IRenderer): void {
+    render(renderer: IRenderer): void {
         if (!this.enabled) {
             return;
         }
@@ -86,7 +86,7 @@ export class Ground implements Renderable {
         renderer.renderDrawcall(this.groundMesh.geometry, this.material, this.groundMesh, null);
     }
 
-    public destroy() {
+    destroy() {
         this.groundMesh.destroyAllResourcesOwned();
     }
 }

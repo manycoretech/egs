@@ -19,6 +19,9 @@ function getDataUrl(canvas: HTMLCanvasElement): string {
     }
 }
 
+/**
+ * Base upload layer for 2D textures.
+ */
 export abstract class Texture2DLayer implements WebGLUploadable {
     __brand: 'WebGLUploadable';
 
@@ -67,6 +70,9 @@ function resizeTextureSource(source: Texture2DLayerSource, width: number, height
     return canvas;
 }
 
+/**
+ * Concrete 2D texture layer backed by an image-like source or typed array.
+ */
 export class Texture2DCommonLayer extends Texture2DLayer {
     source: Texture2DLayerSource;
     format = WebGLPixelFormat.RGBA;

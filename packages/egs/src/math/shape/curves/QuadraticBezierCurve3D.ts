@@ -5,10 +5,10 @@ import { _Math } from '../../Math';
  * Build a Quadratic-Bezier curve by {@link v0 | v0 }, {@link v1 | v1 } and {@link v2 | v2 } in 3D {@link Path | Path }.
  */
 export class QuadraticBezierCurve3D extends Curve<Vector3> {
-    public isQuadraticBezierCurve3D = true;
-    public v0: Vector3;
-    public v1: Vector3;
-    public v2: Vector3;
+    isQuadraticBezierCurve3D = true;
+    v0: Vector3;
+    v1: Vector3;
+    v2: Vector3;
 
     constructor(v0?: Vector3, v1?: Vector3, v2?: Vector3) {
         super();
@@ -18,7 +18,7 @@ export class QuadraticBezierCurve3D extends Curve<Vector3> {
         this.v2 = v2 || new Vector3();
     }
 
-    public getPoint(t: number, optionalTarget?: Vector3): Vector3 {
+    getPoint(t: number, optionalTarget?: Vector3): Vector3 {
         const point = optionalTarget || new Vector3();
         const v0 = this.v0;
         const v1 = this.v1;
@@ -33,11 +33,11 @@ export class QuadraticBezierCurve3D extends Curve<Vector3> {
         return point;
     }
 
-    public clone() {
+    clone() {
         return new QuadraticBezierCurve3D().copy(this);
     }
 
-    public copy(source: QuadraticBezierCurve3D) {
+    copy(source: QuadraticBezierCurve3D) {
         super.copy(source);
         this.v0.copy(source.v0);
         this.v1.copy(source.v1);
@@ -46,7 +46,7 @@ export class QuadraticBezierCurve3D extends Curve<Vector3> {
         return this;
     }
 
-    public toJSON(): any {
+    toJSON(): any {
         const data = super.toJSON();
         data.v0 = this.v0.toArray();
         data.v1 = this.v1.toArray();
@@ -55,7 +55,7 @@ export class QuadraticBezierCurve3D extends Curve<Vector3> {
         return data;
     }
 
-    public fromJSON(json: any) {
+    fromJSON(json: any) {
         super.fromJSON(json);
         this.v0.fromArray(json.v0);
         this.v1.fromArray(json.v1);

@@ -11,7 +11,7 @@ export class WGLShader {
         return lines.join('\n');
     }
 
-    public static createWebGLShader(gl: WebGLRenderingContext | WebGL2RenderingContext, type: number, string: string) {
+    static createWebGLShader(gl: WebGLRenderingContext | WebGL2RenderingContext, type: number, string: string) {
         const shader = gl.createShader(type)!;
         if (shader === null) {
             logger.webglError('EGS webgl shader create failed');

@@ -13,7 +13,7 @@ export function plane(param: Partial<PlaneShapeParameter>): BufferGeometry {
 }
 
 class PlaneBufferGeometry extends BufferGeometry {
-    public parameters: {
+    parameters: {
         width: number;
         height: number;
         widthSegments: number;

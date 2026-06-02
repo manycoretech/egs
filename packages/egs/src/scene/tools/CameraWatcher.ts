@@ -14,7 +14,7 @@ export class CameraWatcher extends EventDispatcher {
     private hasSet = false;
     private timeThreshold = 200; // ms;
 
-    public setCamera(camera: Camera3D): void {
+    setCamera(camera: Camera3D): void {
         this.watch(camera);
         if (this.camera !== undefined) {
             this.unwatch(this.camera);
@@ -90,7 +90,7 @@ export class CameraWatcher extends EventDispatcher {
         this.canceled = true;
     }
 
-    public dispose(): void {
+    dispose(): void {
         this.clearAllListeners();
         if (this.camera) {
             this.unwatch(this.camera);

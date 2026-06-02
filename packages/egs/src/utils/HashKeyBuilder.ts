@@ -4,36 +4,36 @@ export class HashKeyBuilder {
     private key = '';
     private static instance: HashKeyBuilder;
 
-    public getKey() {
+    getKey() {
         return this.key;
     }
 
-    public reset() {
+    reset() {
         this.key = '';
         return this;
     }
 
-    public bool(item: boolean) {
+    bool(item: boolean) {
         this.key += item ? '1' : '0';
         return this;
     }
 
-    public hasItem(item: Nullable<any>) {
+    hasItem(item: Nullable<any>) {
         this.key += item !== null ? '1' : '0';
         return this;
     }
 
-    public isTexture(t: any) {
+    isTexture(t: any) {
         this.key += t.isTexture ? '1' : '0';
         return this;
     }
 
-    public raw(item: any) {
+    raw(item: any) {
         this.key += item;
         return this;
     }
 
-    public static getInstance() {
+    static getInstance() {
         if (!HashKeyBuilder.instance) {
             HashKeyBuilder.instance = new HashKeyBuilder();
         }

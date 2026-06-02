@@ -15,19 +15,19 @@ const intersectPoint = new Vector3();
  * It supports any type of geometry, but only PointsMaterial is supported.
  */
 export class Points<M extends Material = Material> extends Drawable<M, BufferGeometry<PointList>> {
-    public className() {
+    className() {
         return 'Points';
     }
 
-    public type = 'Points';
+    type = 'Points';
     /**
      * Check the type whether it belongs to Points.
      */
-    public isPoints = true;
+    isPoints = true;
     /**
      * Decisive attribute to draw this object as continuous line.
      */
-    public drawMode = DrawMode.Points;
+    drawMode = DrawMode.Points;
 
     constructor(geometry?: BufferGeometry<PointList>, material?: M | M[]) {
         super(
@@ -42,7 +42,7 @@ export class Points<M extends Material = Material> extends Drawable<M, BufferGeo
      * @param {Raycaster} raycaster the instance of Raycaster is used to get the data for calculation.
      * @param {Intersection} intersects the result will be stored here.
      */
-    public raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]) {
+    raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]) {
         const object = this;
         const geometry = this.geometry;
         const matrixWorld = this.matrixWorld;
@@ -97,7 +97,7 @@ export class Points<M extends Material = Material> extends Drawable<M, BufferGeo
     /**
      * Return a clone of this object.
      */
-    public clone(recursive?: boolean): Points<M> {
+    clone(recursive?: boolean): Points<M> {
         return new Points(this.geometry, this._material).copy(this, recursive);
     }
 }

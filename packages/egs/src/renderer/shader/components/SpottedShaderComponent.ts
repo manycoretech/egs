@@ -8,6 +8,9 @@ import { Utils } from '../../../utils/Utils';
 import { readonlyMath } from '../../../math/Readonly';
 import { ContentBridge, materialProperty } from '../../../ContentAPI';
 
+/**
+ * Spot pattern styles supported by spotted shader components.
+ */
 export enum SpottedType {
     dot = 0,
     diagonal
@@ -34,55 +37,55 @@ export class SpottedShaderComponent extends ShaderComponent {
      * @defaultValue `SpottedType.dot`
      */
     @materialProperty()
-    public markerType = SpottedType.dot;
+    markerType = SpottedType.dot;
     /**
      * The color of spots or lines.
      * @defaultValue `Color(0, 0, 0)`
      */
     @materialProperty()
-    public markerColor = readonlyMath.color(0, 0, 0);
+    markerColor = readonlyMath.color(0, 0, 0);
     /**
      * The gap of each spots or lines
      * The real spacing will add one.
      * @defaultValue `10`
      */
     @materialProperty()
-    public markerSpacing = 10;
+    markerSpacing = 10;
     /**
      * The value bigger, short lines longer.
      * @defaultValue `3`
      */
     @materialProperty()
-    public diagonalProportion = 3;
+    diagonalProportion = 3;
     /**
      * This value influence the width of line or size of spot.
      * @defaultValue `1`
      */
     @materialProperty()
-    public markerSize = 1;
+    markerSize = 1;
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'SpottedShaderComponent';
     }
     /**
      * Change the parameter of this material.
      */
-    public setValues(values: SpottedShaderComponentParameter) {
+    setValues(values: SpottedShaderComponentParameter) {
         Utils.copyProperties(keys, this, values);
     }
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<SpottedShaderComponent>(['markerType', 'markerSize', 'markerColor', 'markerSpacing', 'diagonalProportion']);
     }
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         ctx.reads<SpottedShaderComponent>(['markerType', 'markerSize', 'markerColor', 'markerSpacing', 'diagonalProportion']);
     }
     /**
      * Copy the data to this object from other.
      * @param other the data source.
      */
-    public copy(other: SpottedShaderComponent) {
+    copy(other: SpottedShaderComponent) {
         this.markerType = other.markerType;
         this.markerColor = other.markerColor;
         this.markerSpacing = other.markerSpacing;
@@ -90,11 +93,11 @@ export class SpottedShaderComponent extends ShaderComponent {
         return this;
     }
 
-    public clone() {
+    clone() {
         return new SpottedShaderComponent().copy(this);
     }
 
-    public extendShaderShading(builder: ShaderBuilder) {
+    extendShaderShading(builder: ShaderBuilder) {
         builder.addUniform('markerColor', WebGLShaderDataType.Vec3)
             .addUniform('markerSpacing', WebGLShaderDataType.Float)
             .addUniform('markerSize', WebGLShaderDataType.Float);
@@ -124,7 +127,7 @@ export class SpottedShaderComponent extends ShaderComponent {
     /**
      * @internal
      */
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setUniform('markerColor', this.markerColor);
         program.setUniform('markerSize', this.markerSize);
         program.setUniform('markerSpacing', this.markerSpacing);
@@ -135,7 +138,7 @@ export class SpottedShaderComponent extends ShaderComponent {
     /**
      * @internal
      */
-    public generateShaderKey() {
+    generateShaderKey() {
         return this.markerType.toString();
     }
 }

@@ -105,7 +105,7 @@ export function text(text: string, params: Partial<TextShapeParameter>): BufferG
 }
 
 export class ExtrudeBufferGeometry extends BufferGeometry {
-    public parameters: {
+    parameters: {
         shapes: Shape | Shape[],
         options: Partial<ExtrudeOptions>
     };

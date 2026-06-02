@@ -19,22 +19,35 @@ import { Intersection, Raycaster } from '../tools/Raycaster';
 import { ContentBridge, drawableState, hasManagedContentAPI, ManagedContentBridge } from '../../ContentAPI';
 import { DrawMode } from '../../utils/Constants';
 
+/**
+ * Render placement mode used by drawable scene objects.
+ */
 export enum DrawableRenderMode {
     Default,
     Overlay,
 }
 
+/**
+ * Controls whether a drawable participates in outline rendering.
+ */
 export enum OutlineRenderMode {
     Default, // in outline render, and create outline
     DisableOutline, // in outline render, and not create outline
     Overlay, // out of outline render
 }
 
+/**
+ * Controls how a drawable is shaded during outline rendering.
+ */
 export enum OutlineShadingMode {
     Default, // shading in pipeline type
     Normal, // material shading
 }
 
+/**
+ * Visual outline mode applied to a drawable.
+ * @deprecated use `OutlineRenderMode` and `OutlineRenderMode` pair instead
+ */
 export enum OutlineMode {
     Disabled, // render origin style in outline
     Outlined, // render outline style in outline
@@ -69,23 +82,24 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      */
 
     @drawableState()
-    public renderOrder = 0;
+    renderOrder = 0;
     /**
      * This is a decisive attribute for drawing method.
      * @defaultValue Mesh.
      */
-    public drawMode = DrawMode.Triangles;
+    drawMode = DrawMode.Triangles;
 
     private _outlineMode = OutlineMode.Disabled;
     /**
     * Mark this drawable should be rendered in outline style
-    * if you set outlinePipelineMode & outlineShadingMode, get this value maybe error
+    * if you set outlinePipelineMode & outlineShadingMode, get this value maybe not as expected.
+    * @deprecated use `outlineShadingMode` and `outlineRenderMode` instead
     */
-    public get outlineMode(): OutlineMode {
+    get outlineMode(): OutlineMode {
         return this._outlineMode;
     }
 
-    public set outlineMode(v: OutlineMode) {
+    set outlineMode(v: OutlineMode) {
         this._outlineMode = v;
         switch (v) {
             case OutlineMode.Disabled:
@@ -157,68 +171,68 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
     * Mark this drawable can cast shadow
     */
     @drawableState()
-    public castShadow = false;
+    castShadow = false;
     /**
     * Mark this drawable can cast shadow
     */
     @drawableState()
-    public castPlanarShadow = false;
+    castPlanarShadow = false;
     /**
      * Used to check type of this or extended instance.
      * This value should not be changed by user.
      */
-    public isDrawable = true;
+    isDrawable = true;
     /**
      * Mark the material reference changed.
      * @defaultValue `true`
      */
-    public materialChanged = true;
+    materialChanged = true;
     /**
      * Mark the geometry reference changed.
      * @defaultValue `true`
      */
-    public geometryChanged = true;
+    geometryChanged = true;
     /**
      * Specify the winding orientation of mesh as counter-clock-wise, only meaningful on mesh.
      * @defaultValue `false`.
      */
-    public frontFaceCW = false;
+    frontFaceCW = false;
     /**
      * Store the Model-View matrix for this object.
      * It is not suggested to change the matrix because it will be update automatically when camera move.
      */
-    public modelViewMatrix = new Matrix4();
+    modelViewMatrix = new Matrix4();
     /**
      * This matrix is used to calculate the normal in eye-space.
      */
-    public normalMatrix = new Matrix3();
+    normalMatrix = new Matrix3();
     /**
      * Mark bounding need to be recalculated.
      * @defaultValue `true`
      */
-    public worldBoundingDirty = true;
+    worldBoundingDirty = true;
     /**
      * Calculate the bounding as box.
      */
-    public worldBoundingBox = new Box3();
+    worldBoundingBox = new Box3();
     /**
      * Calculate the bounding as sphere.
      */
-    public worldBoundingSphere = new Sphere();
+    worldBoundingSphere = new Sphere();
     /**
      * The distance from object to camera in the direction of camera. Use this value to simply estimate the depth in 3D scene.
      */
-    public z = 0;
+    z = 0;
     /**
      * This method allow user manually process data before the engine drawing object.
      * @remarks See {@link RenderHook| RenderHook} for more details.
      */
-    public onBeforeRender: Nullable<RenderHook> = null;
+    onBeforeRender: Nullable<RenderHook> = null;
     /**
     * @internal
     * @deprecated
     */
-    public hasDynamicShapeMaterial = false;
+    hasDynamicShapeMaterial = false;
 
     private _isAlwaysDynamic = false;
     get isAlwaysDynamic() {
@@ -232,7 +246,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * This is used to scale a drawable object by specified number when {@link enableViewIndependentScale| enableViewIndependentScale } is true.
      */
     @drawableState()
-    public viewIndependentScale = 1;
+    viewIndependentScale = 1;
     @drawableState()
     private _enableViewIndependentScale = false;
     /**
@@ -297,11 +311,11 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
         return this._renderGeometry!;
     }
 
-    public getMaterials(): ReadonlyArray<M> {
+    getMaterials(): ReadonlyArray<M> {
         return this._material;
     }
 
-    public getMaterialCount() {
+    getMaterialCount() {
         return this._material.length;
     }
 
@@ -311,14 +325,14 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
     * @param {Material} material a new material which is set.
     * @param {number} index the target position in the Array.
     */
-    public setMaterial(material: M, index: number) {
+    setMaterial(material: M, index: number) {
         ContentBridge.drawableSetMaterial(this, material, index);
         this._material[index] = material;
         this.setMaterialChanged();
         return this;
     }
 
-    public setMaterials(materials: M[] | M) {
+    setMaterials(materials: M[] | M) {
         if (this._material && this._material.length) {
             ContentBridge.drawableClearMaterial(this);
         }
@@ -334,7 +348,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
         this.setMaterialChanged();
         return this;
     }
-    public setOnlyMaterial(material: M) {
+    setOnlyMaterial(material: M) {
         if (this._material && this._material.length) {
             ContentBridge.drawableClearMaterial(this);
         }
@@ -348,14 +362,14 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
     /**
      * Expect this drawable only has one material, and return it.
      */
-    public expectOnlyMaterial() {
+    expectOnlyMaterial() {
         if (this._material.length > 1) {
             logger.warn('expectOneMaterial failed');
         }
         return this._material[0];
     }
 
-    public checkIfOnlyMaterial(innerChecker?: (m: Material) => boolean): boolean {
+    checkIfOnlyMaterial(innerChecker?: (m: Material) => boolean): boolean {
         if (this._material.length !== 1) {
             return false;
         }
@@ -370,7 +384,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * Do something for every {@link material| material } whatever it is an instance or array.
      * @param {function} f a function to operate the material instance.
      */
-    public forEachMaterial(v: (m: M) => any) {
+    forEachMaterial(v: (m: M) => any) {
         this._material.forEach(v);
     }
 
@@ -386,7 +400,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
     /**
      * update the data of bounding box and bounding sphere, set dirty mark to false.
      */
-    public updateBoundings() {
+    updateBoundings() {
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             this.updateWorldMatrix(true, false);
         }
@@ -395,7 +409,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
         this.worldBoundingDirty = false;
     }
 
-    public _updateMatrixByViewIndependentScale(camera: Camera3D, viewHeight: number) {
+    _updateMatrixByViewIndependentScale(camera: Camera3D, viewHeight: number) {
         if (this._enableViewIndependentScale) {
             // yes we use matrix position not world aabb center
             const distance = this.matrixWorld.getPosition(temp).distanceTo(camera.position);
@@ -414,7 +428,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * This method is used to update {@link modelViewMatrix| model-view matrix } and {@link normalMatrix| normal matrix } before drawing this object.
      * In addition, the estimated {@link z| depth } information will be update here.
      */
-    public updateRenderInfo(camera: Camera3D, viewHeight: number) {
+    updateRenderInfo(camera: Camera3D, viewHeight: number) {
         this.worldBoundingBox.getCenterUnsafe(temp);
 
         // use "(temp - camera.position) · camera.forward" for better z estimation
@@ -432,7 +446,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
     /**
      * Update the matrix local transform. Override
      */
-    public updateMatrix() {
+    updateMatrix() {
         if (this.localMatrixNeedUpdate) {
             if (this._enableViewIndependentScale) {
                 this._matrix.compose(this.position, this.quaternion, this.viewIndependentOverrideScale);
@@ -456,7 +470,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * Set all changing mark, such as {@link geometryChanged| geometryChanged }, {@link materialChanged| materialChanged }
      * and {@link Object3D.clearChangeMark| extended mark }.
      */
-    public clearChangeMark() {
+    clearChangeMark() {
         super.clearChangeMark();
         this.materialChanged = false;
         this.geometryChanged = false;
@@ -465,7 +479,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * This method need override in derived classes to give a special calculation for picking feature.
      * @remarks See {@link Raycaster| Raycaster } for more detail.
      */
-    public raycast(raycaster: Raycaster, intersects: Intersection[]) {
+    raycast(raycaster: Raycaster, intersects: Intersection[]) {
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             ManagedContentBridge.raycast(this, intersects, raycaster);
         } else {
@@ -479,7 +493,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * Clean render data for optimization.
      */
     // refresh self draw proxy
-    public resetRenderEntity() {
+    resetRenderEntity() {
         this._renderMaterial = null;
         this._renderGeometry = null;
         this.notifySceneChange();
@@ -489,7 +503,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * This method is used to assign data from {@link geometry| geometry } and {@link material| material } to
      * {@link renderGeometry| renderGeometry } and {@link renderMaterial| renderMaterial }.
      */
-    public updateRenderEntity() {
+    updateRenderEntity() {
         this._renderGeometry = this._geometry;
         this._renderMaterial = this._material;
     }
@@ -527,14 +541,14 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * Reset entity reference.
      * @remarks See {@link Scene3D._refManager| refManager} for more details.
      */
-    public refreshSceneReference() {
+    refreshSceneReference() {
         this._removeSceneReference();
         this.createSceneReference();
     }
     /**
      * If user changes geometry for drawable, use this method to refresh corresponding states.
      */
-    public setGeometryChanged() {
+    setGeometryChanged() {
         if (hasManagedContentAPI()) {
             return;
         }
@@ -547,7 +561,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * @tips This method can be replaced by {@link resetRenderEntity| resetRenderEntity()}.
      */
     // what should i do, when refed geometry content changed.
-    public onReferencedGeometryContentChange() {
+    onReferencedGeometryContentChange() {
         this.notifySceneChange();
         this.resetRenderEntity();
     }
@@ -555,7 +569,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * If user changes {@link material| material } for drawable, use this method to refresh corresponding states.
      */
     // mark the material reference changed
-    public setMaterialChanged() {
+    setMaterialChanged() {
         if (hasManagedContentAPI()) {
             return;
         }
@@ -576,8 +590,8 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
     }
 
     @drawableState()
-    public shouldUseGeometryGroupsWhenOnlyHasOneMaterial = false;
-    public useGeometryGroupsWhenOnlyHasOneMaterial() {
+    shouldUseGeometryGroupsWhenOnlyHasOneMaterial = false;
+    useGeometryGroupsWhenOnlyHasOneMaterial() {
         this.shouldUseGeometryGroupsWhenOnlyHasOneMaterial = true;
         return this;
     }
@@ -585,7 +599,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
     /**
      * @internal
      */
-    public appendDrawcall(
+    appendDrawcall(
         transparent: Drawcall[],
         opaque: Drawcall[],
     ) {
@@ -613,7 +627,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * @param {Drawable} source the data source.
      * @param {boolean} recursive if true, descendants of the object are also cloned. Default is true.
      */
-    public copy(source: Drawable<M, G>, recursive?: boolean) {
+    copy(source: Drawable<M, G>, recursive?: boolean) {
         super.copy(source, recursive);
         this.drawMode = source.drawMode;
         this.geometry = source.geometry;
@@ -631,7 +645,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * It may cause that this method can not be used directly.
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.put('material', '_material');
         ctx.puts<Drawable>([
@@ -648,7 +662,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      * It may cause that this method can not be used directly.
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.read('material', '__material');
         ctx.reads<Drawable>([
@@ -657,13 +671,13 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
         this.updateBoundings();
     }
 
-    public destroyAllResourcesOwned() {
+    destroyAllResourcesOwned() {
         this.getMaterials().forEach(m => m.destroyAllResourcesOwned());
         this.geometry.destroyAllResourcesOwned();
         super.destroyAllResourcesOwned();
     }
 
-    public freeAllGpuResourceOwned() {
+    freeAllGpuResourceOwned() {
         this.getMaterials().forEach(m => m.freeAllGpuResourceOwned());
         this.geometry.freeAllGpuResourceOwned();
         this.freeGPU();

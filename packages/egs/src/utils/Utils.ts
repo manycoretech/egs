@@ -27,14 +27,17 @@ export function singleton<T>(creator: () => T): () => T {
     };
 }
 
+/**
+ * General-purpose helper methods.
+ */
 export class Utils {
-    public static wait(time: number): Promise<void> {
+    static wait(time: number): Promise<void> {
         return new Promise((resolve, _reject) => {
             setTimeout(resolve, time);
         });
     }
 
-    public static arrayMin(array: number[]): number {
+    static arrayMin(array: number[]): number {
         if (array.length === 0) {
             return Infinity;
         }
@@ -49,7 +52,7 @@ export class Utils {
         return min;
     }
 
-    public static arrayMax(array: number[] | TypedArray): number {
+    static arrayMax(array: number[] | TypedArray): number {
         if (array.length === 0) {
             return - Infinity;
         }
@@ -62,7 +65,7 @@ export class Utils {
         return max;
     }
 
-    public static decodeUTF8(data: Uint8Array): string {
+    static decodeUTF8(data: Uint8Array): string {
         let text = '';
         for (let i = 0; i < data.length; i++) {
             const value = data[i];
@@ -89,12 +92,12 @@ export class Utils {
         return text;
     }
 
-    public static intBitsToFloat(i: number): number {
+    static intBitsToFloat(i: number): number {
         INT32[0] = i;
         return FLOAT32[0];
     }
 
-    public static stringToArrayBuffer(text: string): ArrayBuffer {
+    static stringToArrayBuffer(text: string): ArrayBuffer {
         if ((window as any).TextEncoder !== undefined) {
             return new (window as any).TextEncoder().encode(text).buffer;
         }
@@ -106,7 +109,7 @@ export class Utils {
         return buffer;
     }
 
-    public static copyProperty(toKey: string, fromKey: string, to: any, from?: any) {
+    static copyProperty(toKey: string, fromKey: string, to: any, from?: any) {
         if (from === undefined) {
             return;
         }
@@ -124,7 +127,7 @@ export class Utils {
         }
     }
 
-    public static isShaderMayChanged(a: any, b: any) {
+    static isShaderMayChanged(a: any, b: any) {
         if (a === null && b !== null) {
             return true;
         } else if (a !== null && b === null) {
@@ -137,7 +140,7 @@ export class Utils {
         return false;
     }
 
-    public static notifyRecompileByCheckingKey(key: string, material: Material, data: { [index: string]: any }): boolean {
+    static notifyRecompileByCheckingKey(key: string, material: Material, data: { [index: string]: any }): boolean {
         const source = data[key];
         const dest = (material as any)[key];
         if (source !== undefined) {
@@ -149,7 +152,7 @@ export class Utils {
         return false;
     }
 
-    public static notifyRecompileByCheckingKeys(keys: string[], material: Material, data: { [index: string]: any }) {
+    static notifyRecompileByCheckingKeys(keys: string[], material: Material, data: { [index: string]: any }) {
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i];
             if (Utils.notifyRecompileByCheckingKey(key, material, data)) {
@@ -158,7 +161,7 @@ export class Utils {
         }
     }
 
-    public static copyPropertiesAndCheckRecompile(keys: string[], checkKeys: string[], to: Material, from?: any) {
+    static copyPropertiesAndCheckRecompile(keys: string[], checkKeys: string[], to: Material, from?: any) {
         if (from === undefined) {
             return;
         }
@@ -167,7 +170,7 @@ export class Utils {
         keys.forEach(key => Utils.copyProperty(key, key, to, from));
     }
 
-    public static copyProperties(keys: string[], to: any, from?: any) {
+    static copyProperties(keys: string[], to: any, from?: any) {
         if (from === undefined) {
             return;
         }
@@ -176,7 +179,7 @@ export class Utils {
     }
 
     // converts an array to a specific type
-    public static convertArray(array: any, type: any, forceClone?: boolean): any {
+    static convertArray(array: any, type: any, forceClone?: boolean): any {
         // let 'undefined' and 'null' pass
         if (!array || !forceClone && array.constructor === type) {
             return array;
@@ -189,7 +192,7 @@ export class Utils {
     }
 
     // same as Array.prototype.slice, but also works on typed arrays
-    public static arraySlice(array: any, from: number, to: number): any {
+    static arraySlice(array: any, from: number, to: number): any {
         if (Utils.isTypedArray(array)) {
             // in ios9 array.subarray(from, undefined) will return empty array
             // but array.subarray(from) or array.subarray(from, len) is correct
@@ -199,11 +202,11 @@ export class Utils {
         return array.slice(from, to);
     }
 
-    public static isTypedArray(object: any) {
+    static isTypedArray(object: any) {
         return ArrayBuffer.isView(object) && !(object instanceof DataView);
     }
 
-    public static visitTexture(tex: Array<Texture | null>, visitor: Function) {
+    static visitTexture(tex: Array<Texture | null>, visitor: Function) {
         tex.forEach(item => {
             if (item !== null && item !== undefined) {
                 visitor(item);
@@ -211,7 +214,7 @@ export class Utils {
         });
     }
 
-    public static preComputeHalton(count: number) {
+    static preComputeHalton(count: number) {
         const result: Vector2[] = [];
         for (let i = 0; i < count; i++) {
             result.push(new Vector2(halton(i, 2), halton(i, 3)));
@@ -261,6 +264,9 @@ export type Nullable<T> = T | null;
 
 export type PickSubTypeProperty<T, U> = { [P in keyof T]: T[P] extends U ? P : never; }[keyof T];
 
+/**
+ * Union of typed-array.
+ */
 export type TypedArray = Float32Array | Float64Array | Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array;
 
 export type PickReadonly<T extends ReadOnlyMarkedCreatable<T>, K extends keyof T>

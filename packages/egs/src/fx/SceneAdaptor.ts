@@ -11,9 +11,9 @@ import { PipelineFilters } from './PipelineAPI';
 import { ResizeFN } from '../rendergraph/nodes/utils';
 
 export class SceneAdaptorDispatcher {
-    public adaptor: SceneAdaptor;
+    adaptor: SceneAdaptor;
 
-    public setAdaptor(a: SceneAdaptor) {
+    setAdaptor(a: SceneAdaptor) {
         this.adaptor = a;
     }
     get scene() {
@@ -41,7 +41,7 @@ export class SceneAdaptorDispatcher {
         return () => this.adaptor.overlay;
     }
 
-    public syncDirectionalShadowLayers(i: number) {
+    syncDirectionalShadowLayers(i: number) {
         return () => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowDirectionalLight(i);
             const sceneCameraLayers = this.camera.layers.getSerializeData();
@@ -53,7 +53,7 @@ export class SceneAdaptorDispatcher {
         };
     }
 
-    public isDirectionalShadowRequireUpdate(i: number) {
+    isDirectionalShadowRequireUpdate(i: number) {
         return () => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowDirectionalLight(i);
             return l.isShadowNeedsUpdate ||
@@ -63,21 +63,21 @@ export class SceneAdaptorDispatcher {
         };
     }
 
-    public getDirectionalShadowMapSize(i: number): ResizeFN {
+    getDirectionalShadowMapSize(i: number): ResizeFN {
         return (_) => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowDirectionalLight(i);
             return l.shadow.mapSize.intoSize();
         };
     }
 
-    public renderDirectionalShadow(i: number, useProxy: boolean) {
+    renderDirectionalShadow(i: number, useProxy: boolean) {
         return (renderer: RendererAdaptor) => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowDirectionalLight(i);
             renderer.render(this.adaptor.getDirectionalShadowMapCaster(l, useProxy));
         };
     }
 
-    public returnDirectionalShadowResult(i: number) {
+    returnDirectionalShadowResult(i: number) {
         return (r: PassExecuteCtx) => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowDirectionalLight(i);
             l.shadow.map = r.target!.colors[0];
@@ -85,7 +85,7 @@ export class SceneAdaptorDispatcher {
         };
     }
 
-    public syncSpotShadowLayers(i: number) {
+    syncSpotShadowLayers(i: number) {
         return () => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowSpotLight(i);
             const sceneCameraLayers = this.camera.layers.getSerializeData();
@@ -97,7 +97,7 @@ export class SceneAdaptorDispatcher {
         };
     }
 
-    public isSpotShadowRequireUpdate(i: number) {
+    isSpotShadowRequireUpdate(i: number) {
         return () => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowSpotLight(i);
             return l.isShadowNeedsUpdate ||
@@ -107,21 +107,21 @@ export class SceneAdaptorDispatcher {
         };
     }
 
-    public getSpotShadowMapSize(i: number): ResizeFN {
+    getSpotShadowMapSize(i: number): ResizeFN {
         return (_) => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowSpotLight(i);
             return l.shadow.mapSize.intoSize();
         };
     }
 
-    public renderSpotShadow(i: number, useProxy: boolean) {
+    renderSpotShadow(i: number, useProxy: boolean) {
         return (renderer: RendererAdaptor) => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowSpotLight(i);
             renderer.render(this.adaptor.getSpotShadowMapCaster(l, useProxy));
         };
     }
 
-    public returnSpotShadowResult(i: number) {
+    returnSpotShadowResult(i: number) {
         return (r: PassExecuteCtx) => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowSpotLight(i);
             l.shadow.map = r.target!.colors[0];
@@ -129,7 +129,7 @@ export class SceneAdaptorDispatcher {
         };
     }
 
-    public syncPointShadowLayers(i: number) {
+    syncPointShadowLayers(i: number) {
         return () => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowPointLight(i);
             const sceneCameraLayers = this.camera.layers.getSerializeData();
@@ -143,7 +143,7 @@ export class SceneAdaptorDispatcher {
         };
     }
 
-    public isPointShadowRequireUpdate(i: number) {
+    isPointShadowRequireUpdate(i: number) {
         return () => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowPointLight(i);
             return l.isShadowNeedsUpdate ||
@@ -153,27 +153,27 @@ export class SceneAdaptorDispatcher {
         };
     }
 
-    public getPointShadowMapSize(i: number): ResizeFN {
+    getPointShadowMapSize(i: number): ResizeFN {
         return (_) => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowPointLight(i);
             return l.shadow.mapSize.intoSize();
         };
     }
 
-    public getPointShadowPassContent(useProxy: boolean) {
+    getPointShadowPassContent(useProxy: boolean) {
         return () => {
             return (useProxy ? this.adaptor.proxied : this.adaptor.origin)
                 .filter(PipelineFilters.isDrawableShadowMapCaster);
         };
     }
 
-    public getPointShadowPassContentUnfiltered() {
+    getPointShadowPassContentUnfiltered() {
         return () => {
             return this.adaptor.proxied;
         };
     }
 
-    public getAndUpdatePointCamera(i: number) {
+    getAndUpdatePointCamera(i: number) {
         return () => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowPointLight(i);
             l.shadow.updateCamera(l);
@@ -181,7 +181,7 @@ export class SceneAdaptorDispatcher {
         };
     }
 
-    public returnPointShadowResult(i: number) {
+    returnPointShadowResult(i: number) {
         return (r: PassExecuteCtx) => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowPointLight(i);
             l.shadow.map = r.target!.colors[0];
@@ -251,7 +251,7 @@ export class SceneAdaptor {
         return this.cachedOverlay;
     }
 
-    public getDirectionalShadowMapCaster = (light: DirectionalLight, useProxy: boolean) => {
+    getDirectionalShadowMapCaster = (light: DirectionalLight, useProxy: boolean) => {
         const shadow = light.shadow;
         const camera = shadow.camera;
         shadow.updateCameraAndShadowMatrices(light);
@@ -262,7 +262,7 @@ export class SceneAdaptor {
         return caster.project(camera, false, undefined, DrawcallListClassifyList.opaque);
     };
 
-    public getDirectionalShadowMapCasterUnfiltered = (light: DirectionalLight) => {
+    getDirectionalShadowMapCasterUnfiltered = (light: DirectionalLight) => {
         const shadow = light.shadow;
         const camera = shadow.camera;
         shadow.updateCameraAndShadowMatrices(light);
@@ -271,7 +271,7 @@ export class SceneAdaptor {
         return this.proxied.project(camera, false, undefined, DrawcallListClassifyList.opaque, false);
     };
 
-    public getSpotShadowMapCaster = (light: SpotLight, useProxy: boolean) => {
+    getSpotShadowMapCaster = (light: SpotLight, useProxy: boolean) => {
         const shadow = light.shadow;
         const camera = shadow.camera;
         shadow.updateCamera(light);
@@ -288,7 +288,7 @@ export class SceneAdaptor {
         return shadowList.project(camera, false, undefined, DrawcallListClassifyList.opaque);
     };
 
-    public getSpotShadowMapCasterUnfiltered = (light: SpotLight) => {
+    getSpotShadowMapCasterUnfiltered = (light: SpotLight) => {
         const shadow = light.shadow;
         const camera = shadow.camera;
         shadow.updateCamera(light);

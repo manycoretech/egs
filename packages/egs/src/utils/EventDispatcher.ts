@@ -1,6 +1,9 @@
 import { _Math } from '../math/Math';
 import { BaseElement } from './ElementBase';
 
+/**
+ * Typed event key used by EventDispatcher.
+ */
 export class EventType<Payload = never> {
     payload?: Payload;
     symbol = Symbol();
@@ -15,7 +18,7 @@ export interface Listener<Payload = never> {
  * JavaScript events for custom objects.
  */
 export class EventDispatcher {
-    public _uuid: string | null = null;
+    _uuid: string | null = null;
     get uuid() {
         if (this._uuid === null) {
             this._uuid = _Math.generateUUID();
@@ -26,13 +29,13 @@ export class EventDispatcher {
         this._uuid = uuid;
     }
 
-    public _listeners: Map<Symbol, Listener[]> = new Map();
+    _listeners: Map<Symbol, Listener[]> = new Map();
     /**
      * Adds a listener to an event type.
      * @param type The type of event to listen to.
      * @param listener The function that gets called when the event is fired.
      */
-    public on<T>(type: EventType<T>, listener: Listener<T>) {
+    on<T>(type: EventType<T>, listener: Listener<T>) {
         let listeners = this._listeners.get(type.symbol);
         if (listeners === undefined) {
             this._listeners.set(type.symbol, []);
@@ -47,7 +50,7 @@ export class EventDispatcher {
     /**
      * Only active the listener one times and then off {@link it| it}.
      */
-    public once<T>(type: EventType<T>, listener: Listener<T>) {
+    once<T>(type: EventType<T>, listener: Listener<T>) {
         const remover = () => {
             this.off(type, listener);
             this.off(type, remover);
@@ -58,14 +61,14 @@ export class EventDispatcher {
     /**
      * Checks if listener is added to an event type.
      */
-    public has<T>(type: EventType<T>, listener: Listener<T>) {
+    has<T>(type: EventType<T>, listener: Listener<T>) {
         const listeners = this._listeners.get(type.symbol);
         return listeners !== undefined && listeners.indexOf(listener) !== - 1;
     }
     /**
      * Removes a listener from listening list.
      */
-    public off<T>(type: EventType<T>, listener: Listener<T>) {
+    off<T>(type: EventType<T>, listener: Listener<T>) {
         const listeners = this._listeners.get(type.symbol);
         if (listeners !== undefined) {
             const index = listeners.indexOf(listener);
@@ -77,9 +80,9 @@ export class EventDispatcher {
     /**
      * Active the event and call the registered listener.
      */
-    public emit(type: EventType<never>): void;
-    public emit<T>(type: EventType<T>, payload: T): void;
-    public emit(...args: any[]): void {
+    emit(type: EventType<never>): void;
+    emit<T>(type: EventType<T>, payload: T): void;
+    emit(...args: any[]): void {
         const rawListeners = this._listeners.get(args[0].symbol);
         if (rawListeners !== undefined) {
             const listeners = rawListeners.slice();
@@ -93,7 +96,7 @@ export class EventDispatcher {
     /**
      * Removes all listeners from listening list.
      */
-    public clearAllListeners() {
+    clearAllListeners() {
         this._listeners.clear();
     }
 }
@@ -101,21 +104,21 @@ export class EventDispatcher {
 export abstract class ElementEventDispatcher extends BaseElement implements EventDispatcher {
     _uuid: any = null;
     uuid: string;
-    public _listeners: Map<Symbol, Listener[]> = new Map();
-    public on<T>(_type: EventType<T>, _listener: Listener<T>): void {
+    _listeners: Map<Symbol, Listener[]> = new Map();
+    on<T>(_type: EventType<T>, _listener: Listener<T>): void {
     }
-    public once<T>(_type: EventType<T>, _listener: Listener<T>): void {
+    once<T>(_type: EventType<T>, _listener: Listener<T>): void {
     }
-    public has<T>(_type: EventType<T>, _listener: Listener<T>): boolean {
+    has<T>(_type: EventType<T>, _listener: Listener<T>): boolean {
         return false;
     }
-    public off<T>(_type: EventType<T>, _listener: Listener<T>): void {
+    off<T>(_type: EventType<T>, _listener: Listener<T>): void {
     }
-    public emit(type: EventType<never>): void;
-    public emit<T>(type: EventType<T>, payload: T): void;
-    public emit(..._args: any[]): void {
+    emit(type: EventType<never>): void;
+    emit<T>(type: EventType<T>, payload: T): void;
+    emit(..._args: any[]): void {
     }
-    public clearAllListeners(): void {
+    clearAllListeners(): void {
     }
 }
 applyMixins(ElementEventDispatcher, [EventDispatcher]);

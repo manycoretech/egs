@@ -32,7 +32,7 @@ export function cone(params: Omit<Partial<CylinderShapeParameter>, 'radiusTop'>)
 }
 
 class CylinderBufferGeometry extends BufferGeometry {
-    public parameters: {
+    parameters: {
         radiusTop: number;
         radiusBottom: number;
         height: number;

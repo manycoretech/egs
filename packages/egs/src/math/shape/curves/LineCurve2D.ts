@@ -5,9 +5,9 @@ import { Serializer, Deserializer } from '../../../utils/Serialization';
  * Build a line from {@link v1 | v1 } to {@link v2 | v2 } in 2D space.
  */
 export class LineCurve2D extends Curve2D {
-    public isLineCurve2D = true;
-    public v1: Vector2;
-    public v2: Vector2;
+    isLineCurve2D = true;
+    v1: Vector2;
+    v2: Vector2;
 
     constructor(v1?: Vector2, v2?: Vector2) {
         super();
@@ -17,19 +17,19 @@ export class LineCurve2D extends Curve2D {
         this.v2 = v2 || new Vector2();
     }
 
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<LineCurve2D>(['v1', 'v2']);
     }
 
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         ctx.reads<LineCurve2D>(['v1', 'v2']);
     }
 
-    public className(): string {
+    className(): string {
         return 'LineCurve2D';
     }
 
-    public getPoint(t: number, optionalTarget?: Vector2): Vector2 {
+    getPoint(t: number, optionalTarget?: Vector2): Vector2 {
         const point = optionalTarget || new Vector2();
         if (t === 1) {
             point.copy(this.v2);
@@ -40,36 +40,36 @@ export class LineCurve2D extends Curve2D {
         return point;
     }
 
-    public getPointAt(u: number, optionalTarget?: Vector2): Vector2 {
+    getPointAt(u: number, optionalTarget?: Vector2): Vector2 {
         return this.getPoint(u, optionalTarget);
     }
 
-    public getPoints(divisions?: number) {
+    getPoints(divisions?: number) {
         if (divisions === undefined) {
             divisions = 1;
         }
         return super.getPoints(divisions);
     }
 
-    public clone() {
+    clone() {
         return new LineCurve2D().copy(this);
     }
 
-    public copy(source: LineCurve2D) {
+    copy(source: LineCurve2D) {
         super.copy(source);
         this.v1.copy(source.v1);
         this.v2.copy(source.v2);
         return this;
     }
 
-    public toJSON(): any {
+    toJSON(): any {
         const data = super.toJSON();
         data.v1 = this.v1.toArray();
         data.v2 = this.v2.toArray();
         return data;
     }
 
-    public fromJSON(json: any) {
+    fromJSON(json: any) {
         super.fromJSON(json);
         this.v1.fromArray(json.v1);
         this.v2.fromArray(json.v2);

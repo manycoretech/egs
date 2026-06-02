@@ -6,13 +6,13 @@ import { Serializer, Deserializer } from '../../../utils/Serialization';
  * Draw a star shape with an arbitrary number of points.
  */
 export class Star extends Polygon {
-    public type = 'Star';
-    public x: number;
-    public y: number;
-    public pointNum: number;
-    public radius: number;
-    public innerRadius: number;
-    public rotation: number;
+    type = 'Star';
+    x: number;
+    y: number;
+    pointNum: number;
+    radius: number;
+    innerRadius: number;
+    rotation: number;
     /**
      * @param x Center X position of the star.
      * @param y Center Y position of the star.
@@ -35,27 +35,27 @@ export class Star extends Polygon {
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Star>(['x', 'y', 'rotation', 'pointNum', 'innerRadius', 'radius']);
     }
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<Star>(['x', 'y', 'rotation', 'pointNum', 'innerRadius', 'radius']);
     }
     /**
      * The name of instance's class.
      */
-    public className(): string {
+    className(): string {
         return 'Star';
     }
     /**
      * Add this star to drawing.
      */
-    public draw() {
+    draw() {
         const { x, y, rotation, pointNum, innerRadius, radius } = this;
 
         const startAngle = (-1 * Math.PI / 2) + rotation;

@@ -14,6 +14,9 @@ let tmpMinVec3: Vector3;
 let tmpMaxVec3: Vector3;
 let tmpMat4: Matrix4;
 
+/**
+ * 4x4 matrix used for 3D transformations and projections.
+ */
 export class Matrix4 {
     /**
      * @internal
@@ -23,7 +26,7 @@ export class Matrix4 {
      * Check the type whether it belongs to Matrix4.
      * This value should not be changed by user.
      */
-    public isMatrix4 = true;
+    isMatrix4 = true;
 
     private static defaultElements = new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
 
@@ -48,19 +51,19 @@ export class Matrix4 {
     /**
      * @internal
      */
-    public getSerializeData() {
+    getSerializeData() {
         return this.toArray();
     }
     /**
      * @internal
      */
-    public setSerializeData(value: any): void {
+    setSerializeData(value: any): void {
         this.fromArray(value);
     }
     /**
      * Set the {@link elements| elements} of this matrix to the supplied row-major values n11, n12, ... n44.
      */
-    public set(n11: number, n12: number, n13: number, n14: number,
+    set(n11: number, n12: number, n13: number, n14: number,
         n21: number, n22: number, n23: number, n24: number,
         n31: number, n32: number, n33: number, n34: number,
         n41: number, n42: number, n43: number, n44: number): Matrix4 {
@@ -74,23 +77,23 @@ export class Matrix4 {
     /**
      * Resets this matrix to the {@link https://en.wikipedia.org/wiki/Identity_matrix | identity matrix}.
      */
-    public identity(): Matrix4 {
+    identity(): Matrix4 {
         this.set(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
         return this;
     }
     /**
      * Creates a new Matrix4 with identical {@link elements | elements } to this one.
      */
-    public clone(): Matrix4 {
+    clone(): Matrix4 {
         return new Matrix4().fromArray(this._elements);
     }
-    public cloneReadonly() {
+    cloneReadonly() {
         return this.clone() as any as ReadonlyMatrix4;
     }
     /**
      * Copies the {@link elements| elements} of matrix {@link Matrix4| m} into this matrix.
      */
-    public copy(m: Matrix4): Matrix4 {
+    copy(m: Matrix4): Matrix4 {
         const te = this._elements;
         const me = m._elements;
         te[0] = me[0]; te[1] = me[1]; te[2] = me[2]; te[3] = me[3];
@@ -102,7 +105,7 @@ export class Matrix4 {
     /**
      * Copies the translation component of the supplied matrix {@link Matrix4| m} into this matrix's translation component.
      */
-    public copyPosition(m: Matrix4): Matrix4 {
+    copyPosition(m: Matrix4): Matrix4 {
         const te = this._elements;
         const me = m._elements;
         te[12] = me[12];
@@ -125,7 +128,7 @@ export class Matrix4 {
      * zAxis = (c, g, k)
      * </pre>
      */
-    public extractBasis(xAxis: Vector3, yAxis: Vector3, zAxis: Vector3): Matrix4 {
+    extractBasis(xAxis: Vector3, yAxis: Vector3, zAxis: Vector3): Matrix4 {
         xAxis.setFromMatrixColumn(this, 0);
         yAxis.setFromMatrixColumn(this, 1);
         zAxis.setFromMatrixColumn(this, 2);
@@ -140,7 +143,7 @@ export class Matrix4 {
      * 0,       0,       0,       1
      * </pre>
      */
-    public makeBasis(xAxis: Vector3, yAxis: Vector3, zAxis: Vector3): Matrix4 {
+    makeBasis(xAxis: Vector3, yAxis: Vector3, zAxis: Vector3): Matrix4 {
         this.set(
             xAxis.x, yAxis.x, zAxis.x, 0,
             xAxis.y, yAxis.y, zAxis.y, 0,
@@ -152,7 +155,7 @@ export class Matrix4 {
     /**
      * Extracts the rotation component of the supplied matrix {@link Matrix4| m} into this matrix's rotation component.
      */
-    public extractRotation(m: Matrix4): Matrix4 {
+    extractRotation(m: Matrix4): Matrix4 {
         const te = this._elements;
         const me = m._elements;
         if (tmp1Vec3 === undefined) {
@@ -189,7 +192,7 @@ export class Matrix4 {
      * The rest of the matrix is set to the identity. Depending on the {@link Euler.order| order} of the {@link Euler| euler}, there are six possible outcomes.
      * @remarks See {@link https://en.wikipedia.org/wiki/Euler_angles#Rotation_matrix| this page} for a complete list.
      */
-    public makeRotationFromEuler(euler: Euler): Matrix4 {
+    makeRotationFromEuler(euler: Euler): Matrix4 {
         const te = this._elements;
         const x = euler.x;
         const y = euler.y;
@@ -328,7 +331,7 @@ export class Matrix4 {
      * 0            0          0          1
      * </pre>
      */
-    public makeRotationFromQuaternion(q: Quaternion): Matrix4 {
+    makeRotationFromQuaternion(q: Quaternion): Matrix4 {
         if (tmpMinVec3 === undefined) {
             tmpMinVec3 = new Vector3();
         }
@@ -340,7 +343,7 @@ export class Matrix4 {
     /**
      * Constructs a rotation matrix, looking from {@link Vector3| eye} towards {@link Vector3| center} oriented by the {@link Vector3| up} vector.
      */
-    public lookAt(eye: Vector3, target: Vector3, up: Vector3): Matrix4 {
+    lookAt(eye: Vector3, target: Vector3, up: Vector3): Matrix4 {
         const te = this._elements;
         if (tmp1Vec3 === undefined) {
             tmp1Vec3 = new Vector3();
@@ -383,19 +386,19 @@ export class Matrix4 {
     /**
      * Post-multiplies this matrix by {@link Matrix4| m}.
      */
-    public multiply(m: Matrix4): Matrix4 {
+    multiply(m: Matrix4): Matrix4 {
         return this.multiplyMatrices(this, m);
     }
     /**
      * Pre-multiplies this matrix by {@link Matrix4| m}.
      */
-    public premultiply(m: Matrix4): Matrix4 {
+    premultiply(m: Matrix4): Matrix4 {
         return this.multiplyMatrices(m, this);
     }
     /**
      * Sets this matrix to {@link Matrix4| a} x {@link Matrix4| b}.
      */
-    public multiplyMatrices(a: Matrix4, b: Matrix4): Matrix4 {
+    multiplyMatrices(a: Matrix4, b: Matrix4): Matrix4 {
         const te = this._elements;
         const ae = a._elements;
         const be = b._elements;
@@ -434,7 +437,7 @@ export class Matrix4 {
     /**
      * Multiplies every component of the matrix by a scalar value s.
      */
-    public multiplyScalar(s: number): Matrix4 {
+    multiplyScalar(s: number): Matrix4 {
         const te = this._elements;
         te[0] *= s; te[4] *= s; te[8] *= s; te[12] *= s;
         te[1] *= s; te[5] *= s; te[9] *= s; te[13] *= s;
@@ -445,7 +448,7 @@ export class Matrix4 {
     /**
      * Apply this matrix to given {@link BufferAttribute| attribute buffer}.
      */
-    public applyToBufferAttribute(attribute: BufferAttribute, __forceJSImpl: boolean = false): BufferAttribute {
+    applyToBufferAttribute(attribute: BufferAttribute, __forceJSImpl: boolean = false): BufferAttribute {
         if (tmp1Vec3 === undefined) {
             tmp1Vec3 = new Vector3();
         }
@@ -465,7 +468,7 @@ export class Matrix4 {
      * Apply this matrix on given array.
      * Each vector item of array should hold three elements.
      */
-    public applyToArray(array: Float32Array) {
+    applyToArray(array: Float32Array) {
         if (tmp1Vec3 === undefined) {
             tmp1Vec3 = new Vector3();
         }
@@ -484,7 +487,7 @@ export class Matrix4 {
      * Computes and returns the {@link https://en.wikipedia.org/wiki/Determinant| determinant } of this matrix.
      * Based on the method outlined {@link http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm| here }.
      */
-    public determinant(): number {
+    determinant(): number {
         const te = this._elements;
         const n11 = te[0], n12 = te[4], n13 = te[8], n14 = te[12],
             n21 = te[1], n22 = te[5], n23 = te[9], n24 = te[13],
@@ -531,7 +534,7 @@ export class Matrix4 {
     /**
      * {@link https://en.wikipedia.org/wiki/Transpose| Transposes } this matrix.
      */
-    public transpose(): Matrix4 {
+    transpose(): Matrix4 {
         const te = this._elements;
         let tmp: number;
         tmp = te[1]; te[1] = te[4]; te[4] = tmp;
@@ -558,7 +561,7 @@ export class Matrix4 {
      * m, n, o, p
      * </pre>
      */
-    public setPosition(v: Vector3): Matrix4 {
+    setPosition(v: Vector3): Matrix4 {
         const te = this._elements;
         te[12] = v.x;
         te[13] = v.y;
@@ -568,7 +571,7 @@ export class Matrix4 {
     /**
      * Return the first three elements of last column.
      */
-    public getPosition(v: Vector3): Vector3 {
+    getPosition(v: Vector3): Vector3 {
         v.x = this._elements[12];
         v.y = this._elements[13];
         v.z = this._elements[14];
@@ -577,7 +580,7 @@ export class Matrix4 {
     /**
      * Change this matrix to inverse.
      */
-    public getInverse(m: Matrix4, throwOnDegenerate?: boolean): Matrix4 {
+    getInverse(m: Matrix4, throwOnDegenerate?: boolean): Matrix4 {
         // based on http://www.euclideanspace.com/maths/algebra/matrix/functions/inverse/fourD/index.htm
         const te = this._elements;
         const me = m._elements;
@@ -622,7 +625,7 @@ export class Matrix4 {
     /**
      * Multiplies the columns of this matrix by vector {@link Vector3| v}.
      */
-    public scale(v: Vector3): Matrix4 {
+    scale(v: Vector3): Matrix4 {
         const te = this._elements;
         const x = v.x;
         const y = v.y;
@@ -636,7 +639,7 @@ export class Matrix4 {
     /**
      * Return the scales of three dimension.
      */
-    public getScale(v: Vector3): Vector3 {
+    getScale(v: Vector3): Vector3 {
         const te = this._elements;
         const sx = tmp1Vec3.set(te[0], te[1], te[2]).length();
         const sy = tmp1Vec3.set(te[4], te[5], te[6]).length();
@@ -649,7 +652,7 @@ export class Matrix4 {
      * @param ty translate second row by ty.
      * @param ty translate third row by ty.
      */
-    public translate(tx: number, ty: number, tz: number): Matrix4 {
+    translate(tx: number, ty: number, tz: number): Matrix4 {
         const te = this._elements;
         te[0] += tx * te[3]; te[4] += tx * te[7]; te[8] += tx * te[11]; te[12] += tx * te[15];
         te[1] += ty * te[3]; te[5] += ty * te[7]; te[9] += ty * te[11]; te[13] += ty * te[15];
@@ -659,7 +662,7 @@ export class Matrix4 {
     /**
      * Gets the maximum scale value of the 3 axes.
      */
-    public getMaxScaleOnAxis(): number {
+    getMaxScaleOnAxis(): number {
         const te = this._elements;
         const scaleXSq = te[0] * te[0] + te[1] * te[1] + te[2] * te[2];
         const scaleYSq = te[4] * te[4] + te[5] * te[5] + te[6] * te[6];
@@ -678,7 +681,7 @@ export class Matrix4 {
      * @param y the amount to translate in the Y axis.
      * @param z the amount to translate in the Z axis.
      */
-    public makeTranslation(x: number, y: number, z: number): Matrix4 {
+    makeTranslation(x: number, y: number, z: number): Matrix4 {
         this.set(
             1, 0, 0, x,
             0, 1, 0, y,
@@ -698,7 +701,7 @@ export class Matrix4 {
      * </pre>
      * @param theta Rotation angle in radians.
      */
-    public makeRotationX(theta: number): Matrix4 {
+    makeRotationX(theta: number): Matrix4 {
         const c = Math.cos(theta);
         const s = Math.sin(theta);
         this.set(1, 0, 0, 0, 0, c, - s, 0, 0, s, c, 0, 0, 0, 0, 1);
@@ -715,7 +718,7 @@ export class Matrix4 {
      * </pre>
      * @param theta Rotation angle in radians.
      */
-    public makeRotationY(theta: number): Matrix4 {
+    makeRotationY(theta: number): Matrix4 {
         const c = Math.cos(theta);
         const s = Math.sin(theta);
         this.set(c, 0, s, 0, 0, 1, 0, 0, -s, 0, c, 0, 0, 0, 0, 1);
@@ -732,7 +735,7 @@ export class Matrix4 {
      * </pre>
      * @param theta Rotation angle in radians.
      */
-    public makeRotationZ(theta: number): Matrix4 {
+    makeRotationZ(theta: number): Matrix4 {
         const c = Math.cos(theta);
         const s = Math.sin(theta);
         this.set(
@@ -750,7 +753,7 @@ export class Matrix4 {
      * @param axis Rotation axis, should be normalized.
      * @param theta Rotation angle in radians.
      */
-    public makeRotationAxis(axis: Vector3, angle: number): Matrix4 {
+    makeRotationAxis(axis: Vector3, angle: number): Matrix4 {
         // Based on http://www.gamedev.net/reference/articles/article1199.asp
         const c = Math.cos(angle);
         const s = Math.sin(angle);
@@ -778,7 +781,7 @@ export class Matrix4 {
      * 0, 0, 0, 1
      * </pre>
      */
-    public makeScale(x: number, y: number, z: number): Matrix4 {
+    makeScale(x: number, y: number, z: number): Matrix4 {
         this.set(x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1);
         return this;
     }
@@ -794,14 +797,14 @@ export class Matrix4 {
      * 0, 0, 0, 1
      * </pre>
      */
-    public makeShear(x: number, y: number, z: number): Matrix4 {
+    makeShear(x: number, y: number, z: number): Matrix4 {
         this.set(1, y, z, 0, x, 1, z, 0, x, y, 1, 0, 0, 0, 0, 1);
         return this;
     }
     /**
      * Sets this matrix to the transformation composed of {@link Vector3| position}, {@link Quaternion| quaternion} and {@link Vector3| scale}.
      */
-    public compose(position: Vector3, quaternion: Quaternion, scale: Vector3): Matrix4 {
+    compose(position: Vector3, quaternion: Quaternion, scale: Vector3): Matrix4 {
         const te = this._elements;
         const x = quaternion.x, y = quaternion.y, z = quaternion.z, w = quaternion.w,
             x2 = x + x, y2 = y + y, z2 = z + z,
@@ -836,7 +839,7 @@ export class Matrix4 {
      * @Note Not all matrices are decomposable in this way.
      * For example, if an object has a non-uniformly scaled parent, then the object's world matrix may not be decomposable, and this method may not be appropriate.
      */
-    public decompose(position: Vector3, quaternion: Quaternion, scale: Vector3): Matrix4 {
+    decompose(position: Vector3, quaternion: Quaternion, scale: Vector3): Matrix4 {
         const te = this._elements;
         if (tmp1Vec3 === undefined) {
             tmp1Vec3 = new Vector3();
@@ -892,7 +895,7 @@ export class Matrix4 {
      * @param skewY Skew on the y axis.
      * @return This matrix. Good for chaining method calls.
      */
-    public compose2D(x: number, y: number, pivotX: number, pivotY: number, scaleX: number,
+    compose2D(x: number, y: number, pivotX: number, pivotY: number, scaleX: number,
         scaleY: number, rotation: number, skewX: number, skewY: number): this {
         const elements0 = Math.cos(rotation + skewY) * scaleX;
         const elements1 = Math.sin(rotation + skewY) * scaleX;
@@ -915,7 +918,7 @@ export class Matrix4 {
      * Decomposes the matrix (x, y, scaleX, scaleY, and rotation) and sets the properties on to a transform.
      * @returns The transform with the newly applied properties.
      */
-    public decompose2D() {
+    decompose2D() {
         const transform: {
             x: number, y: number, scaleX: number,
             scaleY: number, rotation: number, skewX: number, skewY: number
@@ -955,7 +958,7 @@ export class Matrix4 {
      * Creates a {@link https://en.wikipedia.org/wiki/3D_projection#Perspective_projection| perspective projection} matrix.
      * This is used internally by {@link PerspectiveCamera.updateProjectionMatrix| PerspectiveCamera.updateProjectionMatrix}()
      */
-    public makePerspective(left: number, right: number, top: number, bottom: number, near: number, far: number): Matrix4 {
+    makePerspective(left: number, right: number, top: number, bottom: number, near: number, far: number): Matrix4 {
         const te = this._elements;
         const x = 2 * near / (right - left);
         const y = 2 * near / (top - bottom);
@@ -976,7 +979,7 @@ export class Matrix4 {
      * Creates an {@link https://en.wikipedia.org/wiki/Orthographic_projection| orthographic projection} matrix.
      * This is used internally by {@link OrthographicCamera.updateProjectionMatrix| OrthographicCamera.updateProjectionMatrix}().
      */
-    public makeOrthographic(left: number, right: number, top: number, bottom: number, near: number, far: number): Matrix4 {
+    makeOrthographic(left: number, right: number, top: number, bottom: number, near: number, far: number): Matrix4 {
         const te = this._elements;
         const w = 1.0 / (right - left);
         const h = 1.0 / (top - bottom);
@@ -995,7 +998,7 @@ export class Matrix4 {
     /**
      * Apply this matrix to a 2D vector, z and w will set to 1 and 0.
      */
-    public transformVector2(vIn: { x: number, y: number }, vOut = new Vector2()): Vector2 {
+    transformVector2(vIn: { x: number, y: number }, vOut = new Vector2()): Vector2 {
         const x = vIn.x;
         const y = vIn.y;
         const z = 0;
@@ -1008,7 +1011,7 @@ export class Matrix4 {
     /**
      * Return true if this matrix and {@link Matrix4| matrix} are equal.
      */
-    public equals(matrix: Matrix4): boolean {
+    equals(matrix: Matrix4): boolean {
         const te = this._elements;
         const me = matrix._elements;
         for (let i = 0; i < 16; i++) {
@@ -1024,7 +1027,7 @@ export class Matrix4 {
      * @param offset ( optional ) offset into the array.
      * @defaultValue `0`.
      */
-    public fromArray(array: ArrayLike<number>, offset?: number): Matrix4 {
+    fromArray(array: ArrayLike<number>, offset?: number): Matrix4 {
         if (offset === undefined) {
             offset = 0;
         }
@@ -1036,7 +1039,7 @@ export class Matrix4 {
     /**
      * There are 16 elements in this matrix.
      */
-    public getNumberCount() {
+    getNumberCount() {
         return 16;
     }
     /**
@@ -1044,7 +1047,7 @@ export class Matrix4 {
      * @param array (optional) array to store the resulting vector in.
      * @param offset (optional) offset in the array at which to put the result.
      */
-    public toArray(array?: number[], offset?: number): number[] {
+    toArray(array?: number[], offset?: number): number[] {
         if (array === undefined) {
             array = [];
         }
@@ -1076,6 +1079,9 @@ export class Matrix4 {
     }
 }
 
+/**
+ * Readonly view of the public Matrix4 API.
+ */
 export type ReadonlyMatrix4 = PickReadonly<Matrix4,
     'elements' | 'equals'
     | 'applyToBufferAttribute' | 'determinant' | 'extractBasis'

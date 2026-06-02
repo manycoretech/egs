@@ -18,7 +18,7 @@ export function ring(params: Partial<RingParameter>): BufferGeometry {
 }
 
 export class RingBufferGeometry extends BufferGeometry {
-    public parameters: {
+    parameters: {
         innerRadius: number;
         outerRadius: number;
         thetaSegments: number;

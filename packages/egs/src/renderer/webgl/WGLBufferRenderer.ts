@@ -25,12 +25,12 @@ export class WGLBufferRenderer {
     }
 
     // To set the type primitive to render
-    public setMode(value: number): void {
+    setMode(value: number): void {
         this.mode = value;
     }
 
     // Controls the starting index and count of primitives' array for drawing. Record rendering information.
-    public render(object: Drawable, start: number, count: number): void {
+    render(object: Drawable, start: number, count: number): void {
         this.gl.drawArrays(this.mode, start, count);
 
         this.infoRender.addDrawcall(object);
@@ -43,7 +43,7 @@ export class WGLBufferRenderer {
 
     // Controls the starting index and count of primitives' array for rendering instances, it will be used when
     // instance rendering is available.
-    public renderInstances(object: Drawable, geometry: InstancedBufferGeometry, start: number, count: number): void {
+    renderInstances(object: Drawable, geometry: InstancedBufferGeometry, start: number, count: number): void {
         if (WGLCapabilities.IS_WEBGL2) {
             (this.gl as WebGL2RenderingContext).drawArraysInstanced(this.mode, start, count, geometry.instancedCount);
         } else {

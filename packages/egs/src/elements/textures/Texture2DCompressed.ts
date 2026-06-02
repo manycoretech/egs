@@ -40,6 +40,9 @@ export class Texture2DCompressed extends LegacySourceTexture {
 
 type CompressTextureLayerSource = TypedArray;
 
+/**
+ * Upload layer for one compressed 2D texture level.
+ */
 export class CompressTexture2DLayer extends Texture2DLayer {
     source: CompressTextureLayerSource;
     format: CompressedPixelFormat;

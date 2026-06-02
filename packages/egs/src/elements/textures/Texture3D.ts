@@ -71,6 +71,9 @@ export class Texture3D extends LegacySourceTexture {
 
 type Texture3DLayerSource = TypedArray;
 
+/**
+ * Upload layer for 3D texture data.
+ */
 export class Texture3DLayer implements WebGLUploadable {
     __brand: 'WebGLUploadable';
 

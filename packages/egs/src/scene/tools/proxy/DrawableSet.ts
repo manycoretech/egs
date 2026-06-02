@@ -6,33 +6,33 @@ export const DrawableDelete = new EventType<Drawable>();
 export const DrawableChange = new EventType<Drawable>();
 
 export class DrawableSet extends EventDispatcher {
-    public drawables = new Set<Drawable>();
+    drawables = new Set<Drawable>();
 
-    public add(d: Drawable) {
+    add(d: Drawable) {
         if (!this.drawables.has(d)) {
             this.emit(DrawableAdd, d);
         }
         this.drawables.add(d);
     }
 
-    public changed(d: Drawable) {
+    changed(d: Drawable) {
         if (this.drawables.has(d)) {
             this.emit(DrawableChange, d);
         }
     }
 
-    public delete(d: Drawable) {
+    delete(d: Drawable) {
         if (this.drawables.has(d)) {
             this.emit(DrawableDelete, d);
         }
         this.drawables.delete(d);
     }
 
-    public forEach(f: (d: Drawable) => void) {
+    forEach(f: (d: Drawable) => void) {
         this.drawables.forEach(f);
     }
 
-    public clear() {
+    clear() {
         this.drawables.forEach(d => {
             this.delete(d);
         });

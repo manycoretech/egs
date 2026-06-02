@@ -121,7 +121,7 @@ export class Picker {
         return intersects;
     }
 
-    public pick(coordinates: Vector2, camera: Camera3D, pickFirst: boolean = false, objects?: Drawable[]): Intersection[] {
+    pick(coordinates: Vector2, camera: Camera3D, pickFirst: boolean = false, objects?: Drawable[]): Intersection[] {
         if (this.viewer.isDestroyed) {
             return [];
         }
@@ -133,7 +133,7 @@ export class Picker {
         return pickFirst ? this.pickFirst(camera, objects) : this.intersectObject(objects);
     }
 
-    public pickFirst(camera: Camera3D, objects?: Drawable[]): Intersection[] {
+    pickFirst(camera: Camera3D, objects?: Drawable[]): Intersection[] {
         if (this.viewer.isDestroyed) {
             return [];
         }

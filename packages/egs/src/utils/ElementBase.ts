@@ -23,7 +23,7 @@ export class BaseElement {
      */
     metaData: Record<string, any> = {};
     readonly userData: Record<keyof any, any> = {};
-    public markBusinessTag(v: string) {
+    markBusinessTag(v: string) {
         this.businessTag = v;
         return this;
     }
@@ -38,28 +38,28 @@ export class BaseElement {
 
     }
 
-    public isDestroyed() {
+    isDestroyed() {
         return this.isFreed;
     }
 
-    public destroy() {
+    destroy() {
         if ((this as any).freeGPU) {
             (this as any).freeGPU();
         }
         this.isFreed = true;
     }
 
-    public validate() {
+    validate() {
         if (this.isFreed) {
             logger.warn(`Element has been freed but still in use, ObjectID: ${this.__guid}, tag: ${this._businessTag}, ClassName: ${this.constructor.name}`);
         }
     }
 
-    public destroyAllResourcesOwned() {
+    destroyAllResourcesOwned() {
         this.destroy();
     }
 
-    public freeAllGpuResourceOwned() {
+    freeAllGpuResourceOwned() {
         (this as any).freeGPU?.();
     }
 }

@@ -9,23 +9,23 @@ export class Circle extends Shape {
     /**
      * The X coordinate of the center of this circle.
      */
-    public x: number;
+    x: number;
     /**
      * The Y coordinate of the center of this circle.
      */
-    public y: number;
+    y: number;
     /**
      * The radius of the circle.
      */
-    public radius: number;
+    radius: number;
     /**
      * The type of the object, mainly used to avoid 'instanceof' checks.
      */
-    public readonly type = 'Circle';
+    readonly type = 'Circle';
     /**
      * The number of segments in the circle.
      */
-    public divisions?: number;
+    divisions?: number;
     /**
      * @param x The X coordinate of the center of this circle.
      * @param y The Y coordinate of the center of this circle.
@@ -43,33 +43,33 @@ export class Circle extends Shape {
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Circle>(['x', 'y', 'radius']);
     }
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<Circle>(['x', 'y', 'radius']);
     }
     /**
      * The name of instance's class.
      */
-    public className(): string {
+    className(): string {
         return 'Circle';
     }
     /**
      * Creates a clone of this Circle instance.
      */
-    public clone(): Circle {
+    clone(): Circle {
         return new Circle(this.x, this.y, this.radius);
     }
     /**
      * Add this circle to drawing.
      */
-    public draw() {
+    draw() {
         this.arc(this.x, this.y, this.radius, undefined, undefined, undefined, this.divisions);
         this.autoClose = true;
     }
@@ -79,7 +79,7 @@ export class Circle extends Shape {
      * @param y The Y coordinate of the point to test.
      * @return Whether the x/y coordinates are within this circle.
      */
-    public contains(x: number, y: number): boolean {
+    contains(x: number, y: number): boolean {
         if (this.radius <= 0) {
             return false;
         }
@@ -96,7 +96,7 @@ export class Circle extends Shape {
     /**
      * Returns the framing rectangle of the circle as a Rectangle object.
      */
-    public getBounds(bounds = new Box2()) {
+    getBounds(bounds = new Box2()) {
         bounds.min.set(this.x - this.radius, this.y - this.radius);
         bounds.max.set(this.x + this.radius, this.y + this.radius);
         return bounds;

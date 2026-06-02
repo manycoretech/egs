@@ -36,15 +36,27 @@ export { HighLightItem, HighlightGroup } from './fx/plugins/Highlight';
 export type RequestRenderHandler = () => void;
 
 // Canvas size change event
+/**
+ * Event emitted after a viewer is resized.
+ */
 export const ViewerResizeEvent = new EventType<{ target: Viewer, width: number, height: number }>();
+/**
+ * Event emitted when a viewer is uninitialized.
+ */
 export const ViewerUnInitializeEvent = new EventType<{ target: Viewer }>();
 
 // emit before egs rendering starts, used for tracking when rendering is over
 export const RenderEvent = new EventType();
+/**
+ * Event emitted after a render pass completes.
+ */
 export const RenderOverEvent = new EventType();
 export const NoRenderForAWhileEvent = new EventType();
 export const ConfigChangeEvent = new EventType();
 
+/**
+ * Event emitted when the viewer encounters a fatal runtime error.
+ */
 export const RuntimeFatalErrorEvent = new EventType();
 
 interface MaybeHasSubResource extends BaseElement {
@@ -70,7 +82,7 @@ export class DefaultResourceCell<T extends MaybeHasSubResource> {
         }
     }
 
-    public destroy() {
+    destroy() {
         this.default.destroyAllResourcesOwned();
     }
 }
@@ -641,7 +653,7 @@ export class Viewer extends EventDispatcher {
      * @param {number} width Rectangular area's width.
      * @param {number} height Rectangular area's height.
      */
-    public readRenderResultAsync(resultData: Uint8Array, range: IRange) {
+    readRenderResultAsync(resultData: Uint8Array, range: IRange) {
         if (this.engine === null) {
             logger.invalidInput('this.engine has been destroyed');
             return;
@@ -773,7 +785,7 @@ export class Viewer extends EventDispatcher {
     /**
      * An instance of CoordinateSystemHelper which could be turned on by the config.
      */
-    public coordSysHelper = new CoordinateSystemHelper();
+    coordSysHelper = new CoordinateSystemHelper();
     /**
      * The mode of render which is applied in current scene.
      * @defaultValue `RenderMode.SHADING`
@@ -843,7 +855,7 @@ export class Viewer extends EventDispatcher {
      * @deprecated use `canvasContainer`
      * Get instance of HTMLElement that will attach canvas which is set in the constructor function.
      */
-    public getContainerElement(): Readonly<HTMLElement> {
+    getContainerElement(): Readonly<HTMLElement> {
         return this.canvasContainer;
     }
 
@@ -852,7 +864,7 @@ export class Viewer extends EventDispatcher {
      * @param {BackgroundParameter} parameter An object of BackgroundParameter.
      * @deprecated use `config.background` instead.
      */
-    public updateBackGroundParameter(parameter: BackgroundParameter) {
+    updateBackGroundParameter(parameter: BackgroundParameter) {
         const setter = (cell: ConfigCell<any>, v: any) => {
             if (v !== undefined) {
                 cell.set(v);
@@ -903,7 +915,7 @@ export class Viewer extends EventDispatcher {
      * @param {BackgroundMode} type A constant of BackgroundMode.
      * @deprecated use `config.background.active` instead.
      */
-    public setBackGroundMode(type: BackgroundMode) {
+    setBackGroundMode(type: BackgroundMode) {
         this.config.background.active.set(type);
     }
     /**
@@ -913,7 +925,7 @@ export class Viewer extends EventDispatcher {
      * @param {Camera3D | ArrayCamera} camera An instance belongs or extents form Camera.
      * @tips If the user changes the camera's parameter or uses a new camera, the better way is through this function to avoid errors;
      */
-    public setCamera(camera: Camera3D | ArrayCamera): void {
+    setCamera(camera: Camera3D | ArrayCamera): void {
         if (TypeAssert.isArrayCamera(camera)) {
             logger.error('Viewer.setCamera does not support ArrayCamera, use Viewport instead.');
             return;
@@ -924,7 +936,7 @@ export class Viewer extends EventDispatcher {
      * Get the camera instance of current viewer.
      * This only works for 3D scene.
      */
-    public getCamera(): Camera3D {
+    getCamera(): Camera3D {
         return this.defaultViewport.camera;
     }
 
@@ -932,11 +944,11 @@ export class Viewer extends EventDispatcher {
      * This method will add highlight effect to all objects in the array.
      * @param {HighLightItem[]} objects HighLightItem is an interface which requires a Drawable object and an optional group index of geometry.
      */
-    public setHighlightObjects(objects: HighLightItem[]): void {
+    setHighlightObjects(objects: HighLightItem[]): void {
         this.setHighlightGroups([{ items: objects }]);
     }
 
-    public setHighlightGroups(groups: HighlightGroup[]): void {
+    setHighlightGroups(groups: HighlightGroup[]): void {
         if (!this.engine) {
             return;
         }
@@ -965,6 +977,9 @@ export class Viewer extends EventDispatcher {
     //#endregion
 }
 
+/**
+ * Runtime statistics collected from viewer rendering.
+ */
 export class RenderStatistics {
     backend: RendererBackend = RendererBackend.WEBGL2_JS;
     /**

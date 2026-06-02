@@ -1,21 +1,24 @@
+/**
+ * Math utility class containing scalar helpers.
+ */
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export class _Math {
     /**
      * Two Pi.
      */
-    public static PI_2 = Math.PI * 2;
+    static PI_2 = Math.PI * 2;
     /**
      * A coefficient changes degree to radius.
      */
-    public static DEG2RAD = Math.PI / 180;
+    static DEG2RAD = Math.PI / 180;
     /**
      * A coefficient changes radius to degree.
      */
-    public static RAD2DEG = 180 / Math.PI;
+    static RAD2DEG = 180 / Math.PI;
     /**
      * Return an unique string in whole runtime.
      */
-    public static generateUUID() {
+    static generateUUID() {
         // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
         const lut: string[] = [];
         for (let i = 0; i < 256; i++) {
@@ -37,31 +40,31 @@ export class _Math {
     /**
      * Return the mid number of given three.
      */
-    public static clamp(value: number, min: number, max: number): number {
+    static clamp(value: number, min: number, max: number): number {
         return Math.max(min, Math.min(max, value));
     }
     /**
      * compute {@link https://en.wikipedia.org/wiki/Modulo_operation| euclidean modulo} of m % n.
      */
-    public static euclideanModulo(n: number, m: number): number {
+    static euclideanModulo(n: number, m: number): number {
         return ((n % m) + m) % m;
     }
     /**
      * Linear mapping from range <a1, a2> to range <b1, b2>.
      */
-    public static mapLinear(x: number, a1: number, a2: number, b1: number, b2: number): number {
+    static mapLinear(x: number, a1: number, a2: number, b1: number, b2: number): number {
         return b1 + (x - a1) * (b2 - b1) / (a2 - a1);
     }
     /**
      * {@link https://en.wikipedia.org/wiki/Linear_interpolation | Linear interpolation}
      */
-    public static lerp(x: number, y: number, t: number): number {
+    static lerp(x: number, y: number, t: number): number {
         return (1 - t) * x + t * y;
     }
     /**
      * {@link http://en.wikipedia.org/wiki/Smoothstep | Smoothstep }
      */
-    public static smoothstep(x: number, min: number, max: number): number {
+    static smoothstep(x: number, min: number, max: number): number {
         if (x <= min) {
             return 0;
         }
@@ -75,7 +78,7 @@ export class _Math {
     /**
      * Use the fifth power of x function to get result between min and max.
      */
-    public static smootherstep(x: number, min: number, max: number): number {
+    static smootherstep(x: number, min: number, max: number): number {
         if (x <= min) {
             return 0;
         }
@@ -88,61 +91,61 @@ export class _Math {
     /**
      * Random integer from <low, high> interval.
      */
-    public static randInt(low: number, high: number): number {
+    static randInt(low: number, high: number): number {
         return low + Math.floor(Math.random() * (high - low + 1));
     }
     /**
      * Random float from <low, high> interval.
      */
-    public static randFloat(low: number, high: number): number {
+    static randFloat(low: number, high: number): number {
         return low + Math.random() * (high - low);
     }
     /**
      * Random float from <-range/2, range/2> interval.
      */
-    public static randFloatSpread(range: number): number {
+    static randFloatSpread(range: number): number {
         return range * (0.5 - Math.random());
     }
     /**
      * Change degree to radius.
      */
-    public static degToRad(degrees: number): number {
+    static degToRad(degrees: number): number {
         return degrees * _Math.DEG2RAD;
     }
     /**
      * Change radius to degree.
      */
-    public static radToDeg(radians: number): number {
+    static radToDeg(radians: number): number {
         return radians * _Math.RAD2DEG;
     }
     /**
      * Return `true` if value is a power of 2.
      */
-    public static isPowerOfTwo(value: number): boolean {
+    static isPowerOfTwo(value: number): boolean {
         return (value & (value - 1)) === 0 && value !== 0;
     }
     /**
      * Returns the smallest power of 2 that is greater than or equal to value.
      */
-    public static ceilPowerOfTwo(value: number): number {
+    static ceilPowerOfTwo(value: number): number {
         return Math.pow(2, Math.ceil(Math.log(value) / Math.LN2));
     }
     /**
      * Returns the largest power of 2 that is less than or equal to value.
      */
-    public static floorPowerOfTwo(value: number): number {
+    static floorPowerOfTwo(value: number): number {
         return Math.pow(2, Math.floor(Math.log(value) / Math.LN2));
     }
     /**
      * Returns the smallest or largest power of 2 which is closer to value.
      */
-    public static nearestPowerOfTwo(value: number): number {
+    static nearestPowerOfTwo(value: number): number {
         return 1 << Math.round(Math.log(value) / Math.LN2);
     }
     /**
      * Calculate the value at t of Catmull-Rom spline which through p0, p1, p2 and p3.
      */
-    public static CatmullRom(t: number, p0: number, p1: number, p2: number, p3: number): number {
+    static CatmullRom(t: number, p0: number, p1: number, p2: number, p3: number): number {
         const v0 = (p2 - p0) * 0.5;
         const v1 = (p3 - p1) * 0.5;
         const t2 = t * t;
@@ -152,19 +155,19 @@ export class _Math {
     /**
      * Calculate the value at t of Bezier Curve which is controlled by p0, p1 and p2.
      */
-    public static QuadraticBezier(t: number, p0: number, p1: number, p2: number): number {
+    static QuadraticBezier(t: number, p0: number, p1: number, p2: number): number {
         return (1 - t) * (1 - t) * p0 + 2 * (1 - t) * t * p1 + t * t * p2;
     }
     /**
      * Calculate the value at t of Bezier Curve which is controlled by p0, p1, p2 and p3.
      */
-    public static CubicBezier(t: number, p0: number, p1: number, p2: number, p3: number): number {
+    static CubicBezier(t: number, p0: number, p1: number, p2: number, p3: number): number {
         return (1 - t) * (1 - t) * (1 - t) * p0 + 3 * (1 - t) * (1 - t) * t * p1 + 3 * (1 - t) * t * t * p2 + t * t * t * p3;
     }
     /**
      * Compute values of the standard normal distribution, the results will contain (2*kernelRadius + 1) numbers.
      */
-    public static ComputeGaussianWeights(kernelRadius: number): number[] {
+    static ComputeGaussianWeights(kernelRadius: number): number[] {
         const size = 2 * kernelRadius + 1;
         const sigma = (size + 1) / 6;
         const twoSigmaSquare = 2.0 * sigma * sigma;
@@ -185,7 +188,7 @@ export class _Math {
     /**
      * Compute values of the normal distribution with given sigma, the results will contain (kernelRadius + 1) numbers.
      */
-    public static CreateSampleWeights(kernelRadius: number, stdDev = 2): number[] {
+    static CreateSampleWeights(kernelRadius: number, stdDev = 2): number[] {
         const weights: number[] = [];
         for (let i = 0; i <= kernelRadius; i++) {
             const v = Math.exp(- (i * i) / (2.0 * (stdDev * stdDev))) / (Math.sqrt(2.0 * Math.PI) * stdDev);
@@ -196,7 +199,7 @@ export class _Math {
     /**
      * Compute the summary of array's elements whose index between 'from' and 'to'.
      */
-    public static SumArraySection(array: number[], from: number, to: number): number {
+    static SumArraySection(array: number[], from: number, to: number): number {
         let sum = 0;
         for (let i = from; i <= to; i++) {
             if (array[i] !== undefined) {

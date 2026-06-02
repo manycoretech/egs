@@ -12,15 +12,15 @@ export class HemisphereLight extends Light {
      * Check the type whether it belongs to HemisphereLight.
      * This value should not be changed by user.
      */
-    public isHemisphereLight = true;
+    isHemisphereLight = true;
     /**
      * The light's ground color, as passed in the constructor. Default is a new Color set to white (0xffffff).
      */
-    public groundColor: Color;
+    groundColor: Color;
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'HemisphereLight';
     }
 
@@ -33,7 +33,7 @@ export class HemisphereLight extends Light {
         this.groundColor = new Color(groundColor);
     }
 
-    public copy(source: HemisphereLight) {
+    copy(source: HemisphereLight) {
         super.copy(source);
         this.groundColor.copy(source.groundColor);
         return this;
@@ -41,14 +41,14 @@ export class HemisphereLight extends Light {
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<HemisphereLight>(['groundColor']);
     }
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<HemisphereLight>(['groundColor']);
     }

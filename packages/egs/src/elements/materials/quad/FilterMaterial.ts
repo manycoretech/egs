@@ -9,6 +9,9 @@ import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
 import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { Vector3 } from '../../../math/Vector3';
 
+/**
+ * Target region selected by a filter material.
+ */
 export enum FilterTarget {
     All,
     Foreground,

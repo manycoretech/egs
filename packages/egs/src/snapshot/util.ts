@@ -9,11 +9,17 @@ import { WGLCapabilities } from '../renderer/webgl/WGLCapabilities';
 import { TextureViewDimension, getDepthFormat, TextureFormat, TextureDimension } from '../elements/textures/types';
 import { IRenderer } from '../renderer/IRenderer';
 
+/**
+ * Bounding strategy used to frame snapshot targets.
+ */
 export enum SnapshotBoxPrecision {
     BoundingBox = 'BoundingBox',
     Vertex = 'Vertex',
 }
 
+/**
+ * Camera direction used for axis-aligned snapshots.
+ */
 export enum SnapshotAxisDirection {
     Top = 'top',
     Bottom = 'bottom',
@@ -23,6 +29,9 @@ export enum SnapshotAxisDirection {
     Back = 'back',
 }
 
+/**
+ * Computes the orthographic projection size for a snapshot direction.
+ */
 export function computeProjectionSize(size: Vector3, type: SnapshotAxisDirection): Vector3 {
     // x, y represent the viewport width and height, z means the depth of view.
     switch (type) {
@@ -38,6 +47,9 @@ export function computeProjectionSize(size: Vector3, type: SnapshotAxisDirection
     }
 }
 
+/**
+ * Computes the camera position for a snapshot direction.
+ */
 export function computeCameraPosition(size: Vector3, type: SnapshotAxisDirection): Vector3 {
     switch (type) {
         case SnapshotAxisDirection.Top:

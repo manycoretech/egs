@@ -5,7 +5,7 @@ import { Curve } from './Curve';
  * This class is used to draw an arc-curve that is a part of ellipse curve.
  */
 export class ArcCurve2D extends EllipseCurve2D {
-    public isArcCurve2D = true;
+    isArcCurve2D = true;
     /**
      * @param { number } aX The X center of the ellipse. Default is 0.
      * @param { number } aY The Y center of the ellipse. Default is 0.
@@ -19,12 +19,12 @@ export class ArcCurve2D extends EllipseCurve2D {
         this.type = 'ArcCurve';
     }
 
-    public className(): string {
+    className(): string {
         return 'ArcCurve2D';
     }
 
     // Get sequence of points using getPoint(t)
-    public getPoints(divisions?: number) {
+    getPoints(divisions?: number) {
         if (divisions === undefined) {
             const sweep = this.aEndAngle - this.aStartAngle;
             divisions = Curve.segmentsCount(
@@ -35,7 +35,7 @@ export class ArcCurve2D extends EllipseCurve2D {
         return super.getPoints(divisions);
     }
 
-    public clone(): ArcCurve2D {
+    clone(): ArcCurve2D {
         return new ArcCurve2D().copy(this);
     }
 }

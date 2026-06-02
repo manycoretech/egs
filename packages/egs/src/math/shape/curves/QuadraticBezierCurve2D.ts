@@ -6,10 +6,10 @@ import { Serializer, Deserializer } from '../../../utils/Serialization';
  * Build a Quadratic-Bezier curve by {@link v0 | v0 }, {@link v1 | v1 } and {@link v2 | v2 } in 3D {@link Path | Path }.
  */
 export class QuadraticBezierCurve2D extends Curve2D {
-    public isQuadraticBezierCurve3D = true;
-    public v0: Vector2;
-    public v1: Vector2;
-    public v2: Vector2;
+    isQuadraticBezierCurve3D = true;
+    v0: Vector2;
+    v1: Vector2;
+    v2: Vector2;
 
     constructor(v0?: Vector2, v1?: Vector2, v2?: Vector2) {
         super();
@@ -19,19 +19,19 @@ export class QuadraticBezierCurve2D extends Curve2D {
         this.v2 = v2 || new Vector2();
     }
 
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<QuadraticBezierCurve2D>(['v0', 'v1', 'v2']);
     }
 
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         ctx.reads<QuadraticBezierCurve2D>(['v0', 'v1', 'v2']);
     }
 
-    public className(): string {
+    className(): string {
         return 'QuadraticBezierCurve2D';
     }
 
-    public getPoint(t: number, optionalTarget?: Vector2): Vector2 {
+    getPoint(t: number, optionalTarget?: Vector2): Vector2 {
         const point = optionalTarget || new Vector2();
         const v0 = this.v0;
         const v1 = this.v1;
@@ -45,11 +45,11 @@ export class QuadraticBezierCurve2D extends Curve2D {
         return point;
     }
 
-    public clone() {
+    clone() {
         return new QuadraticBezierCurve2D().copy(this);
     }
 
-    public copy(source: QuadraticBezierCurve2D) {
+    copy(source: QuadraticBezierCurve2D) {
         super.copy(source);
         this.v0.copy(source.v0);
         this.v1.copy(source.v1);
@@ -58,7 +58,7 @@ export class QuadraticBezierCurve2D extends Curve2D {
         return this;
     }
 
-    public toJSON(): any {
+    toJSON(): any {
         const data = super.toJSON();
         data.v0 = this.v0.toArray();
         data.v1 = this.v1.toArray();
@@ -67,7 +67,7 @@ export class QuadraticBezierCurve2D extends Curve2D {
         return data;
     }
 
-    public fromJSON(json: any) {
+    fromJSON(json: any) {
         super.fromJSON(json);
         this.v0.fromArray(json.v0);
         this.v1.fromArray(json.v1);

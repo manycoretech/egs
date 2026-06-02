@@ -12,7 +12,7 @@ const p = require('../package.json');
  * @public
  */
 export class Application {
-    public static version: string = p.version;
+    static version: string = p.version;
     private static instance: Application;
     private viewers = new Map<string, Viewer>();
 
@@ -24,7 +24,7 @@ export class Application {
     /**
      * static function to get the app instance, to reduce duplication.
      */
-    public static getInstance(): Application {
+    static getInstance(): Application {
         return Application.instance || (Application.instance = new Application());
     }
 
@@ -35,7 +35,7 @@ export class Application {
      * @param {EngineInitializeConfig} engineInitConfig configuration of the viewer such as if turn the shadow on.
      * engineInitConfig
      */
-    public createViewer(name: string, container: HTMLElement, engineInitConfig: EngineInitializeConfig): Viewer {
+    createViewer(name: string, container: HTMLElement, engineInitConfig: EngineInitializeConfig): Viewer {
         const viewer = new Viewer(container, {
             name,
             ...engineInitConfig
@@ -49,15 +49,15 @@ export class Application {
     /**
      * get viewer object by ID.
      */
-    public getViewer(name: string): Viewer {
+    getViewer(name: string): Viewer {
         return this.viewers.get(name)!;
     }
 
-    public getViewers(): Viewer[] {
+    getViewers(): Viewer[] {
         return Array.from(this.viewers.values());
     }
 
-    public rebuildWorld(config?: WorldRebuildConfig): Promise<void> {
+    rebuildWorld(config?: WorldRebuildConfig): Promise<void> {
         if (hasManagedContentAPI()) {
             return ManagedContentBridge.rebuildWorld(config);
         }

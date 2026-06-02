@@ -81,11 +81,11 @@ export class CoordinateSystemHelper implements Renderable {
      * The switch of this effect.
      * @defaultValue `false`.
      */
-    public enabled = false;
-    public arrowHelperX: ArrowHelper;
-    public arrowHelperY: ArrowHelper;
-    public arrowHelperZ: ArrowHelper;
-    public total_length: number = 740; // [300 + 70(alphabet max length)] * 2
+    enabled = false;
+    arrowHelperX: ArrowHelper;
+    arrowHelperY: ArrowHelper;
+    arrowHelperZ: ArrowHelper;
+    total_length: number = 740; // [300 + 70(alphabet max length)] * 2
     private location = new Vector3(0.875, 0.7, 0.125); // right bottom corner
     private isCameraNeedsUpdate = true;
     private axisCamera: OrthographicCamera;
@@ -94,7 +94,7 @@ export class CoordinateSystemHelper implements Renderable {
     private alphabetZ: Mesh;
     private isWithAlphabets = true;
 
-    public destroy() {
+    destroy() {
         this.alphabetX.destroyAllResourcesOwned();
         this.alphabetY.destroyAllResourcesOwned();
         this.alphabetZ.destroyAllResourcesOwned();
@@ -169,11 +169,11 @@ export class CoordinateSystemHelper implements Renderable {
     }
     // x and y are ratio from 0-1
     // same as z, which means the ratio of the screen
-    public getLocation(): Vector3 {
+    getLocation(): Vector3 {
         return this.location.clone();
     }
 
-    public setLocation(x?: number, y?: number, size?: number) {
+    setLocation(x?: number, y?: number, size?: number) {
         if (x !== undefined) {
             this.location.setX(x);
         }
@@ -186,7 +186,7 @@ export class CoordinateSystemHelper implements Renderable {
         this.isCameraNeedsUpdate = true;
     }
 
-    public setAlphabetParam(scale?: number, colorX?: Color, colorY?: Color, colorZ?: Color) {
+    setAlphabetParam(scale?: number, colorX?: Color, colorY?: Color, colorZ?: Color) {
         if (scale !== undefined) {
             this.alphabetX.scale.set(scale, scale, scale);
             this.alphabetY.scale.set(scale, scale, scale);
@@ -204,7 +204,7 @@ export class CoordinateSystemHelper implements Renderable {
         }
     }
 
-    public setAlphabetOffset(offsetX?: Vector3, offsetY?: Vector3, offsetZ?: Vector3) {
+    setAlphabetOffset(offsetX?: Vector3, offsetY?: Vector3, offsetZ?: Vector3) {
         let maxDistance = 0;
         if (offsetX) {
             this.alphabetX.translateX(offsetX.x);
@@ -227,7 +227,7 @@ export class CoordinateSystemHelper implements Renderable {
         this.total_length += maxDistance;
     }
 
-    public updateAxisCamera(camera: Camera3D) {
+    updateAxisCamera(camera: Camera3D) {
         if (this.isCameraNeedsUpdate) {
             if (TypeAssert.isPerspectiveCamera(camera)) {
                 let width, height;
@@ -291,11 +291,11 @@ export class CoordinateSystemHelper implements Renderable {
         }
     }
 
-    public config(_: IRenderer) {
+    config(_: IRenderer) {
         return true;
     }
 
-    public render(renderer: IRenderer): void {
+    render(renderer: IRenderer): void {
         if (!this.enabled) {
             return;
         }

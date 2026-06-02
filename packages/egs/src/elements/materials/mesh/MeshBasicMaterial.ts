@@ -54,7 +54,7 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'MeshBasicMaterial';
     }
 
@@ -66,7 +66,7 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * Change the corresponding attribute according to the values of given {@link MeshBasicMaterialParameters| parameters}.
      * @param {MeshBasicMaterialParameters} values a object of specified type contains parameters.
      */
-    public setValues(values?: MeshBasicMaterialParameters<T>) {
+    setValues(values?: MeshBasicMaterialParameters<T>) {
         if (values === undefined) {
             return;
         }
@@ -83,7 +83,7 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * @internal
      */
-    public extendShaderShading(builder: ShaderBuilder) {
+    extendShaderShading(builder: ShaderBuilder) {
         if (this.enableVertexColor) {
             builder
                 .addVarying(ShaderVaryingTypes.vertexColor)
@@ -100,7 +100,7 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
             .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = vec4(color, opacity);');
     }
 
-    public traverseTexture(visitor: (tex: Texture) => void) {
+    traverseTexture(visitor: (tex: Texture) => void) {
         super.traverseTexture(visitor);
         Utils.visitTexture([this.color.texture, this.alpha.texture], visitor);
     }
@@ -109,7 +109,7 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * This method may override in extended class.
      * @internal
      */
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
             .hasItem(this.color.texture)
             .hasItem(this.alpha.texture)
@@ -119,7 +119,7 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * @internal
      */
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         if (this.enableVertexColor) {
             return;
         }
@@ -131,7 +131,7 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * Copy the data to this instance from other instance.
      * @param {MeshBasicMaterial} other the source of copied data
      */
-    public copy(other: MeshBasicMaterial<T>) {
+    copy(other: MeshBasicMaterial<T>) {
         super.copyBase(other);
         this.color.copy(other.color);
         this.alpha.copy(other.alpha);
@@ -140,14 +140,14 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     /**
      * Return a cloned instance of this class.
      */
-    public clone(): MeshBasicMaterial<T> {
+    clone(): MeshBasicMaterial<T> {
         return new MeshBasicMaterial<T>().copy(this);
     }
     /**
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx an instance used to store the data of scene objects.
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<MeshBasicMaterial>(['color', 'alpha', 'uvTransform', 'enableVertexColor']);
     }
@@ -155,7 +155,7 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx an instance give the method to take the data for attribute.
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<MeshBasicMaterial>(['color', 'alpha', 'uvTransform', 'enableVertexColor']);
     }

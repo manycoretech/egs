@@ -6,17 +6,17 @@ import { Box2 } from '../../Box2';
  */
 export class Curve2D extends Curve<Vector2>{
 
-    public getBounds(bounds = new Box2()) {
+    getBounds(bounds = new Box2()) {
         const points = this.getPoints();
         bounds.setFromPoints(points);
         return bounds;
     }
 
-    public clone(): Curve2D {
+    clone(): Curve2D {
         return new Curve2D().copy(this);
     }
 
-    public className(): string {
+    className(): string {
         return 'Curve2D';
     }
 }

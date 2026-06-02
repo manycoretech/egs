@@ -4,41 +4,50 @@ import { Quaternion } from './Quaternion';
 import { Vector3 } from './Vector3';
 import { logger } from '../utils/Logger';
 
+/**
+ * Euler-angle rotation represented by x, y, z radians and an order.
+ */
 export class Euler {
     /**
      * The angle of the x axis in radians.
      */
-    public _x: number;
+    _x: number;
     /**
      * The angle of the y axis in radians.
      */
-    public _y: number;
+    _y: number;
     /**
      * The angle of the z axis in radians.
      */
-    public _z: number;
+    _z: number;
     /**
      * A string representing the order that the rotations are applied.
      */
-    public _order: string;
+    _order: string;
     /**
      * Check the type whether it belongs to Euler.
      * This value should not be changed by user.
      */
-    public isEuler = true;
+    isEuler = true;
     /**
      * The function will be called when {@link _x| x}, {@link _y| y} {@link _z| z} and {@link _order| order} is changed.
      */
-    public onChangeCallback: Function;
+    onChangeCallback: Function;
     /**
      * All possible value for {@link _order| order}.
      */
-    public static RotationOrders = ['XYZ', 'YZX', 'ZXY', 'XZY', 'YXZ', 'ZYX'];
+    static RotationOrders = ['XYZ', 'YZX', 'ZXY', 'XZY', 'YXZ', 'ZYX'];
     /**
      * The default of {@link _order| order}.
      */
-    public static DefaultOrder = 'XYZ';
+    static DefaultOrder = 'XYZ';
 
+    /**
+     * @param x rotation x
+     * @param y rotation y
+     * @param z rotation z
+     * @param order euler order, values in `RotationOrders`
+     */
     constructor(x?: number, y?: number, z?: number, order?: string) {
         this._x = x || 0;
         this._y = y || 0;
@@ -85,7 +94,7 @@ export class Euler {
     /**
      * Sets the angles of this euler transform and optionally the {@link order| order}.
      */
-    public set(x: number, y: number, z: number, order?: string): Euler {
+    set(x: number, y: number, z: number, order?: string): Euler {
         this._x = x;
         this._y = y;
         this._z = z;
@@ -96,13 +105,13 @@ export class Euler {
     /**
      * Returns a new Euler with the same parameters as this one.
      */
-    public clone(): Euler {
+    clone(): Euler {
         return new Euler(this._x, this._y, this._z, this._order);
     }
     /**
      * Copies value of {@link Euler| euler} to this euler.
      */
-    public copy(euler: Euler): Euler {
+    copy(euler: Euler): Euler {
         this._x = euler._x;
         this._y = euler._y;
         this._z = euler._z;
@@ -116,7 +125,7 @@ export class Euler {
      * {@link https://en.wikipedia.org/wiki/Rotation_matrix| rotation matrix} (i.e. unscaled).
      * @param order (optional) a string representing the order that the rotations are applied.
      */
-    public setFromRotationMatrix(m: Matrix4, order?: string, update?: boolean): Euler {
+    setFromRotationMatrix(m: Matrix4, order?: string, update?: boolean): Euler {
         const clamp = _Math.clamp;
         // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
         const te = m._elements;
@@ -207,7 +216,7 @@ export class Euler {
      * @param q a normalized quaternion.
      * @param order (optional) a string representing the order that the rotations are applied.
      */
-    public setFromQuaternion(q: Quaternion, order?: string, update?: boolean): Euler {
+    setFromQuaternion(q: Quaternion, order?: string, update?: boolean): Euler {
         // let matrix = new Matrix4();
         tmpMatrix.makeRotationFromQuaternion(q);
         return this.setFromRotationMatrix(tmpMatrix, order, update);
@@ -217,7 +226,7 @@ export class Euler {
      * @param vector {@link Vector3| Vector3}.
      * @param order (optional) a string representing the order that the rotations are applied.
      */
-    public setFromVector3(v: Vector3, order?: string): Euler {
+    setFromVector3(v: Vector3, order?: string): Euler {
         return this.set(v.x, v.y, v.z, order || this._order);
     }
     /**
@@ -225,7 +234,7 @@ export class Euler {
      * and then setting this euler angle with the quaternion and the new order.
      * @WARNING this discards revolution information.
      */
-    public reorder(newOrder: string): Euler {
+    reorder(newOrder: string): Euler {
         // WARNING: this discards revolution information -bhouston
         // let q = new Quaternion();
         tmpQ.setFromEuler(this);
@@ -234,7 +243,7 @@ export class Euler {
     /**
      * Checks for strict equality of this euler and {@link Euler| euler}.
      */
-    public equals(euler: Euler): boolean {
+    equals(euler: Euler): boolean {
         return (euler._x === this._x) && (euler._y === this._y) && (euler._z === this._z) && (euler._order === this._order);
     }
     /**
@@ -244,7 +253,7 @@ export class Euler {
      * Assigns this euler's {@link z| z} angle from array[2].
      * Optionally assigns this euler's {@link order| order} from array[3].
      */
-    public fromArray(array: ArrayLike<number>): Euler {
+    fromArray(array: ArrayLike<number>): Euler {
         this._x = array[0];
         this._y = array[1];
         this._z = array[2];
@@ -256,7 +265,7 @@ export class Euler {
      * @param array (optional) array to store the euler in.
      * @param offset (optional) offset in the array.
      */
-    public toArray(array?: number[], offset?: number): number[] {
+    toArray(array?: number[], offset?: number): number[] {
         if (array === undefined) {
             array = [];
         }
@@ -274,7 +283,7 @@ export class Euler {
      * @param optionalResult (optional) If specified, the result will be copied into this Vector, otherwise a new one will be created.
      * Returns the Euler's {@link x| x}, {@link y| y} and {@link z| z} properties as a {@link Vector3| Vector3}.
      */
-    public toVector3(optionalResult?: Vector3): Vector3 {
+    toVector3(optionalResult?: Vector3): Vector3 {
         if (optionalResult) {
             return optionalResult.set(this._x, this._y, this._z);
         } else {
@@ -284,7 +293,7 @@ export class Euler {
     /**
      * A method to call {@link onChangeCallback| onChangeCallback}.
      */
-    public onChange(callback: Function): void {
+    onChange(callback: Function): void {
         this.onChangeCallback = callback;
     }
 }

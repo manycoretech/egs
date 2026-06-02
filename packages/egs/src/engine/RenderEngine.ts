@@ -17,6 +17,9 @@ import { Vector4 } from '../math/Vector4';
 import { Application } from '../Application';
 import { globalOverrideDefaultRendererImpl } from '../renderer/RendererOverride';
 
+/**
+ * Event emitted when the renderer has been reset
+ */
 export const ResetRendererEvent = new EventType();
 export const RendererInitialized = new EventType<IRenderer>();
 

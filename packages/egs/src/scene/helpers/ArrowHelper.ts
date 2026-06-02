@@ -15,8 +15,8 @@ import { transform } from '../../elements/geometries/operators/Index';
  * Draw a arrow with a head and a line.
  */
 export class ArrowHelper extends CombinedObjectGroup {
-    public line: Line<LineBasicMaterial>;
-    public cone: Mesh<MeshBasicMaterial>;
+    line: Line<LineBasicMaterial>;
+    cone: Mesh<MeshBasicMaterial>;
 
     /**
      * @param {Vector3} dir this vector representing the world space direction of arrow. Default is Vector3(0, 0, 1).
@@ -75,7 +75,7 @@ export class ArrowHelper extends CombinedObjectGroup {
     /**
      * Change the direction of the arrow.
      */
-    public setDirection(dir: Vector3) {
+    setDirection(dir: Vector3) {
         const axis = new Vector3();
         // dir is assumed to be normalized
         if (dir.y > 0.99999) {
@@ -91,7 +91,7 @@ export class ArrowHelper extends CombinedObjectGroup {
     /**
      * Change the length of the arrow includes the line and the head.
      */
-    public setLength(length: number, headLength?: number, headWidth?: number) {
+    setLength(length: number, headLength?: number, headWidth?: number) {
         if (headLength === undefined) {
             headLength = 0.2 * length;
         }
@@ -109,23 +109,23 @@ export class ArrowHelper extends CombinedObjectGroup {
     /**
      * Change the color of the arrow includes the line and the head.
      */
-    public setColor(color: Color) {
+    setColor(color: Color) {
         this.line.expectOnlyMaterial().color.color = color.cloneReadonly();
         this.cone.expectOnlyMaterial().color.color = color.cloneReadonly();
     }
 
-    public copy(source: ArrowHelper) {
+    copy(source: ArrowHelper) {
         super.copy(source, false);
         this.line.copy(source.line);
         this.cone.copy(source.cone);
         return this;
     }
 
-    public clone() {
+    clone() {
         return new ArrowHelper().copy(this);
     }
 
-    public destroyCombined() {
+    destroyCombined() {
         this.traverse(o => o.destroyAllResourcesOwned());
     }
 }

@@ -5,14 +5,26 @@ import { Vector4 } from '../../math/Vector4';
 import { UniformBlockObject } from '../../renderer/shader/components/UniformBlockObject';
 import { SourceTexture } from '../../elements/textures/SourceTexture';
 
+/**
+ * Event emitted when splat rendering stability changes.
+ */
 export const SplatRenderingStabilityChangedEvent = new EventType<boolean>();
+/**
+ * Event emitted after splat ordering has been updated.
+ */
 export const SplatSortedEvent = new EventType();
 
+/**
+ * Bit flags that describe splat selection state.
+ */
 export enum SplatState {
     Deleted = 1,
     Selected = 2,
 }
 
+/**
+ * Configuration for animated splat visual effects.
+ */
 export interface SplatEffectConfig {
     enabled: boolean;
 
@@ -78,6 +90,9 @@ export interface SplatEffectConfig {
     overrideColor: Vector4;
 }
 
+/**
+ * Base scene object for Gaussian splat renderables.
+ */
 export abstract class Splat extends Object3D {
     abstract readonly PackType: string;
     abstract createUnpackSplatShader(): string;

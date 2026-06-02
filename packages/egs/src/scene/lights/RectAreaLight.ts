@@ -15,13 +15,13 @@ const matrix4 = new Matrix4();
  * This light type can be used to simulate light sources such as bright windows or strip lighting.
  */
 export class RectAreaLight extends AreaLight {
-    public isRectAreaLight = true;
+    isRectAreaLight = true;
     @lightProperty()
-    public width: number;
+    width: number;
     @lightProperty()
-    public height: number;
+    height: number;
     @lightProperty()
-    public specularStrength: number;
+    specularStrength: number;
     private uniforms = {
         position: new Vector3(),
         color: new Color(),
@@ -33,7 +33,7 @@ export class RectAreaLight extends AreaLight {
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'RectAreaLight';
     }
     /**
@@ -49,7 +49,7 @@ export class RectAreaLight extends AreaLight {
         this.specularStrength = specularStrength ? specularStrength : 0;
     }
 
-    public copy(source: RectAreaLight, recursive?: boolean) {
+    copy(source: RectAreaLight, recursive?: boolean) {
         super.copy(source, recursive);
         this.width = source.width;
         this.height = source.height;
@@ -57,13 +57,13 @@ export class RectAreaLight extends AreaLight {
         return this;
     }
 
-    public clone(recursive?: boolean) {
+    clone(recursive?: boolean) {
         return new RectAreaLight().copy(this, recursive);
     }
     /**
      * @internal
      */
-    public refreshUniforms(viewMatrix: Matrix4) {
+    refreshUniforms(viewMatrix: Matrix4) {
         this.uniforms.color.copy(this.color).multiplyScalar(this.intensity);
         this.uniforms.position.setFromMatrixPosition(this.matrixWorld).applyMatrix4(viewMatrix);
         this.uniforms.halfWidth.set(this.width * 0.5, 0, 0);
@@ -79,20 +79,20 @@ export class RectAreaLight extends AreaLight {
     /**
      * @internal
      */
-    public updateUniformForForward(program: WGLProgram, index: number) {
+    updateUniformForForward(program: WGLProgram, index: number) {
         this.updateUniformByPrefix(program, `rectAreaLights[${index}]`);
     }
 
     /**
      * @internal
      */
-    public updateUniformForDefer(program: WGLProgram) {
+    updateUniformForDefer(program: WGLProgram) {
         this.updateUniformByPrefix(program, 'rectAreaLight');
         program.setTexture2D('ltc_1', RectAreaLight.ltc_1_texture);
         program.setTexture2D('ltc_2', RectAreaLight.ltc_2_texture);
     }
 
-    public updateUniformByPrefix(program: WGLProgram, prefix: string) {
+    updateUniformByPrefix(program: WGLProgram, prefix: string) {
         program.setUniform(prefix + '.halfWidth', this.uniforms.halfWidth);
         program.setUniform(prefix + '.halfHeight', this.uniforms.halfHeight);
         program.setUniform(prefix + '.color', this.uniforms.color);
@@ -100,7 +100,7 @@ export class RectAreaLight extends AreaLight {
         program.setUniform(prefix + '.specularStrength', this.uniforms.specularStrength);
     }
 
-    public static getHeader(isArray: boolean) {
+    static getHeader(isArray: boolean) {
         if (isArray) {
             return 'uniform RectAreaLight rectAreaLights[ NUM_RECT_AREA_LIGHTS ];';
         } else {
@@ -111,27 +111,27 @@ export class RectAreaLight extends AreaLight {
     /**
      * @internal
      */
-    public static getLightCollectShader() {
+    static getLightCollectShader() {
         return rectAreaLightCollect;
     }
     /**
      * @internal
      */
-    public static getShaderInclude() {
+    static getShaderInclude() {
         return rectAreaLightInclude;
     }
 
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<RectAreaLight>(['width', 'height', 'specularStrength']);
     }
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<RectAreaLight>(['width', 'height', 'specularStrength']);
     }

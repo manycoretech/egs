@@ -10,6 +10,9 @@ import { Texture } from '../../textures/Texture';
 import { materialProperty } from '../../../ContentAPI';
 import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
 
+/**
+ * Tone mapping functions
+ */
 export enum ToneMapping {
     Linear,
     Reinhard,
@@ -171,7 +174,7 @@ export class ToneMappingMaterial extends PassQuadMaterialBase {
                 gl_FragColor = ${outputTransfer}(${toneMapping}(${inputTransfer}(color)));
             `);
     }
-    public updateShadingUniforms(program: WGLProgram) {
+    updateShadingUniforms(program: WGLProgram) {
         program.setTexture2D('tDiffuse', this.tDiffuse);
         program.setUniform('exposure', this.exposure);
     }
@@ -179,7 +182,7 @@ export class ToneMappingMaterial extends PassQuadMaterialBase {
         super(params);
         this.transparent = false;
     }
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) +
             new HashKeyBuilder()
                 .raw(this.outputTransfer)

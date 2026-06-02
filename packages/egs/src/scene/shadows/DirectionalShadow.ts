@@ -13,13 +13,13 @@ import { lightProperty } from '../../ContentAPI';
 
 export class DirectionalShadow extends SingleProjectShadow<OrthographicCamera> {
     @lightProperty()
-    public enableAutoBias = false;
+    enableAutoBias = false;
     @lightProperty()
-    public shadowCameraNear = 0.1;
+    shadowCameraNear = 0.1;
     @lightProperty()
-    public shadowCameraFar = 2000;
+    shadowCameraFar = 2000;
     @lightProperty()
-    public shadowRenderSize = new Vector2(2, 2);
+    shadowRenderSize = new Vector2(2, 2);
 
     className(): string {
         return 'DirectionalShadow';
@@ -39,14 +39,14 @@ export class DirectionalShadow extends SingleProjectShadow<OrthographicCamera> {
         this.shadowRenderSize = other.shadowRenderSize;
     }
 
-    public updateCameraAndShadowMatrices(light: DirectionalLight) {
+    updateCameraAndShadowMatrices(light: DirectionalLight) {
         super.updateCameraAndShadowMatrices(light);
         this.shadowRenderSize = new Vector2(this.camera.right - this.camera.left, this.camera.top - this.camera.bottom);
         this.shadowCameraNear = this.camera.near;
         this.shadowCameraFar = this.camera.far;
     }
 
-    public extendsShader(builder: ShaderBuilder, length: number) {
+    extendsShader(builder: ShaderBuilder, length: number) {
         super.includeShadowMapCommon(builder);
         builder
             .addVaryingCustomArray('vDirectionalShadowCoord', WebGLShaderDataType.Vec4, length)
@@ -58,7 +58,7 @@ export class DirectionalShadow extends SingleProjectShadow<OrthographicCamera> {
             .inject(ShaderInjectionTypes.vary_any, vertVary);
     }
 
-    public extendsShaderDeferred(builder: ShaderBuilder) {
+    extendsShaderDeferred(builder: ShaderBuilder) {
         super.includeShadowMapCommon(builder);
         builder
             .addFragmentCustom(getCustomFrag(false))

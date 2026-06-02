@@ -35,6 +35,9 @@ export interface HighLightItem {
     instanceIndex?: number;
 }
 
+/**
+ * Visual styling and target list for one highlight group.
+ */
 export interface HighlightGroup {
     items: HighLightItem[];
     width?: number;

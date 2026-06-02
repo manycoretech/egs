@@ -24,17 +24,17 @@ export class FatLineSegments extends Drawable<FatLineMaterial, FatLineBufferGeom
     /**
      * If require engine to draw this as Line instead of Mesh, set this to true.
      */
-    public static UseFallBack = false;
+    static UseFallBack = false;
     /**
      * Check the type whether it belongs to FatLineSegments.
      * This value should not be changed by user.
      */
-    public isFatLineSegments = true;
-    public __isFatLineSegments = true;
+    isFatLineSegments = true;
+    __isFatLineSegments = true;
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'FatLineSegments';
     }
 
@@ -46,7 +46,7 @@ export class FatLineSegments extends Drawable<FatLineMaterial, FatLineBufferGeom
         this.castShadow = false;
     }
 
-    public updateRenderEntity() {
+    updateRenderEntity() {
         if (FatLineSegments.UseFallBack) {
             this._renderGeometry = this._geometry.fallback;
             this.drawMode = DrawMode.Lines;
@@ -62,7 +62,7 @@ export class FatLineSegments extends Drawable<FatLineMaterial, FatLineBufferGeom
      * @param {Raycaster} raycaster the instance of Raycaster is used to get the data for calculation.
      * @param {Intersection} intersects the result will be stored here.
      */
-    public raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]): void {
+    raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]): void {
         if (FatLineSegments.UseFallBack) {
             super.raycast(raycaster, intersects);
             return;
@@ -111,13 +111,13 @@ export class FatLineSegments extends Drawable<FatLineMaterial, FatLineBufferGeom
         raycaster.enableScreenSpaceTolerance = backupScreenSpaceEnable;
     }
 
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         const data = ctx.serialize(this._geometry.fallback);
         ctx.putRaw('fallback', data);
     }
 
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         const sourceGeo = ctx.deserialize(ctx.readRaw('fallback')) as BufferGeometry<LineList>;
         if (sourceGeo.position.array.length === 0) {

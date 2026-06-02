@@ -43,29 +43,31 @@ export const MergedMeshPhongMaterialDataTextureSchema = new DataTextureSchemaIns
     materialIndexShaderAttributeName: 'map_index.y'
 });
 
-// This is the material specifically for the mesh which contains different groups of sub-meshes and combine them into one single drawcall
-// The shader inside this material will have may if cases for different textures or colors
+/**
+ * This is the material specifically for the mesh which contains different groups of sub-meshes and combine them into one single drawcall
+ * The shader inside this material will have may if cases for different textures or colors
+ */
 export class MergedMeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> extends MeshPhongMaterial<T> {
     readonly isMergedMeshPhongMaterial = true;
 
-    public className() {
+    className() {
         return 'MergedMeshPhongMaterial';
     }
 
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) + this.textures.length;
     }
 
     @materialProperty()
-    public dataTexture: T = Texture2D.default as any;
+    dataTexture: T = Texture2D.default as any;
     @materialProperty()
-    public textures: T[] = [];
+    textures: T[] = [];
 
-    public traverseTexture(visitor: (tex: Texture) => void) {
+    traverseTexture(visitor: (tex: Texture) => void) {
         super.traverseTexture(visitor);
         Utils.visitTexture([...this.textures, this.dataTexture], visitor);
     }
-    public setTextureUnit(texture: T, unit: number): void {
+    setTextureUnit(texture: T, unit: number): void {
         this.textures[unit] = texture;
     }
 
@@ -81,11 +83,11 @@ export class MergedMeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D
         }
         MergedMeshPhongMaterialDataTextureSchema.updateUniform(this.dataTexture, program);
     }
-    public updateShadingUniforms(program: WGLProgram, r: ShaderComponentRegistry): void {
+    updateShadingUniforms(program: WGLProgram, r: ShaderComponentRegistry): void {
         super.updateShadingUniforms(program, r);
         this.updateShadingUniformsSelf(program);
     }
-    public updateDeferredUniform(program: WGLProgram) {
+    updateDeferredUniform(program: WGLProgram) {
         super.updateDeferredUniform(program);
         this.updateShadingUniformsSelf(program);
     }
@@ -122,11 +124,11 @@ export class MergedMeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D
             specularStrength = texture2D( dataTexture, vSpecularParametersCoord.zw ).r;
         `);
     }
-    public extendShaderShading(b: ShaderBuilder, r: ShaderComponentRegistry) {
+    extendShaderShading(b: ShaderBuilder, r: ShaderComponentRegistry) {
         super.extendShaderShading(b, r);
         this.extendShadingSelf(b);
     }
-    public extendEncodeDeferred(b: ShaderBuilder) {
+    extendEncodeDeferred(b: ShaderBuilder) {
         super.extendEncodeDeferred(b);
         this.extendShadingSelf(b);
     }

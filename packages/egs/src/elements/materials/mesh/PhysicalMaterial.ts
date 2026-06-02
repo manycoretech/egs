@@ -5,6 +5,10 @@ import { JsNoImplMaterial } from '../base';
 import { TextureV2 } from '../../textures/TextureV2';
 import { Texture2D } from '../../textures/Texture2D';
 
+/**
+ * Material facade for physically based shading.
+ * @deprecated
+ */
 export class PhysicalMaterial extends JsNoImplMaterial {
     className(): string {
         return 'PhysicalMaterial';

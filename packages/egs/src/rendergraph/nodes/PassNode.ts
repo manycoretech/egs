@@ -145,7 +145,7 @@ export class PassNode extends ExecuteNode<PassExecuteCtx> {
     * for webgpu set storeOp to 'discard' in begin render pass
     * for webgl will call invalidateFramebuffer.
     */
-    public discardOutput() {
+    discardOutput() {
         this._needStoreOutput = false;
         return this;
     }

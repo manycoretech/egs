@@ -15,16 +15,16 @@ export class LineSegments<M extends Material = Material> extends Drawable<M, Buf
      * Used to check type of this or extended instance.
      * This value should not be changed by user.
      */
-    public isLineSegments = true;
+    isLineSegments = true;
     /**
      * Decisive attribute to draw this object as separate line.
      */
-    public drawMode = DrawMode.Lines;
+    drawMode = DrawMode.Lines;
 
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'LineSegments';
     }
 
@@ -41,13 +41,13 @@ export class LineSegments<M extends Material = Material> extends Drawable<M, Buf
      * @param {Raycaster} raycaster the instance of Raycaster is used to get the data for calculation.
      * @param {Intersection} intersects the result will be stored here.
      */
-    public raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]) {
+    raycastJsImpl(raycaster: Raycaster, intersects: Intersection[]) {
         raycastLine(raycaster, intersects, this, true);
     }
     /**
      * Return a clone of this object.
      */
-    public clone(): LineSegments<M> {
+    clone(): LineSegments<M> {
         return new LineSegments(this.geometry, this._material).copy(this);
     }
 }

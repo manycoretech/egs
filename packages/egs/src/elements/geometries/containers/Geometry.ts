@@ -17,62 +17,65 @@ import { logger } from '../../../utils/Logger';
 const m1 = new Matrix4();
 const obj = singleton(() => new Object3D());
 
+/**
+ * Editable face-and-vertex geometry container.
+ */
 export class Geometry extends EventDispatcher {
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'Geometry';
     }
     /**
      * Unique number of this geometry instance.
      */
-    public id: number;
+    id: number;
     /**
      * Name for this geometry. Default is an empty string.
      */
-    public name = '';
+    name = '';
     /**
      * The type of this instance.
      */
-    public type = 'Geometry';
+    type = 'Geometry';
     /**
      * An array of vertices hold every position of points of the model.
      */
-    public vertices: Vector3[] = [];
+    vertices: Vector3[] = [];
     /**
      * An array of vertex colors, matching number and order of vertices.
      * Used in ParticleSystem, Line and Ribbon.
      * Meshes use per-face-use-of-vertex colors embedded directly in faces.
      */
-    public colors: Color[] = [];
+    colors: Color[] = [];
     /**
      * An array of triangles or/and quads.
      * The array of faces describe how each vertex in the model is connected with each other.
      * @remarks See {@link Face3| Face3} for more details.
      */
-    public faces: Face3[] = [];
+    faces: Face3[] = [];
     /**
      * An array of face UV layers.
      * Each UV layer is an array of UV matching order and number of vertices in faces.
      */
-    public faceVertexUvs: Vector2[][][] = [[]];
+    faceVertexUvs: Vector2[][][] = [[]];
     /**
      * The distance is used to determine the length of line, this is necessary for drawing segmented line.
      * The value can be calculated by {@link BufferAttribute.getAttributeLayoutKey| getAttributeLayoutKey()}.
      */
-    public lineDistances: number[] = [];
+    lineDistances: number[] = [];
     /**
      * Used to check type of this or extended instance.
      * This value should not be changed by user.
      */
-    public isGeometry = true;
+    isGeometry = true;
     /**
      * Let every positional and normal vector multiple with specified matrix.
      * @param {Matrix4} matrix a 4×4 matrix which is applied to.
      */
     // Bakes matrix transform directly into vertex coordinates.
-    public applyMatrix(matrix: Matrix4): Geometry {
+    applyMatrix(matrix: Matrix4): Geometry {
         const normalMatrix = new Matrix3().getNormalMatrix(matrix);
         for (let i = 0, il = this.vertices.length; i < il; i++) {
             const vertex = this.vertices[i];
@@ -93,7 +96,7 @@ export class Geometry extends EventDispatcher {
      * Rotate this object around X independently.
      * @param {number} angle a radian value to rotate.
      */
-    public rotateX(angle: number): Geometry {
+    rotateX(angle: number): Geometry {
         m1.makeRotationX(angle);
         this.applyMatrix(m1);
         return this;
@@ -102,7 +105,7 @@ export class Geometry extends EventDispatcher {
      * Rotate this object around Y independently.
      * @param {number} angle a radian value to rotate.
      */
-    public rotateY(angle: number): Geometry {
+    rotateY(angle: number): Geometry {
         m1.makeRotationY(angle);
         this.applyMatrix(m1);
         return this;
@@ -111,7 +114,7 @@ export class Geometry extends EventDispatcher {
      * Rotate this object around Z independently.
      * @param {number} angle a radian value to rotate.
      */
-    public rotateZ(angle: number): Geometry {
+    rotateZ(angle: number): Geometry {
         m1.makeRotationZ(angle);
         this.applyMatrix(m1);
         return this;
@@ -122,7 +125,7 @@ export class Geometry extends EventDispatcher {
      * @param {number} y translate vector' y, represent the distance of moving object along Y.
      * @param {number} z translate vector' z, represent the distance of moving object along Z.
      */
-    public translate(x: number, y: number, z: number): Geometry {
+    translate(x: number, y: number, z: number): Geometry {
         m1.makeTranslation(x, y, z);
         this.applyMatrix(m1);
         return this;
@@ -133,7 +136,7 @@ export class Geometry extends EventDispatcher {
      * @param {number} y change the size on Y direction.
      * @param {number} z change the size on Z direction.
      */
-    public scale(x: number, y: number, z: number): Geometry {
+    scale(x: number, y: number, z: number): Geometry {
         m1.makeScale(x, y, z);
         this.applyMatrix(m1);
         return this;
@@ -142,7 +145,7 @@ export class Geometry extends EventDispatcher {
      * Rotates the object to face to a point in world space.
      * @param {Vector3} vector A vector representing position of target in world space.
      */
-    public lookAt(vector: Vector3): void {
+    lookAt(vector: Vector3): void {
         obj().lookAt(vector);
         obj().updateMatrix();
         this.applyMatrix(obj().matrix);
@@ -151,7 +154,7 @@ export class Geometry extends EventDispatcher {
      * Duplicate data from {@link BufferGeometry| BufferGeometry} to this {@link Geometry| Geometry} object.
      * @param {BufferGeometry} geometry the data source.
      */
-    public fromBufferGeometry(geometry: BufferGeometry): Geometry {
+    fromBufferGeometry(geometry: BufferGeometry): Geometry {
         const scope = this;
         const indices = geometry.index !== null ? geometry.index.array : undefined;
         const attributes = geometry.getAttributes();
@@ -236,7 +239,7 @@ export class Geometry extends EventDispatcher {
     /**
      * Make all numbers' abs of {@link vertices| vertices} and {@link faces| faces} less than 1.
      */
-    public normalize(): Geometry {
+    normalize(): Geometry {
         const sphere = new Sphere().setFromPoints(this.vertices);
         const center = sphere.center;
         const radius = sphere.radius;
@@ -255,7 +258,7 @@ export class Geometry extends EventDispatcher {
      * Computes the distance between two vertexes, store to {@link lineDistances| lineDistances}.
      * the distance is used to determine the length of line, this is necessary for drawing segmented line.
      */
-    public computeLineDistances() {
+    computeLineDistances() {
         const vertices = this.vertices;
         this.lineDistances = [0];
         for (let i = 1, l = vertices.length; i < l; i++) {
@@ -266,7 +269,7 @@ export class Geometry extends EventDispatcher {
     /**
      * Compute normals for every faces.
      */
-    public computeFaceNormals(): void {
+    computeFaceNormals(): void {
         const cb = new Vector3();
         const ab = new Vector3();
         for (let f = 0, fl = this.faces.length; f < fl; f++) {
@@ -284,7 +287,7 @@ export class Geometry extends EventDispatcher {
     /**
      * Computes vertex normals by averaging face normals. Face normals must be existing / computed beforehand.
      */
-    public computeVertexNormals(areaWeighted?: boolean): void {
+    computeVertexNormals(areaWeighted?: boolean): void {
         if (areaWeighted === undefined) {
             areaWeighted = true;
         }
@@ -344,7 +347,7 @@ export class Geometry extends EventDispatcher {
     /**
      * Compute vertex normals, but duplicating face normals.
      */
-    public computeFlatVertexNormals(): void {
+    computeFlatVertexNormals(): void {
         let f, fl, face;
         this.computeFaceNormals();
         for (f = 0, fl = this.faces.length; f < fl; f++) {
@@ -367,7 +370,7 @@ export class Geometry extends EventDispatcher {
      * @param {Matrix4} matrix a matrix to modify the vertices' data. Usually this is the world matrix of merged object.
      * @param {number} materialIndexOffset an index mark the material data for the merged object.
      */
-    public merge(geometry: Geometry, matrix?: Matrix4, materialIndexOffset?: number): void {
+    merge(geometry: Geometry, matrix?: Matrix4, materialIndexOffset?: number): void {
         if (!(geometry && geometry.isGeometry)) {
             logger.error('EGS.Geometry.merge(): geometry not an instance of EGS.Geometry.');
             return;
@@ -454,7 +457,7 @@ export class Geometry extends EventDispatcher {
      * Checks for duplicate vertices using hashmap.
      * Duplicated vertices are removed and faces' vertices are updated.
      */
-    public mergeVertices(): number {
+    mergeVertices(): number {
         const verticesMap: Record<string, number> = {}; // Hashmap for looking up vertices by position coordinates (and making sure they are unique)
         const unique: Vector3[] = [];
         const changes: number[] = [];
@@ -510,7 +513,7 @@ export class Geometry extends EventDispatcher {
      * Add some new vertices to this geometry.
      * @param {Vector3[]} points every Vector3 represent a vertex on object.
      */
-    public setFromPoints(points: Vector3[]) {
+    setFromPoints(points: Vector3[]) {
         this.vertices = [];
         for (let i = 0, l = points.length; i < l; i++) {
             const point = points[i];
@@ -522,7 +525,7 @@ export class Geometry extends EventDispatcher {
      * Sorts the faces array according to material index. For complex geometries with several materials,
      * this can result in reduced draw calls and improved performance.
      */
-    public sortFacesByMaterialIndex(): void {
+    sortFacesByMaterialIndex(): void {
         const faces = this.faces;
         const length = faces.length;
 
@@ -575,7 +578,7 @@ export class Geometry extends EventDispatcher {
      * @param {Deserializer} ctx this parameter has not supported external Deserializer yet.
      * It may cause that this method can not be used directly.
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         parseModel(ctx.getData().data, this);
     }
     /**
@@ -583,7 +586,7 @@ export class Geometry extends EventDispatcher {
      * @param {Serializer} ctx this parameter has not supported external Serializer yet.
      * It may cause that this method can not be used directly.
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         ctx.puts<Geometry>(['name', 'type']);
 
         const vertices: number[] = [];
@@ -713,7 +716,7 @@ export class Geometry extends EventDispatcher {
     /**
      * Creates a new clone of this Geometry.
      */
-    public clone(): Geometry {
+    clone(): Geometry {
         return new Geometry().copy(this);
     }
     /**
@@ -721,7 +724,7 @@ export class Geometry extends EventDispatcher {
      * This method need override in derived classes to copy extended data.
      * @param {Geometry} source the data source.
      */
-    public copy(source: Geometry): Geometry {
+    copy(source: Geometry): Geometry {
         let i, il, j, jl, k, kl;
 
         // reset
@@ -780,7 +783,7 @@ export class Geometry extends EventDispatcher {
         return this;
     }
     // from origin json loader
-    public parseGeometryFromJSON(json: any, geometry: Geometry) {
+    parseGeometryFromJSON(json: any, geometry: Geometry) {
         parseModel(json, geometry);
     }
 }

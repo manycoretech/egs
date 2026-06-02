@@ -2,10 +2,10 @@ import { Curve } from './Curve';
 import { Vector3 } from '../../Vector3';
 
 class CubicPoly {
-    public c0 = 0;
-    public c1 = 0;
-    public c2 = 0;
-    public c3 = 0;
+    c0 = 0;
+    c1 = 0;
+    c2 = 0;
+    c3 = 0;
 
     private init(x0: number, x1: number, t0: number, t1: number): void {
         this.c0 = x0;
@@ -14,11 +14,11 @@ class CubicPoly {
         this.c3 = 2 * x0 - 2 * x1 + t0 + t1;
     }
 
-    public initCatmullRom(x0: number, x1: number, x2: number, x3: number, tension: number): void {
+    initCatmullRom(x0: number, x1: number, x2: number, x3: number, tension: number): void {
         this.init(x1, x2, tension * (x2 - x0), tension * (x3 - x1));
     }
 
-    public initNonuniformCatmullRom(x0: number, x1: number, x2: number, x3: number, dt0: number, dt1: number, dt2: number): void {
+    initNonuniformCatmullRom(x0: number, x1: number, x2: number, x3: number, dt0: number, dt1: number, dt2: number): void {
         // compute tangents when parameterized in [t1,t2]
         let t1 = (x1 - x0) / dt0 - (x2 - x0) / (dt0 + dt1) + (x2 - x1) / dt1;
         let t2 = (x2 - x1) / dt1 - (x3 - x1) / (dt1 + dt2) + (x3 - x2) / dt2;
@@ -29,7 +29,7 @@ class CubicPoly {
         this.init(x1, x2, t1, t2);
     }
 
-    public calc(t: number): number {
+    calc(t: number): number {
         const t2 = t * t;
         const t3 = t2 * t;
         return this.c0 + this.c1 * t + this.c2 * t2 + this.c3 * t3;
@@ -47,24 +47,24 @@ export class CatmullRomCurve3D extends Curve<Vector3> {
     /**
      * The control points used to decide the curve.
      */
-    public points: Vector3[];
+    points: Vector3[];
     /**
      * If includes the end point.
      */
-    public closed: boolean;
+    closed: boolean;
     /**
      * Only two types of curves can be chosen, 'centripetal' and 'chordal'.
      */
-    public curveType: string;
+    curveType: string;
     /**
      * Control the distance between each points.
      */
-    public tension: number;
+    tension: number;
     /**
      * Check the type whether it belongs to CatmullRomCurve3D.
      * This value should not be changed by user.
      */
-    public isCatmullRomCurve3 = true;
+    isCatmullRomCurve3 = true;
 
     constructor(points?: Vector3[], closed?: boolean, curveType?: string, tension?: number) {
         super();
@@ -77,7 +77,7 @@ export class CatmullRomCurve3D extends Curve<Vector3> {
     /**
      * Return the position on the curve at t.
      */
-    public getPoint(t: number, optionalTarget?: Vector3): Vector3 {
+    getPoint(t: number, optionalTarget?: Vector3): Vector3 {
         const point = optionalTarget || new Vector3();
         const points = this.points;
         const l = points.length;
@@ -147,11 +147,11 @@ export class CatmullRomCurve3D extends Curve<Vector3> {
         return point;
     }
 
-    public clone() {
+    clone() {
         return new CatmullRomCurve3D().copy(this);
     }
 
-    public copy(source: CatmullRomCurve3D) {
+    copy(source: CatmullRomCurve3D) {
         super.copy(source);
         this.points = [];
         for (let i = 0, l = source.points.length; i < l; i++) {
@@ -165,7 +165,7 @@ export class CatmullRomCurve3D extends Curve<Vector3> {
         return this;
     }
 
-    public toJSON(): any {
+    toJSON(): any {
         const data = super.toJSON();
         data.points = [];
         for (let i = 0, l = this.points.length; i < l; i++) {
@@ -179,7 +179,7 @@ export class CatmullRomCurve3D extends Curve<Vector3> {
         return data;
     }
 
-    public fromJSON(json: any) {
+    fromJSON(json: any) {
         super.fromJSON(json);
         this.points = [];
         for (let i = 0, l = json.points.length; i < l; i++) {

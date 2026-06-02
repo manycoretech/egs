@@ -9,24 +9,24 @@ export class Cone {
     /**
      * The position of peak.
      */
-    public tip: Vector3;
+    tip: Vector3;
     /**
      * The angle of cone in vertical field.
      */
-    public fov: number;
+    fov: number;
     /**
      * The scale modification for fov.
      */
-    public aspect: number;
+    aspect: number;
     /**
      * The bottom plane will be vertical to this vector.
      */
-    public direction: Vector3;
+    direction: Vector3;
 
     private _theta: number;
     private _tanTheta: number;
-    public sinTheta: number;
-    public cosTheta: number;
+    sinTheta: number;
+    cosTheta: number;
     constructor(tip?: Vector3, fov?: number, direction?: Vector3, aspect?: number) {
         this.update((tip !== undefined) ? tip : new Vector3(0, 0, 0),
             (fov !== undefined) ? fov : Math.PI / 6,
@@ -37,7 +37,7 @@ export class Cone {
     /**
      * Update the cone's corresponding attributes by given parameters.
      */
-    public update(tip?: Vector3, fov?: number, direction?: Vector3, aspect?: number) {
+    update(tip?: Vector3, fov?: number, direction?: Vector3, aspect?: number) {
         this.direction = direction || this.direction;
         this.direction.normalize();
         this.tip = tip || this.tip;
@@ -56,7 +56,7 @@ export class Cone {
      * Check the intersection of this cone and given sphere.
      */
     // https://www.gamedev.net/forums/topic/555628-sphere-cone-test-with-no-sqrt-for-frustum-culling/4570679/
-    public isSphereOutsideCone(sphere: Sphere): boolean {
+    isSphereOutsideCone(sphere: Sphere): boolean {
         V.copy(sphere.center).sub(this.tip);
         const a = -V.dot(this.direction); // because of shadowmap, direction reversed
         const x = this.cosTheta * Math.sqrt(V.dot(V) - a * a) - a * this.sinTheta;
@@ -69,7 +69,7 @@ export class Cone {
     /**
      * Creates a new clone of the Cone.
      */
-    public clone(): Cone {
+    clone(): Cone {
         return new Cone().copy(this);
     }
     /**
@@ -77,7 +77,7 @@ export class Cone {
      * This method need override in derived classes to copy extended data.
      * @param {Geometry} source the data source.
      */
-    public copy(other: Cone): Cone {
+    copy(other: Cone): Cone {
         this.tip = other.tip;
         this.fov = other.fov;
         this.direction = other.direction;

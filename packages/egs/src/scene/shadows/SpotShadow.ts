@@ -16,19 +16,19 @@ import { TextureV2 } from '../../elements/textures/TextureV2';
 import { Texture2D } from '../../elements/textures/Texture2D';
 
 export class SpotShadow<T extends TextureV2 | Texture2D = Texture2D> extends SingleProjectShadow<PerspectiveCamera> {
-    public customNear: number;
-    public customFar: number;
-    public isAutoComputeNearFar: boolean = false;
+    customNear: number;
+    customFar: number;
+    isAutoComputeNearFar: boolean = false;
     @lightProperty()
-    public shadowCameraNear = 1;
+    shadowCameraNear = 1;
     @lightProperty()
-    public shadowCameraFar = 10000;
+    shadowCameraFar = 10000;
 
     @lightProperty()
-    public enableAutoBias = false;
+    enableAutoBias = false;
 
     @lightProperty()
-    public captureScale = new Vector2(1, 1);
+    captureScale = new Vector2(1, 1);
 
     constructor(light: SpotLight<T>) {
         super(light);
@@ -49,7 +49,7 @@ export class SpotShadow<T extends TextureV2 | Texture2D = Texture2D> extends Sin
         this.enableAutoBias = other.enableAutoBias;
     }
 
-    public extendsShader(builder: ShaderBuilder, length: number) {
+    extendsShader(builder: ShaderBuilder, length: number) {
         super.includeShadowMapCommon(builder);
         builder
             .addVaryingCustomArray('vSpotShadowCoord', WebGLShaderDataType.Vec4, length)
@@ -61,14 +61,14 @@ export class SpotShadow<T extends TextureV2 | Texture2D = Texture2D> extends Sin
             .inject(ShaderInjectionTypes.vary_any, vertVary);
     }
 
-    public extendsShaderDeferred(builder: ShaderBuilder) {
+    extendsShaderDeferred(builder: ShaderBuilder) {
         super.includeShadowMapCommon(builder);
         builder
             .addFragmentCustom(getCustomFrag(false))
             .addFragment(ShaderBlockPool.InverseTransformDirection);
     }
 
-    public updateSpotNearFar(fullList: DrawableList, light: SpotLight) {
+    updateSpotNearFar(fullList: DrawableList, light: SpotLight) {
         if (!this.enabled) {
             return;
         }
@@ -105,7 +105,7 @@ export class SpotShadow<T extends TextureV2 | Texture2D = Texture2D> extends Sin
         this.updateCameraAndShadowMatrices(light);
     }
 
-    public updateCameraAndShadowMatrices(light: SpotLight) {
+    updateCameraAndShadowMatrices(light: SpotLight) {
         // Update light.target by rotation if isRotationModeOn is true.
         if (light.isRotationModeOn) {
             light.updateWorldMatrix(true, false);

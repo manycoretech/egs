@@ -16,22 +16,22 @@ export class Color {
      * Red channel value between 0 and 1.
      * @defaultValue `1`.
      */
-    public r: number;
+    r: number;
     /**
      * Green channel value between 0 and 1.
      * @defaultValue `1`.
      */
-    public g: number;
+    g: number;
     /**
      * Blue channel value between 0 and 1.
      * @defaultValue `1`.
      */
-    public b: number;
+    b: number;
     /**
      * Check the type whether it belongs to Color.
      * This value should not be changed by user.
      */
-    public isColor = true;
+    isColor = true;
 
     get x() {
         return this.r;
@@ -69,7 +69,7 @@ export class Color {
      * @param g Green channel value between 0.0 and 1.0.
      * @param b Blue channel value between 0.0 and 1.0.
      */
-    public setRGB(r: number, g: number, b: number): Color {
+    setRGB(r: number, g: number, b: number): Color {
         this.r = r;
         this.g = g;
         this.b = b;
@@ -78,7 +78,7 @@ export class Color {
     /**
      * Copies the {@link r| r}, {@link g| g} and {@link b| b} parameters from {@link Color| color} in to this color.
      */
-    public copy(color: Color): Color {
+    copy(color: Color): Color {
         this.r = color.r;
         this.g = color.g;
         this.b = color.b;
@@ -88,7 +88,7 @@ export class Color {
      * Sets this color from a hexadecimal value.
      * @param hex {@link https://en.wikipedia.org/wiki/Web_colors#Hex_triplet| hexadecimal triplet} format.
      */
-    public setHex(hex: number): Color {
+    setHex(hex: number): Color {
         hex = Math.floor(hex);
         this.r = (hex >> 16 & 255) / 255;
         this.g = (hex >> 8 & 255) / 255;
@@ -120,7 +120,7 @@ export class Color {
      * @param s saturation value between 0.0 and 1.0.
      * @param l lightness value between 0.0 and 1.0.
      */
-    public setHSL(h: number, s: number, l: number): Color {
+    setHSL(h: number, s: number, l: number): Color {
         // h,s,l ranges are in 0.0 - 1.0
         h = _Math.euclideanModulo(h, 1);
         s = _Math.clamp(s, 0, 1);
@@ -151,7 +151,7 @@ export class Color {
      * "red" ( or any {@link https://en.wikipedia.org/wiki/X11_color_names#Color_name_chart| X11 color name}
      * - all 140 color names are supported ).<br />
      */
-    public setStyle(style: string): Color {
+    setStyle(style: string): Color {
         function handleAlpha(string: string) {
             if (string === undefined) {
                 return;
@@ -235,7 +235,7 @@ export class Color {
      * Delegates to {@link .copy| .copy}, {@link .setStyle| .setStyle}, or {@link setHex| setHex} depending on input type.
      * @param value Value to set this color to.
      */
-    public set(value: string | Color | number): Color {
+    set(value: string | Color | number): Color {
         if (value && (value as Color).isColor) {
             this.copy(value as Color);
         } else if (typeof value === 'number') {
@@ -249,7 +249,7 @@ export class Color {
      * Sets all three color components to the value {@link Float| scalar}.
      * @param scalar a value between 0.0 and 1.0.
      */
-    public setScalar(scalar: number): Color {
+    setScalar(scalar: number): Color {
         this.r = scalar;
         this.g = scalar;
         this.b = scalar;
@@ -258,10 +258,10 @@ export class Color {
     /**
      * Return a new Color with the same {@link r| r}, {@link g| g} and {@link b| b} values as this clone.
      */
-    public clone(): Color {
+    clone(): Color {
         return new Color(this.r, this.g, this.b);
     }
-    public cloneReadonly() {
+    cloneReadonly() {
         return this.clone() as any as ReadonlyColor;
     }
     /**
@@ -271,7 +271,7 @@ export class Color {
      * @param gammaFactor (optional).
      * @defaultValue `2.0`.
      */
-    public copyGammaToLinear(color: Color, gammaFactor?: number): Color {
+    copyGammaToLinear(color: Color, gammaFactor?: number): Color {
         if (gammaFactor === undefined) {
             gammaFactor = 2.0;
         }
@@ -287,7 +287,7 @@ export class Color {
      * @param gammaFactor (optional).
      * @defaultValue `2.0`.
      */
-    public copyLinearToGamma(color: Color, gammaFactor?: number): Color {
+    copyLinearToGamma(color: Color, gammaFactor?: number): Color {
         if (gammaFactor === undefined) {
             gammaFactor = 2.0;
         }
@@ -302,7 +302,7 @@ export class Color {
      * @param gammaFactor (optional).
      * @defaultValue `2.0`.
      */
-    public convertGammaToLinear(gammaFactor?: number): Color {
+    convertGammaToLinear(gammaFactor?: number): Color {
         this.copyGammaToLinear(this, gammaFactor);
         return this;
     }
@@ -311,7 +311,7 @@ export class Color {
      * @param gammaFactor (optional).
      * @defaultValue `2.0`.
      */
-    public convertLinearToGamma(gammaFactor?: number): Color {
+    convertLinearToGamma(gammaFactor?: number): Color {
         this.copyLinearToGamma(this, gammaFactor);
         return this;
     }
@@ -323,7 +323,7 @@ export class Color {
      * Copies the given color into this color, and then converts this color from sRGB space to linear space.
      * @param color Color to copy.
      */
-    public copySRGBToLinear(color: Color): Color {
+    copySRGBToLinear(color: Color): Color {
         this.r = this.SRGBToLinear(color.r);
         this.g = this.SRGBToLinear(color.g);
         this.b = this.SRGBToLinear(color.b);
@@ -337,7 +337,7 @@ export class Color {
      * Copies the given color into this color, and then converts this color from linear space to sRGB space.
      * @param color Color to copy.
      */
-    public copyLinearToSRGB(color: Color): Color {
+    copyLinearToSRGB(color: Color): Color {
         this.r = this.LinearToSRGB(color.r);
         this.g = this.LinearToSRGB(color.g);
         this.b = this.LinearToSRGB(color.b);
@@ -346,27 +346,27 @@ export class Color {
     /**
      * Converts this color from sRGB space to linear space.
      */
-    public convertSRGBToLinear(): Color {
+    convertSRGBToLinear(): Color {
         this.copySRGBToLinear(this);
         return this;
     }
     /**
      * Converts this color from linear space to sRGB space.
      */
-    public convertLinearToSRGB(): Color {
+    convertLinearToSRGB(): Color {
         this.copyLinearToSRGB(this);
         return this;
     }
     /**
      * Returns the hexadecimal value of this color.
      */
-    public getHex(): number {
+    getHex(): number {
         return (this.r * 255) << 16 ^ (this.g * 255) << 8 ^ (this.b * 255) << 0;
     }
     /**
      * Returns the hexadecimal value of this color as a string (for example, 'FFFFFF').
      */
-    public getHexString(): string {
+    getHexString(): string {
         return ('000000' + this.getHex().toString(16)).slice(- 6);
     }
     // h,s,l ranges are in 0.0 - 1.0
@@ -376,7 +376,7 @@ export class Color {
      * `{ h: 0, s: 0, l: 0 }`
      * @param target the result will be copied into this Object. Adds h, s and l keys to the object (if not already present).
      */
-    public getHSL(target: HSL): HSL {
+    getHSL(target: HSL): HSL {
         const r = this.r;
         const g = this.g;
         const b = this.b;
@@ -417,13 +417,13 @@ export class Color {
     /**
      * Returns the value of this color as a CSS style string. Example: `rgb(255,0,0)`.
      */
-    public getStyle(): string {
+    getStyle(): string {
         return 'rgb(' + ((this.r * 255) | 0) + ',' + ((this.g * 255) | 0) + ',' + ((this.b * 255) | 0) + ')';
     }
     /**
      * Adds the RGB values of {@link Color| color} to the RGB values of this color.
      */
-    public add(color: Color): Color {
+    add(color: Color): Color {
         this.r += color.r;
         this.g += color.g;
         this.b += color.b;
@@ -432,7 +432,7 @@ export class Color {
     /**
      * Sets this color's RGB values to the sum of the RGB values of color1 and color2.
      */
-    public addColors(color1: Color, color2: Color): Color {
+    addColors(color1: Color, color2: Color): Color {
         this.r = color1.r + color2.r;
         this.g = color1.g + color2.g;
         this.b = color1.b + color2.b;
@@ -441,7 +441,7 @@ export class Color {
     /**
      * Adds {@link Number| s} to the RGB values of this color.
      */
-    public addScalar(s: number): Color {
+    addScalar(s: number): Color {
         this.r += s;
         this.g += s;
         this.b += s;
@@ -451,7 +451,7 @@ export class Color {
      * Subtracts the RGB components of the given color from the RGB components of this color.
      * If this results in a negative component, that component is set to zero.
      */
-    public sub(color: Color): Color {
+    sub(color: Color): Color {
         this.r = Math.max(0, this.r - color.r);
         this.g = Math.max(0, this.g - color.g);
         this.b = Math.max(0, this.b - color.b);
@@ -460,7 +460,7 @@ export class Color {
     /**
      * Multiplies this color's RGB values by the given {@link Color| color}'s RGB values.
      */
-    public multiply(color: Color): Color {
+    multiply(color: Color): Color {
         this.r *= color.r;
         this.g *= color.g;
         this.b *= color.b;
@@ -469,7 +469,7 @@ export class Color {
     /**
      * Multiplies this color's RGB values by s.
      */
-    public multiplyScalar(s: number): Color {
+    multiplyScalar(s: number): Color {
         this.r *= s;
         this.g *= s;
         this.b *= s;
@@ -481,7 +481,7 @@ export class Color {
      * @param color color to converge on.
      * @param alpha interpolation factor in the closed interval [0, 1].
      */
-    public lerp(color: Color, alpha: number): Color {
+    lerp(color: Color, alpha: number): Color {
         this.r += (color.r - this.r) * alpha;
         this.g += (color.g - this.g) * alpha;
         this.b += (color.b - this.b) * alpha;
@@ -490,7 +490,7 @@ export class Color {
     /**
      * Compares the RGB values of {@link Color| color} with those of this object. Returns true if they are the same, false otherwise.
      */
-    public equals(c: Color): boolean {
+    equals(c: Color): boolean {
         return (c.r === this.r) && (c.g === this.g) && (c.b === this.b);
     }
     /**
@@ -498,7 +498,7 @@ export class Color {
      * @param array Array of floats in the form [ r, g, b ].
      * @param offset An optional offset into the array.
      */
-    public fromArray(array: ArrayLike<number>, offset?: number): Color {
+    fromArray(array: ArrayLike<number>, offset?: number): Color {
         if (offset === undefined) {
             offset = 0;
         }
@@ -510,7 +510,7 @@ export class Color {
     /**
      * r,g,b return 3
      */
-    public getNumberCount() {
+    getNumberCount() {
         return 3;
     }
     /**
@@ -518,7 +518,7 @@ export class Color {
      * @param array An optional array to store the color to.
      * @param offset An optional offset into the array.
      */
-    public toArray(array?: number[], offset?: number): number[] {
+    toArray(array?: number[], offset?: number): number[] {
         if (array === undefined) {
             array = [];
         }
@@ -533,13 +533,13 @@ export class Color {
     /**
      * @internal
      */
-    public getSerializeData() {
+    getSerializeData() {
         return this.getHex();
     }
     /**
      * @internal
      */
-    public setSerializeData(value: number) {
+    setSerializeData(value: number) {
         this.setHex(value);
     }
     /**
@@ -547,7 +547,7 @@ export class Color {
      * Internally, this converts the color's r, g and b values to HSL,
      * adds h,s,l, and then converts the color back to RGB.
      */
-    public offsetHSL(h: number, s: number, l: number): Color {
+    offsetHSL(h: number, s: number, l: number): Color {
         this.getHSL(tmpAHSL);
         tmpAHSL.h += h; tmpAHSL.s += s; tmpAHSL.l += l;
         this.setHSL(tmpAHSL.h, tmpAHSL.s, tmpAHSL.l);
@@ -559,7 +559,7 @@ export class Color {
      * but instead going through all the hues in between those two colors.
      * The alpha argument can be thought of as the ratio between the two colors, where 0.0 is this color and 1.0 is the first argument.
      */
-    public lerpHSL(color: Color, alpha: number) {
+    lerpHSL(color: Color, alpha: number) {
         this.getHSL(tmpAHSL);
         color.getHSL(tmpBHSL);
         const h = _Math.lerp(tmpAHSL.h, tmpBHSL.h, alpha);
@@ -574,7 +574,7 @@ export class Color {
      * -hex - Number in hex (e.g., `0xffffff`)
      * -return The string color (e.g., `"#ffffff"`).`
      */
-    public static hex2string(hex: number): string {
+    static hex2string(hex: number): string {
         let hexString = hex.toString(16);
         hexString = '000000'.substr(0, 6 - hexString.length) + hexString;
         return `#${hexString}`;
@@ -586,7 +586,7 @@ export class Color {
      * -out If supplied, this array will be used rather than returning a new one
      * -return An array representing the [R, G, B] of the color where all values are floats.`
      */
-    public static hex2rgb(hex: number, out: number[] | Float32Array = []): number[] | Float32Array {
+    static hex2rgb(hex: number, out: number[] | Float32Array = []): number[] | Float32Array {
         out[0] = ((hex >> 16) & 0xFF) / 255;
         out[1] = ((hex >> 8) & 0xFF) / 255;
         out[2] = (hex & 0xFF) / 255;
@@ -597,7 +597,7 @@ export class Color {
     /**
      * Converts a color as an [R, G, B] array to a hex number
      */
-    public static rgb2hex(rgb: number[] | Float32Array): number {
+    static rgb2hex(rgb: number[] | Float32Array): number {
         return (((rgb[0] * 255) << 16) + ((rgb[1] * 255) << 8) + (rgb[2] * 255 | 0));
     }
 
@@ -607,7 +607,7 @@ export class Color {
      * -string - The string color (e.g., `"#ffffff"`)
      * -return Number in hexadecimal.`
      */
-    public static string2hex(string: string): number {
+    static string2hex(string: string): number {
         if (typeof string === 'string' && string[0] === '#') {
             string = string.substr(1);
         }
@@ -769,5 +769,8 @@ export const ColorKeywords = {
     yellowgreen: 0x9ACD32
 };
 
+/**
+ * Readonly view of the public Color API.
+ */
 export type ReadonlyColor = PickReadonly<Color,
     'g' | 'r' | 'b' | 'isColor' | 'equals' | 'getHex'>;

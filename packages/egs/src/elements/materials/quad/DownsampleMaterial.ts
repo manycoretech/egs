@@ -9,29 +9,29 @@ import { Texture } from '../../textures/Texture';
 
 export class DownsampleMaterial extends PassQuadMaterialBase {
     @materialProperty()
-    public texelSize = readonlyMath.vec2(1, 1);
+    texelSize = readonlyMath.vec2(1, 1);
     @materialProperty()
-    public tDiffuse: Texture;
+    tDiffuse: Texture;
     @materialProperty()
-    public correctColor = false;
+    correctColor = false;
 
-    public className() {
+    className() {
         return 'DownsampleMaterial';
     }
 
-    public setTexelSize(width: number, height: number) {
+    setTexelSize(width: number, height: number) {
         this.texelSize = readonlyMath.vec2(1 / width, 1 / height);
     }
 
-    public setTexelZero() {
+    setTexelZero() {
         this.texelSize = readonlyMath.vec2(0, 0);
     }
 
-    public generateShaderKey(registry: ShaderComponentRegistry): string {
+    generateShaderKey(registry: ShaderComponentRegistry): string {
         return super.generateShaderKey(registry) + this.correctColor;
     }
 
-    public extendShaderShading(b: ShaderBuilder) {
+    extendShaderShading(b: ShaderBuilder) {
         if (this.correctColor) {
             b.addFragDefine('#define CORRECT_COLOR');
         };
@@ -56,7 +56,7 @@ export class DownsampleMaterial extends PassQuadMaterialBase {
             `);
     }
 
-    public updateShadingUniforms(p: WGLProgram) {
+    updateShadingUniforms(p: WGLProgram) {
         p.setUniform('texelSize', this.texelSize);
         p.setTexture2D('tDiffuse', this.tDiffuse);
     }

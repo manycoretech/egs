@@ -8,7 +8,7 @@ export class Shape extends Path {
     /**
      * Make a 2d shaped hole on this shaped plane.
      */
-    public holes: Path[];
+    holes: Path[];
     protected _isInvalid = false;
 
     constructor(points?: Vector2[]) {
@@ -17,31 +17,31 @@ export class Shape extends Path {
         this.holes = [];
     }
 
-    public invalidate() {
+    invalidate() {
         this._isInvalid = true;
     }
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<Shape>(['holes']);
     }
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<Shape>(['holes']);
     }
 
-    public className(): string {
+    className(): string {
         return 'Shape';
     }
     /**
      * Make a 2d shaped hole on this shaped plane.
      */
-    public getPoints(divisions?: number): Vector2[] {
+    getPoints(divisions?: number): Vector2[] {
         if (this._isInvalid) {
             this.curves = [];
             this.draw();
@@ -51,12 +51,12 @@ export class Shape extends Path {
         return points;
     }
 
-    public draw() {
+    draw() {
     }
     /**
      * Get points of holes (key points based on segments parameter).
      */
-    public getPointsHoles(divisions?: number): Vector2[][] {
+    getPointsHoles(divisions?: number): Vector2[][] {
         const holesPts: Vector2[][] = [];
         for (let i = 0, l = this.holes.length; i < l; i++) {
             holesPts[i] = this.holes[i].getPoints(divisions);
@@ -66,7 +66,7 @@ export class Shape extends Path {
     /**
      * Get points of shape and holes (key points based on segments parameter).
      */
-    public extractPoints(divisions?: number) {
+    extractPoints(divisions?: number) {
         return {
             shape: this.getPoints(divisions),
             holes: this.getPointsHoles(divisions)
@@ -75,7 +75,7 @@ export class Shape extends Path {
     /**
      * Return an object with two arrays store the points and holes.
      */
-    public extractArray(divisions?: number) {
+    extractArray(divisions?: number) {
         const result = this.extractPoints(divisions);
         //
         const points = result.shape.reduce((pv: number[], cv) => { pv.push(cv.x, cv.y); return pv; }, []);
@@ -88,7 +88,7 @@ export class Shape extends Path {
         return { points, holes };
     }
 
-    public copy(source: Shape) {
+    copy(source: Shape) {
         super.copy(source);
         this.holes = [];
         for (let i = 0, l = source.holes.length; i < l; i++) {
@@ -98,7 +98,7 @@ export class Shape extends Path {
         return this;
     }
 
-    public toJSON() {
+    toJSON() {
         const data = super.toJSON();
         data.uuid = this.uuid;
         data.holes = [];
@@ -110,7 +110,7 @@ export class Shape extends Path {
         return data;
     }
 
-    public fromJSON(json: any) {
+    fromJSON(json: any) {
         super.fromJSON(json);
         this.uuid = json.uuid;
         this.holes = [];
@@ -121,7 +121,7 @@ export class Shape extends Path {
         return this;
     }
 
-    public static area(contour: Vector2[]): number {
+    static area(contour: Vector2[]): number {
         const n = contour.length;
         let a = 0.0;
         for (let p = n - 1, q = 0; q < n; p = q++) {
@@ -130,13 +130,13 @@ export class Shape extends Path {
         return a * 0.5;
     }
 
-    public static isClockWise(pts: Vector2[]): boolean {
+    static isClockWise(pts: Vector2[]): boolean {
         return Shape.area(pts) < 0;
     }
     /**
      * Triangulate the shape into faces.
      */
-    public static triangulateShape(contour: Vector2[], holes: Vector2[][], dim = 2) {
+    static triangulateShape(contour: Vector2[], holes: Vector2[][], dim = 2) {
         const vertices: number[] = []; // flat array of vertices like [ x0,y0, x1,y1, x2,y2, ... ]
         const holeIndices: number[] = []; // array of hole indices
         const faces: number[][] = []; // final array of vertex indices like [ [ a,b,d ], [ b,c,d ] ]
@@ -178,15 +178,15 @@ function addContour(_vertices: number[], _contour: Vector2[]): void {
 }
 
 class Node {
-    public i: number;
-    public x: number; // vertex coordinates
-    public y: number;
-    public prev: Node; // previous and next vertice nodes in a polygon ring
-    public next: Node;
-    public z: number; // z-order curve value
-    public prevZ: Node; // previous and next nodes in z-order
-    public nextZ: Node;
-    public steiner: boolean; // indicates whether this is a steiner point
+    i: number;
+    x: number; // vertex coordinates
+    y: number;
+    prev: Node; // previous and next vertice nodes in a polygon ring
+    next: Node;
+    z: number; // z-order curve value
+    prevZ: Node; // previous and next nodes in z-order
+    nextZ: Node;
+    steiner: boolean; // indicates whether this is a steiner point
 
     constructor(i: number, x: number, y: number) {
         this.i = i;

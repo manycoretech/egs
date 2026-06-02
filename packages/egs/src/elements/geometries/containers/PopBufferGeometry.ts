@@ -106,20 +106,20 @@ export class PopBufferGeometry extends BufferGeometry {
      * Used to check type of this or extended instance.
      * This value should not be changed by user.
      */
-    public isPopBufferGeometry = true;
+    isPopBufferGeometry = true;
     /**
      * The attributes data which are stored into an object.
      * It is better to change this by {@link setModel| setModel }.
      */
-    public model!: IPopbufferInfo;
+    model!: IPopbufferInfo;
     /**
      * An item of vertex array.
      */
-    public metadata!: Metadata;
+    metadata!: Metadata;
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'PopBufferGeometry';
     }
 
@@ -131,7 +131,7 @@ export class PopBufferGeometry extends BufferGeometry {
      * Return the name of specific group.
      * @param groupIndex the index of model.blocks.
      */
-    public getGroupNameByGroupIndex(groupIndex: number): string | undefined {
+    getGroupNameByGroupIndex(groupIndex: number): string | undefined {
         const block = this.model.blocks[groupIndex];
         if (block) {
             return block.name;
@@ -143,7 +143,7 @@ export class PopBufferGeometry extends BufferGeometry {
      * Return the name of the group which the specific vertex belongs to.
      * @param index the index of checked vertex.
      */
-    public getGroupNameByVertexIndex(index: number): string | undefined {
+    getGroupNameByVertexIndex(index: number): string | undefined {
         const result = this.getGroupByVertexIndex(index);
         if (result) {
             return this.getGroupNameByGroupIndex(result.groupIndex);
@@ -155,7 +155,7 @@ export class PopBufferGeometry extends BufferGeometry {
      * Change the attribute data and {@link model| model }.
      * @param model the given model data.
      */
-    public setModel(model?: IPopbufferInfo): void {
+    setModel(model?: IPopbufferInfo): void {
         if (!model) { return; }
         let indicesData = model.indices;
         let uvData = model.textures;
@@ -202,7 +202,7 @@ export class PopBufferGeometry extends BufferGeometry {
     /**
      * As the name shown.
      */
-    public updateBufferAttributeFromModelData(): void {
+    updateBufferAttributeFromModelData(): void {
         if (hasManagedContentAPI()) {
             return; // do not need, auto updated by getter/setter
         }
@@ -234,7 +234,7 @@ export class PopBufferGeometry extends BufferGeometry {
      * Copy the data to this object from source.
      * @param { PopBufferGeometry } source the data source.
      */
-    public copy(source: this): PopBufferGeometry {
+    copy(source: this): PopBufferGeometry {
         super.copy(source);
         this.setModel(source.model);
         this.metadata = source.metadata;
@@ -243,13 +243,13 @@ export class PopBufferGeometry extends BufferGeometry {
     /**
      * Return a clone of this object.
      */
-    public clone(): PopBufferGeometry {
+    clone(): PopBufferGeometry {
         return new PopBufferGeometry().copy(this) as PopBufferGeometry;
     }
     /**
      * @internal
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
 
         ctx.putRaw('model', {
@@ -265,7 +265,7 @@ export class PopBufferGeometry extends BufferGeometry {
     /**
      * @internal
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         const data = ctx.readRaw('model');
         const { boxMax, boxMin } = data.attributes as IPopbufferAttributes;

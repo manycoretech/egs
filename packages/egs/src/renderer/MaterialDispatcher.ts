@@ -97,23 +97,23 @@ export abstract class ShapeExtractableDispatcher extends MaterialDispatcher {
 
     abstract extendShaderShading(b: ShaderBuilder, reg: ShaderComponentRegistry, origin: Material): void;
 
-    public preExit(_: Material) {
+    preExit(_: Material) {
         return false;
     }
 
-    public setState(renderer: Renderer, material: Material, drawable: Drawable) {
+    setState(renderer: Renderer, material: Material, drawable: Drawable) {
         renderer.wglState.setMaterial(material, drawable.frontFaceCW);
     }
 
-    public createBuilder(): ShaderBuilder {
+    createBuilder(): ShaderBuilder {
         return new ShaderBuilder();
     }
 
-    public customKey(origin: Material, registry: ShaderComponentRegistry, isInstance: boolean): string {
+    customKey(origin: Material, registry: ShaderComponentRegistry, isInstance: boolean): string {
         return origin.getShapeKey(registry) + this.dispatchKey(registry) + (isInstance ? '0' : '1');
     }
 
-    public createShader(r: ShaderComponentRegistry, m: Material): ShaderBuilder {
+    createShader(r: ShaderComponentRegistry, m: Material): ShaderBuilder {
         const builder = this.createBuilder();
         m.extendShaderShape(builder, r);
         m.getComponents().forEach(c => c.extendShaderShape(builder));
@@ -121,7 +121,7 @@ export abstract class ShapeExtractableDispatcher extends MaterialDispatcher {
         return builder;
     }
 
-    public dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, drawable: Drawable): Nullable<WGLProgram> {
+    dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, drawable: Drawable): Nullable<WGLProgram> {
         if (this.preExit(material)) {
             return null;
         }
@@ -178,39 +178,39 @@ export abstract class ShapeExtractableDispatcher extends MaterialDispatcher {
 }
 
 export class DeferredDispatcher extends ShapeExtractableDispatcher {
-    public forceOpaque = false;
-    public decodeSrgb = false;
+    forceOpaque = false;
+    decodeSrgb = false;
 
     className() {
         return 'DeferredDispatcher';
     }
 
-    public dispatchKey(): string {
+    dispatchKey(): string {
         return 'deferred';
     }
 
-    public customKey(origin: Material, registry: ShaderComponentRegistry, isInstance: boolean): string {
+    customKey(origin: Material, registry: ShaderComponentRegistry, isInstance: boolean): string {
         return origin.generateShaderKey(registry) + this.dispatchKey() + (isInstance ? '0' : '1')
             + this.decodeSrgb;
     }
 
-    public preExit(m: Material) {
+    preExit(m: Material) {
         return !TypeAssert.isDeferredMaterial(m);
     }
 
-    public updateUniforms(p: WGLProgram, _: ShaderComponentRegistry, origin: DeferredMaterial) {
+    updateUniforms(p: WGLProgram, _: ShaderComponentRegistry, origin: DeferredMaterial) {
         // components uniform is updated in updateDeferredUniform
         origin.updateDeferredUniform(p);
     }
 
-    public setState(renderer: Renderer, material: Material, drawable: Drawable) {
+    setState(renderer: Renderer, material: Material, drawable: Drawable) {
         renderer.wglState.setMaterial(material, drawable.frontFaceCW);
         if (this.forceOpaque) {
             renderer.wglState.setBlending(Blending.NoBlending);
         }
     }
 
-    public extendShaderShading(b: ShaderBuilder, reg: ShaderComponentRegistry, origin: Material) {
+    extendShaderShading(b: ShaderBuilder, reg: ShaderComponentRegistry, origin: Material) {
         if (TypeAssert.isDeferredMaterial(origin)) {
             b.addNewFragOutputChannel('fragOut1');
             b.addNewFragOutputChannel('fragOut2');
@@ -229,7 +229,7 @@ export class DeferredDispatcher extends ShapeExtractableDispatcher {
         origin.getComponents().forEach(c => c.extendShaderShading(b));
     }
 
-    public dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, drawable: Drawable): Nullable<WGLProgram> {
+    dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, drawable: Drawable): Nullable<WGLProgram> {
         renderer.renderState.activeShaderComponentRegistry.isDeferMode = true;
         const p = super.dispatch(renderer, geometry, material, drawable);
         renderer.renderState.activeShaderComponentRegistry.isDeferMode = false;
@@ -242,15 +242,15 @@ export class DynamicForwardLightsDispatcher extends DefaultMaterialDispatcher {
         return 'DynamicForwardLightsDispatcher';
     }
 
-    public dispatchKey(): string {
+    dispatchKey(): string {
         return 'DynamicForwardLightsDispatcher';
     }
 
-    public customKey(origin: Material, registry: ShaderComponentRegistry, isInstance: boolean): string {
+    customKey(origin: Material, registry: ShaderComponentRegistry, isInstance: boolean): string {
         return origin.generateShaderKey(registry) + this.dispatchKey() + (isInstance ? '0' : '1');
     }
 
-    public dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, drawable: Drawable): Nullable<WGLProgram> {
+    dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, drawable: Drawable): Nullable<WGLProgram> {
         const registry = renderer.renderState.activeShaderComponentRegistry;
 
         // Prepare specific lights for transparent MeshPhongMaterial.
@@ -313,15 +313,15 @@ export class MaterialShadingWithDynamicShapeDispatcher<M extends Material> exten
         return 'MaterialShadingWithDynamicShapeDispatcher';
     }
 
-    public dispatchKey(r: ShaderComponentRegistry): string {
+    dispatchKey(r: ShaderComponentRegistry): string {
         return this.material.getShaderKey(r);
     }
 
-    public updateUniforms(p: WGLProgram, reg: ShaderComponentRegistry, _origin: Material) {
+    updateUniforms(p: WGLProgram, reg: ShaderComponentRegistry, _origin: Material) {
         this.material.updateShadingUniforms(p, reg);
     }
 
-    public extendShaderShading(b: ShaderBuilder, reg: ShaderComponentRegistry, _origin: Material) {
+    extendShaderShading(b: ShaderBuilder, reg: ShaderComponentRegistry, _origin: Material) {
         this.material.extendShaderShading(b, reg);
     }
 

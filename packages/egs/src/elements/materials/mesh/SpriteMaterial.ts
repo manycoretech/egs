@@ -27,35 +27,35 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
      * @defaultValue `false`
      */
     @materialProperty()
-    public sizeAttenuation = false;
+    sizeAttenuation = false;
     /**
      * The rotation of the sprite in radians.
      * @defaultValue `0`
      */
     @materialProperty()
-    public rotation = 0;
+    rotation = 0;
     /**
      * Color of the material, by default set to white (0xffffff).
      * The value of color multiply with the color of {@link texture| texture}.
      */
     @materialProperty()
-    public color = readonlyMath.color();
+    color = readonlyMath.color();
     /**
      * A picture for sprite.
      * @defaultValue `null`
      */
     @materialProperty()
-    public texture: Nullable<T> = null;
+    texture: Nullable<T> = null;
     /**
      * The Transparency of object.
      * @defaultValue `null`
      */
     @materialProperty()
-    public opacity = 1;
+    opacity = 1;
     /**
      * The name of instance's class.
      */
-    public className() {
+    className() {
         return 'SpriteMaterial';
     }
 
@@ -68,7 +68,7 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
      * Change the corresponding attribute according to the values of given {@link SpriteMaterialParameters| parameters}.
      * @param {SpriteMaterialParameters} p a object of specified type contains parameters.
      */
-    public setValues(p: SpriteMaterialParameters<T>) {
+    setValues(p: SpriteMaterialParameters<T>) {
         if (p === undefined) {
             return;
         }
@@ -76,14 +76,14 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
         Utils.copyProperties(keys, this, p);
     }
 
-    public traverseTexture(visitor: (tex: Texture) => void) {
+    traverseTexture(visitor: (tex: Texture) => void) {
         super.traverseTexture(visitor);
         Utils.visitTexture([this.texture], visitor);
     }
     /**
      * @internal
      */
-    public generateShaderKey(r: ShaderComponentRegistry) {
+    generateShaderKey(r: ShaderComponentRegistry) {
         return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
             .bool(this.sizeAttenuation)
             .hasItem(this.texture)
@@ -93,7 +93,7 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
      * Store the attributes of this class into string as serializing format.
      * @param {Serializer} ctx an instance used to store the data of scene objects.
      */
-    public serialize(ctx: Serializer) {
+    serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<SpriteMaterial>(['sizeAttenuation', 'rotation', 'texture', 'opacity', 'color']);
     }
@@ -101,14 +101,14 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
      * Parse the data for this class from string according to serializing format.
      * @param {Deserializer} ctx an instance give the method to take the data for attribute.
      */
-    public deserialize(ctx: Deserializer) {
+    deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<SpriteMaterial>(['sizeAttenuation', 'rotation', 'texture', 'opacity', 'color']);
     }
     /**
      * @internal
      */
-    public extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {
+    extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {
         builder
             .addUniform('rotation', WebGLShaderDataType.Float)
             .addUniform('center', WebGLShaderDataType.Vec2)
@@ -120,21 +120,21 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
     /**
      * @internal
      */
-    public computeShapeKey(_: ShaderComponentRegistry) {
+    computeShapeKey(_: ShaderComponentRegistry) {
         // SpriteMaterial
         return 'sp' + (this.sizeAttenuation ? '0' : '1');
     }
     /**
      * @internal
      */
-    public updateShapeUniforms(p: WGLProgram, _: ShaderComponentRegistry) {
+    updateShapeUniforms(p: WGLProgram, _: ShaderComponentRegistry) {
         p.setUniform('rotation', this.rotation);
         p.setUniform('center', (p.renderState.builtUniforms.currentDrawable as Sprite).center);
     }
     /**
      * @internal
      */
-    public updateShadingUniforms(program: WGLProgram): void {
+    updateShadingUniforms(program: WGLProgram): void {
         program.setUniform('opacity', this.opacity);
         if (this.texture) {
             program.setTexture2D('map', this.texture);
@@ -145,7 +145,7 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
     /**
      * @internal
      */
-    public extendShaderShading(b: ShaderBuilder, _: ShaderComponentRegistry) {
+    extendShaderShading(b: ShaderBuilder, _: ShaderComponentRegistry) {
         b
             .addVarying(ShaderVaryingTypes.fragUV)
             .addUniform('opacity', WebGLShaderDataType.Float);
@@ -167,7 +167,7 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
      * Copy the data to this instance from other instance.
      * @param {MeshBasicMaterial} other the source of copied data
      */
-    public copy(other: SpriteMaterial<T>) {
+    copy(other: SpriteMaterial<T>) {
         super.copyBase(other);
         this.texture = other.texture;
         this.opacity = other.opacity;
@@ -178,7 +178,7 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
     /**
      * Return a cloned instance of this class.
      */
-    public clone() {
+    clone() {
         return new SpriteMaterial<T>().copy(this);
     }
 }

@@ -13,20 +13,20 @@ export class Matrix3 {
      * A {@link https://en.wikipedia.org/wiki/Row-_and_column-major_order | column-major } list of matrix values.
      * @internal
      */
-    public _elements: Float32Array;
+    _elements: Float32Array;
 
     /**
      * Check the type whether it belongs to Matrix3.
      * This value should not be changed by user.
      */
-    public isMatrix3 = true;
+    isMatrix3 = true;
     /**
      * If this value is true, then fast matrix operations can be used.
      * If not, then we presume the matrix to the points needs to do some
      * 'fake' 3d projection transforms.
      * @remarks see {@link multiplyMatrixFast | multiplyMatrixFast } for more detail
      */
-    public is2x3 = false;
+    is2x3 = false;
 
     private static defaultElements = new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
 
@@ -51,13 +51,13 @@ export class Matrix3 {
     /**
      * @internal
      */
-    public getSerializeData() {
+    getSerializeData() {
         return this.toArray();
     }
     /**
      * @internal
      */
-    public setSerializeData(value: any): void {
+    setSerializeData(value: any): void {
         this.fromArray(value);
     }
     /**
@@ -67,7 +67,7 @@ export class Matrix3 {
      * @param n32 value to put in row 3, col 2.
      * @param n33 value to put in row 3, col 3.
      */
-    public set(n11: number, n12: number, n13: number, n21: number, n22: number, n23: number, n31: number, n32: number, n33: number): Matrix3 {
+    set(n11: number, n12: number, n13: number, n21: number, n22: number, n23: number, n31: number, n32: number, n33: number): Matrix3 {
         const te = this._elements;
         te[0] = n11; te[1] = n21; te[2] = n31;
         te[3] = n12; te[4] = n22; te[5] = n32;
@@ -83,23 +83,23 @@ export class Matrix3 {
      * </code>
      * <pre/>
      */
-    public identity(): Matrix3 {
+    identity(): Matrix3 {
         this.set(1, 0, 0, 0, 1, 0, 0, 0, 1);
         return this;
     }
     /**
      * Creates a new Matrix3 and with identical elements to this one.
      */
-    public clone(): Matrix3 {
+    clone(): Matrix3 {
         return new Matrix3().fromArray(this._elements);
     }
-    public cloneReadonly() {
+    cloneReadonly() {
         return this.clone() as any as ReadonlyMatrix3;
     }
     /**
      * Copies the elements of matrix {@link Matrix3| m} into this matrix.
      */
-    public copy(m: Matrix3): Matrix3 {
+    copy(m: Matrix3): Matrix3 {
         this._elements = m._elements.slice();
         this.is2x3 = m.is2x3;
         return this;
@@ -107,7 +107,7 @@ export class Matrix3 {
     /**
      * Set this matrix to the upper 3x3 matrix of the Matrix4 {@link Matrix4| m}.
      */
-    public setFromMatrix4(m: Matrix4): Matrix3 {
+    setFromMatrix4(m: Matrix4): Matrix3 {
         const me = m._elements;
         this.set(me[0], me[4], me[8], me[1], me[5], me[9], me[2], me[6], me[10]);
         return this;
@@ -115,7 +115,7 @@ export class Matrix3 {
     /**
      * Apply this matrix to given {@link BufferAttribute| attribute buffer}.
      */
-    public applyToBufferAttribute(attribute: BufferAttribute, __forceJSImpl: boolean = false): BufferAttribute {
+    applyToBufferAttribute(attribute: BufferAttribute, __forceJSImpl: boolean = false): BufferAttribute {
         const array = attribute.array;
         const itemSize = attribute.itemSize;
         for (let i = 0, l = attribute.count; i < l; i++) {
@@ -131,19 +131,19 @@ export class Matrix3 {
     /**
      * Post-multiplies this matrix by {@link Matrix3| m}.
      */
-    public multiply(m: Matrix3): Matrix3 {
+    multiply(m: Matrix3): Matrix3 {
         return this.multiplyMatrices(this, m);
     }
     /**
      * Pre-multiplies this matrix by {@link Matrix3| m}.
      */
-    public premultiply(m: Matrix3): Matrix3 {
+    premultiply(m: Matrix3): Matrix3 {
         return this.multiplyMatrices(m, this);
     }
     /**
      * Sets this matrix to {@link Matrix3| a} x {@link Matrix3| b}.
      */
-    public multiplyMatrices(a: Matrix3, b: Matrix3): Matrix3 {
+    multiplyMatrices(a: Matrix3, b: Matrix3): Matrix3 {
         const ae = a._elements;
         const be = b._elements;
         const te = this._elements;
@@ -171,7 +171,7 @@ export class Matrix3 {
         this.is2x3 = false;
         return this;
     }
-    public addMatrices(a: Matrix3, b: Matrix3): Matrix3 {
+    addMatrices(a: Matrix3, b: Matrix3): Matrix3 {
         const ae = a._elements;
         const be = b._elements;
         const te = this._elements;
@@ -202,7 +202,7 @@ export class Matrix3 {
     /**
      * Multiplies every component of the matrix by the scalar value `s`.
      */
-    public multiplyScalar(s: number): Matrix3 {
+    multiplyScalar(s: number): Matrix3 {
         const te = this._elements;
         te[0] *= s; te[3] *= s; te[6] *= s;
         te[1] *= s; te[4] *= s; te[7] *= s;
@@ -212,7 +212,7 @@ export class Matrix3 {
     /**
      * Computes and returns the {@link https://en.wikipedia.org/wiki/Determinant| determinant} of this matrix.
      */
-    public determinant(): number {
+    determinant(): number {
         const te = this._elements;
         const a = te[0], b = te[1], c = te[2],
             d = te[3], e = te[4], f = te[5],
@@ -222,7 +222,7 @@ export class Matrix3 {
     /**
      * Return the inverse matrix of given matrix.
      */
-    public getInverse(matrix: Matrix3, throwOnDegenerate?: boolean): Matrix3 {
+    getInverse(matrix: Matrix3, throwOnDegenerate?: boolean): Matrix3 {
         const te = this._elements;
         const me = matrix._elements,
             n11 = me[0], n21 = me[1], n31 = me[2],
@@ -255,7 +255,7 @@ export class Matrix3 {
     /**
      * Return the transpose matrix of this.
      */
-    public transpose(): Matrix3 {
+    transpose(): Matrix3 {
         let tmp: number;
         const m = this._elements;
         tmp = m[1]; m[1] = m[3]; m[3] = tmp;
@@ -268,14 +268,14 @@ export class Matrix3 {
      * The normal matrix is the {@link https://en.wikipedia.org/wiki/Invertible_matrix| inverse } {@link https://en.wikipedia.org/wiki/Transpose | transpose } of the matrix {@link Matrix4| m}.
      * @param m {@link Matrix4| Matrix4}
      */
-    public getNormalMatrix(matrix4: Matrix4): Matrix3 {
+    getNormalMatrix(matrix4: Matrix4): Matrix3 {
         return this.setFromMatrix4(matrix4).getInverse(this).transpose();
     }
     /**
      * Transpose this matrix into the supplied array, and returns itself unchanged.
      * @param array array to store the resulting vector in.
      */
-    public transposeIntoArray(r: Matrix3): Matrix3 {
+    transposeIntoArray(r: Matrix3): Matrix3 {
         const m = this._elements;
         r._elements[0] = m[0];
         r._elements[1] = m[3];
@@ -298,7 +298,7 @@ export class Matrix3 {
      * @param cx Translate u influenced by same rotation.
      * @param cy Translate v influenced by same rotation.
      */
-    public setUVTransform(tx: number, ty: number, sx: number, sy: number, rotation: number, cx: number, cy: number): void {
+    setUVTransform(tx: number, ty: number, sx: number, sy: number, rotation: number, cx: number, cy: number): void {
         const c = Math.cos(rotation);
         const s = Math.sin(rotation);
         this.set(sx * c, sx * s, -sx * (c * cx + s * cy) + cx + tx,
@@ -311,7 +311,7 @@ export class Matrix3 {
      * @param sx scale the value of first row.
      * @param sy scale the value of second row.
      */
-    public scale(sx: number, sy: number): Matrix3 {
+    scale(sx: number, sy: number): Matrix3 {
         const te = this._elements;
         te[0] *= sx; te[3] *= sx; te[6] *= sx;
         te[1] *= sy; te[4] *= sy; te[7] *= sy;
@@ -321,7 +321,7 @@ export class Matrix3 {
      * Apply a rotation on this matrix.
      * @param theta a value in radius.
      */
-    public rotate(theta: number): Matrix3 {
+    rotate(theta: number): Matrix3 {
         const c = Math.cos(theta);
         const s = Math.sin(theta);
         const te = this._elements;
@@ -342,7 +342,7 @@ export class Matrix3 {
      * @param tx translate first row by tx.
      * @param ty translate second row by ty.
      */
-    public translate(tx: number, ty: number): Matrix3 {
+    translate(tx: number, ty: number): Matrix3 {
         const te = this._elements;
         te[0] += tx * te[2]; te[3] += tx * te[5]; te[6] += tx * te[8];
         te[1] += ty * te[2]; te[4] += ty * te[5]; te[7] += ty * te[8];
@@ -351,7 +351,7 @@ export class Matrix3 {
     /**
      * Return true if this matrix and {@link Matrix3| m} are equal.
      */
-    public equals(matrix: Matrix3): boolean {
+    equals(matrix: Matrix3): boolean {
         const te = this._elements;
         const me = matrix._elements;
         for (let i = 0; i < 9; i++) {
@@ -364,7 +364,7 @@ export class Matrix3 {
     /**
      * Apply this matrix on vector pos, and store the result in newPos (if it is given) or as return.
      */
-    public apply(pos: Vector2, newPos?: Vector2): Vector2 {
+    apply(pos: Vector2, newPos?: Vector2): Vector2 {
         newPos = newPos || new Vector2();
 
         const x = pos.x;
@@ -385,7 +385,7 @@ export class Matrix3 {
      * Apply this matrix on given array.
      * Each vector item of array should hold three elements.
      */
-    public applyToArray(array: Float32Array) {
+    applyToArray(array: Float32Array) {
         for (let i = 0, l = array.length / 3; i < l; i++) {
             const x = array[i * 3];
             const y = array[i * 3 + 1];
@@ -398,7 +398,7 @@ export class Matrix3 {
     /**
      * Apply this matrix's inverse on vector pos, and store the result in newPos (if it is given) or as return.
      */
-    public applyInverse(pos: Vector2, newPos?: Vector2): Vector2 {
+    applyInverse(pos: Vector2, newPos?: Vector2): Vector2 {
         newPos = newPos || new Vector2();
         const a = this._elements[0];
         const b = this._elements[1];
@@ -422,7 +422,7 @@ export class Matrix3 {
      * @param offset (optional) index of first element in the array.
      * @defaultValue `0`.
      */
-    public fromArray(array: ArrayLike<number>, offset?: number): Matrix3 {
+    fromArray(array: ArrayLike<number>, offset?: number): Matrix3 {
         if (offset === undefined) {
             offset = 0;
         }
@@ -434,7 +434,7 @@ export class Matrix3 {
     /**
      * There are 9 elements in this matrix.
      */
-    public getNumberCount() {
+    getNumberCount() {
         return 9;
     }
     /**
@@ -442,7 +442,7 @@ export class Matrix3 {
      * @param array (optional) array to store the resulting vector in. If not given a new array will be created.
      * @param offset (optional) offset in the array at which to put the result.
      */
-    public toArray(array?: number[], offset?: number): number[] {
+    toArray(array?: number[], offset?: number): number[] {
         if (array === undefined) {
             array = [];
         }
@@ -465,7 +465,7 @@ export class Matrix3 {
         return array;
     }
 
-    public toStd140Array(array?: number[], offset = 0): number[] {
+    toStd140Array(array?: number[], offset = 0): number[] {
         if (array === undefined) {
             array = [];
         }
@@ -500,7 +500,7 @@ export class Matrix3 {
      * @param skewY Skew on the y axis.
      * @return This matrix. Good for chaining method calls.
      */
-    public compose(x: number, y: number, pivotX: number, pivotY: number, scaleX: number,
+    compose(x: number, y: number, pivotX: number, pivotY: number, scaleX: number,
         scaleY: number, rotation: number, skewX: number, skewY: number): this {
         this._elements[0] = Math.cos(rotation + skewY) * scaleX;
         this._elements[1] = Math.sin(rotation + skewY) * scaleX;
@@ -520,7 +520,7 @@ export class Matrix3 {
      * Decomposes the matrix (x, y, scaleX, scaleY, and rotation) and sets the properties on to a transform.
      * @return The transform with the newly applied properties.
      */
-    public decompose() {
+    decompose() {
         const transform: {
             x: number, y: number, scaleX: number,
             scaleY: number, rotation: number, skewX: number, skewY: number
@@ -560,7 +560,7 @@ export class Matrix3 {
      * Return an orthogonal projection matrix which is set by parameter.
      * @remarks See {@link OrthographicCamera | OrthographicCamera } for more details.
      */
-    public makeOrthographic(left: number, right: number, top: number, bottom: number): Matrix3 {
+    makeOrthographic(left: number, right: number, top: number, bottom: number): Matrix3 {
         const te = this._elements;
         const w = 1.0 / (right - left);
         const h = 1.0 / (top - bottom);
@@ -576,7 +576,7 @@ export class Matrix3 {
     /**
      * This multiplication is specifically used for 2x3 matrixes calculation.
      */
-    public static multiplyMatrixFast(a: Matrix3, b: Matrix3, result: Matrix3): Matrix3 {
+    static multiplyMatrixFast(a: Matrix3, b: Matrix3, result: Matrix3): Matrix3 {
         if (!a.is2x3 || !b.is2x3) {
             result.multiplyMatrices(a, b);
             return result;
@@ -610,6 +610,9 @@ export class Matrix3 {
 
 const tmpVec3 = new Vector3();
 
+/**
+ * Readonly view of the public Matrix3 API.
+ */
 export type ReadonlyMatrix3 = PickReadonly<Matrix3,
     'elements' | 'equals'
     | 'applyToBufferAttribute' | 'determinant' | 'transposeIntoArray'

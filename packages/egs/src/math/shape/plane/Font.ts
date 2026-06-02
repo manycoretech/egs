@@ -12,19 +12,19 @@ import { logger } from '../../../utils/Logger';
  */
 export class FontPath implements SerializerableDelegatedAsReference {
     private _uuid: string | null = null;
-    public getUUID(): string {
+    getUUID(): string {
         if (this._uuid === null) {
             this._uuid = _Math.generateUUID();
         }
         return this._uuid;
     }
 
-    public className(): string {
+    className(): string {
         return 'FontPath';
     }
-    public subPaths: Path[];
-    public currentPath: Path;
-    public color: Color;
+    subPaths: Path[];
+    currentPath: Path;
+    color: Color;
 
     constructor() {
         this.color = new Color();
@@ -32,33 +32,33 @@ export class FontPath implements SerializerableDelegatedAsReference {
         this.currentPath = new Path();
     }
 
-    public moveTo(x: number, y: number): void {
+    moveTo(x: number, y: number): void {
         this.currentPath = new Path();
         this.subPaths.push(this.currentPath);
         this.currentPath.moveTo(x, y);
     }
 
-    public lineTo(x: number, y: number): void {
+    lineTo(x: number, y: number): void {
         this.currentPath.lineTo(x, y);
     }
 
-    public quadraticCurveTo(aCPx: number, aCPy: number, aX: number, aY: number): void {
+    quadraticCurveTo(aCPx: number, aCPy: number, aX: number, aY: number): void {
         this.currentPath.quadraticCurveTo(aCPx, aCPy, aX, aY);
     }
 
-    public bezierCurveTo(aCP1x: number, aCP1y: number, aCP2x: number, aCP2y: number, aX: number, aY: number): void {
+    bezierCurveTo(aCP1x: number, aCP1y: number, aCP2x: number, aCP2y: number, aX: number, aY: number): void {
         this.currentPath.bezierCurveTo(aCP1x, aCP1y, aCP2x, aCP2y, aX, aY);
     }
 
-    public splineThru(pts: Vector2[]): void {
+    splineThru(pts: Vector2[]): void {
         this.currentPath.splineThru(pts);
     }
 
-    public closePath() {
+    closePath() {
         this.currentPath.closePath();
     }
 
-    public toShapes(noHoles?: boolean): Shape[] {
+    toShapes(noHoles?: boolean): Shape[] {
         function toShapesNoHoles(inSubPaths: Path[]): Shape[] {
             const _shapes = [];
             for (let i = 0, l = inSubPaths.length; i < l; i++) {
@@ -136,10 +136,10 @@ export class FontPath implements SerializerableDelegatedAsReference {
         return result;
     }
 
-    public serialize(ctx: Serializer<any>): void {
+    serialize(ctx: Serializer<any>): void {
         ctx.puts<FontPath>(['subPaths', 'currentPath', 'color']);
     }
-    public deserialize(ctx: Deserializer): void {
+    deserialize(ctx: Deserializer): void {
         ctx.reads<FontPath>(['subPaths', 'currentPath', 'color']);
     }
 }
@@ -262,14 +262,14 @@ function createPaths(text: string, size: number, lineHeight: number, data: Opent
  */
 export class Font implements SerializerableDelegatedAsReference {
     private _uuid: string | null = null;
-    public getUUID(): string {
+    getUUID(): string {
         if (this._uuid === null) {
             this._uuid = _Math.generateUUID();
         }
         return this._uuid;
     }
 
-    public className(): string {
+    className(): string {
         return 'Font';
     }
 
@@ -278,7 +278,7 @@ export class Font implements SerializerableDelegatedAsReference {
      * @param contours Contour list
      * @returns positions Vertex coordinate list
      */
-    public static triangulate: (contours: number[][]) => number[];
+    static triangulate: (contours: number[][]) => number[];
 
     private _isCIDFont: boolean = false;
     set isCIDFont(v) {
@@ -290,19 +290,19 @@ export class Font implements SerializerableDelegatedAsReference {
     /**
      * The geometry data of all font.
      */
-    public data: OpentypeFont;
+    data: OpentypeFont;
     /**
      * Used to check type of this or extended instance.
      * This value should not be changed by user.
      */
-    public isFont = true;
+    isFont = true;
     private charGeometryCache: {
         [char: string]: {
             path: FontPath;
             width: number;
         }
     } = {};
-    public unitsPerEm = 256;
+    unitsPerEm = 256;
 
     constructor(data?: OpentypeFont) {
         if (data) {
@@ -312,7 +312,7 @@ export class Font implements SerializerableDelegatedAsReference {
         }
     }
 
-    public generateShapes(text: string, size?: number, lineHeight?: number, align: 'left' | 'center' | 'right' = 'left'): Shape[] {
+    generateShapes(text: string, size?: number, lineHeight?: number, align: 'left' | 'center' | 'right' = 'left'): Shape[] {
         if (size === undefined) {
             size = 100;
         }
@@ -330,7 +330,7 @@ export class Font implements SerializerableDelegatedAsReference {
         return shapes;
     }
 
-    public serialize(ctx: Serializer<any>): void {
+    serialize(ctx: Serializer<any>): void {
         const tempGeometry: Record<string, any> = {};
         for (const i in this.charGeometryCache) {
             const g = {
@@ -344,7 +344,7 @@ export class Font implements SerializerableDelegatedAsReference {
         ctx.putRaw('unitsPerEm', this.unitsPerEm);
     }
 
-    public deserialize(ctx: Deserializer): void {
+    deserialize(ctx: Deserializer): void {
         const tempGeometry = ctx.readRaw('CharGeometry');
         for (const i in tempGeometry) {
             const g = {
@@ -415,6 +415,9 @@ type PathCommand =
         type: 'Z';
     };
 
+/**
+ * Tests whether a 2D point lies inside a polygon.
+ */
 export function isPointInsidePolygon(inPt: { x: number, y: number }, inPolygon: Array<{ x: number, y: number }>) {
     const polyLen = inPolygon.length;
     // inPt on polygon contour => immediate success or

@@ -1,11 +1,17 @@
 import { RendererBackend } from '../../renderer/IRenderer';
 import { logger } from '../../utils/Logger';
 
+/**
+ * Dimensionality of texture storage.
+ */
 export enum TextureDimension {
     D2,
     D3,
 }
 
+/**
+ * View shape used when sampling a texture.
+ */
 export enum TextureViewDimension {
     D2,
     D2Array,
@@ -13,8 +19,11 @@ export enum TextureViewDimension {
     D3
 }
 
-// values same as GPUTextureFormat
-// sorted by channels, channel type, [unorm, snorm, uint, sint, float]
+/**
+ * Texture formats
+ * values same as GPUTextureFormat
+ * sorted by channels, channel type, [unorm, snorm, uint, sint, float]
+ */
 export enum TextureFormat {
     R8Snorm = 'r8snorm',
     R8Unorm = 'r8unorm',
