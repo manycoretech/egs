@@ -1,11 +1,11 @@
 import { PassQuadMaterialBase } from '../../../elements/materials/quad/PassMaterialBase';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { materialProperty } from '../../../ContentAPI';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
 import { Texture2D } from '../../textures/Texture2D';
-import { Texture } from '../../textures/Texture';
+import type { Texture } from '../../textures/Texture';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 
 export class PseudoColorMaterial extends PassQuadMaterialBase {

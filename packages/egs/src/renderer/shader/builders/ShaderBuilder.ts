@@ -1,6 +1,6 @@
-import { LightMaterialComponent } from '../components/LightShaderComponent';
-import { Nullable } from '../../../utils/Utils';
-import { ShaderComponent, ShaderInputDescriptor, UniformArrayDescriptor, ShaderInfo, VaryArrayDescriptor } from '../Shader';
+import type { LightMaterialComponent } from '../components/LightShaderComponent';
+import type { Nullable } from '../../../utils/Utils';
+import type { ShaderComponent, ShaderInputDescriptor, UniformArrayDescriptor, ShaderInfo, VaryArrayDescriptor } from '../Shader';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
 import {
     mapAttributeType,
@@ -19,9 +19,9 @@ import {
     ShaderVaryingTypes,
     ShaderInjectionTypes,
 } from './ShaderHelper';
-import { ShaderBlock } from './ShaderBlock';
+import type { ShaderBlock } from './ShaderBlock';
 import { ShaderBlockPool } from './ShaderBlockPool';
-import { UniformBlockObject } from '../components/UniformBlockObject';
+import type { UniformBlockObject } from '../components/UniformBlockObject';
 import { Capabilities } from '../../Capabilities';
 import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
 import { logger } from '../../../utils/Logger';

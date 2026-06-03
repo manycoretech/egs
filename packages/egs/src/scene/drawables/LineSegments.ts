@@ -1,9 +1,9 @@
-import { BufferGeometry, LineList } from '../../elements/geometries/containers/BufferGeometry';
-import { Material } from '../../elements/materials/Material';
+import { BufferGeometry, type LineList } from '../../elements/geometries/containers/BufferGeometry';
+import type { Material } from '../../elements/materials/Material';
 import { Drawable } from '../../scene/drawables/Drawable';
 import { raycastLine } from './Line';
 import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
-import { Intersection, Raycaster } from '../../scene/tools/Raycaster';
+import type { Intersection, Raycaster } from '../../scene/tools/Raycaster';
 import { DrawMode } from '../../utils/Constants';
 
 /**

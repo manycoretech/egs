@@ -1,8 +1,8 @@
-import { RenderColorAttachmentNode, RenderAttachmentNode, RenderDepthAttachmentNode } from './nodes/RenderAttachmentNode';
+import { RenderColorAttachmentNode, type RenderAttachmentNode, RenderDepthAttachmentNode } from './nodes/RenderAttachmentNode';
 import { WGLCapabilities } from '../renderer/webgl/WGLCapabilities';
 import { RenderAttachment } from '../elements/textures/RenderTarget';
 import { getDepthFormat, toTextureDimension } from '../elements/textures/types';
-import { IRenderer } from '../renderer/IRenderer';
+import type { IRenderer } from '../renderer/IRenderer';
 
 // Maintain the fbo storage in rendergraph
 export class AttachmentPool {

@@ -1,6 +1,6 @@
 import { Vector2 } from '../../Vector2';
 import { Curve2D } from './Curve2D';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 /**
  * Build a line from {@link v1 | v1 } to {@link v2 | v2 } in 2D space.
  */

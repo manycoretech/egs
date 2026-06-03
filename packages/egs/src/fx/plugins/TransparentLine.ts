@@ -7,15 +7,15 @@ import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/Materi
 import { logger } from '../../utils/Logger';
 import { createEdge, needRebuild, updateEdgesVisibility } from '../../elements/geometries/operators/Edges';
 import { readonlyMath } from '../../math/Readonly';
-import { Color } from '../../math/Color';
+import type { Color } from '../../math/Color';
 import { PipelineFilters, PipelineContentBridge, PipelineContentAPIForRenderingAndFilteringEnabled } from '../PipelineAPI';
 import { TypeAssert } from '../../scene/tools/TypeAssert';
-import { Drawable, DrawableRenderMode } from '../../scene/drawables/Drawable';
+import { type Drawable, DrawableRenderMode } from '../../scene/drawables/Drawable';
 import { PipelinePlugin } from './PipelinePlugin';
-import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import { RenderGraph } from '../../rendergraph/RenderGraph';
-import { SceneAdaptorDispatcher } from '../SceneAdaptor';
-import { RendererAdaptor } from '../RendererAdaptor';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
+import type { RenderGraph } from '../../rendergraph/RenderGraph';
+import type { SceneAdaptorDispatcher } from '../SceneAdaptor';
+import type { RendererAdaptor } from '../RendererAdaptor';
 
 export class TransparentLinePlugin extends PipelinePlugin {
     readonly PLUGIN_NAME = 'transparent_line';

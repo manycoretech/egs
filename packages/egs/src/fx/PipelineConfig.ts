@@ -1,8 +1,8 @@
 import { RenderMode } from '../engine/EngineConfig';
-import { Color } from '../math/Color';
-import { PostPipeline } from './Pipeline';
-import { Vector3 } from '../math/Vector3';
-import { Plane } from '../math/Plane';
+import type { Color } from '../math/Color';
+import type { PostPipeline } from './Pipeline';
+import type { Vector3 } from '../math/Vector3';
+import type { Plane } from '../math/Plane';
 import { FilterTarget } from '../elements/materials/quad/FilterMaterial';
 import { DebugMode } from './plugins/Debug';
 

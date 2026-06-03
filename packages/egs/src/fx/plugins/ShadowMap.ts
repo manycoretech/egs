@@ -2,18 +2,18 @@ import { MeshDepthMaterial } from '../../elements/materials/mesh/MeshDepthMateri
 import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher';
 import { cubePass, cubeTarget, pass, target } from '../../rendergraph/NodeMakers';
 import { iter } from '../../utils/Utils';
-import { DrawcallListClassifyList, ProjectedDrawcallList } from '../../scene/tools/DrawcallList';
-import { PipelinePlugin, PipelineContext, DrivenCullingConfig } from './PipelinePlugin';
-import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import { RenderGraph } from '../../rendergraph/RenderGraph';
+import { DrawcallListClassifyList, type ProjectedDrawcallList } from '../../scene/tools/DrawcallList';
+import { PipelinePlugin, type PipelineContext, type DrivenCullingConfig } from './PipelinePlugin';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
+import type { RenderGraph } from '../../rendergraph/RenderGraph';
 import { Shadow } from '../../scene/shadows/Shadow';
-import { SceneAdaptorDispatcher } from '../SceneAdaptor';
-import { RendererAdaptor } from '../RendererAdaptor';
+import type { SceneAdaptorDispatcher } from '../SceneAdaptor';
+import type { RendererAdaptor } from '../RendererAdaptor';
 import { DrivenCullingMaterial } from '../../elements/materials/driven/DrivenCullingMaterial';
 import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial';
-import { RenderTarget } from '../../elements/textures/RenderTarget';
+import type { RenderTarget } from '../../elements/textures/RenderTarget';
 import { PipelineFilters } from '../PipelineAPI';
-import { PassNode } from '../../rendergraph/nodes/PassNode';
+import type { PassNode } from '../../rendergraph/nodes/PassNode';
 
 export class ShadowMapPlugin extends PipelinePlugin {
     readonly PLUGIN_NAME = 'shadowMap';

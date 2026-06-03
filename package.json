@@ -10,7 +10,7 @@
   },
   "author": "egs",
   "license": "MIT",
-  "packageManager": "pnpm@11.5.0",
+  "packageManager": "pnpm@11.5.1",
   "description": "the wrapper repo which contains the egs-main repo and egs-website together to help test and develop",
   "devDependencies": {
     "@types/node": "^22.19.19",

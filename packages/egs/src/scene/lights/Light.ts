@@ -1,6 +1,6 @@
 import { Object3D } from '../Object3D';
 import { Color } from '../../math/Color';
-import { Deserializer, Serializer } from '../../utils/Serialization';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
 import { ContentBridge, lightProperty } from '../../ContentAPI';
 
 /**

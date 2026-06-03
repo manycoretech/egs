@@ -1,8 +1,7 @@
-import { _Math } from '../../Math';
 import { Vector2 } from '../../Vector2';
 import { Shape } from './Shape';
 
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 /**
  * A class to define a shape via user defined co-ordinates.
  */

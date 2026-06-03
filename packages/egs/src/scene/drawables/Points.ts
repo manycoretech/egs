@@ -1,9 +1,9 @@
 import { Sphere } from '../../math/Sphere';
 import { Drawable } from './Drawable';
-import { Raycaster, Intersection } from '../tools/Raycaster';
+import type { Raycaster, Intersection } from '../tools/Raycaster';
 import { Vector3 } from '../../math/Vector3';
-import { BufferGeometry, PointList } from '../../elements/geometries/containers/BufferGeometry';
-import { Material } from '../../elements/materials/Material';
+import { BufferGeometry, type PointList } from '../../elements/geometries/containers/BufferGeometry';
+import type { Material } from '../../elements/materials/Material';
 import { PointsMaterial } from '../../elements/materials/mesh/PointsMaterial';
 import { DrawMode } from '../../utils/Constants';
 

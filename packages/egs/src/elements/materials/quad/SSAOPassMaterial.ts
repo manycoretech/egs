@@ -1,9 +1,9 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderExtensionTypes, ShaderInjectionTypes, ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { ShaderExtensionTypes, ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
-import { Texture } from '../../textures/Texture';
+import type { Texture } from '../../textures/Texture';
 import { readonlyMath } from '../../../math/Readonly';
 import { materialProperty } from '../../../ContentAPI';
 

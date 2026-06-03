@@ -1,9 +1,9 @@
 
 import { logger } from '../../../utils/Logger';
-import { BufferGeometry, LineList, LineStrip } from '../containers/BufferGeometry';
+import type { BufferGeometry, LineList, LineStrip } from '../containers/BufferGeometry';
 import { Vector3 } from '../../../math/Vector3';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { FatLineBufferGeometry } from '../../../elements/geometries/containers/FatLineBufferGeometry';
+import type { FatLineBufferGeometry } from '../../../elements/geometries/containers/FatLineBufferGeometry';
 import { InstancedBufferAttribute } from '../../../elements/attributes/InstancedBufferAttribute';
 
 const start = new Vector3();

@@ -1,10 +1,10 @@
-import { Intersection, Raycaster } from './Raycaster';
-import { Drawable } from '../drawables/Drawable';
-import { Vector2 } from '../../math/Vector2';
+import { type Intersection, Raycaster } from './Raycaster';
+import type { Drawable } from '../drawables/Drawable';
+import type { Vector2 } from '../../math/Vector2';
 import { TypeAssert } from './TypeAssert';
-import { Camera3D } from '../cameras/Camera3D';
+import type { Camera3D } from '../cameras/Camera3D';
 import { Box3 } from '../../math/Box3';
-import { Viewer } from '../../Viewer';
+import type { Viewer } from '../../Viewer';
 import { hasManagedContentAPI } from '../../ContentAPI';
 
 function ascSort(a: Intersection, b: Intersection): number {

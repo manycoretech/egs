@@ -1,16 +1,16 @@
 import { Object3D } from './Object3D';
-import { Light } from './lights/Light';
+import type { Light } from './lights/Light';
 import { TypeAssert } from './tools/TypeAssert';
-import { Nullable } from '../utils/Utils';
-import { Camera3D } from './cameras/Camera3D';
+import type { Nullable } from '../utils/Utils';
+import type { Camera3D } from './cameras/Camera3D';
 import { RenderProxyManager } from './tools/proxy/RenderProxyManager';
 import { EventType } from '../utils/EventDispatcher';
 import { SceneElementRefManager } from './tools/ElementRefManger';
-import { CoordinateSystemHelper } from './helpers/CoordinateSystemHelper';
-import { IRenderer } from '../renderer/IRenderer';
-import { DrawableList } from './tools/DrawcallList';
+import type { CoordinateSystemHelper } from './helpers/CoordinateSystemHelper';
+import type { IRenderer } from '../renderer/IRenderer';
+import type { DrawableList } from './tools/DrawcallList';
 import { ContentBridge, hasManagedContentAPI, ManagedContentBridge } from '../ContentAPI';
-import { Plane } from '../math/Plane';
+import type { Plane } from '../math/Plane';
 import { SplatManager } from './splat/SplatManager';
 import { ShaderComponentRegistry } from './ShaderComponentRegistry';
 

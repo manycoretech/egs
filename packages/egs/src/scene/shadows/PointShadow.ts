@@ -1,21 +1,21 @@
 import { Shadow } from './Shadow';
-import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../renderer/shader/builders/ShaderBuilder';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../renderer/shader/builders/ShaderBuilder';
 import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms';
 import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
 import { Vector3 } from '../../math/Vector3';
 import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
-import { Light } from '../lights/Light';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import type { Light } from '../lights/Light';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
 import { CubeCamera } from '../cameras/CubeCamera';
 import { TextureCube } from '../../elements/textures/TextureCube';
-import { PointLight } from '../lights/PointLight';
+import type { PointLight } from '../lights/PointLight';
 import { lightProperty } from '../../ContentAPI';
-import { Deserializer, Serializer } from '../../utils/Serialization';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
 import { Vector2 } from '../../math/Vector2';
 import { _Math } from '../../math/Math';
-import { RenderAttachment } from '../../elements/textures/RenderTarget';
-import { Texture2D } from '../../elements/textures/Texture2D';
-import { TextureV2 } from '../../elements/textures/TextureV2';
+import type { RenderAttachment } from '../../elements/textures/RenderTarget';
+import type { Texture2D } from '../../elements/textures/Texture2D';
+import type { TextureV2 } from '../../elements/textures/TextureV2';
 
 const cubeDirections = [
     new Vector3(1, 0, 0), new Vector3(- 1, 0, 0), new Vector3(0, 1, 0),

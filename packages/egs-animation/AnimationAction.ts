@@ -1,17 +1,17 @@
-import { Drawable, EventType, Material, MeshPhongMaterial, Object3D, Vector2 } from '@qunhe/egs';
-import { AnimationClip, Blend, Loop } from './type';
-import { Interpolant } from './interpolants/Interpolant';
+import { Drawable, EventType, type Material, type MeshPhongMaterial, type Object3D, Vector2 } from '@qunhe/egs';
+import { type AnimationClip, Blend, Loop } from './type';
+import type { Interpolant } from './interpolants/Interpolant';
 import { PropertyMixer } from './PropertyMixer';
 import { parseTrackPath, createInterpolant } from './utils';
-import { ISkinnedMesh } from './Skeleton';
-import { AnimationMixer } from './AnimationMixer';
+import type { ISkinnedMesh } from './Skeleton';
+import type { AnimationMixer } from './AnimationMixer';
 
 export interface ActionCtx {
     propertyMixerMap: Map<string, PropertyMixer>;
     materialSet: Set<MeshPhongMaterial>;
 }
 
-export const AnimationFinishEvent = new EventType<{action: AnimationAction}>();
+export const AnimationFinishEvent = new EventType<{ action: AnimationAction }>();
 
 /**
  * An instance schedules the playback of an animation stored in {@link AnimationClip}
@@ -196,14 +196,14 @@ export class AnimationAction {
         }
     }
 
-    private updateTime(deltaTime: number): {deactivateNext: boolean, time: number} {
+    private updateTime(deltaTime: number): { deactivateNext: boolean, time: number } {
         const { duration, repetitions } = this;
         if (repetitions <= 0) {
-            return {deactivateNext: true, time: this.time};
+            return { deactivateNext: true, time: this.time };
         }
 
         if (deltaTime === 0) {
-            return {deactivateNext: false, time: this.time};
+            return { deactivateNext: false, time: this.time };
         }
 
         let deactivateNext: boolean = false;
@@ -214,15 +214,15 @@ export class AnimationAction {
             if (time > duration) {
                 time = duration;
                 deactivateNext = true;
-                this.animationMixer.emit(AnimationFinishEvent, {action: this});
+                this.animationMixer.emit(AnimationFinishEvent, { action: this });
             }
             if (time < 0) {
                 time = 0;
                 deactivateNext = true;
-                this.animationMixer.emit(AnimationFinishEvent, {action: this});
+                this.animationMixer.emit(AnimationFinishEvent, { action: this });
             }
             this.time = time;
-            return {deactivateNext, time};
+            return { deactivateNext, time };
         }
 
         // repeat loop or pingpong loop
@@ -234,21 +234,21 @@ export class AnimationAction {
         if (this.loopCounts >= repetitions) {
             time = duration;
             deactivateNext = true;
-            this.animationMixer.emit(AnimationFinishEvent, {action: this});
+            this.animationMixer.emit(AnimationFinishEvent, { action: this });
         }
         this.time = time;
         if (this.loop === Loop.PingPong && (this.loopCounts % 2 === 1)) {
             time = duration - time;
         }
-        return {deactivateNext, time};
+        return { deactivateNext, time };
     }
 }
 
 function getMaterialByName(name: string, node: Object3D): Material | undefined {
-    if(node instanceof Drawable) {
+    if (node instanceof Drawable) {
         const materials = node.getMaterials();
-        for(let i = 0, l = materials.length; i < l; i++ ) {
-            if(materials[i].name === name) {
+        for (let i = 0, l = materials.length; i < l; i++) {
+            if (materials[i].name === name) {
                 return materials[i];
             }
         }
@@ -273,7 +273,7 @@ function getNodeByName(name: string, node: Object3D): Object3D | undefined {
         }
     }
     const skeleton = (node as ISkinnedMesh).skeleton;
-    if(skeleton !== undefined) {
+    if (skeleton !== undefined) {
         const object = getNodeByName(name, skeleton.rootBone);
         if (object !== undefined) {
             return object;

@@ -3,7 +3,7 @@ import { UniformBlockObject } from '../../renderer/shader/components/UniformBloc
 import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
 import { Vector3 } from '../../math/Vector3';
 import { Vector4 } from '../../math/Vector4';
-import { SourceTexture } from '../../elements/textures/SourceTexture';
+import type { SourceTexture } from '../../elements/textures/SourceTexture';
 
 export type SogSplatMeta = {
     counts: number;

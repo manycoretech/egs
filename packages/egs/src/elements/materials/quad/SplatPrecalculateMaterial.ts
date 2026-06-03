@@ -1,14 +1,14 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
-import { ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { Vector3 } from '../../../math/Vector3';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { Splat } from '../../../scene/splat/Splat';
-import { Camera3D } from '../../../scene/cameras/Camera3D';
+import type { Splat } from '../../../scene/splat/Splat';
+import type { Camera3D } from '../../../scene/cameras/Camera3D';
 import { Vector2 } from '../../../math/Vector2';
-import { TextureV2 } from '../../textures/TextureV2';
+import type { TextureV2 } from '../../textures/TextureV2';
 
 export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
     transparent = false;

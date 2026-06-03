@@ -22,6 +22,8 @@
     "stripInternal": true,
     "importHelpers": true,
     "esModuleInterop": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
     "lib": [
       "ESNext",
       "DOM"

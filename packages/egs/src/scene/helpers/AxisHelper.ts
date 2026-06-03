@@ -1,5 +1,5 @@
 import { LineSegments } from '../drawables/LineSegments';
-import { BufferGeometry, LineList } from '../../elements/geometries/containers/BufferGeometry';
+import { BufferGeometry, type LineList } from '../../elements/geometries/containers/BufferGeometry';
 import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
 import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
 /**

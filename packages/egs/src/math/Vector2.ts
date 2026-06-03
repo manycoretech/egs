@@ -1,7 +1,7 @@
-import { PickReadonly, Size } from '../utils/Utils';
-import { Matrix3 } from './Matrix3';
-import { Matrix4 } from './Matrix4';
-import { Vector } from './Vector';
+import type { PickReadonly,Size } from '../utils/Utils';
+import type { Matrix3 } from './Matrix3';
+import type { Matrix4 } from './Matrix4';
+import type { Vector } from './Vector';
 import { logger } from '../utils/Logger';
 /**
  * Class representing a 2D {@link https://en.wikipedia.org/wiki/Vector_space| vector}.

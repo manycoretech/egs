@@ -1,12 +1,12 @@
-import { Camera3D } from '../scene/cameras/Camera3D';
-import { Matrix3 } from './Matrix3';
-import { Quaternion } from './Quaternion';
+import type { Camera3D } from '../scene/cameras/Camera3D';
+import type { Matrix3 } from './Matrix3';
+import type { Quaternion } from './Quaternion';
 import { _Math } from './Math';
-import { Cylindrical } from './Cylindrical';
-import { Spherical } from './Spherical';
-import { PickReadonly } from '../utils/Utils';
-import { BufferAttribute } from '../elements/attributes/BufferAttribute';
-import { Vector } from './Vector';
+import type { Cylindrical } from './Cylindrical';
+import type { Spherical } from './Spherical';
+import type { PickReadonly } from '../utils/Utils';
+import type { BufferAttribute } from '../elements/attributes/BufferAttribute';
+import type { Vector } from './Vector';
 import { Matrix4 } from './Matrix4';
 /**
  * Class representing a 3D {@link https://en.wikipedia.org/wiki/Vector_space| vector}.

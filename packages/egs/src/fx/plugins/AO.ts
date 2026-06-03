@@ -4,16 +4,16 @@ import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
 import { SSAOPassMaterial } from '../../elements/materials/quad/SSAOPassMaterial';
 import { SSAOBlurPassMaterial } from '../../elements/materials/quad/SSAOBlurPassMaterial';
 import { pass, target } from '../../rendergraph/NodeMakers';
-import { PerspectiveCamera } from '../../scene/cameras/PerspectiveCamera';
+import type { PerspectiveCamera } from '../../scene/cameras/PerspectiveCamera';
 import { TypeAssert } from '../../scene/tools/TypeAssert';
-import { drawQuad, RendererAdaptor } from '../RendererAdaptor';
+import { drawQuad, type RendererAdaptor } from '../RendererAdaptor';
 import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher';
 import { Matrix4 } from '../../math/Matrix4';
 import { readonlyMath } from '../../math/Readonly';
-import { PipelinePlugin, IEffectConfig, PipelineContext } from './PipelinePlugin';
-import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import { RenderGraph } from '../../rendergraph/RenderGraph';
-import { SceneAdaptor, SceneAdaptorDispatcher } from '../SceneAdaptor';
+import { PipelinePlugin, type IEffectConfig, type PipelineContext } from './PipelinePlugin';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
+import type { RenderGraph } from '../../rendergraph/RenderGraph';
+import type { SceneAdaptor, SceneAdaptorDispatcher } from '../SceneAdaptor';
 import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial';
 
 export class AOPlugin extends PipelinePlugin {

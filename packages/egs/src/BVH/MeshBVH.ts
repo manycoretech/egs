@@ -1,13 +1,13 @@
-import { Mesh } from '../scene/drawables/Mesh';
-import { BVHStrategyType, BVH, BVHBuilder } from './Impl';
-import { Intersection, Raycaster } from '../scene/tools/Raycaster';
-import { Ray } from '../math/Ray';
+import type { Mesh } from '../scene/drawables/Mesh';
+import { BVHStrategyType, type BVH, BVHBuilder } from './Impl';
+import type { Intersection, Raycaster } from '../scene/tools/Raycaster';
+import type { Ray } from '../math/Ray';
 import { Vector3 } from '../math/Vector3';
 import { Side } from '../utils/Constants';
 import { Face3 } from '../math/Face3';
 import { Triangle } from '../math/Triangle';
-import { Material } from '../elements/materials/Material';
-import { BufferGeometry } from '../elements/geometries/containers/BufferGeometry';
+import type { Material } from '../elements/materials/Material';
+import type { BufferGeometry } from '../elements/geometries/containers/BufferGeometry';
 import { logger } from '../utils/Logger';
 
 class Box {

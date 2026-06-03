@@ -1,5 +1,5 @@
 import { ProxyOptimizer } from './ProxyOptimizer';
-import { Drawable, DrawableRenderMode } from '../../drawables/Drawable';
+import { type Drawable, DrawableRenderMode } from '../../drawables/Drawable';
 import { Mesh } from '../../drawables/Mesh';
 import { MultiMeshMerger } from '../mesh-merge/MultiMeshMerger';
 import { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry';

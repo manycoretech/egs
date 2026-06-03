@@ -1,37 +1,37 @@
 import { RenderEngine, ResetRendererEvent, RendererInitialized } from './engine/RenderEngine';
-import { RenderInfo, FrameInfo } from './utils/RenderInfo';
-import { ViewerConfig, EngineInitializeConfig, RenderMode, ConfigCell } from './engine/EngineConfig';
+import { type RenderInfo, FrameInfo } from './utils/RenderInfo';
+import type { ViewerConfig, EngineInitializeConfig, RenderMode, ConfigCell } from './engine/EngineConfig';
 import {
-    BackgroundMode, BackgroundParameter,
-    SolidColorBackgroundParameter, GradientBackgroundParameter, SkyBackgroundParameter, EnvMapBackgroundParameter, BasicBackgroundParameter,
+    BackgroundMode, type BackgroundParameter,
+    type SolidColorBackgroundParameter, type GradientBackgroundParameter, type SkyBackgroundParameter, type EnvMapBackgroundParameter, type BasicBackgroundParameter,
 } from './scene/renderables/Background';
 import { Scene3D, SceneChangeEvent } from './scene/Scene3D';
 import { exportScene } from './scene/tools/SceneIO';
-import { Size, Utils, IRange } from './utils/Utils';
-import { Camera3D } from './scene/cameras/Camera3D';
+import { type Size, Utils, type IRange } from './utils/Utils';
+import type { Camera3D } from './scene/cameras/Camera3D';
 import { Picker } from './scene/tools/Picker';
 import { EventType, EventDispatcher } from './utils/EventDispatcher';
 import { TickEvent } from './utils/FPSTimer';
 import { logger } from './utils/Logger';
-import { SnapshotRenderer as DeprecatedSnapshotRenderer } from './snapshot/SnapshotRenderer';
-import { SnapshotRenderer } from './snapshot/SnapshotRendererV2';
-import { ContextLostEvent, ContextLostRestoreFailedEvent, CtxLostInfo, MemoryGrowFailed } from './renderer/IRenderer';
+import type { SnapshotRenderer as DeprecatedSnapshotRenderer } from './snapshot/SnapshotRenderer';
+import type { SnapshotRenderer } from './snapshot/SnapshotRendererV2';
+import { ContextLostEvent, ContextLostRestoreFailedEvent, type CtxLostInfo, MemoryGrowFailed } from './renderer/IRenderer';
 import { CoordinateSystemHelper } from './scene/helpers/CoordinateSystemHelper';
-import { RenderTarget } from './elements/textures/RenderTarget';
-import { ArrayCamera } from './scene/cameras/ArrayCamera';
-import { BaseElement } from './utils/ElementBase';
+import type { RenderTarget } from './elements/textures/RenderTarget';
+import type { ArrayCamera } from './scene/cameras/ArrayCamera';
+import type { BaseElement } from './utils/ElementBase';
 import { ContentBridge } from './ContentAPI';
-import { MemoryInfo, RendererBackend } from './renderer/IRenderer';
+import { type MemoryInfo, RendererBackend } from './renderer/IRenderer';
 import { TypeAssert } from './scene/tools/TypeAssert';
-import { HighLightItem, HighlightGroup } from './fx/plugins/Highlight';
-import { RenderingConfig, TextureCompression } from './fx/plugins/PipelinePlugin';
+import type { HighLightItem,HighlightGroup } from './fx/plugins/Highlight';
+import { type RenderingConfig, TextureCompression } from './fx/plugins/PipelinePlugin';
 import { COMPOSITE_TARGET_NAME } from './fx/plugins/Composite';
 import { Viewport } from './Viewport';
-import { Vector4 } from './math/Vector4';
+import type { Vector4 } from './math/Vector4';
 import { ToggleWebGPUEvent, WebGPUUnstable, WebGPUValidationFailed } from './Bridge/utils';
 import { applicationTimer } from './utils/ApplicationTimer';
 
-export { HighLightItem, HighlightGroup } from './fx/plugins/Highlight';
+export type { HighLightItem, HighlightGroup } from './fx/plugins/Highlight';
 
 export type RequestRenderHandler = () => void;
 

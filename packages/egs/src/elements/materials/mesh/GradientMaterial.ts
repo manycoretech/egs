@@ -1,5 +1,5 @@
-import { ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
 import { Side } from '../../../utils/Constants';

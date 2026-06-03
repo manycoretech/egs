@@ -4,14 +4,14 @@ import { ColorState } from './ColorState';
 import { DepthState } from './DepthState';
 import { StencilState } from './StencilState';
 import { AttributeState } from './AttributeState';
-import { Nullable } from '../../../utils/Utils';
+import type { Nullable } from '../../../utils/Utils';
 import { TextureState } from './TextureState';
-import { WGLProgram } from '../WGLProgram';
-import { WebGLCullFace, WebGLTextureType } from '../WGLConstants';
-import { Blending, DepthModes, Side, BlendingEquation, StencilFunc, StencilOp } from '../../../utils/Constants';
+import type { WGLProgram } from '../WGLProgram';
+import { WebGLCullFace, type WebGLTextureType } from '../WGLConstants';
+import { Blending, DepthModes, Side, type BlendingEquation, type StencilFunc, type StencilOp } from '../../../utils/Constants';
 import { BlendState } from './BlendState';
-import { MaterialState } from '../../../elements/materials/Material';
-import { WGLExtensions } from '../WGLExtensions';
+import type { MaterialState } from '../../../elements/materials/Material';
+import type { WGLExtensions } from '../WGLExtensions';
 
 // WGLState contains functions to control the switch and record of states in WebGL/WebGL2,
 // Such as depth_test, blend_mode, view_port, cull_face and so on.

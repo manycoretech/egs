@@ -1,4 +1,4 @@
-import { Application, Object3D, Matrix4, Texture2D, _Math, WebGLPixelFormat, TextureDataType, __INTERNAL__, SkinnedMesh } from '@qunhe/egs';
+import { Application, type Object3D, Matrix4, Texture2D, _Math, WebGLPixelFormat, TextureDataType, __INTERNAL__, type SkinnedMesh } from '@qunhe/egs';
 import semver from 'semver';
 
 import Object3DChangeEvent = __INTERNAL__.Object3DChangeEvent;

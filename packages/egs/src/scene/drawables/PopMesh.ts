@@ -1,7 +1,7 @@
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { Mesh } from './Mesh';
-import { MeshPhongMaterial } from '../../elements/materials/mesh/MeshPhongMaterial';
-import { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';
+import type { MeshPhongMaterial } from '../../elements/materials/mesh/MeshPhongMaterial';
+import type { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';
 import { drawableState } from '../../ContentAPI';
 
 /**

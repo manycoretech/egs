@@ -1,21 +1,21 @@
-import { ViewerConfig, createViewConfig, listenViewerConfigChange } from './engine/EngineConfig';
-import { RenderEngine } from './engine/RenderEngine';
-import { Scene3D } from './scene/Scene3D';
-import { Camera3D } from './scene/cameras/Camera3D';
+import { type ViewerConfig, createViewConfig, listenViewerConfigChange } from './engine/EngineConfig';
+import type { RenderEngine } from './engine/RenderEngine';
+import type { Scene3D } from './scene/Scene3D';
+import type { Camera3D } from './scene/cameras/Camera3D';
 import { CameraWatcher, CameraChangeEvent, CameraEndChangeEvent, CameraStartChangeEvent } from './scene/tools/CameraWatcher';
 import type { RequestRenderHandler, Viewer } from './Viewer';
 import { TypeAssert } from './scene/tools/TypeAssert';
 import { logger, sendKtrackerEvent } from './utils/Logger';
-import { HighlightGroup } from './fx/plugins/Highlight';
+import type { HighlightGroup } from './fx/plugins/Highlight';
 import { PostPipeline } from './fx/Pipeline';
 import { RendererAdaptor } from './fx/RendererAdaptor';
-import { Size, IRange } from './utils/Utils';
+import type { Size,IRange } from './utils/Utils';
 import { PerspectiveCamera } from './scene/cameras/PerspectiveCamera';
 import { Vector4 } from './math/Vector4';
 import { ContentBridge } from './ContentAPI';
 import { COMPOSITE_TARGET_NAME } from './fx/plugins/Composite';
 import { SnapshotResult } from './snapshot/SnapshotResult';
-import { DrivenCullingConfig } from './fx/plugins/PipelinePlugin';
+import type { DrivenCullingConfig } from './fx/plugins/PipelinePlugin';
 
 /**
  * Named rendering viewport managed by a viewer.

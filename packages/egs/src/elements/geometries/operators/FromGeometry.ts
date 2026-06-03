@@ -1,10 +1,10 @@
-import { BufferGeometry, LineStrip, LineList } from '../../../elements/geometries/containers/BufferGeometry';
+import type { BufferGeometry, LineStrip, LineList } from '../../../elements/geometries/containers/BufferGeometry';
 import { logger } from '../../../utils/Logger';
 import { Vector2 } from '../../../math/Vector2';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { Geometry } from '../containers/Geometry';
-import { Vector3 } from '../../../math/Vector3';
-import { Color } from '../../../math/Color';
+import type { Geometry } from '../containers/Geometry';
+import type { Vector3 } from '../../../math/Vector3';
+import type { Color } from '../../../math/Color';
 
 export function updateByGeometry(me: BufferGeometry, geometry: Geometry) {
     const faces = geometry.faces;

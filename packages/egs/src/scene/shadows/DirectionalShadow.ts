@@ -1,13 +1,13 @@
 import { SingleProjectShadow } from './Shadow';
 import { OrthographicCamera } from '../cameras/OrthographicCamera';
-import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../renderer/shader/builders/ShaderBuilder';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../renderer/shader/builders/ShaderBuilder';
 import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms';
 import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
 import { Vector3 } from '../../math/Vector3';
 import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
-import { DirectionalLight } from '../lights/DirectionalLight';
-import { Deserializer, Serializer } from '../../utils/Serialization';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import type { DirectionalLight } from '../lights/DirectionalLight';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
 import { Vector2 } from '../../math/Vector2';
 import { lightProperty } from '../../ContentAPI';
 

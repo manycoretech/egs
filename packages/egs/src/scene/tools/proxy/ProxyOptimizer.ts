@@ -1,8 +1,8 @@
-import { DrawableSet } from './DrawableSet';
-import { Drawable } from '../../drawables/Drawable';
+import type { DrawableSet } from './DrawableSet';
+import type { Drawable } from '../../drawables/Drawable';
 import { DynamicAnalyser } from './DynamicAnalyser';
-import { RenderProxyManager } from './RenderProxyManager';
-import { DrawableList } from '../DrawcallList';
+import type { RenderProxyManager } from './RenderProxyManager';
+import type { DrawableList } from '../DrawcallList';
 import { logger } from '../../../utils/Logger';
 
 export class ProxyItemModification<T extends Drawable>{

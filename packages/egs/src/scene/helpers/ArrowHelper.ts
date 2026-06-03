@@ -3,7 +3,7 @@ import { Vector3 } from '../../math/Vector3';
 import { Mesh } from '../drawables/Mesh';
 import { Line } from '../drawables/Line';
 import { Color } from '../../math/Color';
-import { BufferGeometry, LineStrip } from '../../elements/geometries/containers/BufferGeometry';
+import { BufferGeometry, type LineStrip } from '../../elements/geometries/containers/BufferGeometry';
 import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
 import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
 import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial';

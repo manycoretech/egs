@@ -1,4 +1,4 @@
-import { BufferAttribute } from '@qunhe/egs';
+import type { BufferAttribute } from '@qunhe/egs';
 
 // https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_mesh_quantization#encoding-quantized-data
 function getNormalizedComponentScale(constructor: any) {

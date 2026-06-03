@@ -1,13 +1,13 @@
-import { DrawableList, ProjectedDrawcallList, Drawcall, RenderObjectsType, DrawcallListClassifyType } from '../scene/tools/DrawcallList';
-import { IRenderer } from '../renderer/IRenderer';
-import { MaterialDispatcher } from '../renderer/MaterialDispatcher';
-import { Camera3D } from '../scene/cameras/Camera3D';
-import { Drawable, OutlineRenderMode, DrawableRenderMode } from '../scene/drawables/Drawable';
+import type { DrawableList, ProjectedDrawcallList, Drawcall, RenderObjectsType, DrawcallListClassifyType } from '../scene/tools/DrawcallList';
+import type { IRenderer } from '../renderer/IRenderer';
+import type { MaterialDispatcher } from '../renderer/MaterialDispatcher';
+import type { Camera3D } from '../scene/cameras/Camera3D';
+import { type Drawable, OutlineRenderMode, type DrawableRenderMode } from '../scene/drawables/Drawable';
 import { TypeAssert } from '../scene/tools/TypeAssert';
-import { Object3D } from '../scene/Object3D';
-import { Scene3D } from '../scene/Scene3D';
-import { Light } from '../scene/lights/Light';
-import { Cone } from '../math/Cone';
+import type { Object3D } from '../scene/Object3D';
+import type { Scene3D } from '../scene/Scene3D';
+import type { Light } from '../scene/lights/Light';
+import type { Cone } from '../math/Cone';
 import { Vector3 } from '../math/Vector3';
 
 export enum ShadowMode {

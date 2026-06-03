@@ -1,31 +1,31 @@
 import { logger } from '../../../utils/Logger';
 import { Vector3 } from '../../../math/Vector3';
-import { Camera3D } from '../../../scene/cameras/Camera3D';
-import { Drawable } from '../../../scene/drawables/Drawable';
-import { AmbientLight } from '../../../scene/lights/AmbientLight';
+import type { Camera3D } from '../../../scene/cameras/Camera3D';
+import type { Drawable } from '../../../scene/drawables/Drawable';
+import type { AmbientLight } from '../../../scene/lights/AmbientLight';
 import { DirectionalLight, directionLightCollect } from '../../../scene/lights/DirectionalLight';
 import { DiskAreaLight, diskAreaLightCollect } from '../../../scene/lights/DiskAreaLight';
-import { HemisphereLight } from '../../../scene/lights/HemisphereLight';
-import { Light } from '../../../scene/lights/Light';
+import type { HemisphereLight } from '../../../scene/lights/HemisphereLight';
+import type { Light } from '../../../scene/lights/Light';
 import {
     PointLight, pointLightCollect, punctualLightIntensityToIrradianceFactor
 } from '../../../scene/lights/PointLight';
 import { RectAreaLight, rectAreaLightCollect } from '../../../scene/lights/RectAreaLight';
 import { SpotLight, spotLightCollect } from '../../../scene/lights/SpotLight';
-import { Nullable } from '../../../utils/Utils';
+import type { Nullable } from '../../../utils/Utils';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import { WGLProgram } from '../../webgl/WGLProgram';
+import type { WGLProgram } from '../../webgl/WGLProgram';
 import { ShaderBlockPool } from '../builders/ShaderBlockPool';
-import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
 import { unrollLoops } from '../builders/ShaderHelper';
 // the inner light system has some agreement on how a material will
 import { SharedShaderComponent } from '../Shader';
-import { EnvMapIBLShaderComponent } from './EnvMapIBLShaderComponent';
+import type { EnvMapIBLShaderComponent } from './EnvMapIBLShaderComponent';
 
-import { Shadow } from '../../../scene/shadows/Shadow';
+import type { Shadow } from '../../../scene/shadows/Shadow';
 import { Capabilities } from '../../Capabilities';
 import { TypeAssert } from '../../../scene/tools/TypeAssert';
-import { Layers } from '../../../scene/tools/Layers';
+import type { Layers } from '../../../scene/tools/Layers';
 
 // receive the light, to use inner light system, one shading stage should provide given interface
 export interface LightMaterialComponent {

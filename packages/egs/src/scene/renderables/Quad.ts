@@ -1,14 +1,14 @@
-import { IRenderer, RendererBackend } from '../../renderer/IRenderer';
+import { type IRenderer, RendererBackend } from '../../renderer/IRenderer';
 import { OrthographicCamera } from '../cameras/OrthographicCamera';
 import { Mesh } from '../drawables/Mesh';
-import { Renderable } from './IRenderable';
-import { Material } from '../../elements/materials/Material';
+import type { Renderable } from './IRenderable';
+import type { Material } from '../../elements/materials/Material';
 import { PipelineContentBridge, PipelineContentAPIForRenderingAndFilteringEnabled, ShadowMode } from '../../fx/PipelineAPI';
-import { DeferredLightBase } from '../../fx/plugins/Deferred';
+import type { DeferredLightBase } from '../../fx/plugins/Deferred';
 import { FullScreenTriangleBufferGeometry } from '../../elements/geometries/builder/Triangle';
-import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
-import { Scene3D } from '../Scene3D';
-import { Light } from '../lights/Light';
+import type { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
+import type { Scene3D } from '../Scene3D';
+import type { Light } from '../lights/Light';
 
 export class Quad implements Renderable {
     private quadCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);

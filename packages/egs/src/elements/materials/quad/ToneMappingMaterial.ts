@@ -1,12 +1,12 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
-import { MaterialParameters, ColorTransfer } from '../../materials/Material';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type MaterialParameters, ColorTransfer } from '../../materials/Material';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { Texture } from '../../textures/Texture';
+import type { Texture } from '../../textures/Texture';
 import { materialProperty } from '../../../ContentAPI';
 import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
 

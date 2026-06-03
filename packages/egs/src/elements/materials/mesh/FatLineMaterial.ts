@@ -1,14 +1,14 @@
-import { LineBasicMaterial, ColorWithAlpha, LineDash, LineDashParam, ColorWithAlphaParam } from './LineMaterial';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import { LineBasicMaterial, ColorWithAlpha, LineDash, type LineDashParam, type ColorWithAlphaParam } from './LineMaterial';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { ConvertMaterialParameters, MaterialParameters } from '../Material';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { ConvertMaterialParameters,MaterialParameters } from '../Material';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
 import { Utils } from '../../../utils/Utils';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { materialProperty, shaderComponentInMaterial } from '../../../ContentAPI';
-import { Renderer } from '../../../renderer/Renderer';
+import type { Renderer } from '../../../renderer/Renderer';
 import { SceneClipMaterial } from '../base';
 
 export type FatLineMaterialParameter = ConvertMaterialParameters<Pick<FatLineMaterial, 'enableDash' | 'fatLineWidth' | 'enableViewIndependentDashScale'>>

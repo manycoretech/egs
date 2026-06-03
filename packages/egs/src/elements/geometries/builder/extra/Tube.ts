@@ -2,7 +2,7 @@ import { BufferAttribute } from '../../../../elements/attributes/BufferAttribute
 import { computeNormalsByPosition } from '../../../../elements/geometries/operators/Renormalize';
 import { BufferGeometry } from '../../../../elements/geometries/containers/BufferGeometry';
 import { Vector3 } from '../../../../math/Vector3';
-import { Curve } from '../../../../math/shape/curves/Curve';
+import type { Curve } from '../../../../math/shape/curves/Curve';
 import { Vector2 } from '../../../../math/Vector2';
 export interface TubeShapeParameter {
     path: Curve<Vector3>;

@@ -2,15 +2,15 @@
 import { WebGLPixelFormat, WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { TextureDataType } from '../../../utils/Constants';
 import { _Math } from '../../../math/Math';
-import { Color, ReadonlyColor } from '../../../math/Color';
+import { Color, type ReadonlyColor } from '../../../math/Color';
 import { logger } from '../../../utils/Logger';
-import { Vector3 } from '../../../math/Vector3';
-import { Vector2 } from '../../../math/Vector2';
-import { Material } from '../../../elements/materials/Material';
-import { ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import type { Vector3 } from '../../../math/Vector3';
+import type { Vector2 } from '../../../math/Vector2';
+import type { Material } from '../../../elements/materials/Material';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { Texture2D, Texture2DCommonLayer } from '../../../elements/textures/Texture2D';
-import { TextureV2 } from '../../../elements/textures/TextureV2';
+import type { TextureV2 } from '../../../elements/textures/TextureV2';
 
 type DataTextureStorageAble = number | Color | Vector3 | Vector2 | ReadonlyColor;
 

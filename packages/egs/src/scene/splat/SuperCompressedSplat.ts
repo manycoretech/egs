@@ -1,5 +1,5 @@
 import { Splat } from './Splat';
-import { SourceTexture } from '../../elements/textures/SourceTexture';
+import type { SourceTexture } from '../../elements/textures/SourceTexture';
 
 export class SuperCompressedSplat extends Splat {
     readonly PackType = 'super_compressed';

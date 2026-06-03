@@ -1,5 +1,5 @@
-import { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry';
-import { Matrix4 } from '../../../math/Matrix4';
+import type { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry';
+import type { Matrix4 } from '../../../math/Matrix4';
 import { Matrix3 } from '../../../math/Matrix3';
 
 /**

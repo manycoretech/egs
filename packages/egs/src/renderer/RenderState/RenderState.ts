@@ -1,17 +1,17 @@
 
 import { logger } from '../../utils/Logger';
-import { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
-import { Texture } from '../../elements/textures/Texture';
-import { Camera3D } from '../../scene/cameras/Camera3D';
-import { Drawable } from '../../scene/drawables/Drawable';
+import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
+import type { Texture } from '../../elements/textures/Texture';
+import type { Camera3D } from '../../scene/cameras/Camera3D';
+import type { Drawable } from '../../scene/drawables/Drawable';
 import { TypeAssert } from '../../scene/tools/TypeAssert';
-import { ResourceManager } from '../ResourceManager/ResourceManager';
+import type { ResourceManager } from '../ResourceManager/ResourceManager';
 import { Capabilities } from '../Capabilities';
-import { WGLProgram } from '../webgl/WGLProgram';
-import { WGLState } from '../webgl/WGLState/WGLState';
+import type { WGLProgram } from '../webgl/WGLProgram';
+import type { WGLState } from '../webgl/WGLState/WGLState';
 import { BuiltInUniforms, BuiltInUniformTypes } from './BuiltInUniforms';
-import { PopMesh } from '../../scene/drawables/PopMesh';
-import { SkinnedMesh } from '../../scene/drawables/SkinnedMesh';
+import type { PopMesh } from '../../scene/drawables/PopMesh';
+import type { SkinnedMesh } from '../../scene/drawables/SkinnedMesh';
 import { WGLCapabilities } from '../webgl/WGLCapabilities';
 import { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry';
 

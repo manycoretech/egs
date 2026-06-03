@@ -1,9 +1,8 @@
-import { WebGLTextureUploadCtx, SamplerDescriptor } from './Texture';
+import type { WebGLTextureUploadCtx, SamplerDescriptor } from './Texture';
 import { TextureV2 } from './TextureV2';
 import { ContentBridge } from '../../ContentAPI';
-import { TextureDimension, TextureViewDimension, TextureFormat, mipLevelSize, CUBE_FACES } from './types';
-import { TypedArray } from '../../utils/Utils';
-import { _Math } from '../../math/Math';
+import { TextureDimension, type TextureViewDimension, type TextureFormat, mipLevelSize, CUBE_FACES } from './types';
+import type { TypedArray } from '../../utils/Utils';
 import { logger } from '../../utils/Logger';
 
 export type MipLevelSource = TypedArray;

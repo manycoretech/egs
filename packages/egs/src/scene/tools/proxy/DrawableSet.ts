@@ -1,5 +1,5 @@
 import { EventDispatcher, EventType } from '../../../utils/EventDispatcher';
-import { Drawable } from '../../drawables/Drawable';
+import type { Drawable } from '../../drawables/Drawable';
 
 export const DrawableAdd = new EventType<Drawable>();
 export const DrawableDelete = new EventType<Drawable>();

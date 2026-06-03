@@ -1,4 +1,4 @@
-import { Material, TypeAssert, Matrix3 } from '@qunhe/egs';
+import { type Material, TypeAssert, Matrix3 } from '@qunhe/egs';
 
 export interface TransformExtensionData {
     offset?: [number, number];

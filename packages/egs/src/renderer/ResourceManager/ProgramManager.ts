@@ -1,8 +1,8 @@
-import { Material, MaterialDisposeEvent } from '../../elements/materials/Material';
-import { RenderState } from '../RenderState/RenderState';
+import { type Material, MaterialDisposeEvent } from '../../elements/materials/Material';
+import type { RenderState } from '../RenderState/RenderState';
 import { WGLProgram } from '../webgl/WGLProgram';
-import { UBOManager } from './UBOManager';
-import { RenderInfo } from '../../utils/RenderInfo';
+import type { UBOManager } from './UBOManager';
+import type { RenderInfo } from '../../utils/RenderInfo';
 import { IterableWeakMap } from '../../utils/WeakCollections';
 
 // ProgramManager manages WebGl program or instanced program for resource manger.

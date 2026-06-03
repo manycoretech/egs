@@ -2,8 +2,8 @@ import { Object3D } from '../Object3D';
 import { EventType } from '../../utils/EventDispatcher';
 import { Vector3 } from '../../math/Vector3';
 import { Vector4 } from '../../math/Vector4';
-import { UniformBlockObject } from '../../renderer/shader/components/UniformBlockObject';
-import { SourceTexture } from '../../elements/textures/SourceTexture';
+import type { UniformBlockObject } from '../../renderer/shader/components/UniformBlockObject';
+import type { SourceTexture } from '../../elements/textures/SourceTexture';
 
 /**
  * Event emitted when splat rendering stability changes.

@@ -1,12 +1,12 @@
-import { Vector3 } from '../../math/Vector3';
+import type { Vector3 } from '../../math/Vector3';
 import { pass, target } from '../../rendergraph/NodeMakers';
-import { drawQuad, RendererAdaptor } from '../RendererAdaptor';
+import { drawQuad, type RendererAdaptor } from '../RendererAdaptor';
 import { FilterMaterial, FilterTarget } from '../../elements/materials/quad/FilterMaterial';
 import { PipelinePlugin } from './PipelinePlugin';
-import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import { RenderGraph } from '../../rendergraph/RenderGraph';
-import { SceneAdaptorDispatcher } from '../SceneAdaptor';
-import { Texture } from '../../elements/textures/Texture';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
+import type { RenderGraph } from '../../rendergraph/RenderGraph';
+import type { SceneAdaptorDispatcher } from '../SceneAdaptor';
+import type { Texture } from '../../elements/textures/Texture';
 
 export class StylizePlugin extends PipelinePlugin {
     readonly PLUGIN_NAME = 'stylize';

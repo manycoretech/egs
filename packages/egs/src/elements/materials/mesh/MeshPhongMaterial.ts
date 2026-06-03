@@ -1,23 +1,23 @@
-import { Nullable, Utils } from '../../../utils/Utils';
+import { type Nullable, Utils } from '../../../utils/Utils';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderVaryingTypes, ShaderInjectionTypes, ShaderBuilder, ShaderAttributeTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { ShaderVaryingTypes, ShaderInjectionTypes, type ShaderBuilder, ShaderAttributeTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { MaterialParameters, ConvertMaterialParameters } from '../Material';
+import type { MaterialParameters,ConvertMaterialParameters } from '../Material';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import { UniformBlockObject } from '../../../renderer/shader/components/UniformBlockObject';
-import { ReadonlyColor, Color } from '../../../math/Color';
+import { type ReadonlyColor, Color } from '../../../math/Color';
 import { LightableMaterial } from './LightableMaterial';
 import { readonlyMath } from '../../../math/Readonly';
-import { Texture } from '../../textures/Texture';
+import type { Texture } from '../../textures/Texture';
 import { materialProperty } from '../../../ContentAPI';
-import { Matrix3, ReadonlyMatrix3 } from '../../../math/Matrix3';
+import { Matrix3, type ReadonlyMatrix3 } from '../../../math/Matrix3';
 import { Side } from '../../../utils/Constants';
-import { DeferredMaterial } from '../base';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { Texture2D } from '../../textures/Texture2D';
-import { TextureV2 } from '../../textures/TextureV2';
+import type { DeferredMaterial } from '../base';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { Texture2D } from '../../textures/Texture2D';
+import type { TextureV2 } from '../../textures/TextureV2';
 
 export type MeshPhongMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters
     & ConvertMaterialParameters<Pick<MeshPhongMaterial<T>,

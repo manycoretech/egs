@@ -1,4 +1,4 @@
-import { Sphere } from './Sphere';
+import type { Sphere } from './Sphere';
 import { Vector3 } from './Vector3';
 
 const V = new Vector3();

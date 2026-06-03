@@ -1,6 +1,6 @@
 import { Vector3 } from './Vector3';
 import { _Math } from './Math';
-import { Matrix4 } from './Matrix4';
+import type { Matrix4 } from './Matrix4';
 /**
  * {@link Vector3| Vector3} representing the start point of the line.
  * A geometric line segment represented by a start and end point.

@@ -11,6 +11,7 @@
     - 修复部分`import`的问题
 2. 优化
     - 改进`api`文档
+    - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`
 
 ## 1.2.88
 

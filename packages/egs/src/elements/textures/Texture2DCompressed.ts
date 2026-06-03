@@ -1,11 +1,11 @@
-import { TypedArray } from '../../utils/Utils';
+import type { TypedArray } from '../../utils/Utils';
 import {
-    LegacySourceTexture, SourceTextureLayerWebGLUploadResult, SourceTextureWebGLUploadResult,
-    TextureMipmapGroup, WebGLTextureUploadCtx
+    LegacySourceTexture, type SourceTextureLayerWebGLUploadResult, type SourceTextureWebGLUploadResult,
+    type TextureMipmapGroup, type WebGLTextureUploadCtx
 } from './Texture';
 import { Texture2DLayer } from './Texture2D';
 import { ContentBridge } from '../../ContentAPI';
-import { CompressedPixelFormat } from '../../utils/Constants';
+import type { CompressedPixelFormat } from '../../utils/Constants';
 import { _Math } from '../../math/Math';
 import { TextureDimension, TextureViewDimension } from './types';
 

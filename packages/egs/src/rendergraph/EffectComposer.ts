@@ -1,13 +1,13 @@
 import { logger } from '../utils/Logger';
-import { RenderGraph } from './RenderGraph';
-import { RendererAdaptor } from '../fx/RendererAdaptor';
+import type { RenderGraph } from './RenderGraph';
+import type { RendererAdaptor } from '../fx/RendererAdaptor';
 import { AttachmentPool } from './AttachmentPool';
-import { RenderTarget, RenderAttachment } from '../elements/textures/RenderTarget';
-import { RenderTargetNode } from '../rendergraph/nodes/RenderTargetNode';
+import { RenderTarget, type RenderAttachment } from '../elements/textures/RenderTarget';
+import type { RenderTargetNode } from '../rendergraph/nodes/RenderTargetNode';
 import { ExecuteBeforeEvent, ExecuteAfterEvent } from './nodes/ExecuteNode';
-import { OverrideScreenOutputTarget } from './nodes/PassNode';
-import { Texture } from '../elements/textures/Texture';
-import { RenderAttachmentNode } from './nodes/RenderAttachmentNode';
+import type { OverrideScreenOutputTarget } from './nodes/PassNode';
+import type { Texture } from '../elements/textures/Texture';
+import type { RenderAttachmentNode } from './nodes/RenderAttachmentNode';
 
 // Responsible for rendergraph execution
 export class EffectComposer {

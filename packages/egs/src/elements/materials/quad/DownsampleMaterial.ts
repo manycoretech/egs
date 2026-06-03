@@ -1,11 +1,11 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { ShaderInjectionTypes, ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { readonlyMath } from '../../../math/Readonly';
 import { materialProperty } from '../../../ContentAPI';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { Texture } from '../../textures/Texture';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { Texture } from '../../textures/Texture';
 
 export class DownsampleMaterial extends PassQuadMaterialBase {
     @materialProperty()

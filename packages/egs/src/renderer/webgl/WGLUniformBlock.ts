@@ -1,6 +1,6 @@
-import { WGLProgram } from './WGLProgram';
-import { UniformBlockDescriptor } from '../shader/Shader';
-import { UBOManager } from '../ResourceManager/UBOManager';
+import type { WGLProgram } from './WGLProgram';
+import type { UniformBlockDescriptor } from '../shader/Shader';
+import type { UBOManager } from '../ResourceManager/UBOManager';
 
 export interface WGLUniformBlockData {
     buffer: WebGLBuffer,

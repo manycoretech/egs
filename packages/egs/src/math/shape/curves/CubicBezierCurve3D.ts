@@ -1,7 +1,7 @@
 import { Curve } from './Curve';
 import { Vector3 } from '../../Vector3';
 import { _Math } from '../../Math';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 /**
  * The cubic-bezier curve object is used to help drawing curves in 3D space.
  */

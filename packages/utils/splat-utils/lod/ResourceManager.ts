@@ -1,6 +1,6 @@
 import { deferred } from '@qunhe/egs-lib';
-import { SourceTexture, Splat, __INTERNAL__ } from '@qunhe/egs';
-import { SplatData, SplatPackType, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from '@qunhe/egs-splat-loader';
+import { type SourceTexture, type Splat, __INTERNAL__ } from '@qunhe/egs';
+import { type SplatData, SplatPackType, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from '@qunhe/egs-splat-loader';
 import { createSourceTextureFromSampler, createSourceTextureFromImageSource } from '../SplatData';
 
 interface ResourceData {

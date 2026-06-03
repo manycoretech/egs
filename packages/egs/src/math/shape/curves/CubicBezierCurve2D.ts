@@ -1,7 +1,7 @@
 import { Vector2 } from '../../../math/Vector2';
 import { _Math } from '../../Math';
 import { Curve2D } from './Curve2D';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 /**
  * The cubic-bezier curve object is used to help drawing curves for {@link Path | path }.
  */

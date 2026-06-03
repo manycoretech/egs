@@ -1,5 +1,5 @@
-import { SplatFileType, SplatPackType } from './utils';
-import { ISplatData } from './splat/utils';
+import type { SplatFileType, SplatPackType } from './utils';
+import type { ISplatData } from './splat/utils';
 
 export interface ParseExtras {
     maxShDegree: number;
@@ -12,7 +12,7 @@ export enum TaskType {
     SortSplats = 'SortSplats',
 }
 
-export const enum TaskStatus {
+export enum TaskStatus {
     Success,
     Fail,
 }

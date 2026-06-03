@@ -1,9 +1,9 @@
-import { ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { materialProperty } from '../../../ContentAPI';
 import { SceneMaterial } from '../base';
 

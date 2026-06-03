@@ -1,19 +1,18 @@
-import { RenderInfo } from '../../utils/RenderInfo';
-import { _Math } from '../../math/Math';
+import type { RenderInfo } from '../../utils/RenderInfo';
 import { ProgramManager } from './ProgramManager';
 import { UBOManager } from './UBOManager';
 import { BufferManager } from './BufferManager';
 import { TextureManager } from './TextureManager';
 import { VAOManager } from './VAOManager';
-import { UniformBlockObject } from '../shader/components/UniformBlockObject';
-import { WGLBufferData } from '../webgl/WGLBuffer';
+import type { UniformBlockObject } from '../shader/components/UniformBlockObject';
+import type { WGLBufferData } from '../webgl/WGLBuffer';
 import { Capabilities } from '../Capabilities';
-import { WGLProgram } from '../webgl/WGLProgram';
-import { BufferGeometryBase, BufferAttribute, Material } from '../../..';
+import type { WGLProgram } from '../webgl/WGLProgram';
+import type { BufferGeometryBase, BufferAttribute, Material } from '../../..';
 import { GeometryAttributeChangedEvent, GeometryDisposeEvent } from '../../elements/geometries/containers/BufferGeometry';
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { IterableWeakSet } from '../../utils/WeakCollections';
-import { Renderer } from '../Renderer';
+import type { Renderer } from '../Renderer';
 
 export interface ResourceStatistics {
     geometryBufferByteSize: number,

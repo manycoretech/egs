@@ -1,16 +1,16 @@
 import { ShaderComponent } from '../Shader';
-import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
-import { WGLProgram } from '../../webgl/WGLProgram';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
+import type { WGLProgram } from '../../webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
-import { ConvertMaterialParameters } from '../../../elements/materials/Material';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { ConvertMaterialParameters } from '../../../elements/materials/Material';
 import { Utils } from '../../../utils/Utils';
-import { Texture2D } from '../../../elements/textures/Texture2D';
+import type { Texture2D } from '../../../elements/textures/Texture2D';
 import { readonlyMath } from '../../../math/Readonly';
 import { ContentBridge, materialProperty } from '../../../ContentAPI';
-import { Color } from '../../../math/Color';
+import type { Color } from '../../../math/Color';
 import { BlendingFactor, BlendingEquation } from '../../../utils/Constants';
-import { TextureV2 } from '../../../elements/textures/TextureV2';
+import type { TextureV2 } from '../../../elements/textures/TextureV2';
 
 export type PatternShaderComponentParameter<T extends TextureV2 | Texture2D = Texture2D> = ConvertMaterialParameters<Pick<PatternShaderComponent<T>,
     'pattern' | 'scale' | 'offset' | 'textureSize' | 'screenSpaceEnabled' | 'overrideSrcColor'>> & ShaderBlendParameter;

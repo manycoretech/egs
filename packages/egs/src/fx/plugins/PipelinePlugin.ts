@@ -1,9 +1,9 @@
-import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import { RenderGraph } from '../../rendergraph/RenderGraph';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
+import type { RenderGraph } from '../../rendergraph/RenderGraph';
 import { Capabilities } from '../../renderer/Capabilities';
-import { SceneAdaptorDispatcher, SceneAdaptor } from '../SceneAdaptor';
-import { RendererAdaptor } from '../RendererAdaptor';
-import { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode';
+import type { SceneAdaptorDispatcher, SceneAdaptor } from '../SceneAdaptor';
+import type { RendererAdaptor } from '../RendererAdaptor';
+import type { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode';
 
 export interface ConfigCell<T> {
     get: () => T;

@@ -1,13 +1,13 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
 import { _Math } from '../../../math/Math';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderInjectionTypes, ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
 import { readonlyMath } from '../../../math/Readonly';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { materialProperty } from '../../../ContentAPI';
-import { Texture } from '../../textures/Texture';
+import type { Texture } from '../../textures/Texture';
 
 export class BlurPassMaterial extends PassQuadMaterialBase {
     @materialProperty()

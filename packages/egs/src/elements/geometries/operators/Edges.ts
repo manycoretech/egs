@@ -1,12 +1,12 @@
 import { _Math } from '../../../math/Math';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 import { TypeAssert } from '../../../scene/tools/TypeAssert';
-import { BufferGeometry, BufferGroup, LineList } from '../containers/BufferGeometry';
+import { BufferGeometry, type BufferGroup, type LineList } from '../containers/BufferGeometry';
 import { Geometry } from '../containers/Geometry';
-import { GeometryBase } from '../containers/GeometryBase';
+import type { GeometryBase } from '../containers/GeometryBase';
 import { Vector3 } from '../../../math/Vector3';
 import { Face3 } from '../../../math/Face3';
-import { Mesh } from '../../../scene/drawables/Mesh';
+import type { Mesh } from '../../../scene/drawables/Mesh';
 
 export function createEdge(g: BufferGeometry | Geometry, thresholdAngle: number): BufferGeometry<LineList> {
     return new EdgesBufferGeometry(g, thresholdAngle).forceCastTopology();

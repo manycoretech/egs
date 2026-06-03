@@ -1,19 +1,19 @@
 import { PipelinePlugin } from './PipelinePlugin';
 import { Ground } from '../../scene/renderables/Ground';
-import { BackgroundMode, BasicBackground, SolidColorBackground, EnvMapBackground, GradientBackground, Background, SkyBackground } from '../../scene/renderables/Background';
+import { BackgroundMode, BasicBackground, SolidColorBackground, EnvMapBackground, GradientBackground, type Background, SkyBackground } from '../../scene/renderables/Background';
 import { PreSkyMapMaterial } from '../../elements/materials/mesh/SkyMaterial';
 import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
-import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import { RenderGraph } from '../../rendergraph/RenderGraph';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
+import type { RenderGraph } from '../../rendergraph/RenderGraph';
 import { target, pass } from '../../rendergraph/NodeMakers';
-import { drawQuad, RendererAdaptor } from '../RendererAdaptor';
-import { RenderTarget } from '../../elements/textures/RenderTarget';
-import { Vector2 } from '../../math/Vector2';
-import { Color } from '../../math/Color';
-import { Nullable } from '../../utils/Utils';
+import { drawQuad, type RendererAdaptor } from '../RendererAdaptor';
+import type { RenderTarget } from '../../elements/textures/RenderTarget';
+import type { Vector2 } from '../../math/Vector2';
+import type { Color } from '../../math/Color';
+import type { Nullable } from '../../utils/Utils';
 import { Vector3 } from '../../math/Vector3';
-import { SceneAdaptorDispatcher } from '../SceneAdaptor';
-import { Texture } from '../../elements/textures/Texture';
+import type { SceneAdaptorDispatcher } from '../SceneAdaptor';
+import type { Texture } from '../../elements/textures/Texture';
 
 export const BACKGROUND_SHADING_PASS_NAME = 'background_shading_pass';
 

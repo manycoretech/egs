@@ -1,9 +1,9 @@
 import { ShaderComponent } from '../Shader';
-import { ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
-import { WGLProgram } from '../../webgl/WGLProgram';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
+import type { WGLProgram } from '../../webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
-import { ConvertMaterialParameters } from '../../../elements/materials/Material';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { ConvertMaterialParameters } from '../../../elements/materials/Material';
 import { Utils } from '../../../utils/Utils';
 import { readonlyMath } from '../../../math/Readonly';
 import { ContentBridge, materialProperty } from '../../../ContentAPI';

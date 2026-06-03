@@ -3,11 +3,11 @@ import { Vector3 } from '../../math/Vector3';
 import { Vector2 } from '../../math/Vector2';
 import { Matrix4 } from '../../math/Matrix4';
 import { Drawable } from './Drawable';
-import { Raycaster, Intersection } from '../tools/Raycaster';
+import type { Raycaster, Intersection } from '../tools/Raycaster';
 import { Triangle } from '../../math/Triangle';
-import { Serializer, Deserializer } from '../../utils/Serialization';
-import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
-import { SpriteMaterial } from '../../elements/materials/mesh/SpriteMaterial';
+import type { Serializer, Deserializer } from '../../utils/Serialization';
+import type { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
+import type { SpriteMaterial } from '../../elements/materials/mesh/SpriteMaterial';
 import { Sphere } from '../../math/Sphere';
 import { SpriteBufferGeometry } from '../../elements/geometries/containers/SpriteBufferGeometry';
 

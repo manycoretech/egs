@@ -1,18 +1,18 @@
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { Material, MaterialParameters, ConvertMaterialParameters } from '../Material';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import { Material, type MaterialParameters, type ConvertMaterialParameters } from '../Material';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { Utils, Nullable } from '../../../utils/Utils';
-import { Sprite } from '../../../scene/drawables/Sprite';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import { Utils, type Nullable } from '../../../utils/Utils';
+import type { Sprite } from '../../../scene/drawables/Sprite';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { readonlyMath } from '../../../math/Readonly';
 import { materialProperty } from '../../../ContentAPI';
-import { Texture2D } from '../../textures/Texture2D';
-import { TextureV2 } from '../../textures/TextureV2';
-import { Texture } from '../../textures/Texture';
+import type { Texture2D } from '../../textures/Texture2D';
+import type { TextureV2 } from '../../textures/TextureV2';
+import type { Texture } from '../../textures/Texture';
 
 export type SpriteMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters
     & ConvertMaterialParameters<Pick<SpriteMaterial<T>, 'sizeAttenuation' | 'rotation' | 'texture' | 'opacity' | 'color'>>;

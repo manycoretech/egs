@@ -1,8 +1,8 @@
 import { target, pass, disableClear, when, colorAttachment, depthAttachment } from '../../rendergraph/NodeMakers';
-import { drawPoint, drawQuad, RendererAdaptor } from '../RendererAdaptor';
-import { ShaderBuilder, ShaderInjectionTypes } from '../../renderer/shader/builders/ShaderBuilder';
-import { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import { drawPoint, drawQuad, type RendererAdaptor } from '../RendererAdaptor';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../renderer/shader/builders/ShaderBuilder';
+import type { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
 import { Side, Blending, BlendingFactor, BlendingEquation } from '../../utils/Constants';
 import { DeferredDispatcher, DynamicForwardLightsDispatcher } from '../../renderer/MaterialDispatcher';
 import { PassQuadMaterialBase } from '../../elements/materials/quad/PassMaterialBase';
@@ -12,13 +12,13 @@ import { AreaBlinnPhong, DiskAreaBlinnPhong, MeshPhongMaterial, RectAreaBlinnPho
 import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
 import { Vector4 } from '../../math/Vector4';
 import { CopyMaterial, CopyDepthMaterial, CopyColorAndDepthMaterial } from '../../elements/materials/quad/CopyMaterial';
-import { AmbientLight } from '../../scene/lights/AmbientLight';
+import type { AmbientLight } from '../../scene/lights/AmbientLight';
 import { SpotLight, spotLightInclude } from '../../scene/lights/SpotLight';
 import { PointLight, punctualLightIntensityToIrradianceFactor } from '../../scene/lights/PointLight';
 import { RectAreaLight } from '../../scene/lights/RectAreaLight';
-import { RenderTarget } from '../../elements/textures/RenderTarget';
+import type { RenderTarget } from '../../elements/textures/RenderTarget';
 import { DiskAreaLight } from '../../scene/lights/DiskAreaLight';
-import { Matrix4, ReadonlyMatrix4 } from '../../math/Matrix4';
+import type { Matrix4, ReadonlyMatrix4 } from '../../math/Matrix4';
 import {
     DialuxLuminanceMaterial, DialuxWhiteBalanceExposureMaterial, ExposedCopyMaterial, ExposedToneMappingMaterial,
     HistogramComputeMaterial, AvgLuminanceMaterial
@@ -30,25 +30,25 @@ import { readonlyMath } from '../../math/Readonly';
 import { Quad } from '../../scene/renderables/Quad';
 import { PseudoColorMaterial } from '../../elements/materials/quad/PseudoColorMaterial';
 import { Capabilities } from '../../renderer/Capabilities';
-import { PipelinePlugin, PipelineContext } from './PipelinePlugin';
-import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import { RenderGraph } from '../../rendergraph/RenderGraph';
+import { PipelinePlugin, type PipelineContext } from './PipelinePlugin';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
+import type { RenderGraph } from '../../rendergraph/RenderGraph';
 import { filterBy, RenderObjectsType } from '../../scene/tools/DrawcallList';
-import { SceneAdaptorDispatcher } from '../SceneAdaptor';
+import type { SceneAdaptorDispatcher } from '../SceneAdaptor';
 import { DrivenCullingMaterial } from '../../elements/materials/driven/DrivenCullingMaterial';
 import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial';
-import { PassNode } from '../../rendergraph/nodes/PassNode';
+import type { PassNode } from '../../rendergraph/nodes/PassNode';
 import { MixOITMaterial } from '../../elements/materials/quad/MixOITMaterial';
 import { BACKGROUND_SHADING_PASS_NAME } from './Background';
 import { ForwardDispatcher } from './Forward';
-import { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode';
+import type { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode';
 import { RendererBackend } from '../../renderer/IRenderer';
 import { PipelineContentBridge } from '../PipelineAPI.impl';
-import { Camera3D } from '../../scene/cameras/Camera3D';
-import { Vector3, ReadonlyVector3 } from '../../math/Vector3';
+import type { Camera3D } from '../../scene/cameras/Camera3D';
+import { Vector3, type ReadonlyVector3 } from '../../math/Vector3';
 import { TypeAssert } from '../../scene/tools/TypeAssert';
 import { logger } from '../../utils/Logger';
-import { Texture } from '../../elements/textures/Texture';
+import type { Texture } from '../../elements/textures/Texture';
 import { TextureFormat } from '../../elements/textures/types';
 
 interface DeferredCameraUniforms {

@@ -1,14 +1,14 @@
 import { TypeAssert } from './TypeAssert';
 import { Layers } from './Layers';
-import { Vector3 } from '../../math/Vector3';
-import { Vector2 } from '../../math/Vector2';
-import { Object3D } from '../Object3D';
+import type { Vector3 } from '../../math/Vector3';
+import type { Vector2 } from '../../math/Vector2';
+import type { Object3D } from '../Object3D';
 import { Ray } from '../../math/Ray';
-import { Face3 } from '../../math/Face3';
-import { Camera3D } from '../cameras/Camera3D';
-import { Nullable } from '../../utils/Utils';
+import type { Face3 } from '../../math/Face3';
+import type { Camera3D } from '../cameras/Camera3D';
+import type { Nullable } from '../../utils/Utils';
 import { hasManagedContentAPI, ManagedContentBridge } from '../../ContentAPI';
-import { Scene3D } from '../Scene3D';
+import type { Scene3D } from '../Scene3D';
 
 function ascSort(a: Intersection, b: Intersection) {
     return a.distance - b.distance;

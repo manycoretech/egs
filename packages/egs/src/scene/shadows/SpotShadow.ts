@@ -1,19 +1,19 @@
 import { SingleProjectShadow } from './Shadow';
-import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../renderer/shader/builders/ShaderBuilder';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../renderer/shader/builders/ShaderBuilder';
 import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms';
 import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
 import { Vector3 } from '../../math/Vector3';
 import { PerspectiveCamera } from '../cameras/PerspectiveCamera';
 import { _Math } from '../../math/Math';
 import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
-import { SpotLight } from '../lights/SpotLight';
-import { DrawableList } from '../tools/DrawcallList';
-import { Deserializer, Serializer } from '../../utils/Serialization';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import type { SpotLight } from '../lights/SpotLight';
+import type { DrawableList } from '../tools/DrawcallList';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
 import { lightProperty } from '../../ContentAPI';
 import { Vector2 } from '../../math/Vector2';
-import { TextureV2 } from '../../elements/textures/TextureV2';
-import { Texture2D } from '../../elements/textures/Texture2D';
+import type { TextureV2 } from '../../elements/textures/TextureV2';
+import type { Texture2D } from '../../elements/textures/Texture2D';
 
 export class SpotShadow<T extends TextureV2 | Texture2D = Texture2D> extends SingleProjectShadow<PerspectiveCamera> {
     customNear: number;

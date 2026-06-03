@@ -1,11 +1,11 @@
 import { SharedShaderComponent } from '../Shader';
-import { ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../builders/ShaderBuilder';
+import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../builders/ShaderBuilder';
 import { Plane } from '../../../math/Plane';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import { Camera3D } from '../../../scene/cameras/Camera3D';
+import type { Camera3D } from '../../../scene/cameras/Camera3D';
 import { Matrix3 } from '../../../math/Matrix3';
-import { WGLProgram } from '../../webgl/WGLProgram';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { WGLProgram } from '../../webgl/WGLProgram';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import { Vector3 } from '../../../math/Vector3';
 import { ContentBridge, materialProperty } from '../../../ContentAPI';
 

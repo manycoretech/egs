@@ -2,13 +2,13 @@ import { Vector3 } from '../../math/Vector3';
 import { Matrix4 } from '../../math/Matrix4';
 import { Ray } from '../../math/Ray';
 import { Sphere } from '../../math/Sphere';
-import { Raycaster, Intersection } from '../tools/Raycaster';
-import { FatLineMaterial } from '../../elements/materials/mesh/FatLineMaterial';
+import type { Raycaster, Intersection } from '../tools/Raycaster';
+import type { FatLineMaterial } from '../../elements/materials/mesh/FatLineMaterial';
 import { FatLineBufferGeometry } from '../../elements/geometries/containers/FatLineBufferGeometry';
 import { checkIntersectionLine } from './Line';
 import { OutlineMode, Drawable } from './Drawable';
-import { Serializer, Deserializer } from '../../utils/Serialization';
-import { BufferGeometry, LineList } from '../../elements/geometries/containers/BufferGeometry';
+import type { Serializer, Deserializer } from '../../utils/Serialization';
+import type { BufferGeometry, LineList } from '../../elements/geometries/containers/BufferGeometry';
 import { computeLineDistancesForFatline } from '../../elements/geometries/operators/LineDistance';
 import { DrawMode } from '../../utils/Constants';
 

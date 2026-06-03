@@ -1,17 +1,17 @@
 import { TAAMaterial } from '../../elements/materials/quad/TAAMaterial';
 import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
 import { pingpong, pass, target } from '../../rendergraph/NodeMakers';
-import { Camera3D } from '../../scene/cameras/Camera3D';
+import type { Camera3D } from '../../scene/cameras/Camera3D';
 import { Vector2 } from '../../math/Vector2';
 import { drawQuad } from '../RendererAdaptor';
 import { Utils } from '../../utils/Utils';
 import { readonlyMath } from '../../math/Readonly';
 import { Blending } from '../../utils/Constants';
-import { PassNode } from '../../rendergraph/nodes/PassNode';
-import { PipelinePlugin, IEffectConfig } from './PipelinePlugin';
-import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import { RenderGraph } from '../../rendergraph/RenderGraph';
-import { SceneAdaptor } from '../SceneAdaptor';
+import type { PassNode } from '../../rendergraph/nodes/PassNode';
+import { PipelinePlugin, type IEffectConfig } from './PipelinePlugin';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
+import type { RenderGraph } from '../../rendergraph/RenderGraph';
+import type { SceneAdaptor } from '../SceneAdaptor';
 
 export class TAAPlugin extends PipelinePlugin {
     readonly PLUGIN_NAME = 'taa';

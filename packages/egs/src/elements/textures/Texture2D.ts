@@ -2,11 +2,11 @@ import { _Math } from '../../math/Math';
 import { logger } from '../../utils/Logger';
 import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants';
 import { TextureDataType } from '../../utils/Constants';
-import { Deserializer, Serializer } from '../../utils/Serialization';
-import { TypedArray, singleton } from '../../utils/Utils';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
+import { type TypedArray, singleton } from '../../utils/Utils';
 import {
-    getFormatByteSize, LegacySourceTexture, SourceTextureLayerWebGLUploadResult,
-    SourceTextureWebGLUploadResult, TextureMipmapGroup, WebGLTextureUploadCtx, createImgByUrl, getInternalFormat, WebGLUploadable
+    getFormatByteSize, LegacySourceTexture, type SourceTextureLayerWebGLUploadResult,
+    type SourceTextureWebGLUploadResult, TextureMipmapGroup, type WebGLTextureUploadCtx, createImgByUrl, getInternalFormat, type WebGLUploadable
 } from './Texture';
 import { ContentBridge } from '../../ContentAPI';
 import { TextureDimension, TextureViewDimension } from './types';

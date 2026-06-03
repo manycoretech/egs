@@ -1,17 +1,17 @@
-import { IEffectConfig, PipelinePlugin, PipelineContext } from './PipelinePlugin';
-import { DepthPackingStrategies, MeshDepthMaterial } from '../../elements/materials/mesh/MeshDepthMaterial';
+import { type IEffectConfig, PipelinePlugin, type PipelineContext } from './PipelinePlugin';
+import { type DepthPackingStrategies, MeshDepthMaterial } from '../../elements/materials/mesh/MeshDepthMaterial';
 import { MeshNormalMaterial } from '../../elements/materials/mesh/MeshNormalMaterial';
-import { RenderGraph } from '../../rendergraph/RenderGraph';
+import type { RenderGraph } from '../../rendergraph/RenderGraph';
 import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher';
 import { pass } from '../../rendergraph/NodeMakers';
-import { SceneAdaptor } from '../SceneAdaptor';
-import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
+import type { SceneAdaptor } from '../SceneAdaptor';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
 import { PipelineContentBridge } from '../PipelineAPI.impl';
-import { Material } from '../../elements/materials/Material';
+import type { Material } from '../../elements/materials/Material';
 import { DrivenCullingMaterial } from '../../elements/materials/driven/DrivenCullingMaterial';
 import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial';
-import { PassNode } from '../../rendergraph/nodes/PassNode';
-import { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode';
+import type { PassNode } from '../../rendergraph/nodes/PassNode';
+import type { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode';
 
 export enum DebugMode {
     Depth = 0,

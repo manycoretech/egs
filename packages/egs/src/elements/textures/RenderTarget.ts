@@ -1,11 +1,10 @@
 import { ContentBridge } from '../../ContentAPI';
-import { WebGLTextureUploadCtx, SamplerDescriptor } from './Texture';
+import type { WebGLTextureUploadCtx, SamplerDescriptor } from './Texture';
 import { TextureV2 } from './TextureV2';
 import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants';
-import { _Math } from '../../math/Math';
-import { WGLRenderAttachment } from '../../renderer/ResourceManager/TextureManager';
-import { TextureViewDimension, TextureFormat, TextureDimension } from './types';
-import { RendererBackend } from '../../renderer/IRenderer';
+import type { WGLRenderAttachment } from '../../renderer/ResourceManager/TextureManager';
+import type { TextureViewDimension, TextureFormat, TextureDimension } from './types';
+import type { RendererBackend } from '../../renderer/IRenderer';
 
 /**
  * color or depth attachment for render target.

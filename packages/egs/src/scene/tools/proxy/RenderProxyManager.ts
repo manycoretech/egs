@@ -1,16 +1,16 @@
-import { Drawable, DrawableRenderMode } from '../../drawables/Drawable';
-import { Scene3D } from '../../Scene3D';
+import { type Drawable, DrawableRenderMode } from '../../drawables/Drawable';
+import type { Scene3D } from '../../Scene3D';
 import { TypeAssert } from '../TypeAssert';
 import { InstancePool } from './InstancePool';
 import { DynamicAnalyser, extractorCreator } from './DynamicAnalyser';
 import { DrawableSet, DrawableAdd, DrawableDelete, DrawableChange } from './DrawableSet';
 import { MeshMergePool } from './MeshMergePool';
 import { DrawableList, ProjectedDrawcallList, DrawcallListClassifyList } from '../DrawcallList';
-import { Camera3D } from '../../cameras/Camera3D';
+import type { Camera3D } from '../../cameras/Camera3D';
 import { PipelineContentAPIForRenderingAndFilteringEnabled, PipelineContentBridge } from '../../../fx/PipelineAPI';
 import { hasManagedContentAPI, ManagedContentBridge } from '../../../ContentAPI';
 import { PopMeshMergeManager } from '../mesh-merge/PopMeshMergeManager';
-import { PopMesh } from '../../drawables/PopMesh';
+import type { PopMesh } from '../../drawables/PopMesh';
 import { TextureCompression } from '../../../fx/plugins/PipelinePlugin';
 
 export class RenderProxyManager {

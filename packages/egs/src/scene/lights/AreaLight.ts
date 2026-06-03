@@ -1,6 +1,6 @@
 import { Texture2D } from '../../elements/textures/Texture2D';
 import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
 import { TextureDataType } from '../../utils/Constants';
 import { singleton } from '../../utils/Utils';
 import { Light } from './Light';

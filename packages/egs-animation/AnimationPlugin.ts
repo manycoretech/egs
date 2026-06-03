@@ -1,8 +1,6 @@
-import { Clock, SkinnedMesh, EventType, Viewer, IViewerContext, __INTERNAL__ } from '@qunhe/egs';
-import { AnimationMixer } from './AnimationMixer';
-import { ISkinnedMesh, Skeleton } from './Skeleton';
-
-import ViewerPlugin = __INTERNAL__.ViewerPlugin;
+import { Clock, EventType, Viewer, type SkinnedMesh, type IViewerContext, type __INTERNAL__ } from '@qunhe/egs';
+import type { AnimationMixer } from './AnimationMixer';
+import type { ISkinnedMesh, Skeleton } from './Skeleton';
 
 export const SkeletonUpdatedEvent = new EventType();
 
@@ -14,7 +12,7 @@ interface SkeletonBinding {
 /**
  * A special viewer plugin responsible for animation and skeleton updating.
  */
-export class AnimationPlugin implements ViewerPlugin {
+export class AnimationPlugin implements __INTERNAL__.ViewerPlugin {
     readonly clock = new Clock();
     private mixerList: AnimationMixer[] = [];
     private skeletonMap = new Map<Skeleton, SkeletonBinding>();
@@ -81,7 +79,7 @@ export class AnimationPlugin implements ViewerPlugin {
      */
     bindSkinned(mesh: SkinnedMesh, skeleton: Skeleton, mixer: AnimationMixer) {
         mesh.bind(skeleton.texture);
-        const skeletonBinding = this.skeletonMap.get(skeleton) ?? { mixer, meshes:[] };
+        const skeletonBinding = this.skeletonMap.get(skeleton) ?? { mixer, meshes: [] };
         skeletonBinding.meshes.push(mesh);
         this.skeletonMap.set(skeleton, skeletonBinding);
         (mesh as ISkinnedMesh).skeleton = skeleton;
@@ -93,7 +91,7 @@ export class AnimationPlugin implements ViewerPlugin {
      */
     unbindSkinned(mesh: SkinnedMesh) {
         const skeleton = (mesh as ISkinnedMesh).skeleton;
-        if(skeleton !== undefined) {
+        if (skeleton !== undefined) {
             const skeletonBinding = this.skeletonMap.get(skeleton);
             if (skeletonBinding) {
                 const index = skeletonBinding.meshes.indexOf(mesh);

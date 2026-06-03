@@ -1,9 +1,9 @@
-import { Texture, TextureDisposeEvent, WebGLTextureUploadCtx } from '../../elements/textures/Texture';
-import { WGLState } from '../webgl/WGLState/WGLState';
+import { type Texture, TextureDisposeEvent, WebGLTextureUploadCtx } from '../../elements/textures/Texture';
+import type { WGLState } from '../webgl/WGLState/WGLState';
 import { Capabilities } from '../Capabilities';
 import { IterableWeakMap } from '../../utils/WeakCollections';
 import { TypeAssert } from '../../scene/tools/TypeAssert';
-import { RenderAttachment } from '../../elements/textures/RenderTarget';
+import type { RenderAttachment } from '../../elements/textures/RenderTarget';
 import { RendererBackend } from '../IRenderer';
 import type { Renderer } from '../Renderer';
 

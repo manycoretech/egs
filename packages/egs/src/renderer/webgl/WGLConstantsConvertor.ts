@@ -1,4 +1,4 @@
-import { WGLExtensions, WebGLExtEnums } from './WGLExtensions';
+import { type WGLExtensions, WebGLExtEnums } from './WGLExtensions';
 import { WGLCapabilities } from './WGLCapabilities';
 import { TextureDataType } from '../../utils/Constants';
 

@@ -1,9 +1,9 @@
-import { Camera3D } from '../../scene/cameras/Camera3D';
+import type { Camera3D } from '../../scene/cameras/Camera3D';
 import { Vector2 } from '../../math/Vector2';
 import { Vector3 } from '../../math/Vector3';
-import { Drawable } from '../../scene/drawables/Drawable';
+import type { Drawable } from '../../scene/drawables/Drawable';
 
-export const enum BuiltInUniformTypes {
+export enum BuiltInUniformTypes {
     resolution,
     cameraPosition,
     normalMatrix,

@@ -1,19 +1,19 @@
-import { Drawable } from '../drawables/Drawable';
-import { Nullable } from '../../utils/Utils';
+import type { Drawable } from '../drawables/Drawable';
+import type { Nullable } from '../../utils/Utils';
 import { TypeAssert } from './TypeAssert';
-import { Camera3D } from '../cameras/Camera3D';
-import { IRenderer } from '../../renderer/IRenderer';
-import { BufferGeometryBase, BufferRange } from '../../elements/geometries/containers/BufferGeometry';
-import { Material } from '../../elements/materials/Material';
-import { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';
-import { Renderable } from '../renderables/IRenderable';
-import { PipelineContentBridge, PipelineContentAPIForRenderingAndFilteringEnabled, IPipelineFilter } from '../../fx/PipelineAPI';
-import { PerspectiveCamera } from '../cameras/PerspectiveCamera';
-import { Box3 } from '../../math/Box3';
+import type { Camera3D } from '../cameras/Camera3D';
+import type { IRenderer } from '../../renderer/IRenderer';
+import type { BufferGeometryBase, BufferRange } from '../../elements/geometries/containers/BufferGeometry';
+import type { Material } from '../../elements/materials/Material';
+import type { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';
+import type { Renderable } from '../renderables/IRenderable';
+import { PipelineContentBridge, PipelineContentAPIForRenderingAndFilteringEnabled, type IPipelineFilter } from '../../fx/PipelineAPI';
+import type { PerspectiveCamera } from '../cameras/PerspectiveCamera';
+import type { Box3 } from '../../math/Box3';
 import { Frustum } from '../../math/Frustum';
 import { ContentBridge } from '../../ContentAPI';
-import { PopMesh } from '../drawables/PopMesh';
-import { InstanceMesh } from '../drawables/InstanceMesh';
+import type { PopMesh } from '../drawables/PopMesh';
+import type { InstanceMesh } from '../drawables/InstanceMesh';
 
 // This for indicate pop is set to max level by renderer auto level
 const MAX_LEVEL_MAGIC_NUMBER = 17;

@@ -1,11 +1,11 @@
 import { PipelinePlugin } from './PipelinePlugin';
-import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import { RenderGraph } from '../../rendergraph/RenderGraph';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
+import type { RenderGraph } from '../../rendergraph/RenderGraph';
 import { pass } from '../../rendergraph/NodeMakers';
 import { DefaultMaterialDispatcher } from '../../renderer/MaterialDispatcher';
-import { Renderer } from '../../renderer/Renderer';
-import { Material } from '../../elements/materials/Material';
-import { Drawable } from '../../scene/drawables/Drawable';
+import type { Renderer } from '../../renderer/Renderer';
+import type { Material } from '../../elements/materials/Material';
+import type { Drawable } from '../../scene/drawables/Drawable';
 
 export class OverlaySceneDispatcher extends DefaultMaterialDispatcher {
     className() {

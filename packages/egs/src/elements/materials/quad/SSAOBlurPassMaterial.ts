@@ -1,11 +1,11 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
 import { _Math } from '../../../math/Math';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { ShaderInjectionTypes, ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
 import { readonlyMath } from '../../../math/Readonly';
 import { materialProperty } from '../../../ContentAPI';
-import { Texture } from '../../textures/Texture';
+import type { Texture } from '../../textures/Texture';
 
 export class SSAOBlurPassMaterial extends PassQuadMaterialBase {
     @materialProperty()

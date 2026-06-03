@@ -1,5 +1,5 @@
-import { Texture, WebGLTextureUploadCtx } from './Texture';
-import { TextureFormat, WebGLTextureFormat, TextureDimension, TextureViewDimension, maxMipLevels, formatMeta, textureByteSize, textureCopyInfo, mipLevelSize, CUBE_FACES } from './types';
+import { Texture, type WebGLTextureUploadCtx } from './Texture';
+import { type TextureFormat, type WebGLTextureFormat, type TextureDimension, TextureViewDimension, maxMipLevels, formatMeta, textureByteSize, textureCopyInfo, mipLevelSize, CUBE_FACES } from './types';
 import { _Math } from '../../math/Math';
 import { logger } from '../../utils/Logger';
 

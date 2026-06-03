@@ -1,5 +1,5 @@
 import { EventDispatcher, EventType } from '../../utils/EventDispatcher';
-import { Camera3D } from '../cameras/Camera3D';
+import type { Camera3D } from '../cameras/Camera3D';
 import { Object3DChangeEvent } from '../Object3D';
 
 export const CameraStartChangeEvent = new EventType();

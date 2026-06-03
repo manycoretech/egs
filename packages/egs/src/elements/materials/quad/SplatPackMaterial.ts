@@ -1,10 +1,10 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
-import { ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { Vector2 } from '../../../math/Vector2';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { Splat, SplatEffectConfig } from '../../../scene/splat/Splat';
+import type { Splat, SplatEffectConfig } from '../../../scene/splat/Splat';
 import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
 import { Layers } from '../../../scene/tools/Layers';
 import { TextureDataType } from '../../../utils/Constants';

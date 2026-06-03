@@ -1,7 +1,7 @@
 import { _Math } from '../../Math';
 import { Polygon } from './Polygon';
 
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 /**
  * Draw a star shape with an arbitrary number of points.
  */

@@ -1,6 +1,6 @@
 import { WGLCapabilities } from '../WGLCapabilities';
-import { WebGLTextureType } from '../WGLConstants';
-import { Nullable } from '../../../utils/Utils';
+import type { WebGLTextureType } from '../WGLConstants';
+import type { Nullable } from '../../../utils/Utils';
 import { logger } from '../../../utils/Logger';
 
 interface TextureBindInfo {

@@ -1,13 +1,13 @@
 import { Material, ColorTransfer } from '../Material';
-import { ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
 import { Side } from '../../../utils/Constants';
 import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
 import { Vector4 } from '../../../math/Vector4';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { TextureV2 } from '../../textures/TextureV2';
+import type { TextureV2 } from '../../textures/TextureV2';
 
 export class SplattingMaterial extends Material {
     transparent = true;

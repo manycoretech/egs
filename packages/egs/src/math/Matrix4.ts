@@ -1,11 +1,11 @@
 import { Vector3 } from './Vector3';
-import { Euler } from './Euler';
-import { Quaternion } from './Quaternion';
-import { BufferAttribute } from '../elements/attributes/BufferAttribute';
+import type { Euler } from './Euler';
+import type { Quaternion } from './Quaternion';
+import type { BufferAttribute } from '../elements/attributes/BufferAttribute';
 import { logger } from '../utils/Logger';
 import { Vector2 } from './Vector2';
 import { _Math } from './Math';
-import { PickReadonly } from '../utils/Utils';
+import type { PickReadonly } from '../utils/Utils';
 
 let tmp1Vec3: Vector3;
 let tmp2Vec3: Vector3;

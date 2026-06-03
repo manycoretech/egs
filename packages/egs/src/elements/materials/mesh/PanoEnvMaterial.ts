@@ -1,12 +1,12 @@
 import { Material } from '../Material';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { Texture } from '../../textures/Texture';
+import type { Texture } from '../../textures/Texture';
 import { Vector4 } from '../../../math/Vector4';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
-import { TextureCube } from '../../textures/TextureCube';
+import type { TextureCube } from '../../textures/TextureCube';
 import { readonlyMath } from '../../../math/Readonly';
 import { Utils } from '../../../utils/Utils';
 import { ContentBridge, materialProperty, materialPropertyDeclare } from '../../../ContentAPI';

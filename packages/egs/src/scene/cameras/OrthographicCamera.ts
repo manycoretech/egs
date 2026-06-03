@@ -1,8 +1,8 @@
-import { Camera3D, CameraView } from './Camera3D';
-import { Nullable } from '../../utils/Utils';
-import { Serializer, Deserializer } from '../../utils/Serialization';
-import { Vector2 } from '../../math/Vector2';
-import { Ray } from '../../math/Ray';
+import { Camera3D, type CameraView } from './Camera3D';
+import type { Nullable } from '../../utils/Utils';
+import type { Serializer, Deserializer } from '../../utils/Serialization';
+import type { Vector2 } from '../../math/Vector2';
+import type { Ray } from '../../math/Ray';
 import { ContentBridge, cameraState } from '../../ContentAPI';
 
 /**

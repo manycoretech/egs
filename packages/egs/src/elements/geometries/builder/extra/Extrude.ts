@@ -1,14 +1,14 @@
 
 import { BufferAttribute } from '../../../../elements/attributes/BufferAttribute';
-import { Geometry } from '../../../../elements/geometries/containers/Geometry';
+import type { Geometry } from '../../../../elements/geometries/containers/Geometry';
 import { Vector2 } from '../../../../math/Vector2';
 import { Vector3 } from '../../../../math/Vector3';
-import { Curve } from '../../../../math/shape/curves/Curve';
+import type { Curve } from '../../../../math/shape/curves/Curve';
 import { Shape } from '../../../../math/shape/plane/Shape';
 import { BufferGeometry } from '../../../../elements/geometries/containers/BufferGeometry';
 import { logger } from '../../../../utils/Logger';
 import { computeNormalsByPosition } from '../../../../elements/geometries/operators/Renormalize';
-import { Font } from '../../../../math/shape/plane/Font';
+import type { Font } from '../../../../math/shape/plane/Font';
 
 const WorldUVGenerator = {
     generateTopUV(_geometry: Geometry, vertices: number[], indexA: number, indexB: number, indexC: number) {

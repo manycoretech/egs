@@ -1,21 +1,21 @@
 import { Object3D } from '../Object3D';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
 import { Color } from '../../math/Color';
 import { Vector3 } from '../../math/Vector3';
 import { Matrix4 } from '../../math/Matrix4';
 import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock';
-import { Deserializer, Serializer } from '../../utils/Serialization';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
 import { SpotShadow } from '../shadows/SpotShadow';
 import { Cone } from '../../math/Cone';
 import { Quaternion } from '../../math/Quaternion';
-import { Nullable, singleton } from '../../utils/Utils';
+import { type Nullable, singleton } from '../../utils/Utils';
 import { Light } from './Light';
 import { Texture2D } from '../../elements/textures/Texture2D';
 import { WatchedVector3 } from '../../math/WatchedVector3';
 import { ContentBridge, lightProperty, lightPropertyDeclare } from '../../ContentAPI';
-import { Drawable } from '../drawables/Drawable';
+import type { Drawable } from '../drawables/Drawable';
 import { Vector2 } from '../../math/Vector2';
-import { TextureV2 } from '../../elements/textures/TextureV2';
+import type { TextureV2 } from '../../elements/textures/TextureV2';
 
 const quaternion = new Quaternion();
 const matrix = new Matrix4();

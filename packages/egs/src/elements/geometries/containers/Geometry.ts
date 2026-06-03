@@ -3,14 +3,13 @@ import { EventDispatcher } from '../../../utils/EventDispatcher';
 
 import { Color } from '../../../math/Color';
 import { Face3 } from '../../../math/Face3';
-import { _Math } from '../../../math/Math';
 import { Matrix3 } from '../../../math/Matrix3';
 import { Matrix4 } from '../../../math/Matrix4';
 import { Vector2 } from '../../../math/Vector2';
 import { Vector3 } from '../../../math/Vector3';
 import { Object3D } from '../../../scene/Object3D';
-import { Deserializer, Serializer } from '../../../utils/Serialization';
-import { BufferGeometry } from './BufferGeometry';
+import type { Deserializer, Serializer } from '../../../utils/Serialization';
+import type { BufferGeometry } from './BufferGeometry';
 import { singleton } from '../../../utils/Utils';
 import { logger } from '../../../utils/Logger';
 

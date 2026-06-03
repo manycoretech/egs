@@ -1,12 +1,12 @@
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes, ShaderAttributeTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes, ShaderAttributeTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { ShaderComponent } from '../../../renderer/shader/Shader';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { MaterialParameters, ConvertMaterialParameters } from '../Material';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
-import { Renderer } from '../../../renderer/Renderer';
+import type { MaterialParameters,ConvertMaterialParameters } from '../Material';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Renderer } from '../../../renderer/Renderer';
 import { Utils } from '../../../utils/Utils';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { readonlyMath } from '../../../math/Readonly';
 import { materialProperty, shaderComponentInMaterial } from '../../../ContentAPI';
 import { SceneClipMaterial } from '../base';

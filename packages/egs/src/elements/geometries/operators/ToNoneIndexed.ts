@@ -1,5 +1,5 @@
 import { BufferGeometry } from '../containers/BufferGeometry';
-import { Nullable } from '../../../utils/Utils';
+import type { Nullable } from '../../../utils/Utils';
 import { logger } from '../../../utils/Logger';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 

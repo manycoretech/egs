@@ -1,6 +1,6 @@
 import { deferred } from '@qunhe/egs-lib';
-import { Splat, Vector3, Quaternion, Matrix3, Matrix4, SplatState, TextureFormat, TextureDimension, SourceTexture, TextureViewDimension, __INTERNAL__ } from '@qunhe/egs';
-import { SplatFileType, PlyFile, SpzFile, SplatFile, SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData, ISampler, ISamplerFormat, SH_MAPS, IFile } from '@qunhe/egs-splat-loader';
+import { type Splat, Vector3, Quaternion, Matrix3, Matrix4, SplatState, TextureFormat, TextureDimension, SourceTexture, TextureViewDimension, __INTERNAL__ } from '@qunhe/egs';
+import { SplatFileType, PlyFile, SpzFile, SplatFile, type SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData, type ISampler, ISamplerFormat, SH_MAPS, type IFile } from '@qunhe/egs-splat-loader';
 import { createSHRotateFn } from './utils';
 
 type ISingleSplat = Parameters<SplatData['get']>[1];

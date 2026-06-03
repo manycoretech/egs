@@ -3,10 +3,10 @@ import { Matrix4 } from '../../math/Matrix4';
 import { Ray } from '../../math/Ray';
 import { Sphere } from '../../math/Sphere';
 import { Drawable } from './Drawable';
-import { BufferGeometry, LineStrip } from '../../elements/geometries/containers/BufferGeometry';
-import { Material } from '../../elements/materials/Material';
+import { BufferGeometry, type LineStrip } from '../../elements/geometries/containers/BufferGeometry';
+import type { Material } from '../../elements/materials/Material';
 import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
-import { Raycaster, Intersection } from '../tools/Raycaster';
+import type { Raycaster, Intersection } from '../tools/Raycaster';
 import { DrawMode } from '../../utils/Constants';
 
 const inverseMatrix = new Matrix4();

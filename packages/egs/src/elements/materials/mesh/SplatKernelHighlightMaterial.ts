@@ -1,11 +1,11 @@
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderInjectionTypes, ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
 import { Material } from '../Material';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { Color } from '../../../math/Color';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
-import { TextureV2 } from '../../textures/TextureV2';
+import type { TextureV2 } from '../../textures/TextureV2';
 
 export class SplatKernelHighlightMaterial extends Material {
     depthTest = false;

@@ -1,6 +1,6 @@
 import { PerspectiveCamera } from './PerspectiveCamera';
 import { Vector3 } from '../../math/Vector3';
-import { Matrix4 } from '../../math/Matrix4';
+import type { Matrix4 } from '../../math/Matrix4';
 import { ContentBridge } from '../../ContentAPI';
 
 export class CubeCamera {

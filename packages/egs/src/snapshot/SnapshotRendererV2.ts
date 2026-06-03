@@ -1,22 +1,22 @@
 import { deferred } from '@qunhe/egs-lib';
-import { Object3D } from '../scene/Object3D';
+import type { Object3D } from '../scene/Object3D';
 import { SnapshotResult, SnapshotResultResultType } from './SnapshotResult';
-import { Camera3D } from '../scene/cameras/Camera3D';
-import { SnapshotAxisDirection, SnapshotBoxPrecision, setupCamera, createRenderTarget } from './util';
-import { RenderMode, ConfigCellImpl } from '../engine/EngineConfig';
-import { Light } from '../scene/lights/Light';
+import type { Camera3D } from '../scene/cameras/Camera3D';
+import { type SnapshotAxisDirection, SnapshotBoxPrecision, setupCamera, createRenderTarget } from './util';
+import { RenderMode, type ConfigCellImpl } from '../engine/EngineConfig';
+import type { Light } from '../scene/lights/Light';
 import { Box3 } from '../math/Box3';
-import { Size } from '../utils/Utils';
-import { Material } from '../elements/materials/Material';
-import { IRenderer, RendererBackend, RendererState } from '../renderer/IRenderer';
-import { RenderTarget } from '../elements/textures/RenderTarget';
+import type { Size } from '../utils/Utils';
+import type { Material } from '../elements/materials/Material';
+import { type IRenderer, RendererBackend, RendererState } from '../renderer/IRenderer';
+import type { RenderTarget } from '../elements/textures/RenderTarget';
 import { OrthographicCamera } from '../scene/cameras/OrthographicCamera';
 import { Scene3D } from '../scene/Scene3D';
 import { PostPipeline } from '../fx/Pipeline';
 import { TypeAssert } from '../scene/tools/TypeAssert';
 import { ContentBridge } from '../ContentAPI';
 import { DrawableList } from '../scene/tools/DrawcallList';
-import { Drawable } from '../scene/drawables/Drawable';
+import type { Drawable } from '../scene/drawables/Drawable';
 import { Vector3 } from '../math/Vector3';
 import { PipelineContentAPIForRenderingAndFilteringEnabled, PipelineContentBridge } from '../fx/PipelineAPI';
 import { SnapShotAdaptor } from './SnapshotAdaptor';
@@ -25,18 +25,18 @@ import { MaterialShadingWithDynamicShapeDispatcher } from '../renderer/MaterialD
 import { logger } from '../utils/Logger';
 import { DirectionalLight } from '../scene/lights/DirectionalLight';
 import { AmbientLight } from '../scene/lights/AmbientLight';
-import { PipelineConfig, createPipelineConfig } from '../fx/PipelineConfig';
+import { type PipelineConfig, createPipelineConfig } from '../fx/PipelineConfig';
 import { DownsampleMaterial } from '../elements/materials/quad/DownsampleMaterial';
 import { Quad } from '../scene/renderables/Quad';
-import { RenderAttachment } from '../elements/textures/RenderTarget';
+import type { RenderAttachment } from '../elements/textures/RenderTarget';
 import { MixColorAndDepthMaterial } from '../elements/materials/quad/CopyMaterial';
 import { DepthPackingStrategies, MeshDepthMaterial } from '../elements/materials/mesh/MeshDepthMaterial';
 import { Blending, SamplerFilter } from '../utils/Constants';
 import { BackgroundMode } from '../scene/renderables/Background';
 import { Color } from '../math/Color';
-import { RenderingConfig, DrivenCullingConfig, TextureCompression } from '../fx/plugins/PipelinePlugin';
+import { type RenderingConfig, type DrivenCullingConfig, TextureCompression } from '../fx/plugins/PipelinePlugin';
 import { FilterTarget } from '../elements/materials/quad/FilterMaterial';
-import { SplatSortedEvent, Splat } from '../scene/splat/Splat';
+import { SplatSortedEvent, type Splat } from '../scene/splat/Splat';
 
 type IPipelineConfig = ConfigCellImpl<Omit<PipelineConfig, 'SceneClip' | 'ShadowMap' | 'Composite' | 'Debug'>>
     & {

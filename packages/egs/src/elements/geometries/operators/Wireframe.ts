@@ -1,8 +1,8 @@
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 import { Vector3 } from '../../../math/Vector3';
 import { TypeAssert } from '../../../scene/tools/TypeAssert';
-import { GeometryBase } from '../containers/GeometryBase';
-import { BufferGeometry, LineList } from '../containers/BufferGeometry';
+import type { GeometryBase } from '../containers/GeometryBase';
+import { BufferGeometry, type LineList } from '../containers/BufferGeometry';
 
 export function createWireframe(geometry: GeometryBase): BufferGeometry<LineList> {
     return new WireframeBufferGeometry(geometry);

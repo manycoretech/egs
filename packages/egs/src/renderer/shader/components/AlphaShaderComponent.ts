@@ -1,12 +1,12 @@
 import { ShaderComponent } from '../Shader';
-import { Nullable } from '../../../utils/Utils';
-import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
+import type { Nullable } from '../../../utils/Utils';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import { WGLProgram } from '../../webgl/WGLProgram';
-import { Deserializer, Serializer } from '../../../utils/Serialization';
-import { Texture2D } from '../../../elements/textures/Texture2D';
+import type { WGLProgram } from '../../webgl/WGLProgram';
+import type { Deserializer, Serializer } from '../../../utils/Serialization';
+import type { Texture2D } from '../../../elements/textures/Texture2D';
 import { materialProperty } from '../../../ContentAPI';
-import { TextureV2 } from '../../../elements/textures/TextureV2';
+import type { TextureV2 } from '../../../elements/textures/TextureV2';
 
 // AlphaShaderComponent controls the transparency of material, which influence opacity in shader.
 export class AlphaShaderComponent<T extends Texture2D | TextureV2 = Texture2D> extends ShaderComponent {

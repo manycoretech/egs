@@ -1,5 +1,5 @@
 import { WGLCapabilities } from '../WGLCapabilities';
-import { WGLExtensions, WebGLExtEnums } from '../WGLExtensions';
+import { type WGLExtensions, WebGLExtEnums } from '../WGLExtensions';
 
 export class AttributeState {
     readonly gl: WebGL2RenderingContext | WebGLRenderingContext;

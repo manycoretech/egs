@@ -1,10 +1,10 @@
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { Side } from '../../../utils/Constants';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { Utils } from '../../../utils/Utils';
-import { Texture } from '../../textures/Texture';
+import type { Texture } from '../../textures/Texture';
 import { materialProperty } from '../../../ContentAPI';
 import { BackgroundLikeMaterial } from '../base';
 import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';

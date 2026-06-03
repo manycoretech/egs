@@ -1,7 +1,7 @@
 import { Vector2 } from '../../Vector2';
 import { _Math } from '../../Math';
 import { Curve2D } from './Curve2D';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 /**
  * Build spline curve by an array of controlling points.
  */

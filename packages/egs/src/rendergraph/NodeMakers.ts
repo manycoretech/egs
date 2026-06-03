@@ -1,6 +1,6 @@
 import { CubeRenderTargetNode, CubePassNode } from './nodes/CubeNode';
 import { PingPongTargetNode } from './nodes/PingPongTargetNode';
-import { DAGNode } from './nodes/DAGNode';
+import type { DAGNode } from './nodes/DAGNode';
 import { PassNode } from './nodes/PassNode';
 import { RenderTargetNode } from './nodes/RenderTargetNode';
 import { RenderColorAttachmentNode, RenderDepthAttachmentNode } from './nodes/RenderAttachmentNode';

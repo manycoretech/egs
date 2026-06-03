@@ -1,15 +1,15 @@
-import { RendererAdaptor } from '../../fx/RendererAdaptor';
+import type { RendererAdaptor } from '../../fx/RendererAdaptor';
 import { Vector4 } from '../../math/Vector4';
-import { MaterialDispatcher } from '../../renderer/MaterialDispatcher';
-import { Nullable } from '../../utils/Utils';
+import type { MaterialDispatcher } from '../../renderer/MaterialDispatcher';
+import type { Nullable } from '../../utils/Utils';
 import { ExecuteNode } from './ExecuteNode';
-import { Renderable } from '../../scene/renderables/IRenderable';
-import { RenderTargetNode } from './RenderTargetNode';
+import type { Renderable } from '../../scene/renderables/IRenderable';
+import type { RenderTargetNode } from './RenderTargetNode';
 import { logger } from '../../utils/Logger';
-import { RenderTarget } from '../../elements/textures/RenderTarget';
-import { DrivenMaterial } from '../../elements/materials/driven/DrivenMaterial';
-import { ResourceNode } from './ResourceNode';
-import { Texture } from '../../elements/textures/Texture';
+import type { RenderTarget } from '../../elements/textures/RenderTarget';
+import type { DrivenMaterial } from '../../elements/materials/driven/DrivenMaterial';
+import type { ResourceNode } from './ResourceNode';
+import type { Texture } from '../../elements/textures/Texture';
 
 export type RenderMethod = (renderer: RendererAdaptor, target?: RenderTarget, i?: number) => void;
 export type ConfigMethod = (renderer: RendererAdaptor) => boolean;

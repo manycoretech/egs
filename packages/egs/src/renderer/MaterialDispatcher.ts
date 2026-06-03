@@ -1,17 +1,17 @@
-import { Renderer } from './Renderer';
-import { Material } from '../elements/materials/Material';
+import type { Renderer } from './Renderer';
+import type { Material } from '../elements/materials/Material';
 import { WGLProgram } from './webgl/WGLProgram';
 import { logger } from '../utils/Logger';
-import { BufferGeometryBase } from '../elements/geometries/containers/BufferGeometry';
-import { Drawable } from '../scene/drawables/Drawable';
+import type { BufferGeometryBase } from '../elements/geometries/containers/BufferGeometry';
+import type { Drawable } from '../scene/drawables/Drawable';
 import { TypeAssert } from '../scene/tools/TypeAssert';
 import { Capabilities } from './Capabilities';
 import { ShaderBuilder, ShaderInjectionTypes } from './shader/builders/ShaderBuilder';
-import { Nullable, singleton } from '../utils/Utils';
+import { type Nullable, singleton } from '../utils/Utils';
 import { PipelineContentBridge } from '../fx/PipelineAPI';
 import { BaseElement } from '../utils/ElementBase';
 import { Blending } from '../utils/Constants';
-import { DeferredMaterial } from '../elements/materials/base';
+import type { DeferredMaterial } from '../elements/materials/base';
 import { ShaderBlockPool } from './shader/builders/ShaderBlockPool';
 import type { ShaderComponentRegistry } from '../scene/ShaderComponentRegistry';
 

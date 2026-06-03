@@ -1,9 +1,9 @@
 import { ElementEventDispatcher, EventType } from '../../utils/EventDispatcher';
-import { WebGLPixelFormat, getWebGLPixelFormatChannelSize } from '../../renderer/webgl/WGLConstants';
-import { Deserializer, Serializer } from '../../utils/Serialization';
-import { TextureDataType, getTextureDataTypeSize, SamplerFilter, SamplerWrap } from '../../utils/Constants';
+import { type WebGLPixelFormat, getWebGLPixelFormatChannelSize } from '../../renderer/webgl/WGLConstants';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
+import { type TextureDataType, getTextureDataTypeSize, SamplerFilter, SamplerWrap } from '../../utils/Constants';
 import { logger } from '../../utils/Logger';
-import { ElementsWithGPUResource } from '../../utils/ElementBase';
+import type { ElementsWithGPUResource } from '../../utils/ElementBase';
 import { ContentBridge } from '../../ContentAPI';
 import { WGLCapabilities } from '../../renderer/webgl/WGLCapabilities';
 import { TextureDimension, TextureViewDimension, getBindableTarget } from './types';

@@ -1,11 +1,11 @@
-import { DAGNode } from './DAGNode';
-import { PassNode, PassExecuteCtx } from './PassNode';
-import { MaterialDispatcher } from '../../renderer/MaterialDispatcher';
-import { DrawableList, DrawcallListClassifyType, DrawcallListClassifyList } from '../../scene/tools/DrawcallList';
-import { CubeCamera } from '../../scene/cameras/CubeCamera';
+import type { DAGNode } from './DAGNode';
+import { PassNode, type PassExecuteCtx } from './PassNode';
+import type { MaterialDispatcher } from '../../renderer/MaterialDispatcher';
+import { type DrawableList, type DrawcallListClassifyType, DrawcallListClassifyList } from '../../scene/tools/DrawcallList';
+import type { CubeCamera } from '../../scene/cameras/CubeCamera';
 import { RenderTargetNode } from './RenderTargetNode';
-import { RenderTarget } from '../../elements/textures/RenderTarget';
-import { ResizeFN } from './utils';
+import type { RenderTarget } from '../../elements/textures/RenderTarget';
+import type { ResizeFN } from './utils';
 import { TextureViewDimension } from '../../elements/textures/types';
 
 export class CubePassNode {

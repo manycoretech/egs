@@ -1,7 +1,7 @@
-import { Material, MaterialPropertyChangeEvent } from '../../elements/materials/Material';
-import { Drawable } from '../drawables/Drawable';
+import { type Material, MaterialPropertyChangeEvent } from '../../elements/materials/Material';
+import type { Drawable } from '../drawables/Drawable';
 import { RefObjectMap } from '../../utils/RefObjectMap';
-import { GeometryBase, GeometryShapeChanged, GeometryContentChanged } from '../../elements/geometries/containers/GeometryBase';
+import { type GeometryBase, GeometryShapeChanged, GeometryContentChanged } from '../../elements/geometries/containers/GeometryBase';
 
 export class SceneElementRefManager {
 

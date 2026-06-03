@@ -1,6 +1,6 @@
 import { Vector2 } from './Vector2';
-import { Matrix3 } from './Matrix3';
-import { Matrix4 } from './Matrix4';
+import type { Matrix3 } from './Matrix3';
+import type { Matrix4 } from './Matrix4';
 
 let tmpVec2: Vector2;
 /**

@@ -1,17 +1,17 @@
-import { WGLUniform, UniformGeneralTypes } from './WGLUniform';
-import { Texture } from '../../elements/textures/Texture';
-import { ShaderInfo } from '../shader/Shader';
+import { WGLUniform, type UniformGeneralTypes } from './WGLUniform';
+import type { Texture } from '../../elements/textures/Texture';
+import type { ShaderInfo } from '../shader/Shader';
 import { WGLShader } from './WGLShader';
 import { WebGLShaderDataType } from './WGLConstants';
 import { WGLUniformBlock } from './WGLUniformBlock';
-import { UniformBlockObject } from '../shader/components/UniformBlockObject';
-import { RenderState } from '../RenderState/RenderState';
-import { BuiltInUniforms } from '../RenderState/BuiltInUniforms';
+import type { UniformBlockObject } from '../shader/components/UniformBlockObject';
+import type { RenderState } from '../RenderState/RenderState';
+import type { BuiltInUniforms } from '../RenderState/BuiltInUniforms';
 import { WGLCapabilities } from './WGLCapabilities';
-import { Material } from '../../elements/materials/Material';
+import type { Material } from '../../elements/materials/Material';
 import { logger } from '../../utils/Logger';
-import { Nullable } from '../../utils/Utils';
-import { TextureCube } from '../../elements/textures/TextureCube';
+import type { Nullable } from '../../utils/Utils';
+import type { TextureCube } from '../../elements/textures/TextureCube';
 
 const arrayCacheF32: Float32Array[] = [];
 let globalProgramId = 0;

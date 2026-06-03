@@ -1,15 +1,15 @@
-import { Camera3D } from '../cameras/Camera3D';
+import type { Camera3D } from '../cameras/Camera3D';
 import { Matrix4 } from '../../math/Matrix4';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import { Nullable } from '../../utils/Utils';
-import { ShaderBuilder } from '../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import type { Nullable } from '../../utils/Utils';
+import type { ShaderBuilder } from '../../renderer/shader/builders/ShaderBuilder';
 import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
-import { Object3D } from '../Object3D';
+import type { Object3D } from '../Object3D';
 import { lightProperty } from '../../ContentAPI';
 import { readonlyMath } from '../../math/Readonly';
 import { Texture2D } from '../../elements/textures/Texture2D';
-import { Deserializer, Serializer } from '../../utils/Serialization';
-import { RenderAttachment } from '../../elements/textures/RenderTarget';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
+import type { RenderAttachment } from '../../elements/textures/RenderTarget';
 
 interface TargetLight extends Object3D {
     target: Object3D

@@ -1,22 +1,22 @@
 
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { Utils, Nullable } from '../../../utils/Utils';
-import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { MaterialParameters } from '../Material';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { Utils, type Nullable } from '../../../utils/Utils';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { MaterialParameters } from '../Material';
 import { ColorShaderComponent } from '../../../renderer/shader/components/ColorShaderComponent';
 import { AlphaShaderComponent } from '../../../renderer/shader/components/AlphaShaderComponent';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { Color } from '../../../math/Color';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { Color } from '../../../math/Color';
 import { shaderComponentInMaterial, materialProperty } from '../../../ContentAPI';
-import { ReadonlyMatrix3 } from '../../../math/Matrix3';
+import type { ReadonlyMatrix3 } from '../../../math/Matrix3';
 import { readonlyMath } from '../../../math/Readonly';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { SceneClipMaterial } from '../base';
-import { Texture2D } from '../../textures/Texture2D';
-import { TextureV2 } from '../../textures/TextureV2';
-import { Texture } from '../../textures/Texture';
+import type { Texture2D } from '../../textures/Texture2D';
+import type { TextureV2 } from '../../textures/TextureV2';
+import type { Texture } from '../../textures/Texture';
 
 export type MeshBasicMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters & {
     color?: number | string | Color,

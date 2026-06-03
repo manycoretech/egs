@@ -1,10 +1,10 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
-import { ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
 import { Vector2 } from '../../../math/Vector2';
-import { TextureV2 } from '../../textures/TextureV2';
+import type { TextureV2 } from '../../textures/TextureV2';
 
 export class SplatRepackMaterial extends PassQuadMaterialBase {
     transparent = false;

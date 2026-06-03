@@ -1,7 +1,7 @@
-import { BufferGeometry, BufferRange } from '../containers/BufferGeometry';
+import { BufferGeometry, type BufferRange } from '../containers/BufferGeometry';
 import { logger } from '../../../utils/Logger';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { Matrix4 } from '../../../math/Matrix4';
+import type { Matrix4 } from '../../../math/Matrix4';
 import { Matrix3 } from '../../../math/Matrix3';
 
 export interface BufferGeometryMergeInfo {

@@ -1,13 +1,13 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
-import { Texture } from '../../textures/Texture';
-import { Nullable } from '../../../utils/Utils';
+import type { Texture } from '../../textures/Texture';
+import type { Nullable } from '../../../utils/Utils';
 import { Matrix4 } from '../../../math/Matrix4';
 import { Vector4 } from '../../../math/Vector4';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderInjectionTypes, ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { readonlyMath } from '../../../math/Readonly';
 import { materialProperty } from '../../../ContentAPI';
 

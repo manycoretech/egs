@@ -2,8 +2,8 @@ import { Vector3 } from '../../math/Vector3';
 import { Frustum } from '../../math/Frustum';
 import { Matrix4 } from '../../math/Matrix4';
 import { TypeAssert } from './TypeAssert';
-import { Camera3D } from '../cameras/Camera3D';
-import { Drawable } from '../drawables/Drawable';
+import type { Camera3D } from '../cameras/Camera3D';
+import type { Drawable } from '../drawables/Drawable';
 
 export class Culler {
     enableFrustumCulling = false;

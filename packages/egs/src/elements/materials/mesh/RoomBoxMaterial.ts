@@ -1,14 +1,14 @@
-import { MaterialParameters, copyItem } from '../Material';
-import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import { type MaterialParameters, copyItem } from '../Material';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
 import { Utils } from '../../../utils/Utils';
 import { materialProperty } from '../../../ContentAPI';
 import { SceneMaterial } from '../base';
-import { Texture2D } from '../../textures/Texture2D';
-import { TextureV2 } from '../../textures/TextureV2';
+import type { Texture2D } from '../../textures/Texture2D';
+import type { TextureV2 } from '../../textures/TextureV2';
 
 export type RoomBoxMaterialParameter<T extends TextureV2 | Texture2D = Texture2D> = MaterialParameters & {
     texture?: T,

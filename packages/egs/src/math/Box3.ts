@@ -1,11 +1,11 @@
 import { Vector3 } from './Vector3';
-import { Sphere } from './Sphere';
-import { Matrix4 } from './Matrix4';
-import { Triangle } from './Triangle';
+import type { Sphere } from './Sphere';
+import type { Matrix4 } from './Matrix4';
+import type { Triangle } from './Triangle';
 import { Plane } from './Plane';
-import { BufferAttribute } from '../elements/attributes/BufferAttribute';
+import type { BufferAttribute } from '../elements/attributes/BufferAttribute';
 import { Box2 } from './Box2';
-import { Object3D } from '../scene/Object3D';
+import type { Object3D } from '../scene/Object3D';
 import { TypeAssert } from '../scene/tools/TypeAssert';
 
 /**

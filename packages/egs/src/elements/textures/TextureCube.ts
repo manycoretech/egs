@@ -6,13 +6,13 @@ import py from '../../assets/env/py.jpg';
 import pz from '../../assets/env/pz.jpg';
 
 import {
-    LegacySourceTexture, SourceTextureWebGLUploadResult, TextureMipmapGroup, WebGLTextureUploadCtx, createImgByUrl
+    LegacySourceTexture, type SourceTextureWebGLUploadResult, TextureMipmapGroup, type WebGLTextureUploadCtx, createImgByUrl
 } from './Texture';
 import { TextureDimension, TextureViewDimension } from './types';
 import { Texture2DCommonLayer } from './Texture2D';
 import { ContentBridge } from '../../ContentAPI';
 import { singleton } from '../../utils/Utils';
-import { Serializer, Deserializer } from '../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../utils/Serialization';
 
 /**
  * Mipmapped texture data for one cube-map side.

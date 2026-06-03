@@ -1,15 +1,15 @@
-import { WGLProgram } from '../../webgl/WGLProgram';
+import type { WGLProgram } from '../../webgl/WGLProgram';
 import { ShaderComponent } from '../Shader';
-import { ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import { Nullable } from '../../../utils/Utils';
-import { Texture } from '../../../elements/textures/Texture';
+import type { Nullable } from '../../../utils/Utils';
+import type { Texture } from '../../../elements/textures/Texture';
 import { createShaderBlock } from '../builders/ShaderBlock';
 import { readonlyMath } from '../../../math/Readonly';
-import { Texture2D } from '../../../elements/textures/Texture2D';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Texture2D } from '../../../elements/textures/Texture2D';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import { ContentBridge, materialProperty } from '../../../ContentAPI';
-import { TextureV2 } from '../../../elements/textures/TextureV2';
+import type { TextureV2 } from '../../../elements/textures/TextureV2';
 
 /**
  * Pattern layout methods supported by paving shader components.

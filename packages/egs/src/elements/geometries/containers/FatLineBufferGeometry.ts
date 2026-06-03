@@ -1,11 +1,11 @@
 import { logger } from '../../../utils/Logger';
 import { Box3 } from '../../../math/Box3';
-import { Matrix4 } from '../../../math/Matrix4';
+import type { Matrix4 } from '../../../math/Matrix4';
 import { Sphere } from '../../../math/Sphere';
 import { Vector3 } from '../../../math/Vector3';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 import { InstancedBufferAttribute } from '../../attributes/InstancedBufferAttribute';
-import { BufferGeometry, LineList } from './BufferGeometry';
+import type { BufferGeometry, LineList } from './BufferGeometry';
 import { InstancedBufferGeometry } from './InstancedBufferGeometry';
 import { ContentBridge } from '../../../ContentAPI';
 

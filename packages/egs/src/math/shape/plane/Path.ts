@@ -1,4 +1,4 @@
-import { Deserializer, Serializer } from '../../../utils/Serialization';
+import type { Deserializer, Serializer } from '../../../utils/Serialization';
 import { Box2 } from '../../Box2';
 import { Vector2 } from '../../Vector2';
 import { CubicBezierCurve2D } from '../curves/CubicBezierCurve2D';

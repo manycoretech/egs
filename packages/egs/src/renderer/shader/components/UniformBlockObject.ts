@@ -1,9 +1,9 @@
-import { TypedArray, Nullable } from '../../../utils/Utils';
-import { ShaderInputDescriptor, UniformBlockDescriptor, UniformArrayDescriptor } from '../Shader';
-import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import { WGLProgram } from '../../webgl/WGLProgram';
+import type { TypedArray,Nullable } from '../../../utils/Utils';
+import type { ShaderInputDescriptor,UniformBlockDescriptor,UniformArrayDescriptor } from '../Shader';
+import type { WebGLShaderDataType } from '../../webgl/WGLConstants';
+import type { WGLProgram } from '../../webgl/WGLProgram';
 import { Capabilities } from '../../Capabilities';
-import { UniformGeneralTypes } from '../../webgl/WGLUniform';
+import type { UniformGeneralTypes } from '../../webgl/WGLUniform';
 import { createUniforms, createUniformArrays } from '../builders/ShaderHelper';
 
 interface UBOItem {

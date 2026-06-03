@@ -3,14 +3,14 @@ import { Box3 } from '../../../math/Box3';
 import { Sphere } from '../../../math/Sphere';
 import { Vector3 } from '../../../math/Vector3';
 import { EventType } from '../../../utils/EventDispatcher';
-import { Deserializer, Serializer } from '../../../utils/Serialization';
-import { Nullable, TypedArray, Utils } from '../../../utils/Utils';
+import type { Deserializer, Serializer } from '../../../utils/Serialization';
+import { type Nullable, type TypedArray, Utils } from '../../../utils/Utils';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 import { Geometry } from './Geometry';
 import { GeometryBase } from './GeometryBase';
 import { ContentBridge, hasManagedContentAPI, ManagedContentBridge } from '../../../ContentAPI';
 import { updateByGeometry } from '../operators/FromGeometry';
-import { MeshBVH } from '../../../BVH';
+import type { MeshBVH } from '../../../BVH';
 
 /**
  * Event emitted when a buffer geometry is disposed.

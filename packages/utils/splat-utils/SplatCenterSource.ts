@@ -1,5 +1,5 @@
-import { BVHSource } from '@qunhe/egs-lib';
-import { SplatOperator } from './SplatOperator';
+import type { BVHSource } from '@qunhe/egs-lib';
+import type { SplatOperator } from './SplatOperator';
 
 export interface SplatCenterPrimitive {
     x: number;

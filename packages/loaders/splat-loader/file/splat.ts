@@ -1,4 +1,4 @@
-import { IFile, IData, ISingleSplat, clamp, StreamChunkDecoder, BufferReader } from './utils';
+import { type IFile, type IData, type ISingleSplat, clamp, StreamChunkDecoder, BufferReader } from './utils';
 
 const ItemSize = 32;
 export class SplatFile implements IFile {

@@ -1,6 +1,6 @@
-import { Group, Object3D, Matrix4, LineSegments, Line, Mesh, Points, SkinnedMesh, TypeAssert, BufferAttribute } from '@qunhe/egs';
-import { ResourceManager } from './resource';
-import { IScene, INode, IMesh, ISkin, IAnimation, Animation, AnimationTrack, GLTF, PrimitiveMode, ISkeleton } from './type';
+import { Group, Object3D, Matrix4, LineSegments, Line, Mesh, Points, SkinnedMesh, TypeAssert, type BufferAttribute } from '@qunhe/egs';
+import type { ResourceManager } from './resource';
+import { type IScene, type INode, type IMesh, type ISkin, type IAnimation, type Animation, type AnimationTrack, type GLTF, PrimitiveMode, type ISkeleton } from './type';
 import { DEFAULT_MATERIAL, INTERPOLATION } from './const';
 import { normalizedAttributeBuffer } from './utils';
 import { AnimationPointerExtension } from './extensions';

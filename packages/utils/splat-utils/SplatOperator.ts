@@ -1,5 +1,5 @@
-import { Splat, SplatState, Vector3, WGLCapabilities, Quaternion, Matrix4, __INTERNAL__, SourceTexture, TextureViewDimension, TextureDimension, TextureFormat } from '@qunhe/egs';
-import { SplatData, ISingleSplat } from '@qunhe/egs-splat-loader';
+import { type Splat, SplatState, Vector3, WGLCapabilities, Quaternion, Matrix4, type __INTERNAL__, SourceTexture, TextureViewDimension, TextureDimension, TextureFormat } from '@qunhe/egs';
+import type { SplatData, ISingleSplat } from '@qunhe/egs-splat-loader';
 
 interface IVector3 {
     set(x: number, y: number, z: number): void;

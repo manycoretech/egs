@@ -1,11 +1,11 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { ShaderInjectionTypes, ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { Vector3 } from '../../../math/Vector3';
-import { Camera3D } from '../../../scene/cameras/Camera3D';
+import type { Camera3D } from '../../../scene/cameras/Camera3D';
 import { Vector2 } from '../../../math/Vector2';
-import { TextureV2 } from '../../textures/TextureV2';
+import type { TextureV2 } from '../../textures/TextureV2';
 
 export class SplatSortMaterial extends PassQuadMaterialBase {
     transparent = false;

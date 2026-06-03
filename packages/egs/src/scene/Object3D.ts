@@ -1,16 +1,15 @@
 import { Box3 } from '../math/Box3';
 import { Euler } from '../math/Euler';
-import { _Math } from '../math/Math';
 import { Matrix4 } from '../math/Matrix4';
 import { Quaternion } from '../math/Quaternion';
 import { Vector3 } from '../math/Vector3';
 import { WatchedVector3 } from '../math/WatchedVector3';
-import { Scene3D } from '../scene/Scene3D';
-import { EventType, ElementEventDispatcher, Listener } from '../utils/EventDispatcher';
-import {
+import type { Scene3D } from '../scene/Scene3D';
+import { EventType, ElementEventDispatcher, type Listener } from '../utils/EventDispatcher';
+import type {
     Deserializer, Serializer, SerializerableDelegatedAsReference
 } from '../utils/Serialization';
-import { Nullable } from '../utils/Utils';
+import type { Nullable } from '../utils/Utils';
 import { Layers, LayerChangeEvent } from './tools/Layers';
 import { TypeAssert } from './tools/TypeAssert';
 import { ContentBridge, hasManagedContentAPI, ManagedContentBridge } from '../ContentAPI';

@@ -1,10 +1,10 @@
-import { TypedArray, PickSubTypeProperty, isNumber, ReadonlyMarked, ReadOnlyMarkedCreatable } from './Utils';
-import { Object3D } from '../scene/Object3D';
+import { type TypedArray, type PickSubTypeProperty, isNumber, type ReadonlyMarked, type ReadOnlyMarkedCreatable } from './Utils';
+import type { Object3D } from '../scene/Object3D';
 import { logger } from './Logger';
 import { TypeAssert } from '../scene/tools/TypeAssert';
-import { ReadonlyColor } from '../math/Color';
-import { ReadonlyMatrix3 } from '../math/Matrix3';
-import { ReadonlyVector2 } from '../EGS';
+import type { ReadonlyColor } from '../math/Color';
+import type { ReadonlyMatrix3 } from '../math/Matrix3';
+import type { ReadonlyVector2 } from '../EGS';
 
 export interface SerializerableDelegated {
     serialize(serialize: Serializer): void;

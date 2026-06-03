@@ -1,9 +1,9 @@
 import { Color } from '../../../math/Color';
 import { materialProperty } from '../../../ContentAPI';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { SceneMaterial } from '../base';
 

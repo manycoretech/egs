@@ -1,9 +1,9 @@
-import { TypedArray } from '../../utils/Utils';
-import { Color } from '../../math/Color';
+import type { TypedArray } from '../../utils/Utils';
+import type { Color } from '../../math/Color';
 import { Vector2 } from '../../math/Vector2';
-import { Vector3 } from '../../math/Vector3';
-import { Vector4 } from '../../math/Vector4';
-import { Serializer, Deserializer } from '../../utils/Serialization';
+import type { Vector3 } from '../../math/Vector3';
+import type { Vector4 } from '../../math/Vector4';
+import type { Serializer, Deserializer } from '../../utils/Serialization';
 import { ElementEventDispatcher } from '../../utils/EventDispatcher';
 import { ContentBridge, ManagedContentBridge, hasManagedContentAPI } from '../../ContentAPI';
 /**

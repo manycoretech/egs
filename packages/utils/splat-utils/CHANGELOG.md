@@ -1,5 +1,9 @@
 # changelog
 
+## DEV
+
+- 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`
+
 ## 1.0.5
 
 - 现在会及时提交贴图上传命令

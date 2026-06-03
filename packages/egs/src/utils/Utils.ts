@@ -1,6 +1,6 @@
 import { Color } from '../math/Color';
-import { Material } from '../elements/materials/Material';
-import { Texture } from '../elements/textures/Texture';
+import type { Material } from '../elements/materials/Material';
+import type { Texture } from '../elements/textures/Texture';
 import { Vector2 } from '../math/Vector2';
 
 const INT8 = new Int8Array(4);

@@ -1,7 +1,7 @@
 import { Vector2 } from '../../Vector2';
 import { _Math } from '../../Math';
 import { Curve2D } from './Curve2D';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 /**
  * Build a Quadratic-Bezier curve by {@link v0 | v0 }, {@link v1 | v1 } and {@link v2 | v2 } in 3D {@link Path | Path }.
  */

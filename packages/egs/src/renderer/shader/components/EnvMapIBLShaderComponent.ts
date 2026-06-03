@@ -1,18 +1,18 @@
 import { ShaderComponent } from '../Shader';
 import {
-    ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes, ShaderExtensionTypes,
+    type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes, ShaderExtensionTypes,
 } from '../builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import { WGLProgram } from '../../webgl/WGLProgram';
+import type { WGLProgram } from '../../webgl/WGLProgram';
 import { createShaderBlock } from '../builders/ShaderBlock';
 import { ShaderBlockPool } from '../builders/ShaderBlockPool';
 import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
 import { TextureCube } from '../../../elements/textures/TextureCube';
-import { Texture2D } from '../../../elements/textures/Texture2D';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Texture2D } from '../../../elements/textures/Texture2D';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import { ContentBridge, materialProperty } from '../../../ContentAPI';
 import { Capabilities } from '../../Capabilities';
-import { TextureV2 } from '../../../elements/textures/TextureV2';
+import type { TextureV2 } from '../../../elements/textures/TextureV2';
 
 /**
  * Environment-map combine operation for IBL shading.

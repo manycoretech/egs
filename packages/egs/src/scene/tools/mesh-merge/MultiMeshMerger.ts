@@ -1,10 +1,10 @@
 import { Mesh } from '../../drawables/Mesh';
 import { TypeAssert } from '../TypeAssert';
-import { Drawable } from '../../drawables/Drawable';
-import { DrawcallMerger, MergeDrawcallSource } from './Merger';
-import { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry';
-import { Material } from '../../../elements/materials/Material';
-import { GeometryBase } from '../../../elements/geometries/containers/GeometryBase';
+import type { Drawable } from '../../drawables/Drawable';
+import { DrawcallMerger, type MergeDrawcallSource } from './Merger';
+import type { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry';
+import type { Material } from '../../../elements/materials/Material';
+import type { GeometryBase } from '../../../elements/geometries/containers/GeometryBase';
 import { logger } from '../../../utils/Logger';
 import { mergeBufferGeometries } from '../../../elements/geometries/operators/Index';
 

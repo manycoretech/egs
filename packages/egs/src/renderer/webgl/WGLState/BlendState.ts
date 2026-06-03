@@ -1,4 +1,4 @@
-import { Blending, BlendingFactor, BlendingEquation } from '../../../utils/Constants';
+import { Blending, type BlendingFactor, BlendingEquation } from '../../../utils/Constants';
 import { logger } from '../../../utils/Logger';
 
 export class BlendState {

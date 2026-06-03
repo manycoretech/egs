@@ -1,6 +1,6 @@
-import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
-import { WGLBufferData, WGLBuffer } from '../webgl/WGLBuffer';
-import { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
+import type { BufferAttribute } from '../../elements/attributes/BufferAttribute';
+import { type WGLBufferData, WGLBuffer } from '../webgl/WGLBuffer';
+import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
 import { logger } from '../../utils/Logger';
 import { IterableWeakMap } from '../../utils/WeakCollections';
 

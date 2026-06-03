@@ -1,14 +1,14 @@
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderVaryingTypes, ShaderInjectionTypes, ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { ShaderVaryingTypes, ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
 import { MeshPhongMaterial } from './MeshPhongMaterial';
 import { createShaderInjectionsForDataTextureSchema, DataTextureSchemaInstance } from '../../../scene/tools/mesh-merge/DataTextureCreator';
 import { Utils } from '../../../utils/Utils';
 import { materialProperty } from '../../../ContentAPI';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { Texture2D } from '../../textures/Texture2D';
-import { TextureV2 } from '../../textures/TextureV2';
-import { Texture } from '../../textures/Texture';
+import type { TextureV2 } from '../../textures/TextureV2';
+import type { Texture } from '../../textures/Texture';
 
 const textureNames = (new Array(32)).fill(0).map((_, i) => `map${i}`); // this to avoid runtime string build
 

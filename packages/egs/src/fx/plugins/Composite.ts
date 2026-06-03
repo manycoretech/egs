@@ -1,15 +1,15 @@
-import { PipelinePlugin, IEffectConfig } from './PipelinePlugin';
-import { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import { RenderGraph } from '../../rendergraph/RenderGraph';
+import { PipelinePlugin, type IEffectConfig } from './PipelinePlugin';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
+import type { RenderGraph } from '../../rendergraph/RenderGraph';
 import { pass, target } from '../../rendergraph/NodeMakers';
 import { Platform } from '../../utils/Platform';
 import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
 import { drawQuad } from '../RendererAdaptor';
-import { Vector4 } from '../../math/Vector4';
+import type { Vector4 } from '../../math/Vector4';
 import { Quad } from '../../scene/renderables/Quad';
 import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
 import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
-import { SceneAdaptor } from '../SceneAdaptor';
+import type { SceneAdaptor } from '../SceneAdaptor';
 import { RendererBackend } from '../../renderer/IRenderer';
 
 export const COMPOSITE_TARGET_NAME = 'composite_target';

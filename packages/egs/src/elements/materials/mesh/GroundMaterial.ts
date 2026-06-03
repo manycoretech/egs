@@ -1,11 +1,11 @@
-import { ShaderBuilder, ShaderExtensionTypes, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type ShaderBuilder, ShaderExtensionTypes, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
 import { Side } from '../../../utils/Constants';
 import { getDevicePixelRatio } from '../../../engine/RenderEngine';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { readonlyMath } from '../../../math/Readonly';
 import { materialProperty, ContentBridge } from '../../../ContentAPI';
 import { SceneMaterial } from '../base';

@@ -1,17 +1,17 @@
-import { Box3 } from '../../math/Box3';
+import type { Box3 } from '../../math/Box3';
 import { Mesh } from './Mesh';
 import { InstancedBufferGeometry } from '../../elements/geometries/containers/InstancedBufferGeometry';
 import { InstancedBufferAttribute } from '../../elements/attributes/InstancedBufferAttribute';
-import { Camera3D } from '../cameras/Camera3D';
+import type { Camera3D } from '../cameras/Camera3D';
 import { logger } from '../../utils/Logger';
 import { Matrix4 } from '../../math/Matrix4';
-import { Raycaster, Intersection } from '../tools/Raycaster';
+import type { Raycaster, Intersection } from '../tools/Raycaster';
 import { Ray } from '../../math/Ray';
 import { ContentBridge, hasManagedContentAPI } from '../../ContentAPI';
 import { Vector3 } from '../../math/Vector3';
-import { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
+import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
 import { Object3DChangeEvent } from '../Object3D';
-import { Material } from '../../elements/materials/Material';
+import type { Material } from '../../elements/materials/Material';
 
 const tempMat = new Matrix4();
 const tempRay = new Ray();

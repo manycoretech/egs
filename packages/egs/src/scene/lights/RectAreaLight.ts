@@ -2,8 +2,8 @@ import { Color } from '../../math/Color';
 import { Matrix4 } from '../../math/Matrix4';
 import { Vector3 } from '../../math/Vector3';
 import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import { Deserializer, Serializer } from '../../utils/Serialization';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
 import { AreaLight } from './AreaLight';
 import { lightProperty } from '../../ContentAPI';
 

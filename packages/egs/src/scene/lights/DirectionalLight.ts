@@ -1,11 +1,11 @@
 import { Light } from './Light';
 import { Object3D } from '../Object3D';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
 import { Matrix4 } from '../../math/Matrix4';
 import { Vector3 } from '../../math/Vector3';
 import { Color } from '../../math/Color';
 import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock';
-import { Deserializer, Serializer } from '../../utils/Serialization';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
 import { DirectionalShadow } from '../shadows/DirectionalShadow';
 import { singleton } from '../../utils/Utils';
 import { lightProperty } from '../../ContentAPI';

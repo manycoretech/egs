@@ -2,10 +2,10 @@ import { Plane } from './Plane';
 import { Matrix4 } from './Matrix4';
 import { Vector3 } from './Vector3';
 import { Sphere } from './Sphere';
-import { Box3 } from './Box3';
-import { Object3D } from '../scene/Object3D';
-import { Sprite } from '../scene/drawables/Sprite';
-import { PerspectiveCamera } from '../scene/cameras/PerspectiveCamera';
+import type { Box3 } from './Box3';
+import type { Object3D } from '../scene/Object3D';
+import type { Sprite } from '../scene/drawables/Sprite';
+import type { PerspectiveCamera } from '../scene/cameras/PerspectiveCamera';
 
 /**
  * Viewing frustum represented by six clipping planes.

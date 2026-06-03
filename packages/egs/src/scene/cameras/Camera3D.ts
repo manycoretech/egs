@@ -1,11 +1,11 @@
 import { Matrix4 } from '../../math/Matrix4';
 import { Object3D, Object3DChangeEvent } from '../Object3D';
 import { Vector3 } from '../../math/Vector3';
-import { Serializer, Deserializer } from '../../utils/Serialization';
-import { ReadonlyVector2, Vector2 } from '../../math/Vector2';
-import { Ray } from '../../math/Ray';
+import type { Serializer, Deserializer } from '../../utils/Serialization';
+import type { ReadonlyVector2, Vector2 } from '../../math/Vector2';
+import type { Ray } from '../../math/Ray';
 import { Culler } from '../tools/Culler';
-import { Drawable } from '../drawables/Drawable';
+import type { Drawable } from '../drawables/Drawable';
 import { Vector4 } from '../../math/Vector4';
 import { ContentBridge, cameraState } from '../../ContentAPI';
 import { readonlyMath } from '../../math/Readonly';

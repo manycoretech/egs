@@ -1,7 +1,7 @@
 import { ShaderComponent } from '../Shader';
-import { ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
 import { ShaderBlockPool } from '../builders/ShaderBlockPool';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
 
 // We store max level position in attributes.

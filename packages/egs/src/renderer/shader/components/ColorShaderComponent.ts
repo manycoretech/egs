@@ -1,14 +1,14 @@
 import { ShaderComponent } from '../Shader';
-import { Nullable } from '../../../utils/Utils';
-import { ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
+import type { Nullable } from '../../../utils/Utils';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import { WGLProgram } from '../../webgl/WGLProgram';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
-import { Texture2D } from '../../../elements/textures/Texture2D';
+import type { WGLProgram } from '../../webgl/WGLProgram';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Texture2D } from '../../../elements/textures/Texture2D';
 import { readonlyMath } from '../../../math/Readonly';
-import { ReadonlyColor } from '../../../math/Color';
+import type { ReadonlyColor } from '../../../math/Color';
 import { materialProperty } from '../../../ContentAPI';
-import { TextureV2 } from '../../../elements/textures/TextureV2';
+import type { TextureV2 } from '../../../elements/textures/TextureV2';
 
 // ColorShaderComponent controls the use of common 2D texture,
 // which takes sample from texture with the UV coordinates data.

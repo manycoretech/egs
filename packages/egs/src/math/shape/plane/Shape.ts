@@ -1,5 +1,5 @@
-import { Vector2 } from '../../Vector2';
-import { Deserializer, Serializer } from '../../../utils/Serialization';
+import type { Vector2 } from '../../Vector2';
+import type { Deserializer, Serializer } from '../../../utils/Serialization';
 import { Path } from './Path';
 /**
  * Defines a 2d shape plane which uses paths.

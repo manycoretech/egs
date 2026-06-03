@@ -1,4 +1,4 @@
-import { Camera3D } from './Camera3D';
+import type { Camera3D } from './Camera3D';
 import { ElementEventDispatcher } from '../../utils/EventDispatcher';
 
 /**

@@ -1,17 +1,17 @@
 import { ContentBridge, hasManagedContentAPI, ManagedContentBridge } from '../../ContentAPI';
-import { BufferGeometry, TriangleList } from '../../elements/geometries/containers/BufferGeometry';
-import { Material } from '../../elements/materials/Material';
+import type { BufferGeometry, TriangleList } from '../../elements/geometries/containers/BufferGeometry';
+import type { Material } from '../../elements/materials/Material';
 import { Mesh } from './Mesh';
 import { Matrix4 } from '../../math/Matrix4';
 import { Vector4 } from '../../math/Vector4';
 import { Box3 } from '../../math/Box3';
 import { Vector3 } from '../../math/Vector3';
-import { Raycaster, Intersection } from '../tools/Raycaster';
+import type { Raycaster, Intersection } from '../tools/Raycaster';
 import { Ray } from '../../math/Ray';
 import { SkinningShaderComponent } from '../../renderer/shader/components/SkinningShaderComponent';
 import { Texture2D } from '../../elements/textures/Texture2D';
-import { Nullable } from '../../utils/Utils';
-import { SourceTexture } from '../../elements/textures/SourceTexture';
+import type { Nullable } from '../../utils/Utils';
+import type { SourceTexture } from '../../elements/textures/SourceTexture';
 import { TypeAssert } from '../tools/TypeAssert';
 
 const tempMatrix = new Matrix4();

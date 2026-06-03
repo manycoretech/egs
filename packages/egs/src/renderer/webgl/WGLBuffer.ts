@@ -1,6 +1,6 @@
-import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
+import type { BufferAttribute } from '../../elements/attributes/BufferAttribute';
 import { TypeAssert } from '../../scene/tools/TypeAssert';
-import { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
+import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
 import { logger } from '../../utils/Logger';
 
 // Data type created by WGlBuffer

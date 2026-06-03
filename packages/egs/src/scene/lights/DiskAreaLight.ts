@@ -1,10 +1,10 @@
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
 import { Color } from '../../math/Color';
 import { Vector3 } from '../../math/Vector3';
 import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock';
 import { Matrix4 } from '../../math/Matrix4';
 import { AreaLight } from './AreaLight';
-import { Deserializer, Serializer } from '../../utils/Serialization';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
 import { lightProperty } from '../../ContentAPI';
 
 const matrix42 = new Matrix4();

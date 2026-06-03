@@ -1,5 +1,5 @@
 import { Light } from './Light';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
 import { Color } from '../../math/Color';
 
 /**

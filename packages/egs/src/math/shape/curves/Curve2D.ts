@@ -1,5 +1,5 @@
 import { Curve } from './Curve';
-import { Vector2 } from '../../Vector2';
+import type { Vector2 } from '../../Vector2';
 import { Box2 } from '../../Box2';
 /**
  * A basic class for curve which can be drawn in {@link Path | path }. 2d space

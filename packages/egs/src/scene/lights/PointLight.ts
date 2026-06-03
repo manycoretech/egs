@@ -2,15 +2,15 @@ import { Color } from '../../math/Color';
 import { Matrix4 } from '../../math/Matrix4';
 import { Vector3 } from '../../math/Vector3';
 import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import { Deserializer, Serializer } from '../../utils/Serialization';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import type { Deserializer, Serializer } from '../../utils/Serialization';
 import { PointShadow } from '../shadows/PointShadow';
 import { Light } from './Light';
-import { Nullable } from '../../utils/Utils';
+import type { Nullable } from '../../utils/Utils';
 import { lightProperty } from '../../ContentAPI';
 import { Vector2 } from '../../math/Vector2';
 import { Texture2D } from '../../elements/textures/Texture2D';
-import { TextureV2 } from '../../elements/textures/TextureV2';
+import type { TextureV2 } from '../../elements/textures/TextureV2';
 /**
  * A light that gets emitted from a single point in all directions.
  * A common use case for this is to replicate the light emitted from a bare lightbulb.

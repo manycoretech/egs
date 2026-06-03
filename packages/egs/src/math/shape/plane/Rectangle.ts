@@ -1,7 +1,7 @@
 import { Vector2 } from '../../Vector2';
 import { Shape } from './Shape';
 
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 /**
  * Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y) and by its width and its height.
  */

@@ -1,6 +1,6 @@
-import { LightShaderComponent } from '../../../renderer/shader/components/LightShaderComponent';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
+import type { LightShaderComponent } from '../../../renderer/shader/components/LightShaderComponent';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import type { ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
 import { AreaLight } from '../../../scene/lights/AreaLight';
 import { Side } from '../../../utils/Constants';
 import { materialProperty } from '../../../ContentAPI';

@@ -1,6 +1,6 @@
 import { ShaderComponent } from '../Shader';
-import { ShaderAttributeTypes, ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
-import { Serializer, Deserializer } from '../../../utils/Serialization';
+import { ShaderAttributeTypes, type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
+import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import { createShaderBlock } from '../builders/ShaderBlock';
 import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
 

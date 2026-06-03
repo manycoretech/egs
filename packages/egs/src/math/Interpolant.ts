@@ -1,4 +1,4 @@
-import { Nullable } from '../utils/Utils';
+import type { Nullable } from '../utils/Utils';
 
 export interface InterpolantSetting {
     endingStart: number;
