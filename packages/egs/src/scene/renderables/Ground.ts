@@ -5,7 +5,7 @@ import { logger } from '../../utils/Logger';
 import { plane } from '../../elements/geometries/builder/Index';
 import { IRenderer } from '../../renderer/IRenderer';
 import { Vector3 } from '../../math/Vector3';
-import { readonlyMath } from '../../..';
+import { readonlyMath } from '../../math/Readonly';
 
 const GROUND_DEFAULT_UP = new Vector3(0, 0, 1);
 /**

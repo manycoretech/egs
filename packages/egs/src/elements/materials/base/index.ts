@@ -7,7 +7,7 @@ import { materialProperty } from '../../../ContentAPI';
 import { ReadonlyVector3 } from '../../../math/Vector3';
 import { readonlyMath } from '../../../math/Readonly';
 import { ReadonlyVector4 } from '../../../math/Vector4';
-import { WebGLShaderDataType } from '../../../..';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 
 export abstract class JsNoImplMaterial extends Material {
     extendShaderShape(_builder: ShaderBuilder, _registry: ShaderComponentRegistry): void { }

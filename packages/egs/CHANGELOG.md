@@ -8,6 +8,7 @@
     - 修复`MeshPhongMaterial.setValues`, `MeshBasicMaterial.setValues`类型不正确的问题
     - 移除`ShaderBlendParameter`泛型
     - `export type`被错误重写的问题
+    - 修复部分`import`的问题
 2. 优化
     - 改进`api`文档
 
