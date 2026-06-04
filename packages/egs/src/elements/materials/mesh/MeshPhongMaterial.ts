@@ -3,7 +3,7 @@ import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { ShaderVaryingTypes, ShaderInjectionTypes, type ShaderBuilder, ShaderAttributeTypes } from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { MaterialParameters,ConvertMaterialParameters } from '../Material';
+import type { MaterialParameters, ConvertMaterialParameters } from '../Material';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
 import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import { UniformBlockObject } from '../../../renderer/shader/components/UniformBlockObject';
@@ -21,7 +21,10 @@ import type { TextureV2 } from '../../textures/TextureV2';
 
 export type MeshPhongMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters
     & ConvertMaterialParameters<Pick<MeshPhongMaterial<T>,
-        'color' | 'texture' | 'specular' | 'opacity' | 'opacityTex' | 'shininess' | 'specularStrength' | 'uvTransform'>>;
+        'color' | 'specular' | 'opacity' | 'opacityTex' | 'shininess' | 'specularStrength' | 'uvTransform'>>
+    & {
+        texture?: T | null
+    };
 
 const keys = ['color', 'texture', 'specular', 'opacity', 'opacityTex', 'shininess', 'specularStrength', 'uvTransform'];
 /**

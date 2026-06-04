@@ -8,6 +8,7 @@ overrides:
   '@qunhe/egs-typings': 'workspace:*'
   '@qunhe/egs-lib': 'workspace:*'
   '@qunhe/egs': 'workspace:*'
+  '@qunhe/egs-texture-loader': 'workspace:*'
   '@qunhe/egs-gltf-loader': 'workspace:*'
   '@qunhe/egs-draco-loader': 'workspace:*'
   '@qunhe/egs-splat-loader': 'workspace:*'

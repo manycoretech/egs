@@ -1,0 +1,28 @@
+{
+  "name": "@qunhe/egs-texture-loader",
+  "version": "1.0.0-alpha.0",
+  "description": "EGS texture loader loader",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "license": "MIT",
+  "repository": "https://github.com/manycoretech/egs.git",
+  "scripts": {
+    "build": "pnpm egs-build",
+    "build:release": "pnpm build --release",
+    "build:types": "pnpm build --type-only",
+    "build:types:release": "pnpm build --release --type-only"
+  },
+  "dependencies": {
+    "@qunhe/egs": "^1.2.88",
+    "@qunhe/egs-lib": "^1.0.3"
+  },
+  "devDependencies": {
+    "typescript": "^6.0.3"
+  },
+  "release": {
+    "scripts": {
+      "pre-release": "pnpm build:release"
+    },
+    "publishRoot": "./build"
+  }
+}

@@ -10,6 +10,8 @@ import type { BufferGeometry } from '../../elements/geometries/containers/Buffer
 import type { SpriteMaterial } from '../../elements/materials/mesh/SpriteMaterial';
 import { Sphere } from '../../math/Sphere';
 import { SpriteBufferGeometry } from '../../elements/geometries/containers/SpriteBufferGeometry';
+import type { Texture2D } from '../../EGS';
+import type { TextureV2 } from '../../elements/textures/TextureV2';
 
 const intersectPoint = new Vector3();
 const worldScale = new Vector3();
@@ -51,7 +53,7 @@ function transformVertex(vertexPosition: Vector2, mvPosition: Vector2, center: V
 /**
  * A sprite is a plane that always faces towards the camera, generally with a partially transparent texture applied.
  */
-export class Sprite extends Drawable<SpriteMaterial, BufferGeometry> {
+export class Sprite<T extends Texture2D | TextureV2 = Texture2D> extends Drawable<SpriteMaterial<T>, BufferGeometry> {
     /**
      * The sprite's anchor point, and the point around which the sprite rotates.
      * A value of (0.5, 0.5) corresponds to the midpoint of the sprite.
@@ -74,7 +76,7 @@ export class Sprite extends Drawable<SpriteMaterial, BufferGeometry> {
         return 'Sprite';
     }
 
-    constructor(material: SpriteMaterial) {
+    constructor(material: SpriteMaterial<T>) {
         // should be singleton?
         super(new SpriteBufferGeometry(), material);
         this.center = new Vector2(0.5, 0.5);
@@ -154,14 +156,14 @@ export class Sprite extends Drawable<SpriteMaterial, BufferGeometry> {
     /**
      * Return a cloned instance of this class.
      */
-    clone(): Sprite {
+    clone() {
         return new Sprite(this.expectOnlyMaterial()).copy(this);
     }
     /**
      * Copy the data to this instance from other instance.
      * @param {Sprite} other the source of copied data
      */
-    copy(source: Sprite) {
+    copy(source: Sprite<T>) {
         super.copy(source);
         if (source.center !== undefined) { this.center.copy(source.center); }
         return this;

@@ -8,6 +8,7 @@ overrides:
   '@qunhe/egs-typings': workspace:*
   '@qunhe/egs-lib': workspace:*
   '@qunhe/egs': workspace:*
+  '@qunhe/egs-texture-loader': workspace:*
   '@qunhe/egs-gltf-loader': workspace:*
   '@qunhe/egs-draco-loader': workspace:*
   '@qunhe/egs-splat-loader': workspace:*
@@ -135,6 +136,19 @@ importers:
       zstddec:
         specifier: ^0.2.0
         version: 0.2.0
+    devDependencies:
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
+
+  packages/loaders/texture-loader:
+    dependencies:
+      '@qunhe/egs':
+        specifier: workspace:*
+        version: link:../../egs
+      '@qunhe/egs-lib':
+        specifier: workspace:*
+        version: link:../../egs-lib
     devDependencies:
       typescript:
         specifier: ^6.0.3

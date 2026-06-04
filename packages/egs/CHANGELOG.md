@@ -2,16 +2,22 @@
 
 ## DEV
 
-1. 修复
+1. 新功能
+    - `TextureFormat`添加枚举
+        - 在`WebGL`环境内不一定可用
+    - `PanoEnvMapMaterial`和`PanoSelectionMaterial`支持`SourceTexture`
+2. 修复
     - `SourceTexture`移除`internal`标记
     - 现在会及时提交贴图更新命令
     - 修复`MeshPhongMaterial.setValues`, `MeshBasicMaterial.setValues`类型不正确的问题
     - 移除`ShaderBlendParameter`泛型
     - `export type`被错误重写的问题
     - 修复部分`import`的问题
-2. 优化
+    - 修复`Sprite`类型
+3. 优化
     - 改进`api`文档
     - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`
+    - 使`MeshPhongMaterial`和`SpriteMaterial`的类型可以被推导
 
 ## 1.2.88
 

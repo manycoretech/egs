@@ -15,7 +15,10 @@ import type { TextureV2 } from '../../textures/TextureV2';
 import type { Texture } from '../../textures/Texture';
 
 export type SpriteMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters
-    & ConvertMaterialParameters<Pick<SpriteMaterial<T>, 'sizeAttenuation' | 'rotation' | 'texture' | 'opacity' | 'color'>>;
+    & ConvertMaterialParameters<Pick<SpriteMaterial<T>, 'sizeAttenuation' | 'rotation' | 'opacity' | 'color'>>
+    & {
+        texture?: T | null
+    };
 
 const keys = ['sizeAttenuation', 'rotation', 'texture', 'opacity', 'color'];
 /**

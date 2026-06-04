@@ -10,6 +10,7 @@ import type { TextureCube } from '../../textures/TextureCube';
 import { readonlyMath } from '../../../math/Readonly';
 import { Utils } from '../../../utils/Utils';
 import { ContentBridge, materialProperty, materialPropertyDeclare } from '../../../ContentAPI';
+import type { TextureV2 } from '../../textures/TextureV2';
 
 abstract class PanoBackGroundMaterial extends Material {
     extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {
@@ -80,9 +81,9 @@ export class GlobalParams {
 /**
  * Material that renders selection identifiers from a cube-map background.
  */
-export class PanoSelectionMaterial extends PanoBackGroundMaterial {
+export class PanoSelectionMaterial<T extends TextureCube | TextureV2 = TextureCube> extends PanoBackGroundMaterial {
     @materialProperty()
-    indexBackground: TextureCube;
+    indexBackground: T;
 
     className(): string {
         return 'PanoSelectionMaterial';
@@ -104,14 +105,14 @@ export class PanoSelectionMaterial extends PanoBackGroundMaterial {
     }
 
     updateShadingUniforms(program: WGLProgram) {
-        program.setTextureCube('indexBackground', this.indexBackground);
+        program.setTexture('indexBackground', this.indexBackground);
     }
 
-    clone(): PanoSelectionMaterial {
+    clone() {
         return new PanoSelectionMaterial().copy(this);
     }
 
-    copy(other: PanoSelectionMaterial) {
+    copy(other: PanoSelectionMaterial<T>) {
         super.copyBase(other);
         return this;
     }
@@ -120,11 +121,11 @@ export class PanoSelectionMaterial extends PanoBackGroundMaterial {
 /**
  * Material that renders a panoramic environment map with selectable regions.
  */
-export class PanoEnvMapMaterial extends PanoBackGroundMaterial {
+export class PanoEnvMapMaterial<T extends TextureCube | TextureV2 = TextureCube> extends PanoBackGroundMaterial {
     @materialProperty()
-    cubeMapBackground: TextureCube;
+    cubeMapBackground: T;
     @materialProperty()
-    indexBackground: TextureCube;
+    indexBackground: T;
     @materialProperty()
     selectedColorId = Number.MAX_SAFE_INTEGER;
     @materialProperty()
@@ -169,8 +170,8 @@ export class PanoEnvMapMaterial extends PanoBackGroundMaterial {
     `;
 
     updateShadingUniforms(program: WGLProgram, _: ShaderComponentRegistry) {
-        program.setTextureCube('cubeMapBackground', this.cubeMapBackground);
-        program.setTextureCube('indexBackground', this.indexBackground);
+        program.setTexture('cubeMapBackground', this.cubeMapBackground);
+        program.setTexture('indexBackground', this.indexBackground);
         this.globalParams.updateUniforms(program, 'globalParams');
         this.params.forEach((p, i) => {
             p.updateUniforms(program, `params[${i}]`);
@@ -243,11 +244,11 @@ export class PanoEnvMapMaterial extends PanoBackGroundMaterial {
 
     }
 
-    clone(): PanoEnvMapMaterial {
-        return new PanoEnvMapMaterial();
+    clone() {
+        return new PanoEnvMapMaterial<T>();
     }
 
-    copy(other: PanoEnvMapMaterial) {
+    copy(other: PanoEnvMapMaterial<T>) {
         super.copyBase(other);
         return this;
     }
