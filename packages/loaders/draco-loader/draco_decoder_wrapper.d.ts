@@ -37,7 +37,7 @@ export interface DracoDecoderModuleProps {
     onModuleLoaded?(draco: DecoderModule): void;
 }
 
-export function DracoDecoderModule(props: DracoDecoderModuleProps): Promise<DecoderModule>;
+function DracoDecoderModule(props: DracoDecoderModuleProps): Promise<DecoderModule>;
 
 export interface DecoderModule extends BaseModule {
     Decoder: new () => Decoder;
@@ -150,4 +150,4 @@ export interface Mesh extends PointCloud {
     num_faces(): number;
 }
 
-export = DracoDecoderModule;
+export default DracoDecoderModule;

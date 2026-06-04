@@ -5,13 +5,15 @@ import { TextureDataType } from '../../utils/Constants';
 import { singleton } from '../../utils/Utils';
 import { Light } from './Light';
 import { ContentBridge } from '../../ContentAPI';
+import ltc1 from './data1.ltc';
+import ltc2 from './data2.ltc';
 
 const createLUT1 = singleton(() => Texture2D
-    .createByMainLayerSource(new Float32Array(require('./data1.ltc').default), WebGLPixelFormat.RGBA, TextureDataType.FloatType, 64, 64)
+    .createByMainLayerSource(new Float32Array(ltc1), WebGLPixelFormat.RGBA, TextureDataType.FloatType, 64, 64)
     .configAsDataTexture().configDoubleLinear());
 
 const createLUT2 = singleton(() => Texture2D
-    .createByMainLayerSource(new Float32Array(require('./data2.ltc').default), WebGLPixelFormat.RGBA, TextureDataType.FloatType, 64, 64)
+    .createByMainLayerSource(new Float32Array(ltc2), WebGLPixelFormat.RGBA, TextureDataType.FloatType, 64, 64)
     .configAsDataTexture().configDoubleLinear());
 
 export class AreaLight extends Light {

@@ -353,7 +353,7 @@ class PreInitializedWASMBridge implements ContentAPI {
     }
 }
 
-export function prepareWASM() {
+function prepareWASM() {
     registerContentAPI(PreInitializedWASMBridge.getOrCreateInstance());
     window.EGS_WASM_PREPARED = true;
 }
@@ -402,4 +402,8 @@ export function afterWASMInit() {
             }
         });
     }
+}
+
+if (window.EGS_WASM_NEED_PREPARE) {
+    prepareWASM();
 }

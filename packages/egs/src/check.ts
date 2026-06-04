@@ -10,7 +10,7 @@ if (typeof CONFIG !== 'undefined' && CONFIG.ENABLE_EGS_WASM) {
     const env_support = preCheckWASMRequirement();
     if (!window.EGS_ENABLE_CONTENT_API && env_support) {
         window.EGS_ENABLE_CONTENT_API = true;
-        require('./Bridge').prepareWASM(); // need some magic before load.
+        window.EGS_WASM_NEED_PREPARE = true;
     }
     sendKtrackerEvent({
         eventType: 'egs_wasm_support',

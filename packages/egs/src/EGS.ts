@@ -1,5 +1,6 @@
 /* EGS System public APIs * */
-import './prepareWASM';
+import './check';
+import './Bridge';
 
 import * as shapeBuilderImport from './elements/geometries/builder/Index';
 import * as geomOperatorImport from './elements/geometries/operators/Index';

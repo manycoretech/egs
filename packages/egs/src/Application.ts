@@ -1,9 +1,9 @@
 import { Viewer, ViewerUnInitializeEvent } from './Viewer';
 import type { EngineInitializeConfig } from './engine/EngineConfig';
 import { hasManagedContentAPI, ManagedContentBridge, type WorldRebuildConfig } from './ContentAPI';
+import p from '../package.json';
 
 export const projectName = 'ExaGraphics Graphics System';
-const p = require('../package.json');
 
 // EGS global entrance
 /**

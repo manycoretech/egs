@@ -12,14 +12,22 @@ function waitForReady() {
 
 function init() {
     wasmInitializingOrReady = true;
-    const wasmBinary = require('./wasm/basis_transcoder.wasm').default;
+
+    // const wasmBinary = (await import('./wasm/basis_transcoder.wasm')).default;
+
     BasisModule = {
-        wasmBinary
     };
-    p = require('./wasm/basis_transcoder').default(BasisModule)
-        .then(() => {
-            BasisModule.initializeBasis();
-        });
+
+    p = Promise.all([
+        import('./wasm/basis_transcoder.wasm'),
+        // @ts-ignore
+        import('./wasm/basis_transcoder')
+    ]).then(m => {
+        BasisModule.wasmBinary = m[0].default;
+        return m[1].default(BasisModule);
+    }).then(_ => {
+        BasisModule.initializeBasis();
+    });
     return p;
 }
 
