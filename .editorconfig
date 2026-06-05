@@ -11,5 +11,3 @@ insert_final_newline = true
 [*.{js,ts,md,MD,cmake}]
 indent_size = 4
 
-[CMakeLists.txt]
-indent_size = 4
