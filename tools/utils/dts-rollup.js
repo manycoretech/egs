@@ -535,6 +535,7 @@ function prepareApiExtractorTsconfig(projectDir, bundledPackageInfos) {
 
     const tsconfig = {
         compilerOptions: {
+            newLine: 'lf',
             baseUrl: '.',
             paths: externalModulePaths,
             target: 'ESNext',
