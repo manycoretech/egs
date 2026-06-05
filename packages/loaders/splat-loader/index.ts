@@ -16,7 +16,7 @@ try {
     const W = require('worker-loader?inline&fallback=false!./worker');
     SplatWorkerFactor = () => new W();
 } catch {
-    SplatWorkerFactor = () => new Worker(new URL('./worker', import.meta.url));
+    SplatWorkerFactor = () => new Worker(new URL('./worker', import.meta.url), { type: 'module' });
 };
 const poll = new FactoryWorkerPool('splat', SplatWorkerFactor, 4, 1);
 export async function parseSplatData(

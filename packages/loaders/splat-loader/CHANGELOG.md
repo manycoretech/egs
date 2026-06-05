@@ -3,6 +3,7 @@
 ## DEV
 
 - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`
+- `Worker`改进为`module`
 
 ## 1.0.3
 
