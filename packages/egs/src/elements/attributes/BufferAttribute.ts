@@ -28,8 +28,8 @@ export class BufferAttribute<T extends TypedArray = TypedArray> extends ElementE
      * The geometry attribute data store as TypedArray.
      */
     get array(): T {
-        if (hasManagedContentAPI() && (this._array.byteLength === 0 ||
-            this.dataVersion !== this.lastSyncedVersion)) { // avoid invoke proxy
+        if (hasManagedContentAPI() && (this._array.byteLength === 0 || this.dataVersion !== this.lastSyncedVersion)) {
+            // avoid invoke proxy
             ManagedContentBridge.bufferAttributeGetRefreshDataView(this);
             this.lastSyncedVersion = this.dataVersion;
         }
@@ -71,7 +71,7 @@ export class BufferAttribute<T extends TypedArray = TypedArray> extends ElementE
      * This can be used to only update some components of stored vectors (for example, just the component related to color).
      * @deprecated will not take effect, update `attribute.array` instead
      */
-    updateRange = { offset: 0, count: - 1 };
+    updateRange = { offset: 0, count: -1 };
     /**
      * Used to check type of this or extended instance.
      * This value should not be changed by user.
@@ -108,11 +108,11 @@ export class BufferAttribute<T extends TypedArray = TypedArray> extends ElementE
     /**
      * A callback function for updating. It will be called after {@link needsUpdate | needsUpdate }.
      */
-    onUpdateCallback = function () { };
+    onUpdateCallback = function () {};
     /**
      * A callback function for uploading. It will be called after the data uploaded to WebGL.
      */
-    onUploadCallback = function () { };
+    onUploadCallback = function () {};
     /**
      * When this attribute is set to true, the {@link version | version } will be change.
      */

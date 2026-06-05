@@ -1,7 +1,12 @@
 import { type Nullable, Utils } from '../../../utils/Utils';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderVaryingTypes, ShaderInjectionTypes, type ShaderBuilder, ShaderAttributeTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    ShaderVaryingTypes,
+    ShaderInjectionTypes,
+    type ShaderBuilder,
+    ShaderAttributeTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import type { MaterialParameters, ConvertMaterialParameters } from '../Material';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
@@ -19,11 +24,14 @@ import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegi
 import type { Texture2D } from '../../textures/Texture2D';
 import type { TextureV2 } from '../../textures/TextureV2';
 
-export type MeshPhongMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters
-    & ConvertMaterialParameters<Pick<MeshPhongMaterial<T>,
-        'color' | 'specular' | 'opacity' | 'opacityTex' | 'shininess' | 'specularStrength' | 'uvTransform'>>
-    & {
-        texture?: T | null
+export type MeshPhongMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters &
+    ConvertMaterialParameters<
+        Pick<
+            MeshPhongMaterial<T>,
+            'color' | 'specular' | 'opacity' | 'opacityTex' | 'shininess' | 'specularStrength' | 'uvTransform'
+        >
+    > & {
+        texture?: T | null;
     };
 
 const keys = ['color', 'texture', 'specular', 'opacity', 'opacityTex', 'shininess', 'specularStrength', 'uvTransform'];
@@ -31,7 +39,10 @@ const keys = ['color', 'texture', 'specular', 'opacity', 'opacityTex', 'shinines
  * This material can apply illumination on model surface, which makes model looks shiny and specular.
  * Performance will generally be greater when using this material over the {@link PBRMaterial| PBRMaterial}, at the cost of some graphical accuracy.
  */
-export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> extends LightableMaterial implements DeferredMaterial {
+export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D>
+    extends LightableMaterial
+    implements DeferredMaterial
+{
     /**
      * @internal
      */
@@ -50,15 +61,12 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
     }
 
     static extendDeferredLight(builder: ShaderBuilder) {
-        builder
-            .addFragment(BRDFSpecularBlinnPhong)
-            .addFragment(BlinnPhong);
+        builder.addFragment(BRDFSpecularBlinnPhong).addFragment(BlinnPhong);
     }
 
     extendEncodeDeferred(builder: ShaderBuilder) {
         builder
-            .when(this.side === Side.DoubleSide, b =>
-                b.addFragDefine('#define DOUBLE_SIDE'))
+            .when(this.side === Side.DoubleSide, b => b.addFragDefine('#define DOUBLE_SIDE'))
             .addUBO(this.UBO)
             .addVarying(ShaderVaryingTypes.viewPosition)
             .addVarying(ShaderVaryingTypes.fragNormal)
@@ -67,13 +75,17 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
             .inject(ShaderInjectionTypes.channel_specularStrength, 'specularStrength = u_specularStrength;')
             .inject(ShaderInjectionTypes.channel_shininess, 'shininess = u_shininess;')
             .when(this.texture !== null, b =>
-                b.addVarying(ShaderVaryingTypes.fragUV)
+                b
+                    .addVarying(ShaderVaryingTypes.fragUV)
                     .inject(ShaderInjectionTypes.vary_uv, 'vUv = (uvTransformColor * vec3(uv, 1.)).xy;')
                     .addUniform('map', WebGLShaderDataType.Sampler2D)
-                    .inject(ShaderInjectionTypes.channel_color, 'color *= texture2D( map, vUv ).xyz;')
+                    .inject(ShaderInjectionTypes.channel_color, 'color *= texture2D( map, vUv ).xyz;'),
             )
             .addFragment(ENCODE_NORMAL)
-            .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = vec4(encodeNormal(normal), atan(shininess / 162.) * RECIPROCAL_PI * 2.0 * 255. / 254., 1.);')
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                'gl_FragColor = vec4(encodeNormal(normal), atan(shininess / 162.) * RECIPROCAL_PI * 2.0 * 255. / 254., 1.);',
+            )
             .inject(ShaderInjectionTypes.frag_any, 'fragOut1 = vec4(color.rgb, 1.);')
             .inject(ShaderInjectionTypes.frag_any, 'fragOut2 = vec4(specular, specularStrength);');
     }
@@ -110,8 +122,7 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
         this.setValues(p);
     }
 
-    private UBO = UniformBlockObject
-        .spawn('meshPhong')
+    private UBO = UniformBlockObject.spawn('meshPhong')
         .createItem('uvTransformColor', WebGLShaderDataType.Mat3, new Matrix3())
         .createItem('u_color', WebGLShaderDataType.Vec3, new Color(0xffffff))
         .createItem('u_specular', WebGLShaderDataType.Vec3, new Color(0x111111))
@@ -124,8 +135,13 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      */
     @materialProperty()
     protected _color: ReadonlyColor = readonlyMath.color(0xffffff);
-    get color() { return this.UBO.getItem('u_color'); }
-    set color(v: ReadonlyColor) { this.UBO.setItem('u_color', v); this._color = v; }
+    get color() {
+        return this.UBO.getItem('u_color');
+    }
+    set color(v: ReadonlyColor) {
+        this.UBO.setItem('u_color', v);
+        this._color = v;
+    }
     /**
      * Use texture cover object, if it is given.
      */
@@ -142,29 +158,49 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      */
     @materialProperty()
     protected _specular: ReadonlyColor = readonlyMath.color(0x111111);
-    get specular() { return this.UBO.getItem('u_specular'); }
-    set specular(v: ReadonlyColor) { this.UBO.setItem('u_specular', v); this._specular = v; }
+    get specular() {
+        return this.UBO.getItem('u_specular');
+    }
+    set specular(v: ReadonlyColor) {
+        this.UBO.setItem('u_specular', v);
+        this._specular = v;
+    }
     /**
      * Opacity decide the transparency of whole surface of object.
      */
     @materialProperty()
     protected _opacity: number = 1;
-    get opacity() { return this.UBO.getItem('u_opacity'); }
-    set opacity(v: number) { this.UBO.setItem('u_opacity', v); this._opacity = v; }
+    get opacity() {
+        return this.UBO.getItem('u_opacity');
+    }
+    set opacity(v: number) {
+        this.UBO.setItem('u_opacity', v);
+        this._opacity = v;
+    }
     /**
      * This value determines the area of specular reflect and the ratio of white part.
      */
     @materialProperty()
     protected _shininess: number = 30;
-    get shininess() { return this.UBO.getItem('u_shininess'); }
-    set shininess(v: number) { this.UBO.setItem('u_shininess', v); this._shininess = v; }
+    get shininess() {
+        return this.UBO.getItem('u_shininess');
+    }
+    set shininess(v: number) {
+        this.UBO.setItem('u_shininess', v);
+        this._shininess = v;
+    }
     /**
      * This value determines the area of specular reflection. This influence is similar with {@link Light.intensity| intensity} of light.
      */
     @materialProperty()
     protected _specularStrength: number = 1;
-    get specularStrength() { return this.UBO.getItem('u_specularStrength'); }
-    set specularStrength(v: number) { this.UBO.setItem('u_specularStrength', v); this._specularStrength = v; }
+    get specularStrength() {
+        return this.UBO.getItem('u_specularStrength');
+    }
+    set specularStrength(v: number) {
+        this.UBO.setItem('u_specularStrength', v);
+        this._specularStrength = v;
+    }
     /**
      * If set to true, uv used for opacityTex is independent
      * @internal
@@ -235,7 +271,16 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      */
     serialize(ctx: Serializer) {
         super.serialize(ctx);
-        ctx.puts<MeshPhongMaterial>(['color', 'texture', 'specular', 'opacity', 'opacityTex', 'shininess', 'specularStrength', 'uvTransform']);
+        ctx.puts<MeshPhongMaterial>([
+            'color',
+            'texture',
+            'specular',
+            'opacity',
+            'opacityTex',
+            'shininess',
+            'specularStrength',
+            'uvTransform',
+        ]);
     }
     /**
      * Parse the data for this class from string according to serializing format.
@@ -243,14 +288,25 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      */
     deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
-        ctx.reads<MeshPhongMaterial>(['color', 'texture', 'specular', 'opacity', 'opacityTex', 'shininess', 'specularStrength', 'uvTransform']);
+        ctx.reads<MeshPhongMaterial>([
+            'color',
+            'texture',
+            'specular',
+            'opacity',
+            'opacityTex',
+            'shininess',
+            'specularStrength',
+            'uvTransform',
+        ]);
     }
     /**
      * Change the uv data by this matrix.
      */
     @materialProperty()
     _uvTransform = readonlyMath.mat3();
-    get uvTransform() { return this.UBO.getItem('uvTransformColor'); }
+    get uvTransform() {
+        return this.UBO.getItem('uvTransformColor');
+    }
     set uvTransform(v: ReadonlyMatrix3) {
         this.UBO.setItem('uvTransformColor', v);
         this._uvTransform = v;
@@ -290,32 +346,39 @@ export class MeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
             .addFragment(BRDFSpecularBlinnPhong)
             .addFragment(BlinnPhong)
             .when(lightComponent.rectAreaLights.length > 0 || lightComponent.diskAreaLights.length > 0, b =>
-                b.addFragment(AreaBlinnPhong))
-            .when(lightComponent.rectAreaLights.length > 0, b =>
-                b.addFragment(RectAreaBlinnPhong))
-            .when(lightComponent.diskAreaLights.length > 0, b =>
-                b.addFragment(DiskAreaBlinnPhong));
+                b.addFragment(AreaBlinnPhong),
+            )
+            .when(lightComponent.rectAreaLights.length > 0, b => b.addFragment(RectAreaBlinnPhong))
+            .when(lightComponent.diskAreaLights.length > 0, b => b.addFragment(DiskAreaBlinnPhong));
         // case only for animation-plugin using
         if (this.opacityTex !== null && this.isOpacityTexUseIndependentUv) {
             b.addVaryingCustom('vUvs', WebGLShaderDataType.Vec4)
                 .addDefaultAttribute(ShaderAttributeTypes.uv)
                 .inject(ShaderInjectionTypes.vary_any, 'vUvs = vec4((uvTransformColor * vec3(uv, 1.)).xy, uv);')
                 .when(this.texture !== null, b =>
-                    b.addUniform('map', WebGLShaderDataType.Sampler2D)
+                    b
+                        .addUniform('map', WebGLShaderDataType.Sampler2D)
                         .inject(ShaderInjectionTypes.channel_color, 'color *= texture2D( map, vUvs.xy ).xyz;')
-                        .inject(ShaderInjectionTypes.channel_alpha, 'opacity *= texture2D( map, vUvs.xy ).a;'))
+                        .inject(ShaderInjectionTypes.channel_alpha, 'opacity *= texture2D( map, vUvs.xy ).a;'),
+                )
                 .addUniform('mapOpacity', WebGLShaderDataType.Sampler2D)
                 .inject(ShaderInjectionTypes.channel_alpha, 'opacity *= texture2D( mapOpacity, vUvs.zw ).r;');
         } else if (this.texture !== null || this.opacityTex !== null) {
             b.addVarying(ShaderVaryingTypes.fragUV)
                 .inject(ShaderInjectionTypes.vary_uv, 'vUv = (uvTransformColor * vec3(uv, 1.)).xy;')
                 .when(this.texture !== null, b =>
-                    b.addUniform('map', WebGLShaderDataType.Sampler2D)
+                    b
+                        .addUniform('map', WebGLShaderDataType.Sampler2D)
                         .inject(ShaderInjectionTypes.channel_color, 'color *= texture2D( map, vUv ).xyz;')
-                        .when(this.opacityTex === null, b => b.inject(ShaderInjectionTypes.channel_alpha, 'opacity *= texture2D( map, vUv ).a;')))
+                        .when(this.opacityTex === null, b =>
+                            b.inject(ShaderInjectionTypes.channel_alpha, 'opacity *= texture2D( map, vUv ).a;'),
+                        ),
+                )
                 .when(this.opacityTex !== null, b =>
-                    b.addUniform('mapOpacity', WebGLShaderDataType.Sampler2D)
-                        .inject(ShaderInjectionTypes.channel_alpha, 'opacity *= texture2D( mapOpacity, vUv ).r;'));
+                    b
+                        .addUniform('mapOpacity', WebGLShaderDataType.Sampler2D)
+                        .inject(ShaderInjectionTypes.channel_alpha, 'opacity *= texture2D( mapOpacity, vUv ).r;'),
+                );
         }
     }
     /**

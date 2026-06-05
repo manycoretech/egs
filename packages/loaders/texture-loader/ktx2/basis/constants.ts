@@ -4,7 +4,7 @@ export enum BasisFormat {
     ETC1S = 0,
     UASTC = 1,
     UASTC_HDR = 2,
-};
+}
 
 export enum TranscoderFormat {
     ETC1_RGB = 0,
@@ -27,7 +27,7 @@ export enum TranscoderFormat {
     ASTC_HDR_4x4_RGBA = 23,
     RGB_HALF = 24,
     RGBA_HALF = 25,
-};
+}
 
 export enum TranscoderOutputFormat {
     'bc1-rgba-unorm',
@@ -35,18 +35,18 @@ export enum TranscoderOutputFormat {
     'bc7-rgba-unorm',
     'etc2-rgb8unorm',
     'etc2-rgba8unorm',
-    'astc-4x4-unorm'
+    'astc-4x4-unorm',
 }
 
 const GPU_TEXTURE_FORMAT_MAP: {
-    [key in TranscoderOutputFormat]: GPUTextureFormat
+    [key in TranscoderOutputFormat]: GPUTextureFormat;
 } = {
     [TranscoderOutputFormat['bc1-rgba-unorm']]: 'bc1-rgba-unorm',
     [TranscoderOutputFormat['bc3-rgba-unorm']]: 'bc3-rgba-unorm',
     [TranscoderOutputFormat['bc7-rgba-unorm']]: 'bc7-rgba-unorm',
     [TranscoderOutputFormat['etc2-rgb8unorm']]: 'etc2-rgb8unorm',
     [TranscoderOutputFormat['etc2-rgba8unorm']]: 'etc2-rgba8unorm',
-    [TranscoderOutputFormat['astc-4x4-unorm']]: 'astc-4x4-unorm'
+    [TranscoderOutputFormat['astc-4x4-unorm']]: 'astc-4x4-unorm',
 } as const;
 
 export function toGPUTextureFormat(format: TranscoderOutputFormat): GPUTextureFormat {
@@ -54,12 +54,12 @@ export function toGPUTextureFormat(format: TranscoderOutputFormat): GPUTextureFo
 }
 
 interface TranscoderInfo {
-    from: BasisFormat[],
-    to: TranscoderOutputFormat[],
-    transcoder: TranscoderFormat[]
+    from: BasisFormat[];
+    to: TranscoderOutputFormat[];
+    transcoder: TranscoderFormat[];
 }
 interface TranscoderOptions {
-    ldr: TranscoderInfo,
+    ldr: TranscoderInfo;
     priority: [number, number, number]; // [ETC1S, ASTC, ASTC_HDR], lower is better.
 }
 
@@ -69,7 +69,7 @@ const INVALID_TRANSCODER_OPTIONS: TranscoderOptions = {
         to: [],
         transcoder: [],
     },
-    priority: [Infinity, Infinity, Infinity]
+    priority: [Infinity, Infinity, Infinity],
 };
 
 const TRANSCODER_OPTIONS: TranscoderOptions[] = [
@@ -93,7 +93,7 @@ const TRANSCODER_OPTIONS: TranscoderOptions[] = [
             to: [TranscoderOutputFormat['bc7-rgba-unorm'], TranscoderOutputFormat['bc7-rgba-unorm']],
             transcoder: [TranscoderFormat.BC7_RGBA, TranscoderFormat.BC7_RGBA],
         },
-        priority: [2, 2, 2]
+        priority: [2, 2, 2],
     },
     // CompressTextureType.ETC2: 4
     {
@@ -102,7 +102,7 @@ const TRANSCODER_OPTIONS: TranscoderOptions[] = [
             to: [TranscoderOutputFormat['etc2-rgb8unorm'], TranscoderOutputFormat['etc2-rgba8unorm']],
             transcoder: [TranscoderFormat.ETC1_RGB, TranscoderFormat.ETC2_RGBA],
         },
-        priority: [1, 3, 3]
+        priority: [1, 3, 3],
     },
     // CompressTextureType.ASTC: 5
     {
@@ -116,7 +116,9 @@ const TRANSCODER_OPTIONS: TranscoderOptions[] = [
 ];
 
 export function getTranscoderConfig(supported: CompressTextureType[], basisFormat: BasisFormat) {
-    const r = supported.map(f => TRANSCODER_OPTIONS[f]).filter(o => o.ldr.from.includes(basisFormat))
+    const r = supported
+        .map(f => TRANSCODER_OPTIONS[f])
+        .filter(o => o.ldr.from.includes(basisFormat))
         .sort((a, b) => a.priority[basisFormat] - b.priority[basisFormat]);
     return r[0];
 }
@@ -132,8 +134,8 @@ export enum TaskStatus {
 
 export interface TranscodeResult {
     format: TranscoderOutputFormat;
-    data: Array<MipLevelSource | LayerSource[]>,
-    width: number,
-    height: number,
-    buffer: ArrayBuffer
+    data: Array<MipLevelSource | LayerSource[]>;
+    width: number;
+    height: number;
+    buffer: ArrayBuffer;
 }

@@ -46,12 +46,18 @@ export class OutlineComputeMaterial extends PassQuadMaterialBase {
     }
 
     generateShaderKey(r: ShaderComponentRegistry) {
-        const defaultThicknessCoord = (this.edgeThickness.x === this.edgeThickness.w) && (this.edgeThickness.y === this.edgeThickness.w) && (this.edgeThickness.z === this.edgeThickness.w);
-        return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
-            .bool(this.enableDepth)
-            .bool(this.highQuality)
-            .bool(defaultThicknessCoord)
-            .getKey();
+        const defaultThicknessCoord =
+            this.edgeThickness.x === this.edgeThickness.w &&
+            this.edgeThickness.y === this.edgeThickness.w &&
+            this.edgeThickness.z === this.edgeThickness.w;
+        return (
+            super.generateShaderKey(r) +
+            HashKeyBuilder.getInstance()
+                .bool(this.enableDepth)
+                .bool(this.highQuality)
+                .bool(defaultThicknessCoord)
+                .getKey()
+        );
     }
 
     extendShaderShading(builder: ShaderBuilder) {
@@ -66,25 +72,41 @@ export class OutlineComputeMaterial extends PassQuadMaterialBase {
                 builder
                     .addUniform('depthMap', WebGLShaderDataType.Sampler2D)
                     .addUniform('cameraInverseProjectionMatrix', WebGLShaderDataType.Mat4)
-                    .addFragmentCustom(OutlineDepthFrag)
+                    .addFragmentCustom(OutlineDepthFrag),
             );
 
         const addCoordVarying = (name: string, propertyName: string) => {
             builder
                 .addVaryingCustom(`${name}S`, WebGLShaderDataType.Vec2)
                 .addVaryingCustom(`${name}E`, WebGLShaderDataType.Vec2)
-                .inject(ShaderInjectionTypes.vary_any, `${name}S = uv + vec2(0.0, edgeThickness.${propertyName}) * texelSize;`)
-                .inject(ShaderInjectionTypes.vary_any, `${name}E = uv + vec2(edgeThickness.${propertyName}, 0.0) * texelSize;`)
+                .inject(
+                    ShaderInjectionTypes.vary_any,
+                    `${name}S = uv + vec2(0.0, edgeThickness.${propertyName}) * texelSize;`,
+                )
+                .inject(
+                    ShaderInjectionTypes.vary_any,
+                    `${name}E = uv + vec2(edgeThickness.${propertyName}, 0.0) * texelSize;`,
+                )
                 .when(this.highQuality, b =>
-                    b.addVaryingCustom(`${name}N`, WebGLShaderDataType.Vec2)
+                    b
+                        .addVaryingCustom(`${name}N`, WebGLShaderDataType.Vec2)
                         .addVaryingCustom(`${name}W`, WebGLShaderDataType.Vec2)
-                        .inject(ShaderInjectionTypes.vary_any, `${name}N = uv + vec2(0.0, -edgeThickness.${propertyName}) * texelSize;`)
-                        .inject(ShaderInjectionTypes.vary_any, `${name}W = uv + vec2(-edgeThickness.${propertyName}, 0.0) * texelSize;`)
+                        .inject(
+                            ShaderInjectionTypes.vary_any,
+                            `${name}N = uv + vec2(0.0, -edgeThickness.${propertyName}) * texelSize;`,
+                        )
+                        .inject(
+                            ShaderInjectionTypes.vary_any,
+                            `${name}W = uv + vec2(-edgeThickness.${propertyName}, 0.0) * texelSize;`,
+                        ),
                 );
             return builder;
         };
 
-        const defaultThicknessCoord = (this.edgeThickness.x === this.edgeThickness.w) && (this.edgeThickness.y === this.edgeThickness.w) && (this.edgeThickness.z === this.edgeThickness.w);
+        const defaultThicknessCoord =
+            this.edgeThickness.x === this.edgeThickness.w &&
+            this.edgeThickness.y === this.edgeThickness.w &&
+            this.edgeThickness.z === this.edgeThickness.w;
         if (defaultThicknessCoord) {
             addCoordVarying(ThicknessCoord.Default, 'w');
         } else {
@@ -94,8 +116,10 @@ export class OutlineComputeMaterial extends PassQuadMaterialBase {
                 addCoordVarying(ThicknessCoord.Depth, 'z');
             }
         }
-        builder
-            .inject(ShaderInjectionTypes.gl_FragColor, buildOutlineFrag(this.highQuality, this.enableDepth, defaultThicknessCoord));
+        builder.inject(
+            ShaderInjectionTypes.gl_FragColor,
+            buildOutlineFrag(this.highQuality, this.enableDepth, defaultThicknessCoord),
+        );
     }
 
     updateShadingUniforms(p: WGLProgram) {
@@ -110,11 +134,7 @@ export class OutlineComputeMaterial extends PassQuadMaterialBase {
     }
 }
 
-function buildOutlineFrag(
-    hightQuality: boolean,
-    enableDepth: boolean,
-    defaultThicknessCoord: boolean,
-) {
+function buildOutlineFrag(hightQuality: boolean, enableDepth: boolean, defaultThicknessCoord: boolean) {
     const indexCoord = defaultThicknessCoord ? ThicknessCoord.Default : ThicknessCoord.Index;
     const normalCoord = defaultThicknessCoord ? ThicknessCoord.Default : ThicknessCoord.Normal;
     const depthCoord = defaultThicknessCoord ? ThicknessCoord.Default : ThicknessCoord.Depth;
@@ -123,12 +143,14 @@ function buildOutlineFrag(
         return `
         vec4 ${name}_dataS = getIndexNormal(${name}S);
         vec4 ${name}_dataE = getIndexNormal(${name}E);
-        ${hightQuality ?
-                `
+        ${
+            hightQuality
+                ? `
             vec4 ${name}_dataN = getIndexNormal(${name}N);
             vec4 ${name}_dataW = getIndexNormal(${name}W);
-            ` : ''
-            }
+            `
+                : ''
+        }
     `;
     }
 
@@ -136,10 +158,11 @@ function buildOutlineFrag(
     vec4 data = getIndexNormal(vUv);
 
     ${buildDataFrag(indexCoord)}
-    ${(indexCoord !== normalCoord) ? buildDataFrag(normalCoord) : ''}
+    ${indexCoord !== normalCoord ? buildDataFrag(normalCoord) : ''}
 
-    ${hightQuality ?
-            `
+    ${
+        hightQuality
+            ? `
         const vec4 one = vec4(1.0);
         vec4 indexDiff = abs(vec4(
             data.x - ${indexCoord}_dataS.x, data.x - ${indexCoord}_dataE.x,
@@ -150,40 +173,40 @@ function buildOutlineFrag(
             dot(data.yzw, ${normalCoord}_dataN.yzw), dot(data.yzw, ${normalCoord}_dataW.yzw)
         );
         `
-            :
-            `
+            : `
         const vec2 one = vec2(1.0);
         vec2 indexDiff = abs(vec2(data.x - ${indexCoord}_dataS.x, data.x - ${indexCoord}_dataE.x));
         vec2 normalDiff = vec2(dot(data.yzw, ${normalCoord}_dataS.yzw), dot(data.yzw, ${normalCoord}_dataE.yzw));
         `
-        }
+    }
 
     float indexEdge = clamp(dot(indexDiff, one), 0.0, 1.0);
     float normalEdge = clamp(dot(1.0 - normalDiff, one) - float(NORMAL_BIAS), 0.0, 1.0);
     float edge = max(indexEdge * coefficient.x, normalEdge * coefficient.y);
 
-    ${enableDepth ?
-            `
+    ${
+        enableDepth
+            ? `
         vec3 position = getPosition(vUv);
         vec3 positionS = getPosition(${depthCoord}S);
         vec3 positionE = getPosition(${depthCoord}E);
         vec3 positionN = getPosition(${depthCoord}N);
         vec3 positionW = getPosition(${depthCoord}W);
-        ${normalCoord === depthCoord ?
-                `
+        ${
+            normalCoord === depthCoord
+                ? `
             vec3 normalS = ${normalCoord}_dataS.yzw;
             vec3 normalE = ${normalCoord}_dataE.yzw;
             vec3 normalN = ${normalCoord}_dataN.yzw;
             vec3 normalW = ${normalCoord}_dataW.yzw;
             `
-                :
-                `
+                : `
             vec3 normalS = getIndexNormal(${depthCoord}S).yzw;
             vec3 normalE = getIndexNormal(${depthCoord}E).yzw;
             vec3 normalN = getIndexNormal(${depthCoord}N).yzw;
             vec3 normalW = getIndexNormal(${depthCoord}W).yzw;
             `
-            }
+        }
 
         vec3 posDirS = normalize(position - positionS);
         vec3 posDirE = normalize(position - positionE);
@@ -195,8 +218,9 @@ function buildOutlineFrag(
         );
         depthEdge = smoothstep(0.15, 1.0, depthEdge);
         edge = max(depthEdge * coefficient.z, edge);
-        ` : ``
-        }
+        `
+            : ``
+    }
 
     gl_FragColor = vec4(edge, 1, 1, 1);
     `;

@@ -1,23 +1,22 @@
-
 import { Shape } from '../../../math/shape/plane/Shape';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 import { BufferGeometry } from '../../geometries/containers/BufferGeometry';
 
 export interface ShapeShapeParameter {
-    shapes: Shape | Shape[],
-    curveSegments?: number
-    flipY?: boolean
+    shapes: Shape | Shape[];
+    curveSegments?: number;
+    flipY?: boolean;
 }
 
 export function shape(param: ShapeShapeParameter): BufferGeometry {
-    return new ShapeBufferGeometry(...Object.values(param) as any);
+    return new ShapeBufferGeometry(...(Object.values(param) as any));
 }
 
 class ShapeBufferGeometry extends BufferGeometry {
     parameters: {
-        shapes: Shape | Shape[],
-        curveSegments: number
-        flipY?: boolean
+        shapes: Shape | Shape[];
+        curveSegments: number;
+        flipY?: boolean;
     };
     /**
      * @param shapes Array of shapes or a single shape.
@@ -30,7 +29,7 @@ class ShapeBufferGeometry extends BufferGeometry {
 
         this.parameters = {
             shapes,
-            curveSegments
+            curveSegments,
         };
 
         // buffers
@@ -68,7 +67,15 @@ class ShapeBufferGeometry extends BufferGeometry {
         this.addAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2));
     }
 
-    private addShape(shape: Shape, vertices: number[], normals: number[], uvs: number[], indices: number[], curveSegments: number, groupCount: number): number {
+    private addShape(
+        shape: Shape,
+        vertices: number[],
+        normals: number[],
+        uvs: number[],
+        indices: number[],
+        curveSegments: number,
+        groupCount: number,
+    ): number {
         let i, l, shapeHole;
         const indexOffset = vertices.length / 3;
         const points = shape.extractPoints(curveSegments);
@@ -112,5 +119,4 @@ class ShapeBufferGeometry extends BufferGeometry {
         }
         return groupCount;
     }
-
 }

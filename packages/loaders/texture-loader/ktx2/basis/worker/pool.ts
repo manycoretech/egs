@@ -1,4 +1,3 @@
-
 import { FactoryWorkerPool } from '@qunhe/egs-lib';
 
 let WorkerFactor: () => Worker;

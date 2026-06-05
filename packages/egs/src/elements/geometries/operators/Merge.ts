@@ -5,12 +5,16 @@ import type { Matrix4 } from '../../../math/Matrix4';
 import { Matrix3 } from '../../../math/Matrix3';
 
 export interface BufferGeometryMergeInfo {
-    geometry: BufferGeometry,
-    worldMatrix: Matrix4,
+    geometry: BufferGeometry;
+    worldMatrix: Matrix4;
 }
 
 const normalMatrix = new Matrix3();
-export function mergeBufferGeometries(geometries: BufferGeometry[], useGroups: boolean, matrix: Matrix4[]): BufferGeometry {
+export function mergeBufferGeometries(
+    geometries: BufferGeometry[],
+    useGroups: boolean,
+    matrix: Matrix4[],
+): BufferGeometry {
     return mergeBufferGeometries2(geometries, useGroups, matrix)?.geometry;
 }
 
@@ -18,8 +22,13 @@ export function mergeBufferGeometries(geometries: BufferGeometry[], useGroups: b
  * merge given buffer geometries into one
  * @returns merged geometries & each geometry's range in merged geometry(same index as input)
  */
-export function mergeBufferGeometries2(geometries: BufferGeometry[], useGroups: boolean, matrix: Matrix4[]): { // TODO: null type
-    geometry: BufferGeometry,
+export function mergeBufferGeometries2(
+    geometries: BufferGeometry[],
+    useGroups: boolean,
+    matrix: Matrix4[],
+): {
+    // TODO: null type
+    geometry: BufferGeometry;
     ranges: BufferRange[][];
 } {
     const isIndexed = geometries[0].index !== null;
@@ -43,7 +52,11 @@ export function mergeBufferGeometries2(geometries: BufferGeometry[], useGroups: 
         // ensure that all geometries are indexed, or none
 
         if (isIndexed !== (geometry.index !== null)) {
-            logger.unsupported('mergeBufferGeometries() failed with geometry at index ' + i + '. All geometries must have compatible attributes; make sure index attribute exists among all geometries, or in none of them.');
+            logger.unsupported(
+                'mergeBufferGeometries() failed with geometry at index ' +
+                    i +
+                    '. All geometries must have compatible attributes; make sure index attribute exists among all geometries, or in none of them.',
+            );
             return null!;
         }
 
@@ -52,7 +65,11 @@ export function mergeBufferGeometries2(geometries: BufferGeometry[], useGroups: 
         } else if (geometry.getAttributes().position !== undefined) {
             count = geometry.getAttributes().position.count;
         } else {
-            logger.unsupported('mergeBufferGeometries() failed with geometry at index ' + i + '. The geometry must have either an index or a position attribute');
+            logger.unsupported(
+                'mergeBufferGeometries() failed with geometry at index ' +
+                    i +
+                    '. The geometry must have either an index or a position attribute',
+            );
             return null!;
         }
 
@@ -60,7 +77,13 @@ export function mergeBufferGeometries2(geometries: BufferGeometry[], useGroups: 
 
         for (const name in geometry.getAttributes()) {
             if (!attributesUsed.has(name)) {
-                logger.unsupported('mergeBufferGeometries() failed with geometry at index ' + i + '. All geometries must have compatible attributes; make sure "' + name + '" attribute exists among all geometries, or in none of them.');
+                logger.unsupported(
+                    'mergeBufferGeometries() failed with geometry at index ' +
+                        i +
+                        '. All geometries must have compatible attributes; make sure "' +
+                        name +
+                        '" attribute exists among all geometries, or in none of them.',
+                );
                 return null!;
             }
 
@@ -74,13 +97,17 @@ export function mergeBufferGeometries2(geometries: BufferGeometry[], useGroups: 
         // ensure geometries have the same number of attributes
 
         if (attributesCount !== attributesUsed.size) {
-            logger.unsupported('mergeBufferGeometries() failed with geometry at index ' + i + '. Make sure all geometries have the same number of attributes.');
+            logger.unsupported(
+                'mergeBufferGeometries() failed with geometry at index ' +
+                    i +
+                    '. Make sure all geometries have the same number of attributes.',
+            );
             return null!;
         }
 
         currentRanges.push({
             start: offset,
-            count
+            count,
         });
 
         if (useGroups) {
@@ -109,9 +136,15 @@ export function mergeBufferGeometries2(geometries: BufferGeometry[], useGroups: 
     for (const name in attributes) {
         let mergedAttribute;
         if (name === 'position' && matrix !== undefined) {
-            mergedAttribute = mergeBufferAttributes(attributes[name].map((b, i) => matrix[i].applyToBufferAttribute(b.clone())));
+            mergedAttribute = mergeBufferAttributes(
+                attributes[name].map((b, i) => matrix[i].applyToBufferAttribute(b.clone())),
+            );
         } else if (name === 'normal' && matrix !== undefined) {
-            mergedAttribute = mergeBufferAttributes(attributes[name].map((b, i) => normalMatrix.getNormalMatrix(matrix[i]).applyToBufferAttribute(b.clone())));
+            mergedAttribute = mergeBufferAttributes(
+                attributes[name].map((b, i) =>
+                    normalMatrix.getNormalMatrix(matrix[i]).applyToBufferAttribute(b.clone()),
+                ),
+            );
         } else {
             mergedAttribute = mergeBufferAttributes(attributes[name]);
         }
@@ -124,7 +157,7 @@ export function mergeBufferGeometries2(geometries: BufferGeometry[], useGroups: 
 
     return {
         geometry: mergedGeometry,
-        ranges
+        ranges,
     };
 }
 
@@ -140,7 +173,9 @@ function mergeBufferAttributes(attributes: BufferAttribute[]) {
             TypedArray = attribute.array.constructor;
         }
         if (TypedArray !== attribute.array.constructor) {
-            logger.unsupported('mergeBufferAttributes() failed. BufferAttribute.array must be of consistent array types across matching attributes.');
+            logger.unsupported(
+                'mergeBufferAttributes() failed. BufferAttribute.array must be of consistent array types across matching attributes.',
+            );
             return null;
         }
 
@@ -148,7 +183,9 @@ function mergeBufferAttributes(attributes: BufferAttribute[]) {
             itemSize = attribute.itemSize;
         }
         if (itemSize !== attribute.itemSize) {
-            logger.unsupported('mergeBufferAttributes() failed. BufferAttribute.itemSize must be consistent across matching attributes.');
+            logger.unsupported(
+                'mergeBufferAttributes() failed. BufferAttribute.itemSize must be consistent across matching attributes.',
+            );
             return null;
         }
 
@@ -190,6 +227,5 @@ export function mergeTheOtherIntoSelf(me: BufferGeometry, geometry: BufferGeomet
         for (let i = 0, j = attributeSize * offset; i < attributeArray2.length; i++, j++) {
             attributeArray1[j] = attributeArray2[i];
         }
-
     }
 }

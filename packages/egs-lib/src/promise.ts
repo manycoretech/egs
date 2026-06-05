@@ -5,8 +5,8 @@ export interface Deferred<T = void> {
 }
 
 export function deferred<T = void>(): Deferred<T> {
-    let resolve: (value?: T | PromiseLike<T>) => void = () => { };
-    let reject: (reason?: any) => void = () => { };
+    let resolve: (value?: T | PromiseLike<T>) => void = () => {};
+    let reject: (reason?: any) => void = () => {};
     const promise = new Promise<T>(function (resolveInner, rejectInner) {
         resolve = resolveInner;
         reject = rejectInner;
@@ -14,6 +14,6 @@ export function deferred<T = void>(): Deferred<T> {
     return {
         promise,
         resolve,
-        reject
+        reject,
     };
 }

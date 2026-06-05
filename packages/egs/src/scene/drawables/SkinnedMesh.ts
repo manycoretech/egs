@@ -21,7 +21,6 @@ const tempBox = new Box3();
  * This is a spacial mesh for skeletal mesh.
  */
 export class SkinnedMesh<M extends Material = Material, T extends SourceTexture | Texture2D = Texture2D> extends Mesh {
-
     readonly isSkinnedMesh: boolean = true;
 
     boneMatricesTexture: Nullable<T> = null;
@@ -119,10 +118,10 @@ export class SkinnedMesh<M extends Material = Material, T extends SourceTexture 
             this.boneMatricesBuffer = texture.getLevelLayerSource(0, 0) as Float32Array;
         }
 
-        this.getMaterials().forEach((m) => {
+        this.getMaterials().forEach(m => {
             m.addComponent(new SkinningShaderComponent());
         });
-        if ((hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData())) {
+        if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             ContentBridge.skinnedMeshSetSkeleton(this as any);
         } else {
             this.computeBoneBoundingBoxes();

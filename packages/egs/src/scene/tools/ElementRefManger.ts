@@ -1,10 +1,13 @@
 import { type Material, MaterialPropertyChangeEvent } from '../../elements/materials/Material';
 import type { Drawable } from '../drawables/Drawable';
 import { RefObjectMap } from '../../utils/RefObjectMap';
-import { type GeometryBase, GeometryShapeChanged, GeometryContentChanged } from '../../elements/geometries/containers/GeometryBase';
+import {
+    type GeometryBase,
+    GeometryShapeChanged,
+    GeometryContentChanged,
+} from '../../elements/geometries/containers/GeometryBase';
 
 export class SceneElementRefManager {
-
     // ref count
     private lastSyncedDrawableRefMaterial: Map<Drawable, Material[]> = new Map();
     materialUsedByDrawable: RefObjectMap<Material, Drawable> = new RefObjectMap();

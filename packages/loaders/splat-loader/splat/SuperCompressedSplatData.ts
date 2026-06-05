@@ -1,7 +1,15 @@
 import { SplatData } from './SplatData';
 import {
-    type ISampler, ISamplerFormat, type ISingleSplat, type ISplatData, computeTextureSize,
-    clamp, toHalf, fromHalf, encodeQuatOct, decodeQuatOct,
+    type ISampler,
+    ISamplerFormat,
+    type ISingleSplat,
+    type ISplatData,
+    computeTextureSize,
+    clamp,
+    toHalf,
+    fromHalf,
+    encodeQuatOct,
+    decodeQuatOct,
 } from './utils';
 
 function packSint5x9ToUint32x2(data: number[], out: Uint32Array, offset: number) {
@@ -33,18 +41,18 @@ function packSint5x9ToUint32x2(data: number[], out: Uint32Array, offset: number)
 }
 
 function unpackSint5x9FromUint32x2(low: number, high: number, out: number[], offset: number) {
-    out[offset + 0] = (((low >>> 0) & 0x1F) - 16) * 0.0625;
-    out[offset + 1] = (((low >>> 5) & 0x1F) - 16) * 0.0625;
-    out[offset + 2] = (((low >>> 10) & 0x1F) - 16) * 0.0625;
-    out[offset + 3] = (((low >>> 15) & 0x1F) - 16) * 0.0625;
-    out[offset + 4] = (((low >>> 20) & 0x1F) - 16) * 0.0625;
-    out[offset + 5] = (((low >>> 25) & 0x1F) - 16) * 0.0625;
+    out[offset + 0] = (((low >>> 0) & 0x1f) - 16) * 0.0625;
+    out[offset + 1] = (((low >>> 5) & 0x1f) - 16) * 0.0625;
+    out[offset + 2] = (((low >>> 10) & 0x1f) - 16) * 0.0625;
+    out[offset + 3] = (((low >>> 15) & 0x1f) - 16) * 0.0625;
+    out[offset + 4] = (((low >>> 20) & 0x1f) - 16) * 0.0625;
+    out[offset + 5] = (((low >>> 25) & 0x1f) - 16) * 0.0625;
 
     const lowBits = (low >>> 30) & 0x3;
     const highBits = (high & 0x7) << 2;
     out[offset + 6] = ((lowBits | highBits) - 16) * 0.0625;
-    out[offset + 7] = (((high >>> 3) & 0x1F) - 16) * 0.0625;
-    out[offset + 8] = (((high >>> 8) & 0x1F) - 16) * 0.0625;
+    out[offset + 7] = (((high >>> 3) & 0x1f) - 16) * 0.0625;
+    out[offset + 8] = (((high >>> 8) & 0x1f) - 16) * 0.0625;
 }
 
 function packSint4ToUint8(v0: number, v1: number): number {
@@ -54,17 +62,17 @@ function packSint4ToUint8(v0: number, v1: number): number {
 }
 
 function unpackUint8ToSint4x2(value: number, out: number[], offset: number) {
-    out[offset] = (value & 0x0F) * 0.125 - 1.0;
-    out[offset + 1] = ((value >> 4) & 0x0F) * 0.125 - 1.0;
+    out[offset] = (value & 0x0f) * 0.125 - 1.0;
+    out[offset + 1] = ((value >> 4) & 0x0f) * 0.125 - 1.0;
 }
 
 function toUnsignedChar(v: number): number {
     return clamp((v * 128 + 128.5) | 0, 0, 255);
-};
+}
 
 function fromUnsignedChar(v: number): number {
     return (v - 128) / 128;
-};
+}
 
 function toUnsignedCharV2(v: number): number {
     return clamp((v * 255 + 0.5) | 0, 0, 255);
@@ -96,26 +104,32 @@ export class SuperCompressedSplatData extends SplatData {
         const { w: width, h: height, d: depth } = computeTextureSize(counts, this.maxTextureSize);
         const pixelCounts = width * height * depth;
 
-        const splatSampler = this.splatSampler = {
-            width, height, depth,
+        const splatSampler = (this.splatSampler = {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array(16 * pixelCounts),
-        };
+        });
         this.splatUint8Buffer = splatSampler.source;
         this.splatUint16Buffer = new Uint16Array(splatSampler.source.buffer);
 
-        const sh1Sampler = this.sh1Sampler = {
-            width, height, depth,
+        const sh1Sampler = (this.sh1Sampler = {
+            width,
+            height,
+            depth,
             format: shDegree === 1 ? ISamplerFormat.RG_UINT : ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 1 ? (shDegree === 1 ? 8 : 16) : 0) * pixelCounts),
-        };
+        });
         this.sh1Uint8Buffer = sh1Sampler.source;
         this.sh1Uint32Buffer = new Uint32Array(sh1Sampler.source.buffer);
-        const sh2Sampler = this.sh2Sampler = {
-            width, height, depth,
+        const sh2Sampler = (this.sh2Sampler = {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 3 ? 16 : 0) * pixelCounts),
-        };
+        });
         this.sh2Uint8Buffer = sh2Sampler.source;
     }
 
@@ -128,9 +142,9 @@ export class SuperCompressedSplatData extends SplatData {
         splatUint16Buffer[i8 + 1] = toHalf(single.y);
         splatUint16Buffer[i8 + 2] = toHalf(single.z);
 
-        splatUint8Buffer[i16 + 6] = clamp((((Math.log(single.sx) - LN_SCALE_MIN) * LN_SCALE) + 1.5) | 0, 0, 255);
-        splatUint8Buffer[i16 + 7] = clamp((((Math.log(single.sy) - LN_SCALE_MIN) * LN_SCALE) + 1.5) | 0, 0, 255);
-        splatUint8Buffer[i16 + 8] = clamp((((Math.log(single.sz) - LN_SCALE_MIN) * LN_SCALE) + 1.5) | 0, 0, 255);
+        splatUint8Buffer[i16 + 6] = clamp(((Math.log(single.sx) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
+        splatUint8Buffer[i16 + 7] = clamp(((Math.log(single.sy) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
+        splatUint8Buffer[i16 + 8] = clamp(((Math.log(single.sz) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
 
         const oct = encodeQuatOct(single.qx, single.qy, single.qz, single.qw);
         splatUint8Buffer[i16 + 9] = toUnsignedChar(oct[0]);
@@ -154,9 +168,9 @@ export class SuperCompressedSplatData extends SplatData {
     setScale(i: number, sx: number, sy: number, sz: number) {
         const { splatUint8Buffer } = this;
         const offset = i * 16;
-        splatUint8Buffer[offset + 6] = clamp((((Math.log(sx) - LN_SCALE_MIN) * LN_SCALE) + 1.5) | 0, 0, 255);
-        splatUint8Buffer[offset + 7] = clamp((((Math.log(sy) - LN_SCALE_MIN) * LN_SCALE) + 1.5) | 0, 0, 255);
-        splatUint8Buffer[offset + 8] = clamp((((Math.log(sz) - LN_SCALE_MIN) * LN_SCALE) + 1.5) | 0, 0, 255);
+        splatUint8Buffer[offset + 6] = clamp(((Math.log(sx) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
+        splatUint8Buffer[offset + 7] = clamp(((Math.log(sy) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
+        splatUint8Buffer[offset + 8] = clamp(((Math.log(sz) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
     }
 
     setQuat(i: number, qx: number, qy: number, qz: number, qw: number) {
@@ -315,7 +329,7 @@ export class SuperCompressedSplatData extends SplatData {
             unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 5], shN, 17);
             unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 6], shN, 19);
             unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 7], shN, 21);
-            shN[23] = (sh2Uint8Buffer[offset + 8] & 0x0F) * 0.125 - 1.0;
+            shN[23] = (sh2Uint8Buffer[offset + 8] & 0x0f) * 0.125 - 1.0;
         }
 
         if (shDegree >= 3) {
@@ -330,7 +344,7 @@ export class SuperCompressedSplatData extends SplatData {
             unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 7], shN, 38);
             unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 8], shN, 40);
             unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 9], shN, 42);
-            shN[44] = (sh2Uint8Buffer[offset + 10] & 0x0F) * 0.125 - 1.0;
+            shN[44] = (sh2Uint8Buffer[offset + 10] & 0x0f) * 0.125 - 1.0;
         }
     }
 
@@ -361,26 +375,32 @@ export class SuperCompressedSplatData extends SplatData {
         const { w: width, h: height, d: depth } = computeTextureSize(counts, this.maxTextureSize);
         const pixelCounts = width * height * depth;
 
-        const splatSampler = this.splatSampler = samplers[0] ?? {
-            width, height, depth,
+        const splatSampler = (this.splatSampler = samplers[0] ?? {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array(16 * pixelCounts),
-        };
+        });
         this.splatUint8Buffer = new Uint8Array(splatSampler.source.buffer);
         this.splatUint16Buffer = new Uint16Array(splatSampler.source.buffer);
 
-        const sh1Sampler = this.sh1Sampler = samplers[1] ?? {
-            width, height, depth,
+        const sh1Sampler = (this.sh1Sampler = samplers[1] ?? {
+            width,
+            height,
+            depth,
             format: shDegree === 1 ? ISamplerFormat.RG_UINT : ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 1 ? (shDegree === 1 ? 8 : 16) : 0) * pixelCounts),
-        };
+        });
         this.sh1Uint8Buffer = sh1Sampler.source;
         this.sh1Uint32Buffer = new Uint32Array(sh1Sampler.source.buffer);
-        const sh2Sampler = this.sh2Sampler = samplers[2] ?? {
-            width, height, depth,
+        const sh2Sampler = (this.sh2Sampler = samplers[2] ?? {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 3 ? 16 : 0) * pixelCounts),
-        };
+        });
         this.sh2Uint8Buffer = sh2Sampler.source;
     }
 }

@@ -81,13 +81,34 @@ export function detectSplatFileType(filename: string, buffer: Uint8Array) {
 
     let type: SplatFileType | undefined;
     switch (ext) {
-        case 'ply': { type = SplatFileType.PLY; break; }
-        case 'spz': { type = SplatFileType.SPZ; break; }
-        case 'splat': { type = SplatFileType.SPLAT; break; }
-        case 'ksplat': { type = SplatFileType.KSPLAT; break; }
-        case 'sog': { type = SplatFileType.SOG; break; }
-        case 'lcc': { type = SplatFileType.LCC; break; }
-        case 'esz': { type = SplatFileType.ESZ; break; }
+        case 'ply': {
+            type = SplatFileType.PLY;
+            break;
+        }
+        case 'spz': {
+            type = SplatFileType.SPZ;
+            break;
+        }
+        case 'splat': {
+            type = SplatFileType.SPLAT;
+            break;
+        }
+        case 'ksplat': {
+            type = SplatFileType.KSPLAT;
+            break;
+        }
+        case 'sog': {
+            type = SplatFileType.SOG;
+            break;
+        }
+        case 'lcc': {
+            type = SplatFileType.LCC;
+            break;
+        }
+        case 'esz': {
+            type = SplatFileType.ESZ;
+            break;
+        }
     }
     return type;
 }

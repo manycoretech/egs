@@ -1,6 +1,28 @@
-import { Group, Object3D, Matrix4, LineSegments, Line, Mesh, Points, SkinnedMesh, TypeAssert, type BufferAttribute } from '@qunhe/egs';
+import {
+    Group,
+    Object3D,
+    Matrix4,
+    LineSegments,
+    Line,
+    Mesh,
+    Points,
+    SkinnedMesh,
+    TypeAssert,
+    type BufferAttribute,
+} from '@qunhe/egs';
 import type { ResourceManager } from './resource';
-import { type IScene, type INode, type IMesh, type ISkin, type IAnimation, type Animation, type AnimationTrack, type GLTF, PrimitiveMode, type ISkeleton } from './type';
+import {
+    type IScene,
+    type INode,
+    type IMesh,
+    type ISkin,
+    type IAnimation,
+    type Animation,
+    type AnimationTrack,
+    type GLTF,
+    PrimitiveMode,
+    type ISkeleton,
+} from './type';
 import { DEFAULT_MATERIAL, INTERPOLATION } from './const';
 import { normalizedAttributeBuffer } from './utils';
 import { AnimationPointerExtension } from './extensions';
@@ -15,14 +37,14 @@ export interface ParseCtx {
     resource: ResourceManager;
     extensions: Record<string, any>;
     skinnedMeshFlags: Record<number, boolean>;
-    skeletons: Map<ISkeleton, SkinnedMesh[]>,
+    skeletons: Map<ISkeleton, SkinnedMesh[]>;
 
     nodeMap: Map<number, Promise<Object3D>>;
     meshMap: Map<number, Promise<Object3D>>;
     skinMap: Map<number, Promise<ISkeleton>>;
 
     componentMap: Map<Object3D, Object3D>;
-    boneSet: Set<Object3D>,
+    boneSet: Set<Object3D>;
 }
 
 export async function parseScene(meta: IScene, ctx: ParseCtx) {
@@ -66,11 +88,7 @@ async function parseNode(index: number, ctx: ParseCtx): Promise<Object3D> {
     const children = (meta.children || []).map(child => parseNode(child, ctx));
     const skeleton = meta.skin !== undefined ? parseSkin(meta.skin, ctx) : undefined;
 
-    result = Promise.all([
-        result,
-        Promise.all(children),
-        skeleton,
-    ]).then(([node, children, skeleton]) => {
+    result = Promise.all([result, Promise.all(children), skeleton]).then(([node, children, skeleton]) => {
         if (meta.name) {
             node.name = meta.name;
         }
@@ -99,11 +117,11 @@ async function parseNode(index: number, ctx: ParseCtx): Promise<Object3D> {
                 } else {
                     skeletons.set(skeleton, [node]);
                 }
-            // to opt
-            } else if(node.children.length > 0) {
+                // to opt
+            } else if (node.children.length > 0) {
                 const skinnedMeshes = skeletons.get(skeleton) ?? [];
                 node.children.forEach(child => {
-                    if(TypeAssert.isSkinnedMesh(child)) {
+                    if (TypeAssert.isSkinnedMesh(child)) {
                         skinnedMeshes.push(child);
                     }
                 });
@@ -143,7 +161,10 @@ function parseMesh(index: number, ctx: ParseCtx): Promise<Object3D> {
     for (let i = 0; i < primitives.length; i++) {
         const primitive = primitives[i];
         const geometry = resource.getGeometry(primitive);
-        const material = primitive.material !== undefined ? resource.getMaterial(primitive.material) : Promise.resolve(DEFAULT_MATERIAL);
+        const material =
+            primitive.material !== undefined
+                ? resource.getMaterial(primitive.material)
+                : Promise.resolve(DEFAULT_MATERIAL);
         const mesh = Promise.all([geometry, material]).then(([geometry, material]) => {
             const mode = primitive.mode ?? PrimitiveMode.TRIANGLES;
             let mesh: Object3D;
@@ -204,23 +225,23 @@ function parseSkin(index: number, ctx: ParseCtx): Promise<ISkeleton> {
     }
 
     const joints = Promise.all(meta.joints.map(joint => parseNode(joint, ctx)));
-    const inverseBindMatrices = meta.inverseBindMatrices !== undefined ? resource.getAccessor(meta.inverseBindMatrices) : undefined;
+    const inverseBindMatrices =
+        meta.inverseBindMatrices !== undefined ? resource.getAccessor(meta.inverseBindMatrices) : undefined;
 
-    result = Promise.all([joints, inverseBindMatrices])
-        .then(([joints, inverseBindMatrices]) => {
-            const bones: Object3D[] = [];
-            const boneInverses: Matrix4[] = [];
-            for (let i = 0; i < joints.length; i++) {
-                bones.push(joints[i]);
-                boneSet.add(joints[i]);
-                const inverseBindMatrix = new Matrix4();
-                if (inverseBindMatrices) {
-                    inverseBindMatrix.fromArray(inverseBindMatrices.array, i * 16);
-                }
-                boneInverses.push(inverseBindMatrix);
+    result = Promise.all([joints, inverseBindMatrices]).then(([joints, inverseBindMatrices]) => {
+        const bones: Object3D[] = [];
+        const boneInverses: Matrix4[] = [];
+        for (let i = 0; i < joints.length; i++) {
+            bones.push(joints[i]);
+            boneSet.add(joints[i]);
+            const inverseBindMatrix = new Matrix4();
+            if (inverseBindMatrices) {
+                inverseBindMatrix.fromArray(inverseBindMatrices.array, i * 16);
             }
-            return { bones, inverseBindMatrices: boneInverses };
-        });
+            boneInverses.push(inverseBindMatrix);
+        }
+        return { bones, inverseBindMatrices: boneInverses };
+    });
 
     skinMap.set(index, result);
 
@@ -230,7 +251,9 @@ function parseSkin(index: number, ctx: ParseCtx): Promise<ISkeleton> {
 let animationCounts: number = 0;
 export async function parseAnimation(meta: IAnimation, ctx: ParseCtx): Promise<Animation> {
     const { resource, nodes, source, extensions } = ctx;
-    const animationPointerExtension = extensions[AnimationPointerExtension.EXTENSION_NAME] as AnimationPointerExtension | undefined;
+    const animationPointerExtension = extensions[AnimationPointerExtension.EXTENSION_NAME] as
+        | AnimationPointerExtension
+        | undefined;
     const { channels, samplers } = meta;
 
     const targets: Array<Pick<AnimationTrack, 'path' | 'interpolation'>> = [];
@@ -281,7 +304,8 @@ export async function parseAnimation(meta: IAnimation, ctx: ParseCtx): Promise<A
         }
 
         const sampler = samplers[channel.sampler];
-        const interpolation = sampler.interpolation !== undefined ? INTERPOLATION[sampler.interpolation] : INTERPOLATION.LINEAR;
+        const interpolation =
+            sampler.interpolation !== undefined ? INTERPOLATION[sampler.interpolation] : INTERPOLATION.LINEAR;
         if (interpolation === undefined) {
             console.warn('GLTFLoader: interpolation type is unsupported.');
             continue;

@@ -1,4 +1,4 @@
-import type { PickReadonly,Size } from '../utils/Utils';
+import type { PickReadonly, Size } from '../utils/Utils';
 import type { Matrix3 } from './Matrix3';
 import type { Matrix4 } from './Matrix4';
 import type { Vector } from './Vector';
@@ -96,9 +96,11 @@ export class Vector2 implements Vector {
      */
     setComponent(index: number, value: number): Vector2 {
         switch (index) {
-            case 0: this.x = value;
+            case 0:
+                this.x = value;
                 break;
-            case 1: this.y = value;
+            case 1:
+                this.y = value;
                 break;
             default:
                 throw new Error('index is out of range: ' + index);
@@ -334,16 +336,16 @@ export class Vector2 implements Vector {
      * The components of this vector are rounded towards zero (up if negative, down if positive) to an integer value.
      */
     roundToZero(): Vector2 {
-        this.x = (this.x < 0) ? Math.ceil(this.x) : Math.floor(this.x);
-        this.y = (this.y < 0) ? Math.ceil(this.y) : Math.floor(this.y);
+        this.x = this.x < 0 ? Math.ceil(this.x) : Math.floor(this.x);
+        this.y = this.y < 0 ? Math.ceil(this.y) : Math.floor(this.y);
         return this;
     }
     /**
      * Inverts this vector - i.e. sets x = -x and y = -y.
      */
     negate(): Vector2 {
-        this.x = - this.x;
-        this.y = - this.y;
+        this.x = -this.x;
+        this.y = -this.y;
         return this;
     }
     /**
@@ -450,7 +452,7 @@ export class Vector2 implements Vector {
      * Checks for strict equality of this vector and {@link Vector2| v}.
      */
     equals(v: Vector2): boolean {
-        return ((v.x === this.x) && (v.y === this.y));
+        return v.x === this.x && v.y === this.y;
     }
     /**
      * Sets this vector's {@link x| x} value to be array[ offset ] and {@link y| y} value to be array[ offset + 1 ].
@@ -494,7 +496,11 @@ export class Vector2 implements Vector {
      * @param attribute the source attribute.
      * @param index index in the attribute.
      */
-    fromBufferAttribute(attribute: { getX: (number: number) => number, getY: (number: number) => number, }, index: number, offset?: number): Vector2 {
+    fromBufferAttribute(
+        attribute: { getX: (number: number) => number; getY: (number: number) => number },
+        index: number,
+        offset?: number,
+    ): Vector2 {
         if (offset !== undefined) {
             logger.warn('EGS.Vector2: offset has been removed from .fromBufferAttribute().');
         }
@@ -521,7 +527,7 @@ export class Vector2 implements Vector {
     intoSize(): Size {
         return {
             width: this.x,
-            height: this.y
+            height: this.y,
         };
     }
 }
@@ -529,9 +535,27 @@ export class Vector2 implements Vector {
 /**
  * Readonly view of the public Vector2 API.
  */
-export type ReadonlyVector2 = PickReadonly<Vector2,
-    'x' | 'y' | 'width' | 'height' | 'isVector2' | 'dot' | 'cross' | 'lengthSq' | 'length' | 'angle' |
-    'manhattanLength' | 'distanceTo' | 'distanceToSquared' | 'manhattanDistanceTo' | 'getNumberCount' | 'equals' | 'toArray' | 'intoSize'>;
+export type ReadonlyVector2 = PickReadonly<
+    Vector2,
+    | 'x'
+    | 'y'
+    | 'width'
+    | 'height'
+    | 'isVector2'
+    | 'dot'
+    | 'cross'
+    | 'lengthSq'
+    | 'length'
+    | 'angle'
+    | 'manhattanLength'
+    | 'distanceTo'
+    | 'distanceToSquared'
+    | 'manhattanDistanceTo'
+    | 'getNumberCount'
+    | 'equals'
+    | 'toArray'
+    | 'intoSize'
+>;
 
 const tmp1Vec2 = new Vector2();
 const tmp2Vec2 = new Vector2();

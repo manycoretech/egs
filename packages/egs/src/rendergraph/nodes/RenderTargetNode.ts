@@ -1,6 +1,10 @@
 import { type Size, type ResizeFN, defaultResizeFN } from './utils';
 import { DAGNode } from './DAGNode';
-import { RenderColorAttachmentNode, RenderDepthAttachmentNode, type RenderAttachmentNode } from './RenderAttachmentNode';
+import {
+    RenderColorAttachmentNode,
+    RenderDepthAttachmentNode,
+    type RenderAttachmentNode,
+} from './RenderAttachmentNode';
 import type { PassNode } from './PassNode';
 import { TextureViewDimension } from '../../elements/textures/types';
 
@@ -37,7 +41,7 @@ export class RenderTargetNode extends DAGNode {
 
     resize(fn: ResizeFN) {
         this.resizeFn = fn;
-        this.colorAttachments.forEach(color => color.resizeFn = fn);
+        this.colorAttachments.forEach(color => (color.resizeFn = fn));
         if (this.depthAttachment) {
             this.depthAttachment.resizeFn = fn;
         }
@@ -46,7 +50,7 @@ export class RenderTargetNode extends DAGNode {
 
     enableMultiSample() {
         this.multiSample = true;
-        this.colorAttachments.forEach(color => color.multiSample = true);
+        this.colorAttachments.forEach(color => (color.multiSample = true));
         if (this.depthAttachment) {
             this.depthAttachment.multiSample = true;
         }
@@ -91,7 +95,7 @@ export class RenderTargetNode extends DAGNode {
     }
 
     from(node: PassNode | Array<PassNode | undefined>) {
-        const nodes = Array.isArray(node) ? node.filter(n => n !== undefined) as PassNode[] : [node];
+        const nodes = Array.isArray(node) ? (node.filter(n => n !== undefined) as PassNode[]) : [node];
         // keep nodes order
         for (let i = 0; i < nodes.length - 1; i++) {
             nodes[i].connect(nodes[i + 1]);
@@ -105,9 +109,11 @@ export class RenderTargetNode extends DAGNode {
     }
 
     private checkAttachmentNode(node: RenderAttachmentNode): boolean {
-        return node.dimension === this.dimension &&
+        return (
+            node.dimension === this.dimension &&
             node.multiSample === this.multiSample &&
-            node.resizeFn === this.resizeFn;
+            node.resizeFn === this.resizeFn
+        );
     }
 
     check(): boolean {

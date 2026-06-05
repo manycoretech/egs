@@ -387,15 +387,30 @@ highp mat4 inverse(highp mat4 m) {
 `;
 
 const polyfill: Record<string, string> = {
-    sinh, cosh, tanh,
-    asinh, acosh, atanh,
-    modf, round, roundEven, trunc, isnan, isinf, outerProduct,
-    transpose, determinant, inverse,
+    sinh,
+    cosh,
+    tanh,
+    asinh,
+    acosh,
+    atanh,
+    modf,
+    round,
+    roundEven,
+    trunc,
+    isnan,
+    isinf,
+    outerProduct,
+    transpose,
+    determinant,
+    inverse,
 };
 
 const reg = new RegExp(`(${Object.keys(polyfill).join('|')})(?=\\s*\\()`, 'g');
 export function gles2_polyfill(content: string): string {
     const matchResult = content.match(reg) ?? [];
-    const polyfillHeader = Array.from(new Set(matchResult)).filter(k => !!polyfill[k]).map(k => polyfill[k]).join('\n');
+    const polyfillHeader = Array.from(new Set(matchResult))
+        .filter(k => !!polyfill[k])
+        .map(k => polyfill[k])
+        .join('\n');
     return content.replace('#define GLES2_POLYFILL', polyfillHeader);
 }

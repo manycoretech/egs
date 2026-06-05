@@ -29,8 +29,8 @@ const def = {
 };
 
 export function box(parameters: Partial<BoxShapeParameter>): BufferGeometry {
-    // eslint-disable-next-line prefer-const
-    let { width, height, depth, widthSegments, heightSegments, depthSegments } = {  ...def,...parameters };
+    // oxlint-disable-next-line prefer-const
+    let { width, height, depth, widthSegments, heightSegments, depthSegments } = { ...def, ...parameters };
 
     // segments
     widthSegments = Math.floor(widthSegments);
@@ -49,14 +49,26 @@ export function box(parameters: Partial<BoxShapeParameter>): BufferGeometry {
     let groupStart = 0;
 
     // build each side of the box geometry
-    buildPlane('z', 'y', 'x', - 1, - 1, depth, height, width, depthSegments, heightSegments, 0); // px
-    buildPlane('z', 'y', 'x', 1, - 1, depth, height, - width, depthSegments, heightSegments, 1); // nx
+    buildPlane('z', 'y', 'x', -1, -1, depth, height, width, depthSegments, heightSegments, 0); // px
+    buildPlane('z', 'y', 'x', 1, -1, depth, height, -width, depthSegments, heightSegments, 1); // nx
     buildPlane('x', 'z', 'y', 1, 1, width, depth, height, widthSegments, depthSegments, 2); // py
-    buildPlane('x', 'z', 'y', 1, - 1, width, depth, - height, widthSegments, depthSegments, 3); // ny
-    buildPlane('x', 'y', 'z', 1, - 1, width, height, depth, widthSegments, heightSegments, 4); // pz
-    buildPlane('x', 'y', 'z', - 1, - 1, width, height, - depth, widthSegments, heightSegments, 5); // nz
+    buildPlane('x', 'z', 'y', 1, -1, width, depth, -height, widthSegments, depthSegments, 3); // ny
+    buildPlane('x', 'y', 'z', 1, -1, width, height, depth, widthSegments, heightSegments, 4); // pz
+    buildPlane('x', 'y', 'z', -1, -1, width, height, -depth, widthSegments, heightSegments, 5); // nz
 
-    function buildPlane(u: 'x' | 'y' | 'z', v: 'x' | 'y' | 'z', w: 'x' | 'y' | 'z', udir: number, vdir: number, _width: number, _height: number, _depth: number, gridX: number, gridY: number, materialIndex: number) {
+    function buildPlane(
+        u: 'x' | 'y' | 'z',
+        v: 'x' | 'y' | 'z',
+        w: 'x' | 'y' | 'z',
+        udir: number,
+        vdir: number,
+        _width: number,
+        _height: number,
+        _depth: number,
+        gridX: number,
+        gridY: number,
+        materialIndex: number,
+    ) {
         const segmentWidth = _width / gridX;
         const segmentHeight = _height / gridY;
         const widthHalf = _width / 2;
@@ -84,13 +96,13 @@ export function box(parameters: Partial<BoxShapeParameter>): BufferGeometry {
                 // set values to correct vector component
                 vector[u] = 0;
                 vector[v] = 0;
-                vector[w] = _depth > 0 ? 1 : - 1;
+                vector[w] = _depth > 0 ? 1 : -1;
 
                 // now apply vector to normal buffer
                 normals.push(vector.x, vector.y, vector.z);
                 // uvs
                 uvs.push(ix / gridX);
-                uvs.push(1 - (iy / gridY));
+                uvs.push(1 - iy / gridY);
 
                 // counters
                 vertexCounter += 1;

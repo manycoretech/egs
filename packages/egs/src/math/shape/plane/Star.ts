@@ -58,19 +58,16 @@ export class Star extends Polygon {
     draw() {
         const { x, y, rotation, pointNum, innerRadius, radius } = this;
 
-        const startAngle = (-1 * Math.PI / 2) + rotation;
+        const startAngle = (-1 * Math.PI) / 2 + rotation;
         const len = pointNum * 2;
         const delta = _Math.PI_2 / len;
         const polygon: number[] = [];
 
         for (let i = 0; i < len; i++) {
             const r = i % 2 ? innerRadius : radius;
-            const angle = (i * delta) + startAngle;
+            const angle = i * delta + startAngle;
 
-            polygon.push(
-                x + (r * Math.cos(angle)),
-                y + (r * Math.sin(angle))
-            );
+            polygon.push(x + r * Math.cos(angle), y + r * Math.sin(angle));
         }
         this.points = polygon;
         super.draw();

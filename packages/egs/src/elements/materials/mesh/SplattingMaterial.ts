@@ -48,9 +48,11 @@ export class SplattingMaterial extends Material {
             .getKey();
     }
 
-    computeShapeKey() { return 'splatting'; }
-    updateShapeUniforms(_program: WGLProgram) { }
-    extendShaderShape(_builder: ShaderBuilder) { }
+    computeShapeKey() {
+        return 'splatting';
+    }
+    updateShapeUniforms(_program: WGLProgram) {}
+    extendShaderShape(_builder: ShaderBuilder) {}
 
     extendShaderShading(builder: ShaderBuilder) {
         builder
@@ -69,15 +71,15 @@ export class SplattingMaterial extends Material {
             .addUniform('centerTex', WebGLShaderDataType.Sampler2D)
             .addUniform('packedTexWidth', WebGLShaderDataType.UInt)
             .addUniform('covTex', WebGLShaderDataType.USampler2D)
-            .when(!this.repackEnabled, builder => builder
-                .addUniform('orderTex', WebGLShaderDataType.USampler2D)
-                .addUniform('orderTexWidth', WebGLShaderDataType.UInt)
+            .when(!this.repackEnabled, builder =>
+                builder
+                    .addUniform('orderTex', WebGLShaderDataType.USampler2D)
+                    .addUniform('orderTexWidth', WebGLShaderDataType.UInt),
             )
             .addVaryingCustom('vColor', WebGLShaderDataType.Vec4)
             .addVaryingCustom('vSplatUv', WebGLShaderDataType.Vec2)
-            .when(this.shadingPickIdEnabled, builder => builder
-                .addVertexCustom(`flat out uint vId;`)
-                .addFragmentCustom(`flat in uint vId;`)
+            .when(this.shadingPickIdEnabled, builder =>
+                builder.addVertexCustom(`flat out uint vId;`).addFragmentCustom(`flat in uint vId;`),
             )
             .addVertex(ShaderBlockPool.SplatHeader)
             .inject(ShaderInjectionTypes.gl_Position, createVertexShader(this))
@@ -104,8 +106,10 @@ export class SplattingMaterial extends Material {
         }
     }
 
-    clone(): Material { return this; }
-    copy(_other: Material) { }
+    clone(): Material {
+        return this;
+    }
+    copy(_other: Material) {}
 }
 
 function createVertexShader(material: SplattingMaterial): string {
@@ -117,9 +121,13 @@ function createVertexShader(material: SplattingMaterial): string {
         if (splatIndex >= activeSplats) {
             return;
         }
-        ${!repackEnabled ? `
+        ${
+            !repackEnabled
+                ? `
             splatIndex = texelFetch(orderTex, ivec2(splatIndex % orderTexWidth, splatIndex / orderTexWidth), 0).r;
-        ` : ''}
+        `
+                : ''
+        }
 
         ivec2 texCoord = ivec2(splatIndex % packedTexWidth, splatIndex / packedTexWidth);
         vec4 pixel_0 = texelFetch(centerTex, texCoord, 0);
@@ -253,13 +261,17 @@ function createFragmentShader(material: SplattingMaterial): string {
             discard;
         }
         gl_FragColor = vec4(${colorTransfer}(vColor.rgb) * alpha, alpha);
-        ${shadingPickIdEnabled ? `
+        ${
+            shadingPickIdEnabled
+                ? `
             gl_FragColor = vec4(
                 float((vId >> 0u) & 0xFFu) / 255.0,
                 float((vId >> 8u) & 0xFFu) / 255.0,
                 float((vId >> 16u) & 0xFFu) / 255.0,
                 float((vId >> 24u) & 0xFFu) / 255.0
             );
-        ` : ''}
+        `
+                : ''
+        }
     `;
 }

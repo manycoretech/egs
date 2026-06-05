@@ -30,7 +30,7 @@ export class RawSplatData extends SplatData {
     init(counts: number, shDegree: number) {
         this.counts = counts;
         this.shDegree = Math.min(shDegree, this.maxShDegree);
-        const shCounts = this.shCounts = SH_MAPS[shDegree];
+        const shCounts = (this.shCounts = SH_MAPS[shDegree]);
         this.table = new Array(14 + shCounts).fill(0).map(() => new Float32Array(counts));
     }
 
@@ -98,7 +98,7 @@ export class RawSplatData extends SplatData {
         for (let j = 0; j < shCounts; j++) {
             table[offset + j][i] = shN[j];
         }
-    };
+    }
 
     get(i: number, single: ISingleSplat) {
         const { table } = this;
@@ -178,7 +178,9 @@ export class RawSplatData extends SplatData {
             counts: this.counts,
             shDegree: this.shDegree,
             samplers: this.table.map(buffer => ({
-                width: this.counts, height: 1, depth: 1,
+                width: this.counts,
+                height: 1,
+                depth: 1,
                 format: ISamplerFormat.RGBA_UINT,
                 source: new Uint8Array(buffer.buffer),
             })),

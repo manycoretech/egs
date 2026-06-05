@@ -51,7 +51,9 @@ export class BlurPassMaterial extends PassQuadMaterialBase {
             .addUniform('texelSize', WebGLShaderDataType.Vec2)
             .addUniform('direction', WebGLShaderDataType.Vec2)
             .addFragment(BlurPassFrag)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 vec2 sampleOffset = texelSize * direction;
                 vec2 offset = 0.5 * float(${this.kernelSize} - 1) * sampleOffset;
                 vec2 uv = vUv - offset;
@@ -63,8 +65,8 @@ export class BlurPassMaterial extends PassQuadMaterialBase {
                     sum = lin_space(1.0, sum, weights[i], samples);
                 }
                 gl_FragColor = sum;
-            `);
-
+            `,
+            );
     }
 
     updateShadingUniforms(p: WGLProgram) {

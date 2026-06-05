@@ -20,5 +20,8 @@ export function registerPipelineContentAPI(api: PipelineAPI) {
 export function PipelineContentAPIForRenderingAndFilteringEnabled() {
     return registeredPipelineContentAPI !== undefined;
 }
+export function removePipelineContentAPI() {
+    registeredPipelineContentAPI = undefined;
+}
 
 export const PipelineContentBridge: Required<PipelineAPI> = ${PipelineAPI;target:registeredPipelineContentAPI;onlyThrowUsefulError}

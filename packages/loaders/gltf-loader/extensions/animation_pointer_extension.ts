@@ -23,7 +23,9 @@ export class AnimationPointerExtension {
         if (target.node !== undefined || target.path !== 'pointer') {
             return undefined;
         }
-        const pointerExtensionData = target.extensions?.[AnimationPointerExtension.EXTENSION_NAME] as AnimationPointerExtensionData | undefined;
+        const pointerExtensionData = target.extensions?.[AnimationPointerExtension.EXTENSION_NAME] as
+            | AnimationPointerExtensionData
+            | undefined;
         if (!pointerExtensionData) {
             return undefined;
         }

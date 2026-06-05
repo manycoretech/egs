@@ -67,9 +67,7 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
      */
     getPoints(divisions?: number): T[] {
         if (divisions === undefined) {
-            divisions = Curve.segmentsCount(
-                this.getLength()
-            );
+            divisions = Curve.segmentsCount(this.getLength());
         }
         const points: T[] = [];
         for (let d = 0; d <= divisions; d++) {
@@ -114,9 +112,7 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
             divisions = this.arcLengthDivisions;
         }
 
-        if (this.cacheArcLengths &&
-            (this.cacheArcLengths.length === divisions + 1) &&
-            !this.needsUpdate) {
+        if (this.cacheArcLengths && this.cacheArcLengths.length === divisions + 1 && !this.needsUpdate) {
             return this.cacheArcLengths;
         }
 
@@ -159,7 +155,9 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
         }
 
         // binary search for the index with largest value smaller than target u distance
-        let low = 0, high = il - 1, comparison;
+        let low = 0,
+            high = il - 1,
+            comparison;
         while (low <= high) {
             i = Math.floor(low + (high - low) / 2); // less likely to overflow, though probably not issue here, JS doesn't really have integers, all numbers are floats
             comparison = arcLengths[i] - targetArcLength;
@@ -275,7 +273,7 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
             vec.crossVectors(tangents[i - 1], tangents[i]);
             if (vec.length() > Number.EPSILON) {
                 vec.normalize();
-                theta = Math.acos(_Math.clamp(tangents[i - 1].dot(tangents[i]), - 1, 1)); // clamp for floating pt errors
+                theta = Math.acos(_Math.clamp(tangents[i - 1].dot(tangents[i]), -1, 1)); // clamp for floating pt errors
                 normals[i].applyMatrix4(mat.makeRotationAxis(vec, theta));
             }
             biNormals[i].crossVectors(tangents[i], normals[i]);
@@ -283,10 +281,10 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
 
         // if the curve is closed, post-process the vectors so the first and last normal vectors are the same
         if (closed === true) {
-            theta = Math.acos(_Math.clamp(normals[0].dot(normals[segments]), - 1, 1));
+            theta = Math.acos(_Math.clamp(normals[0].dot(normals[segments]), -1, 1));
             theta /= segments;
             if (tangents[0].dot(vec.crossVectors(normals[0], normals[segments])) > 0) {
-                theta = - theta;
+                theta = -theta;
             }
             for (i = 1; i <= segments; i++) {
                 // twist a little...
@@ -297,7 +295,7 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
         return {
             tangents,
             normals,
-            biNormals
+            biNormals,
         };
     }
 
@@ -315,8 +313,8 @@ export class Curve<T extends Vector> implements SerializerableDelegatedAsReferen
             metadata: {
                 version: 4.5,
                 type: 'Curve',
-                generator: 'Curve.toJSON'
-            }
+                generator: 'Curve.toJSON',
+            },
         } as any;
 
         data.arcLengthDivisions = this.arcLengthDivisions;

@@ -19,9 +19,11 @@ export class SplatKernelHighlightMaterial extends Material {
         return 'SplatKernelHighlightMaterial';
     }
 
-    computeShapeKey() { return 'SplatKernelHighlight'; }
-    extendShaderShape(_builder: ShaderBuilder, _: ShaderComponentRegistry) { }
-    updateShapeUniforms(_p: WGLProgram, _: ShaderComponentRegistry) { }
+    computeShapeKey() {
+        return 'SplatKernelHighlight';
+    }
+    extendShaderShape(_builder: ShaderBuilder, _: ShaderComponentRegistry) {}
+    updateShapeUniforms(_p: WGLProgram, _: ShaderComponentRegistry) {}
 
     extendShaderShading(builder: ShaderBuilder, _: ShaderComponentRegistry) {
         builder
@@ -48,8 +50,10 @@ export class SplatKernelHighlightMaterial extends Material {
         program.setUniform('orderTexWidth', this.orderTex.width);
     }
 
-    copy(_other: SplatKernelHighlightMaterial) { }
-    clone() { return this; }
+    copy(_other: SplatKernelHighlightMaterial) {}
+    clone() {
+        return this;
+    }
 }
 
 const VERTEX_SHADER = `

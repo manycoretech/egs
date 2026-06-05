@@ -93,7 +93,9 @@ export class FatLineSegments extends Drawable<FatLineMaterial, FatLineBufferGeom
         inverseMatrix.getInverse(this.matrixWorld);
         ray.copy(raycaster.ray).applyMatrix4(inverseMatrix);
 
-        const screenPrecisionMaxSq = raycaster.getScreenLineToleranceSq(raycaster.ray.intersectSphereMaxDistance(sphere));
+        const screenPrecisionMaxSq = raycaster.getScreenLineToleranceSq(
+            raycaster.ray.intersectSphereMaxDistance(sphere),
+        );
         this.matrixWorld.getScale(realScaleTemp);
         const vStart = new Vector3();
         const vEnd = new Vector3();
@@ -101,7 +103,18 @@ export class FatLineSegments extends Drawable<FatLineMaterial, FatLineBufferGeom
             vStart.set(start.getX(i), start.getY(i), start.getZ(i));
             vEnd.set(end.getX(i), end.getY(i), end.getZ(i));
 
-            const result = checkIntersectionLine(vStart, vEnd, i, i, this, raycaster, ray, realScaleTemp, 0, screenPrecisionMaxSq);
+            const result = checkIntersectionLine(
+                vStart,
+                vEnd,
+                i,
+                i,
+                this,
+                raycaster,
+                ray,
+                realScaleTemp,
+                0,
+                screenPrecisionMaxSq,
+            );
             if (result) {
                 intersects.push(result);
             }
@@ -121,14 +134,18 @@ export class FatLineSegments extends Drawable<FatLineMaterial, FatLineBufferGeom
         super.deserialize(ctx);
         const sourceGeo = ctx.deserialize(ctx.readRaw('fallback')) as BufferGeometry<LineList>;
         if (sourceGeo.position.array.length === 0) {
-            const instanceStart = this.geometry.getAttribute('instanceStart')?.array;;
+            const instanceStart = this.geometry.getAttribute('instanceStart')?.array;
             const instanceEnd = this.geometry.getAttribute('instanceEnd')?.array;
             const data: number[] = [];
             if (instanceStart && instanceEnd && instanceStart.length === instanceEnd.length) {
                 for (let i = 0, l = instanceStart.length; i < l; i += 3) {
                     data.push(
-                        instanceStart[i], instanceStart[i + 1], instanceStart[i + 2],
-                        instanceEnd[i], instanceEnd[i + 1], instanceEnd[i + 2]
+                        instanceStart[i],
+                        instanceStart[i + 1],
+                        instanceStart[i + 2],
+                        instanceEnd[i],
+                        instanceEnd[i + 1],
+                        instanceEnd[i + 2],
                     );
                 }
             }

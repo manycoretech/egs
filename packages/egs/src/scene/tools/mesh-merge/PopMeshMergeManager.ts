@@ -17,7 +17,7 @@ function mergePopMesh(mesh: PopMesh): Nullable<MergedMeshData> {
     const result = mergeResult[0];
     return {
         geometry: result.geometry,
-        material: result.getMaterials() as MergedMeshPhongMaterial[]
+        material: result.getMaterials() as MergedMeshPhongMaterial[],
     };
 }
 
@@ -57,9 +57,19 @@ export class PopMeshMergeManager {
     private calculateKey(popMesh: PopMesh) {
         function getSingleMatKey(m: MeshPhongMaterial) {
             return [
-                m.side, m.transparent, m.opacity,
-                m.polygonOffset, m.polygonOffsetFactor, m.polygonOffsetUnits,
-                m.blending, m.blendDst, m.blendDstAlpha, m.blendEquation, m.blendEquationAlpha, m.blendSrc, m.blendSrcAlpha,
+                m.side,
+                m.transparent,
+                m.opacity,
+                m.polygonOffset,
+                m.polygonOffsetFactor,
+                m.polygonOffsetUnits,
+                m.blending,
+                m.blendDst,
+                m.blendDstAlpha,
+                m.blendEquation,
+                m.blendEquationAlpha,
+                m.blendSrc,
+                m.blendSrcAlpha,
                 (m.color as any as Color).getSerializeData(),
                 ...(m.texture ? [m.texture.uuid, (m.uvTransform as any as Matrix3).getSerializeData()] : []),
             ].join('-');
@@ -97,13 +107,13 @@ export class PopMeshMergeManager {
 
     private hasAnyComponent(mesh: PopMesh): boolean {
         let has = false;
-        mesh.forEachMaterial(m => has = has || m.getComponents().length > 0);
+        mesh.forEachMaterial(m => (has = has || m.getComponents().length > 0));
         return has;
     }
 
     private hasPolygonOffset(mesh: PopMesh): boolean {
         let has = false;
-        mesh.forEachMaterial(m => has = has || m.polygonOffset);
+        mesh.forEachMaterial(m => (has = has || m.polygonOffset));
         return has;
     }
 
@@ -118,9 +128,11 @@ export class PopMeshMergeManager {
         const baseOffsetUnits = mesh.getMaterials()[0].polygonOffsetUnits;
         const meshMaterials = mesh.getMaterials();
         for (let i = 1; i < meshMaterials.length; i++) {
-            if (meshMaterials[i].polygonOffsetFactor !== baseOffsetFactor
-                || meshMaterials[i].polygonOffsetUnits !== baseOffsetUnits
-                || meshMaterials[i].polygonOffset === false) {
+            if (
+                meshMaterials[i].polygonOffsetFactor !== baseOffsetFactor ||
+                meshMaterials[i].polygonOffsetUnits !== baseOffsetUnits ||
+                meshMaterials[i].polygonOffset === false
+            ) {
                 return false;
             }
         }

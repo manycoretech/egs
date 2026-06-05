@@ -1,4 +1,3 @@
-
 import { logger } from '../../../utils/Logger';
 import type { BufferGeometry, LineList, LineStrip } from '../containers/BufferGeometry';
 import { Vector3 } from '../../../math/Vector3';
@@ -28,7 +27,9 @@ export function computeLineDistances(geometry: BufferGeometry<LineList | LineStr
             geometry.addAttribute('lineDistance', new BufferAttribute(new Float32Array(lineDistances), 1));
         }
     } else {
-        logger.invalidInput('EGS.Line.computeLineDistances(): Computation only possible with non-indexed BufferGeometry.');
+        logger.invalidInput(
+            'EGS.Line.computeLineDistances(): Computation only possible with non-indexed BufferGeometry.',
+        );
     }
 }
 
@@ -42,7 +43,7 @@ export function computeLineDistancesForFatline(geometry: FatLineBufferGeometry) 
     for (let i = 0; i < instanceStart.count; i++) {
         start.fromBufferAttribute(instanceStart, i);
         end.fromBufferAttribute(instanceEnd, i);
-        lineDistanceStart[i] = ((i === 0) ? 0 : lineDistanceEnd[i - 1]);
+        lineDistanceStart[i] = i === 0 ? 0 : lineDistanceEnd[i - 1];
         lineDistanceEnd[i] = lineDistanceStart[i] + start.distanceTo(end);
     }
 

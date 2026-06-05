@@ -54,7 +54,7 @@ export class Utils {
 
     static arrayMax(array: number[] | TypedArray): number {
         if (array.length === 0) {
-            return - Infinity;
+            return -Infinity;
         }
         let max = array[0];
         for (let i = 1, l = array.length; i < l; ++i) {
@@ -71,21 +71,23 @@ export class Utils {
             const value = data[i];
             if (value < 0x80) {
                 text += String.fromCharCode(value);
-            } else if (value > 0xBF && value < 0xE0) {
-                text += String.fromCharCode((value & 0x1F) << 6 | data[i + 1] & 0x3F);
+            } else if (value > 0xbf && value < 0xe0) {
+                text += String.fromCharCode(((value & 0x1f) << 6) | (data[i + 1] & 0x3f));
                 i += 1;
-            } else if (value > 0xDF && value < 0xF0) {
+            } else if (value > 0xdf && value < 0xf0) {
                 text += String.fromCharCode(
-                    (value & 0x0F) << 12 | (data[i + 1] & 0x3F) << 6 |
-                    data[i + 2] & 0x3F);
+                    ((value & 0x0f) << 12) | ((data[i + 1] & 0x3f) << 6) | (data[i + 2] & 0x3f),
+                );
                 i += 2;
             } else {
                 // surrogate pair
-                const charCode = ((value & 0x07) << 18 | (data[i + 1] & 0x3F) << 12 |
-                    (data[i + 2] & 0x3F) << 6 | data[i + 3] & 0x3F) -
+                const charCode =
+                    (((value & 0x07) << 18) |
+                        ((data[i + 1] & 0x3f) << 12) |
+                        ((data[i + 2] & 0x3f) << 6) |
+                        (data[i + 3] & 0x3f)) -
                     0x010000;
-                text += String.fromCharCode(
-                    charCode >> 10 | 0xD800, charCode & 0x03FF | 0xDC00);
+                text += String.fromCharCode((charCode >> 10) | 0xd800, (charCode & 0x03ff) | 0xdc00);
                 i += 3;
             }
         }
@@ -181,7 +183,7 @@ export class Utils {
     // converts an array to a specific type
     static convertArray(array: any, type: any, forceClone?: boolean): any {
         // let 'undefined' and 'null' pass
-        if (!array || !forceClone && array.constructor === type) {
+        if (!array || (!forceClone && array.constructor === type)) {
             return array;
         }
 
@@ -197,7 +199,6 @@ export class Utils {
             // in ios9 array.subarray(from, undefined) will return empty array
             // but array.subarray(from) or array.subarray(from, len) is correct
             return new array.constructor(array.subarray(from, to !== undefined ? to : array.length));
-
         }
         return array.slice(from, to);
     }
@@ -243,10 +244,10 @@ export interface Size {
 }
 
 export interface IRange {
-    x: number,
-    y: number,
-    width: number,
-    height: number,
+    x: number;
+    y: number;
+    width: number;
+    height: number;
 }
 
 export interface Uniforms {
@@ -262,23 +263,33 @@ export interface Shader {
 
 export type Nullable<T> = T | null;
 
-export type PickSubTypeProperty<T, U> = { [P in keyof T]: T[P] extends U ? P : never; }[keyof T];
+export type PickSubTypeProperty<T, U> = { [P in keyof T]: T[P] extends U ? P : never }[keyof T];
 
 /**
  * Union of typed-array.
  */
-export type TypedArray = Float32Array | Float64Array | Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array;
+export type TypedArray =
+    | Float32Array
+    | Float64Array
+    | Int8Array
+    | Uint8Array
+    | Uint8ClampedArray
+    | Int16Array
+    | Uint16Array
+    | Int32Array
+    | Uint32Array;
 
-export type PickReadonly<T extends ReadOnlyMarkedCreatable<T>, K extends keyof T>
-    = Readonly<Pick<ReadonlyMarked<T>, K | '_readonly_mark' | 'cloneReadonly' | 'clone'>>;
+export type PickReadonly<T extends ReadOnlyMarkedCreatable<T>, K extends keyof T> = Readonly<
+    Pick<ReadonlyMarked<T>, K | '_readonly_mark' | 'cloneReadonly' | 'clone'>
+>;
 export type ReadonlyMarked<T> = { _readonly_mark: unknown } & T;
 
 export interface ReadOnlyMarkedCreatable<T> {
-    clone(): T,
+    clone(): T;
     cloneReadonly(): any;
 }
 
 export const DEFAULT_RAF_FUNCTION = {
     requestAnimationFrame: globalThis.requestAnimationFrame.bind(globalThis),
-    cancelAnimationFrame: globalThis.cancelAnimationFrame.bind(globalThis)
+    cancelAnimationFrame: globalThis.cancelAnimationFrame.bind(globalThis),
 };

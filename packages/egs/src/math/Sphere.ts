@@ -19,8 +19,8 @@ export class Sphere {
     radius: number;
 
     constructor(center?: Vector3, radius?: number) {
-        this.center = (center !== undefined) ? center : new Vector3();
-        this.radius = (radius !== undefined) ? radius : 0;
+        this.center = center !== undefined ? center : new Vector3();
+        this.radius = radius !== undefined ? radius : 0;
     }
     /**
      * Sets the {@link center| center} and {@link radius| radius} properties of this sphere.<br />
@@ -73,21 +73,21 @@ export class Sphere {
      * If the radius smaller than zero, this will return false, otherwise return true.
      */
     empty(): boolean {
-        return (this.radius <= 0);
+        return this.radius <= 0;
     }
     /**
      * Checks to see if the sphere contains the provided {@link Vector3| point} inclusive of the surface of the sphere.
      * @param point the {@link Vector3| Vector3} to be checked.
      */
     containsPoint(point: Vector3): boolean {
-        return (point.distanceToSquared(this.center) <= (this.radius * this.radius));
+        return point.distanceToSquared(this.center) <= this.radius * this.radius;
     }
     /**
      * Returns the closest distance from the boundary of the sphere to the {@link Vector3| point}.
      * If the sphere contains the point, the distance will be negative.
      */
     distanceToPoint(point: Vector3): number {
-        return (point.distanceTo(this.center) - this.radius);
+        return point.distanceTo(this.center) - this.radius;
     }
     /**
      * Checks to see if two spheres intersect.
@@ -95,7 +95,7 @@ export class Sphere {
      */
     intersectsSphere(sphere: Sphere): boolean {
         const radiusSum = this.radius + sphere.radius;
-        return sphere.center.distanceToSquared(this.center) <= (radiusSum * radiusSum);
+        return sphere.center.distanceToSquared(this.center) <= radiusSum * radiusSum;
     }
     /**
      * Determines whether or not this sphere intersects a given {@link Box3| box}.
@@ -120,7 +120,7 @@ export class Sphere {
     clampPoint(point: Vector3, target: Vector3): Vector3 {
         const deltaLengthSq = this.center.distanceToSquared(point);
         target.copy(point);
-        if (deltaLengthSq > (this.radius * this.radius)) {
+        if (deltaLengthSq > this.radius * this.radius) {
             target.sub(this.center).normalize();
             target.multiplyScalar(this.radius).add(this.center);
         }
@@ -155,7 +155,7 @@ export class Sphere {
      * Checks to see if the two spheres' centers and radii are equal.
      */
     equals(sphere: Sphere): boolean {
-        return sphere.center.equals(this.center) && (sphere.radius === this.radius);
+        return sphere.center.equals(this.center) && sphere.radius === this.radius;
     }
 }
 

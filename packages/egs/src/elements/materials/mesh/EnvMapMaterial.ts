@@ -1,5 +1,9 @@
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+    ShaderVaryingTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { Side } from '../../../utils/Constants';
 import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
@@ -58,7 +62,9 @@ export class EnvMapMaterial extends BackgroundLikeMaterial {
             .addUniform('tEquirect', WebGLShaderDataType.Sampler2D)
             .addVarying(ShaderVaryingTypes.worldPosition)
             .addFragment(ShaderBlockPool.QuaternionFunctions)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
             vec3 direction = normalize( applyQuat(backgroundRotation, vWorldPosition) );
             vec2 sampleUV;
             sampleUV.y = (asin( clamp( direction.z, - 1.0, 1.0 ) ) + verticalRotation) * RECIPROCAL_PI + 0.5;
@@ -67,8 +73,8 @@ export class EnvMapMaterial extends BackgroundLikeMaterial {
             ${this.reverseHorizon ? '' : 'sampleUV.x = 1.0 - sampleUV.x;'}
             vec4 texColor = texture2D( tEquirect, sampleUV );
             gl_FragColor = vec4(luma * texColor.rgb, 1.0);
-            `);
-
+            `,
+            );
     }
 
     copy() {

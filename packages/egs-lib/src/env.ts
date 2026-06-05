@@ -11,14 +11,14 @@ try {
     if (isDebugEnable == null && (CONFIG.IS_DEV || CONFIG.IS_TESTING || CONFIG.IS_DEV_OR_TESTING)) {
         isDebugEnable = true;
     }
-} catch (e) { }
+} catch {}
 
 // NODE_ENV
 try {
     if (isDebugEnable == null && process.env.NODE_ENV !== 'production') {
         isDebugEnable = true;
     }
-} catch (e) { }
+} catch {}
 
 // url parameter
 try {
@@ -30,7 +30,7 @@ try {
             isDebugEnable = false;
         }
     }
-} catch (e) { }
+} catch {}
 
 if (isDebugEnable == null) {
     isDebugEnable = false;

@@ -21,7 +21,10 @@ export class ProgramManager {
         return this.renderState.activeShaderComponentRegistry;
     }
 
-    constructor(renderState: RenderState, private info: RenderInfo) {
+    constructor(
+        renderState: RenderState,
+        private info: RenderInfo,
+    ) {
         this.renderState = renderState;
     }
 
@@ -43,7 +46,11 @@ export class ProgramManager {
 
     get(material: Material) {
         let program = this.programs.get(material);
-        if (program && !program._disposed && program.key === material.getShaderKey(this.activeShaderComponentRegistry)) {
+        if (
+            program &&
+            !program._disposed &&
+            program.key === material.getShaderKey(this.activeShaderComponentRegistry)
+        ) {
             return program;
         }
 
@@ -55,7 +62,12 @@ export class ProgramManager {
         if (program) {
             program.attach(material);
         } else {
-            program = new WGLProgram(this.renderState, material.createShader(this.activeShaderComponentRegistry), material, shaderKey);
+            program = new WGLProgram(
+                this.renderState,
+                material.createShader(this.activeShaderComponentRegistry),
+                material,
+                shaderKey,
+            );
             this.cacheMap.set(shaderKey, program);
             this.info.objectInfo.programs++;
         }

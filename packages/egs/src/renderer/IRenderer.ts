@@ -16,12 +16,15 @@ import { Platform } from '../utils/Platform';
 import type { Texture } from '../elements/textures/Texture';
 import type { ShaderComponentRegistry } from '../scene/ShaderComponentRegistry';
 
-export type RendererParameters = Required<Pick<WebGLContextAttributes,
-    'alpha' | 'antialias' | 'depth' | 'powerPreference' | 'premultipliedAlpha' | 'preserveDrawingBuffer' | 'stencil'
->> & {
+export type RendererParameters = Required<
+    Pick<
+        WebGLContextAttributes,
+        'alpha' | 'antialias' | 'depth' | 'powerPreference' | 'premultipliedAlpha' | 'preserveDrawingBuffer' | 'stencil'
+    >
+> & {
     version: string;
     name: string;
-    canvas: HTMLCanvasElement;                                      // A Canvas where the renderer draws its output.
+    canvas: HTMLCanvasElement; // A Canvas where the renderer draws its output.
     container: HTMLElement;
     context?: WebGLRenderingContext | WebGL2RenderingContext;
     preferWebGL1?: boolean;
@@ -85,7 +88,7 @@ export enum RendererState {
     Initializing,
     Ready,
     ContextLost,
-    Destroyed
+    Destroyed,
 }
 
 export interface RendererStatus {
@@ -147,7 +150,7 @@ export interface IRenderer extends EventDispatcher {
      */
     readonly parameters: RendererParameters;
 
-    overrideDispatcher: Nullable<MaterialDispatcher>
+    overrideDispatcher: Nullable<MaterialDispatcher>;
 
     getGPUInfo(): string;
 
@@ -156,23 +159,23 @@ export interface IRenderer extends EventDispatcher {
 
     updateRenderStatistics(r: RenderStatistics): void;
 
-    getPixelRatio(): number
+    getPixelRatio(): number;
 
-    setPixelRatio(value: number): void
+    setPixelRatio(value: number): void;
     // Resizes the output canvas to (width, height), and also sets the viewport to fit that size, starting in (0, 0).
-    setSize(width: number, height: number, updateStyle?: boolean): void
+    setSize(width: number, height: number, updateStyle?: boolean): void;
 
-    getSize(): { width: number; height: number; }
+    getSize(): { width: number; height: number };
 
-    getDrawingBufferSize(): { width: number; height: number; }
+    getDrawingBufferSize(): { width: number; height: number };
 
     // Sets the viewport to render from (x, y) to (x + width, y + height).
-    setViewport(x: number, y: number, width: number, height: number): void
+    setViewport(x: number, y: number, width: number, height: number): void;
 
     setViewportInRenderPass(x: number, y: number, width: number, height: number): void;
 
     // Sets the clear color, using color for the color and alpha for the opacity.
-    setClearColor(color: Color | string | number, alpha?: number): void
+    setClearColor(color: Color | string | number, alpha?: number): void;
 
     /**
      * Tells the renderer to clear its color, depth or stencil drawing buffer(s).
@@ -180,29 +183,40 @@ export interface IRenderer extends EventDispatcher {
      * @param depth @default true
      * @param stencil @default true
      */
-    clear(color?: boolean, depth?: boolean, stencil?: boolean): void
+    clear(color?: boolean, depth?: boolean, stencil?: boolean): void;
 
-    getCanvas(): HTMLCanvasElement
+    getCanvas(): HTMLCanvasElement;
 
-    destroy(forceLost?: boolean): void
+    destroy(forceLost?: boolean): void;
 
     tick(timestamp: number): void;
 
-    getCurrentCamera(): Camera3D
+    getCurrentCamera(): Camera3D;
 
-    useCamera(camera: Nullable<Camera3D>): void
-    useRegistry(registry: ShaderComponentRegistry): void
+    useCamera(camera: Nullable<Camera3D>): void;
+    useRegistry(registry: ShaderComponentRegistry): void;
 
     // core render method
-    renderDrawcall(geometry: BufferGeometryBase, material: Material, object: Drawable, range: Nullable<BufferRange>): void
+    renderDrawcall(
+        geometry: BufferGeometryBase,
+        material: Material,
+        object: Drawable,
+        range: Nullable<BufferRange>,
+    ): void;
 
-    renderRenderable(renderable: Renderable): void
+    renderRenderable(renderable: Renderable): void;
 
-    resetRenderState(): void
+    resetRenderState(): void;
 
-    setMaterialUploadDirty(): void
+    setMaterialUploadDirty(): void;
 
-    beginPass(store: boolean, resolveContent: boolean, resolveDepth: boolean, generateMipmap: boolean, material?: Material): void;
+    beginPass(
+        store: boolean,
+        resolveContent: boolean,
+        resolveDepth: boolean,
+        generateMipmap: boolean,
+        material?: Material,
+    ): void;
     endPass(): void;
     flushCommands(): void;
 
@@ -215,8 +229,8 @@ export interface IRenderer extends EventDispatcher {
     setScissor(x: number, y: number, width: number, height: number): void;
 
     /**
-    * @deprecated use readPixelsAsync instead.
-    */
+     * @deprecated use readPixelsAsync instead.
+     */
     readPixels(target: RenderTarget, range: IRange, result: TypedArray): void;
     readPixelsAsync(target: RenderTarget, range: IRange, result: TypedArray): Promise<void>;
     forceContextLost(manual?: boolean): void;

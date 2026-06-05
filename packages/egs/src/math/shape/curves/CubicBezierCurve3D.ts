@@ -44,7 +44,7 @@ export class CubicBezierCurve3D extends Curve<Vector3> {
         point.set(
             _Math.CubicBezier(t, v0.x, v1.x, v2.x, v3.x),
             _Math.CubicBezier(t, v0.y, v1.y, v2.y, v3.y),
-            _Math.CubicBezier(t, v0.z, v1.z, v2.z, v3.z)
+            _Math.CubicBezier(t, v0.z, v1.z, v2.z, v3.z),
         );
         return point;
     }

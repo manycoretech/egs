@@ -48,7 +48,7 @@ export class DirectionalLight extends Light {
     private vector3 = new Vector3();
     private uniforms = {
         direction: new Vector3(),
-        color: new Color()
+        color: new Color(),
     };
     /**
      * Use this attribute to set the shadow's config.

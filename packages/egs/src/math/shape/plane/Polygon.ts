@@ -16,7 +16,6 @@ export class Polygon extends Shape {
     points: number[] = [];
 
     constructor(points: number[] = []) {
-
         super();
         this.points = points;
         this._isInvalid = true;
@@ -80,10 +79,10 @@ export class Polygon extends Shape {
 
         for (let i = 0, j = length - 1; i < length; j = i++) {
             const xi = this.points[i * 2];
-            const yi = this.points[(i * 2) + 1];
+            const yi = this.points[i * 2 + 1];
             const xj = this.points[j * 2];
-            const yj = this.points[(j * 2) + 1];
-            const intersect = ((yi > y) !== (yj > y)) && (x < ((xj - xi) * ((y - yi) / (yj - yi))) + xi);
+            const yj = this.points[j * 2 + 1];
+            const intersect = yi > y !== yj > y && x < (xj - xi) * ((y - yi) / (yj - yi)) + xi;
 
             if (intersect) {
                 inside = !inside;

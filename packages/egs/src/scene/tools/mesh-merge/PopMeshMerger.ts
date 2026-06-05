@@ -4,7 +4,8 @@ import type { GeometryBase } from '../../../elements/geometries/containers/Geome
 import type { PopBufferGeometry } from '../../../elements/geometries/containers/PopBufferGeometry';
 import type { Material } from '../../../elements/materials/Material';
 import {
-    MergedMeshPhongMaterial, MergedMeshPhongMaterialDataTextureSchema
+    MergedMeshPhongMaterial,
+    MergedMeshPhongMaterialDataTextureSchema,
 } from '../../../elements/materials/mesh/MergedMeshPhongMaterial';
 import type { MeshPhongMaterial } from '../../../elements/materials/mesh/MeshPhongMaterial';
 import { _Math } from '../../../math/Math';
@@ -173,7 +174,10 @@ export class PopMeshMerger extends DrawcallMerger<PopMesh, MeshPhongMaterial, Po
                 this.mapIndexAttribute![index[geometryGroup.start + j] * 2 + 1] = i;
             }
         });
-        const dataTexture = createDataTexture(MergedMeshPhongMaterialDataTextureSchema.info, group.map(g => g.material));
+        const dataTexture = createDataTexture(
+            MergedMeshPhongMaterialDataTextureSchema.info,
+            group.map(g => g.material),
+        );
         resultMaterial.dataTexture = dataTexture;
         this.resultMaterialArray.push(resultMaterial);
 
@@ -183,7 +187,7 @@ export class PopMeshMerger extends DrawcallMerger<PopMesh, MeshPhongMaterial, Po
         this.resultGroups.push({
             start: popBlockInfo.start,
             count: popBlockInfo.count,
-            materialIndex: this.resultGroups.length
+            materialIndex: this.resultGroups.length,
         });
 
         return null;
@@ -208,9 +212,12 @@ export class PopMeshMerger extends DrawcallMerger<PopMesh, MeshPhongMaterial, Po
         this.results.push(this.resultMesh);
     }
 
-    private createModelBlock(blockIndex: number, group: Array<MergeDrawcallSource<PopMesh, MeshPhongMaterial, PopBufferGeometry>>): IMetaBlock {
+    private createModelBlock(
+        blockIndex: number,
+        group: Array<MergeDrawcallSource<PopMesh, MeshPhongMaterial, PopBufferGeometry>>,
+    ): IMetaBlock {
         let vertexCount = 0;
-        const inputGroups: Array<{ group: BufferGroup, groupIndex: number }> = [];
+        const inputGroups: Array<{ group: BufferGroup; groupIndex: number }> = [];
         group.forEach(g => {
             const geometryGroup = g.geometry.getGroup(g.groupIndex)!;
             inputGroups.push({ group: geometryGroup, groupIndex: g.groupIndex });
@@ -236,7 +243,11 @@ export class PopMeshMerger extends DrawcallMerger<PopMesh, MeshPhongMaterial, Po
                 if (faceCount > 0) {
                     const count = faceCount * 3;
                     const start = group.start + _Math.SumArraySection(block.levelFaceCounts, 0, i - 1) * 3;
-                    const indexCopyView = new constructor(index.buffer as ArrayBuffer, start * index.BYTES_PER_ELEMENT, count);
+                    const indexCopyView = new constructor(
+                        index.buffer as ArrayBuffer,
+                        start * index.BYTES_PER_ELEMENT,
+                        count,
+                    );
                     this.newIndexAttribute!.set(indexCopyView, this.newIndexFillOffset);
                     this.newIndexFillOffset += count;
                 }

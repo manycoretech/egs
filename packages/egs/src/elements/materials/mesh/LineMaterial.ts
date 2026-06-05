@@ -1,8 +1,13 @@
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes, ShaderAttributeTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderVaryingTypes,
+    ShaderInjectionTypes,
+    ShaderAttributeTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import { ShaderComponent } from '../../../renderer/shader/Shader';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { MaterialParameters,ConvertMaterialParameters } from '../Material';
+import type { MaterialParameters, ConvertMaterialParameters } from '../Material';
 import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import type { Renderer } from '../../../renderer/Renderer';
 import { Utils } from '../../../utils/Utils';
@@ -73,12 +78,12 @@ export class LineBasicMaterial extends SceneClipMaterial {
      * @internal
      */
     extendShaderShading(b: ShaderBuilder, _r: ShaderComponentRegistry) {
-        b
-            .when(this.enableVertexColor, b => b.addVarying(ShaderVaryingTypes.vertexColor)
+        b.when(this.enableVertexColor, b =>
+            b
+                .addVarying(ShaderVaryingTypes.vertexColor)
                 .inject(ShaderInjectionTypes.channel_color, 'color.rgb  *= vColor;')
-                .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = vec4(color, 1.0);')
-            )
-            .when(!this.enableVertexColor, b => b.extend(this.color));
+                .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = vec4(color, 1.0);'),
+        ).when(!this.enableVertexColor, b => b.extend(this.color));
     }
     /**
      * Store the attributes of this class into string as serializing format.
@@ -113,9 +118,9 @@ export class LineBasicMaterial extends SceneClipMaterial {
     }
 }
 
-export type LineDashedMaterialParameters = LineBasicMaterialParameters
-    & Partial<Pick<LineDashedMaterial, 'enableViewIndependentDashScale'>>
-    & LineDashParam;
+export type LineDashedMaterialParameters = LineBasicMaterialParameters &
+    Partial<Pick<LineDashedMaterial, 'enableViewIndependentDashScale'>> &
+    LineDashParam;
 /**
  * Draw the line with some segments. The color attribute extends from {@link LineBasicMaterial| LineBasicMaterial}.
  */
@@ -299,7 +304,9 @@ export class ColorWithAlpha extends ShaderComponent {
  * This parameter commonly do not need user to set it.
  * It is automatically updated when the zoom of camera is changed.
  */
-export type LineDashParam = ConvertMaterialParameters<Pick<LineDash, 'scale' | 'gapSize' | 'viewScale' | 'dashSize' | 'gapSize2' | 'dashSize2'>>;
+export type LineDashParam = ConvertMaterialParameters<
+    Pick<LineDash, 'scale' | 'gapSize' | 'viewScale' | 'dashSize' | 'gapSize2' | 'dashSize2'>
+>;
 
 const lineDashParamKeys = ['scale', 'gapSize', 'dashSize', 'viewScale', 'gapSize2', 'dashSize2'];
 /**
@@ -331,9 +338,9 @@ export class LineDash extends ShaderComponent {
     gapSize2 = 0;
 
     /**
-    * secondary dash
-    * @defaultValue 0
-    */
+     * secondary dash
+     * @defaultValue 0
+     */
     @materialProperty()
     dashSize2 = 0;
 
@@ -390,7 +397,10 @@ export class LineDash extends ShaderComponent {
             builder
                 .addInstanceAttribute('instanceDistanceStart', WebGLShaderDataType.Float)
                 .addInstanceAttribute('instanceDistanceEnd', WebGLShaderDataType.Float)
-                .inject(ShaderInjectionTypes.vary_any, 'vLineDistance = ( position.y < 0.5 ) ? scale * instanceDistanceStart : scale * instanceDistanceEnd;');
+                .inject(
+                    ShaderInjectionTypes.vary_any,
+                    'vLineDistance = ( position.y < 0.5 ) ? scale * instanceDistanceStart : scale * instanceDistanceEnd;',
+                );
         } else {
             builder
                 .addDefaultAttribute(ShaderAttributeTypes.lineDistance)
@@ -402,7 +412,10 @@ export class LineDash extends ShaderComponent {
      */
     updateShadingUniforms(program: WGLProgram) {
         program.setUniform('scale', this.scale);
-        program.setUniform('totalSize', (this.gapSize + this.dashSize + this.gapSize2 + this.dashSize2) * this.viewScale);
+        program.setUniform(
+            'totalSize',
+            (this.gapSize + this.dashSize + this.gapSize2 + this.dashSize2) * this.viewScale,
+        );
         program.setUniform('gapSize', this.gapSize * this.viewScale);
         program.setUniform('dashSize', this.dashSize * this.viewScale);
         program.setUniform('dashSize2', this.dashSize2 * this.viewScale);

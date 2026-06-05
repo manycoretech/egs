@@ -125,7 +125,7 @@ export class SpotLight<T extends TextureV2 | Texture2D = Texture2D> extends Ligh
     }
     set textureIES(value: Nullable<T>) {
         this._textureIES_inner = value;
-        this._textureIES = value || Texture2D.default as any;
+        this._textureIES = value || (Texture2D.default as any);
     }
 
     isShadowNeedsUpdate = true;
@@ -154,20 +154,30 @@ export class SpotLight<T extends TextureV2 | Texture2D = Texture2D> extends Ligh
         return 'SpotLight';
     }
 
-    constructor(color?: number | string, intensity?: number, distance?: number,
-        angle?: number, penumbra?: number, decay?: number, isIESEnabled?: boolean, textureIES?: T, iesIntensityScale?: number, iesTextureResolution?: Vector2) {
+    constructor(
+        color?: number | string,
+        intensity?: number,
+        distance?: number,
+        angle?: number,
+        penumbra?: number,
+        decay?: number,
+        isIESEnabled?: boolean,
+        textureIES?: T,
+        iesIntensityScale?: number,
+        iesTextureResolution?: Vector2,
+    ) {
         super(color, intensity);
         this.position.copy(Object3D.DefaultUp);
         this.up.set(0, 0, 1);
         this._up.onChange = () => ContentBridge.lightSetProperty(this, 'up', this, this._up);
-        this.distance = (distance !== undefined) ? distance : 50;
-        this.angle = (angle !== undefined) ? angle : Math.PI / 3;
-        this.penumbra = (penumbra !== undefined) ? penumbra : 0;
-        this.iesIntensityScale = (iesIntensityScale !== undefined) ? iesIntensityScale : 1;
-        this.iesTextureResolution = (iesTextureResolution !== undefined) ? iesTextureResolution : new Vector2(1, 1);
-        this.decay = (decay !== undefined) ? decay : 1;	// for physically correct lights, should be 2.
+        this.distance = distance !== undefined ? distance : 50;
+        this.angle = angle !== undefined ? angle : Math.PI / 3;
+        this.penumbra = penumbra !== undefined ? penumbra : 0;
+        this.iesIntensityScale = iesIntensityScale !== undefined ? iesIntensityScale : 1;
+        this.iesTextureResolution = iesTextureResolution !== undefined ? iesTextureResolution : new Vector2(1, 1);
+        this.decay = decay !== undefined ? decay : 1; // for physically correct lights, should be 2.
         this.updateMatrix();
-        this.isIESEnabled = (isIESEnabled !== undefined) ? isIESEnabled : false;
+        this.isIESEnabled = isIESEnabled !== undefined ? isIESEnabled : false;
         this.textureIES = textureIES ? textureIES : null;
     }
 
@@ -185,7 +195,9 @@ export class SpotLight<T extends TextureV2 | Texture2D = Texture2D> extends Ligh
 
     getIntensity() {
         const scale = 3 / (this.color.r + this.color.g + this.color.b);
-        return this.isIESEnabled ? scale * 2.1 * this.intensity * this.iesIntensityScale / Math.PI / 1000 : this.intensity;
+        return this.isIESEnabled
+            ? (scale * 2.1 * this.intensity * this.iesIntensityScale) / Math.PI / 1000
+            : this.intensity;
     }
 
     /**
@@ -258,7 +270,7 @@ export class SpotLight<T extends TextureV2 | Texture2D = Texture2D> extends Ligh
         this.uniforms.color.copy(this.color).multiplyScalar(this.getIntensity());
         this.uniforms.distance = this.distance;
         this.uniforms.decay = this.decay;
-        this.uniforms.penumbraCos = Math.cos(this.angle / 2 * (1 - this.penumbra));
+        this.uniforms.penumbraCos = Math.cos((this.angle / 2) * (1 - this.penumbra));
         this.uniforms.coneCos = Math.cos(this.angle / 2);
         this.uniforms.halfAngle = this.angle / 2;
         this.uniforms.isIESEnabled = this.isIESEnabled;
@@ -351,7 +363,22 @@ export class SpotLight<T extends TextureV2 | Texture2D = Texture2D> extends Ligh
      */
     deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
-        ctx.reads<SpotLight>(['target', 'distance', 'angle', 'penumbra', 'decay', 'isIESEnabled', 'iesTextureResolution', 'iesIntensityScale', 'isRotationModeOn', 'defaultDirection', 'direction', 'shadow', 'textureIES', 'up']);
+        ctx.reads<SpotLight>([
+            'target',
+            'distance',
+            'angle',
+            'penumbra',
+            'decay',
+            'isIESEnabled',
+            'iesTextureResolution',
+            'iesIntensityScale',
+            'isRotationModeOn',
+            'defaultDirection',
+            'direction',
+            'shadow',
+            'textureIES',
+            'up',
+        ]);
     }
     /**
      * Store the attributes of this class into string as serializing format.
@@ -359,7 +386,22 @@ export class SpotLight<T extends TextureV2 | Texture2D = Texture2D> extends Ligh
      */
     serialize(ctx: Serializer) {
         super.serialize(ctx);
-        ctx.puts<SpotLight>(['target', 'distance', 'angle', 'penumbra', 'decay', 'isIESEnabled', 'iesTextureResolution', 'iesIntensityScale', 'isRotationModeOn', 'defaultDirection', 'direction', 'shadow', 'textureIES', 'up']);
+        ctx.puts<SpotLight>([
+            'target',
+            'distance',
+            'angle',
+            'penumbra',
+            'decay',
+            'isIESEnabled',
+            'iesTextureResolution',
+            'iesIntensityScale',
+            'isRotationModeOn',
+            'defaultDirection',
+            'direction',
+            'shadow',
+            'textureIES',
+            'up',
+        ]);
     }
 }
 
@@ -450,5 +492,5 @@ Object.defineProperty(SpotLight.prototype, 'up', {
         }
     },
     enumerable: true,
-    configurable: true
+    configurable: true,
 });

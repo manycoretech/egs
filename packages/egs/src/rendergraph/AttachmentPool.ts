@@ -1,4 +1,8 @@
-import { RenderColorAttachmentNode, type RenderAttachmentNode, RenderDepthAttachmentNode } from './nodes/RenderAttachmentNode';
+import {
+    RenderColorAttachmentNode,
+    type RenderAttachmentNode,
+    RenderDepthAttachmentNode,
+} from './nodes/RenderAttachmentNode';
 import { WGLCapabilities } from '../renderer/webgl/WGLCapabilities';
 import { RenderAttachment } from '../elements/textures/RenderTarget';
 import { getDepthFormat, toTextureDimension } from '../elements/textures/types';
@@ -18,21 +22,31 @@ export class AttachmentPool {
         if (!attachment) {
             if (node instanceof RenderColorAttachmentNode) {
                 attachment = new RenderAttachment(
-                    toTextureDimension(node.dimension), node.dimension,
+                    toTextureDimension(node.dimension),
+                    node.dimension,
                     node.format,
-                    node.width, node.height, node.depthOrArrayLayers,
-                    node.enableMipmap, node.multiSample ? 4 : 1, false,
-                    node.sampler
+                    node.width,
+                    node.height,
+                    node.depthOrArrayLayers,
+                    node.enableMipmap,
+                    node.multiSample ? 4 : 1,
+                    false,
+                    node.sampler,
                 );
             } else if (node instanceof RenderDepthAttachmentNode) {
                 const format = getDepthFormat(node.enableStencil, renderer.backend);
                 const forceRenderBuffer = !(WGLCapabilities.IS_SUPPORT_DEPTH_TEXTURE && node.enableTexture);
                 attachment = new RenderAttachment(
-                    toTextureDimension(node.dimension), node.dimension,
+                    toTextureDimension(node.dimension),
+                    node.dimension,
                     format,
-                    node.width, node.height, node.depthOrArrayLayers,
-                    false, node.multiSample ? 4 : 1, forceRenderBuffer,
-                    node.sampler
+                    node.width,
+                    node.height,
+                    node.depthOrArrayLayers,
+                    false,
+                    node.multiSample ? 4 : 1,
+                    forceRenderBuffer,
+                    node.sampler,
                 );
             } else {
                 throw new Error('unknown attachment node type.');

@@ -27,7 +27,7 @@ export class QuadraticBezierCurve3D extends Curve<Vector3> {
         point.set(
             _Math.QuadraticBezier(t, v0.x, v1.x, v2.x),
             _Math.QuadraticBezier(t, v0.y, v1.y, v2.y),
-            _Math.QuadraticBezier(t, v0.z, v1.z, v2.z)
+            _Math.QuadraticBezier(t, v0.z, v1.z, v2.z),
         );
 
         return point;

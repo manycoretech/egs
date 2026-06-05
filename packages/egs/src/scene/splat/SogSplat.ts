@@ -8,18 +8,21 @@ import type { SourceTexture } from '../../elements/textures/SourceTexture';
 export type SogSplatMeta = {
     counts: number;
     shDegree: number;
-    means: { mins: [number, number, number], maxs: [number, number, number] };
-} & ({
-    version: 1;
-    scales: { mins: [number, number, number], maxs: [number, number, number] };
-    sh0: { mins: [number, number, number, number], maxs: [number, number, number, number] };
-    shN?: { mins: number, maxs: number };
-} | {
-    version: 2;
-    scales: { codebook: number[] };
-    sh0: { codebook: number[] };
-    shN?: { codebook: number[] };
-});
+    means: { mins: [number, number, number]; maxs: [number, number, number] };
+} & (
+    | {
+          version: 1;
+          scales: { mins: [number, number, number]; maxs: [number, number, number] };
+          sh0: { mins: [number, number, number, number]; maxs: [number, number, number, number] };
+          shN?: { mins: number; maxs: number };
+      }
+    | {
+          version: 2;
+          scales: { codebook: number[] };
+          sh0: { codebook: number[] };
+          shN?: { codebook: number[] };
+      }
+);
 
 export class SogSplat extends Splat {
     readonly PackType: string;
@@ -51,8 +54,13 @@ export class SogSplat extends Splat {
 
     constructor(
         meta: SogSplatMeta,
-        meansL: SourceTexture, meansU: SourceTexture, quats: SourceTexture, scales: SourceTexture,
-        colors: SourceTexture, _shNLabels?: SourceTexture, _shNCentroids?: SourceTexture,
+        meansL: SourceTexture,
+        meansU: SourceTexture,
+        quats: SourceTexture,
+        scales: SourceTexture,
+        colors: SourceTexture,
+        _shNLabels?: SourceTexture,
+        _shNCentroids?: SourceTexture,
     ) {
         super(meta.counts, 0);
         this.PackType = 'sog_v' + meta.version;
@@ -68,18 +76,21 @@ export class SogSplat extends Splat {
             .createItem('meansMin', WebGLShaderDataType.Vec3, new Vector3().fromArray(meta.means.mins))
             .createItem('meansMax', WebGLShaderDataType.Vec3, new Vector3().fromArray(meta.means.maxs));
         if (meta.version === 1) {
-            ubo
-                .createItem('scalesMin', WebGLShaderDataType.Vec3, new Vector3().fromArray(meta.scales.mins))
+            ubo.createItem('scalesMin', WebGLShaderDataType.Vec3, new Vector3().fromArray(meta.scales.mins))
                 .createItem('scalesMax', WebGLShaderDataType.Vec3, new Vector3().fromArray(meta.scales.maxs))
                 .createItem('colorsMin', WebGLShaderDataType.Vec4, new Vector4().fromArray(meta.sh0.mins))
                 .createItem('colorsMax', WebGLShaderDataType.Vec4, new Vector4().fromArray(meta.sh0.maxs))
                 .createItem('shNMin', WebGLShaderDataType.Float, meta.shN?.mins ?? 0)
                 .createItem('shNMax', WebGLShaderDataType.Float, meta.shN?.maxs ?? 1);
         } else {
-            ubo
-                .createItemArray('scalesCodebook', WebGLShaderDataType.Vec4, 64, meta.scales.codebook)
+            ubo.createItemArray('scalesCodebook', WebGLShaderDataType.Vec4, 64, meta.scales.codebook)
                 .createItemArray('colorsCodebook', WebGLShaderDataType.Vec4, 64, meta.sh0.codebook)
-                .createItemArray('shNCodebook', WebGLShaderDataType.Vec4, 64, meta.shN?.codebook ?? new Float32Array(256));
+                .createItemArray(
+                    'shNCodebook',
+                    WebGLShaderDataType.Vec4,
+                    64,
+                    meta.shN?.codebook ?? new Float32Array(256),
+                );
         }
         this.extrasUBO.push(ubo);
     }
@@ -116,23 +127,31 @@ export class SogSplat extends Splat {
                     (qm == 2u) ? tq.ywzx :
                     tq.yzwx;
                 vec4 pixel_3 = texelFetch(extraTex3, coord, 0);
-                ${meta.version === 1 ? `
+                ${
+                    meta.version === 1
+                        ? `
                     splat.scales = exp(mix(scalesMin, scalesMax, pixel_3.xyz));
-                ` : `
+                `
+                        : `
                     splat.scales = exp(resolveCodebook(pixel_3.xyz, scalesCodebook));
-                `}
+                `
+                }
                 vec4 pixel_4 = texelFetch(extraTex4, coord, 0);
-                ${meta.version === 1 ? `
+                ${
+                    meta.version === 1
+                        ? `
                     splat.color = vec4(
                         SH_C0 * mix(colorsMin.xyz, colorsMax.xyz, pixel_4.xyz) + 0.5,
                         1. / (1. + exp(-mix(colorsMin.w, colorsMax.w, pixel_4.w)))
                     );
-                ` : `
+                `
+                        : `
                     splat.color = vec4(
                         SH_C0 * resolveCodebook(pixel_4.xyz, colorsCodebook) + 0.5,
                         pixel_4.w
                     );
-                `}
+                `
+                }
             }
         `;
     }
@@ -140,19 +159,29 @@ export class SogSplat extends Splat {
     createUnpackSHShader() {
         const { shDegree } = this;
         return `
-            ${shDegree > 0 ? `
+            ${
+                shDegree > 0
+                    ? `
                 vec3 sh1_0 = vec3(0.);
                 vec3 sh1_1 = vec3(0.);
                 vec3 sh1_2 = vec3(0.);
-            ` : ''}
-            ${shDegree > 1 ? `
+            `
+                    : ''
+            }
+            ${
+                shDegree > 1
+                    ? `
                 vec3 sh2_0 = vec3(0.);
                 vec3 sh2_1 = vec3(0.);
                 vec3 sh2_2 = vec3(0.);
                 vec3 sh2_3 = vec3(0.);
                 vec3 sh2_4 = vec3(0.);
-            ` : ``}
-            ${shDegree > 2 ? `
+            `
+                    : ``
+            }
+            ${
+                shDegree > 2
+                    ? `
                 vec3 sh3_0 = vec3(0.);
                 vec3 sh3_1 = vec3(0.);
                 vec3 sh3_2 = vec3(0.);
@@ -160,7 +189,9 @@ export class SogSplat extends Splat {
                 vec3 sh3_4 = vec3(0.);
                 vec3 sh3_5 = vec3(0.);
                 vec3 sh3_6 = vec3(0.);
-            ` : ``}
+            `
+                    : ``
+            }
         `;
     }
 

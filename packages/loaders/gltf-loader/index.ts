@@ -3,19 +3,19 @@ import { TextureTransformExtension, MaterialsUnlitExtension, AnimationPointerExt
 import { parseGLTF } from './parseGLTF';
 import { ResourceManager } from './resource';
 import { type ParseCtx, parseScene, parseAnimation } from './parse';
-import type { GLTF,Animation,ISkeleton } from './type';
+import type { GLTF, Animation, ISkeleton } from './type';
 
 export interface LoaderConfig {
     textureLoader: (url: string) => Promise<Texture>;
 }
 
 export interface ParseResult {
-    source: GLTF,
-    scene: Object3D,
-    scenes: Object3D[],
-    animations: Animation[],
-    skeletons: Map<ISkeleton, SkinnedMesh[]>,
-    componentMap: Map<Object3D, Object3D>,
+    source: GLTF;
+    scene: Object3D;
+    scenes: Object3D[];
+    animations: Animation[];
+    skeletons: Map<ISkeleton, SkinnedMesh[]>;
+    componentMap: Map<Object3D, Object3D>;
 }
 
 export async function loadGLTF(data: ArrayBuffer | string, config: LoaderConfig): Promise<ParseResult> {
@@ -89,15 +89,12 @@ export async function loadGLTF(data: ArrayBuffer | string, config: LoaderConfig)
     const scenes = Promise.all(ctx.scenes.map(scene => parseScene(scene, ctx)));
     const animations = Promise.all((gltf.animations ?? []).map(animation => parseAnimation(animation, ctx)));
 
-    return Promise.all([
-        scenes,
-        animations,
-    ]).then(([scenes, animations]) => {
+    return Promise.all([scenes, animations]).then(([scenes, animations]) => {
         // remove bone tree from scene
         const skeletons = Array.from(ctx.skeletons.keys());
-        for(let i = 0; i < skeletons.length; i++) {
+        for (let i = 0; i < skeletons.length; i++) {
             const parentNode = skeletons[i].bones[0].parent;
-            if(parentNode && !ctx.boneSet.has(parentNode)) {
+            if (parentNode && !ctx.boneSet.has(parentNode)) {
                 skeletons[i].bones[0].removeFromParent();
             }
         }

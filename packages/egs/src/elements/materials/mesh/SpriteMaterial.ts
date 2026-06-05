@@ -1,5 +1,9 @@
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderVaryingTypes,
+    ShaderInjectionTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { Material, type MaterialParameters, type ConvertMaterialParameters } from '../Material';
 import type { Serializer, Deserializer } from '../../../utils/Serialization';
@@ -14,10 +18,9 @@ import type { Texture2D } from '../../textures/Texture2D';
 import type { TextureV2 } from '../../textures/TextureV2';
 import type { Texture } from '../../textures/Texture';
 
-export type SpriteMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters
-    & ConvertMaterialParameters<Pick<SpriteMaterial<T>, 'sizeAttenuation' | 'rotation' | 'opacity' | 'color'>>
-    & {
-        texture?: T | null
+export type SpriteMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters &
+    ConvertMaterialParameters<Pick<SpriteMaterial<T>, 'sizeAttenuation' | 'rotation' | 'opacity' | 'color'>> & {
+        texture?: T | null;
     };
 
 const keys = ['sizeAttenuation', 'rotation', 'texture', 'opacity', 'color'];
@@ -87,10 +90,10 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
      * @internal
      */
     generateShaderKey(r: ShaderComponentRegistry) {
-        return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
-            .bool(this.sizeAttenuation)
-            .hasItem(this.texture)
-            .getKey();
+        return (
+            super.generateShaderKey(r) +
+            HashKeyBuilder.getInstance().bool(this.sizeAttenuation).hasItem(this.texture).getKey()
+        );
     }
     /**
      * Store the attributes of this class into string as serializing format.
@@ -149,9 +152,7 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
      * @internal
      */
     extendShaderShading(b: ShaderBuilder, _: ShaderComponentRegistry) {
-        b
-            .addVarying(ShaderVaryingTypes.fragUV)
-            .addUniform('opacity', WebGLShaderDataType.Float);
+        b.addVarying(ShaderVaryingTypes.fragUV).addUniform('opacity', WebGLShaderDataType.Float);
 
         if (this.texture) {
             b.addUniform('map', WebGLShaderDataType.Sampler2D);
@@ -160,11 +161,13 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
         }
 
         if (this.texture) {
-            b.inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = texture2D(map, vUv);gl_FragColor.a *= opacity;');
+            b.inject(
+                ShaderInjectionTypes.gl_FragColor,
+                'gl_FragColor = texture2D(map, vUv);gl_FragColor.a *= opacity;',
+            );
         } else {
             b.inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = vec4(color * opacity, opacity);');
         }
-
     }
     /**
      * Copy the data to this instance from other instance.
@@ -187,10 +190,12 @@ export class SpriteMaterial<T extends Texture2D | TextureV2 = Texture2D> extends
 }
 
 function spriteVertex(sizeAttenuation: boolean) {
-    const sizeAttenuationStr = sizeAttenuation ? `
+    const sizeAttenuationStr = sizeAttenuation
+        ? `
 bool isPerspective = (projectionMatrix[2][3] == - 1.0);
 if (isPerspective) scale *= - mvPosition.z;
-        ` : '';
+        `
+        : '';
 
     return `
 mvPosition = modelViewMatrix * vec4(0.0, 0.0, 0.0, 1.0);

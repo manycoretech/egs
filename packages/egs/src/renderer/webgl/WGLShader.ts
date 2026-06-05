@@ -6,7 +6,7 @@ export class WGLShader {
     private static reformatShaderStyle(string: string): string {
         const lines = string.split('\n');
         for (let i = 0; i < lines.length; i++) {
-            lines[i] = (i + 1) + ': ' + lines[i];
+            lines[i] = i + 1 + ': ' + lines[i];
         }
         return lines.join('\n');
     }
@@ -19,14 +19,14 @@ export class WGLShader {
         gl.shaderSource(shader, string);
         gl.compileShader(shader);
         if (gl.getShaderParameter(shader, gl.COMPILE_STATUS) === false) {
-            logger.webglError('EGS.WebGLShader: Shader couldn\'t compile.');
+            logger.webglError("EGS.WebGLShader: Shader couldn't compile.");
         }
         if (gl.getShaderInfoLog(shader) !== '') {
             logger.webglError(
                 'EGS.WebGLShader: gl.getShaderInfoLog()' +
-                (type === gl.VERTEX_SHADER ? 'vertex' : 'fragment') +
-                gl.getShaderInfoLog(shader) +
-                WGLShader.reformatShaderStyle(string)
+                    (type === gl.VERTEX_SHADER ? 'vertex' : 'fragment') +
+                    gl.getShaderInfoLog(shader) +
+                    WGLShader.reformatShaderStyle(string),
             );
         }
         return shader;

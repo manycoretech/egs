@@ -29,7 +29,8 @@ export class AlphaShaderComponent<T extends Texture2D | TextureV2 = Texture2D> e
             .inject(ShaderInjectionTypes.channel_alpha, 'opacity = u_opacity;');
 
         if (this.texture !== null) {
-            builder.addVarying(ShaderVaryingTypes.fragUV)
+            builder
+                .addVarying(ShaderVaryingTypes.fragUV)
                 .addUniform('alphaMap', WebGLShaderDataType.Sampler2D)
                 .inject(ShaderInjectionTypes.channel_alpha, 'opacity *= texture2D( alphaMap, vUv ).a;');
         }

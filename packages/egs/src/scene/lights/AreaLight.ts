@@ -8,13 +8,17 @@ import { ContentBridge } from '../../ContentAPI';
 import ltc1 from './data1.ltc';
 import ltc2 from './data2.ltc';
 
-const createLUT1 = singleton(() => Texture2D
-    .createByMainLayerSource(new Float32Array(ltc1), WebGLPixelFormat.RGBA, TextureDataType.FloatType, 64, 64)
-    .configAsDataTexture().configDoubleLinear());
+const createLUT1 = singleton(() =>
+    Texture2D.createByMainLayerSource(new Float32Array(ltc1), WebGLPixelFormat.RGBA, TextureDataType.FloatType, 64, 64)
+        .configAsDataTexture()
+        .configDoubleLinear(),
+);
 
-const createLUT2 = singleton(() => Texture2D
-    .createByMainLayerSource(new Float32Array(ltc2), WebGLPixelFormat.RGBA, TextureDataType.FloatType, 64, 64)
-    .configAsDataTexture().configDoubleLinear());
+const createLUT2 = singleton(() =>
+    Texture2D.createByMainLayerSource(new Float32Array(ltc2), WebGLPixelFormat.RGBA, TextureDataType.FloatType, 64, 64)
+        .configAsDataTexture()
+        .configDoubleLinear(),
+);
 
 export class AreaLight extends Light {
     constructor(color: number | string, intensity: number) {

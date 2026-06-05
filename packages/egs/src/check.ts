@@ -1,9 +1,11 @@
 import { sendKtrackerEvent } from './utils/Logger';
 
 function preCheckWASMRequirement() {
-    return typeof WebAssembly !== 'undefined' &&
+    return (
+        typeof WebAssembly !== 'undefined' &&
         typeof FinalizationRegistry !== 'undefined' &&
-        typeof WebGL2RenderingContext !== 'undefined';
+        typeof WebGL2RenderingContext !== 'undefined'
+    );
 }
 
 if (typeof CONFIG !== 'undefined' && CONFIG.ENABLE_EGS_WASM) {

@@ -57,7 +57,11 @@ export abstract class DAGNode {
         return this;
     }
 
-    traverseDFS(callback: (node: DAGNode) => void, visited: Set<DAGNode> = new Set(), actives: Set<DAGNode> = new Set()) {
+    traverseDFS(
+        callback: (node: DAGNode) => void,
+        visited: Set<DAGNode> = new Set(),
+        actives: Set<DAGNode> = new Set(),
+    ) {
         if (actives.has(this)) {
             throw 'node graph contains cycles.';
         }
@@ -75,7 +79,9 @@ export abstract class DAGNode {
     private fulfills = new Set<number>();
     getTopologicalSortedList(): DAGNode[] {
         const nodes: DAGNode[] = [];
-        this.traverseDFS(n => { nodes.push(n); });
+        this.traverseDFS(n => {
+            nodes.push(n);
+        });
         for (let i = 0; i < nodes.length; i++) {
             const node = nodes[i];
             node.fulfills.clear();

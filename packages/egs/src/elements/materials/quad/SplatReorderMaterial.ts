@@ -21,10 +21,7 @@ export class SplatReorderMaterial extends PassQuadMaterialBase {
     }
 
     generateShaderKey() {
-        return HashKeyBuilder.getInstance()
-            .raw(this.className())
-            .raw(this.startArr.length)
-            .getKey();
+        return HashKeyBuilder.getInstance().raw(this.className()).raw(this.startArr.length).getKey();
     }
 
     extendShaderShading(builder: ShaderBuilder) {
@@ -32,15 +29,15 @@ export class SplatReorderMaterial extends PassQuadMaterialBase {
 
         builder.addDefaultFragColor = false;
         builder
-            .setFragOutputChannel([
-                { name: 'pc_fragColor_0', type: FragOutType.UVec4 },
-            ])
+            .setFragOutputChannel([{ name: 'pc_fragColor_0', type: FragOutType.UVec4 }])
             .addUniform('orderTex', WebGLShaderDataType.USampler2D)
             .addUniform('counts', WebGLShaderDataType.Int)
             .addUniformArray('startArr', WebGLShaderDataType.Int, startArr.length)
             .addUniformArray('endArr', WebGLShaderDataType.Int, endArr.length)
             .addUniformArray('offsetArr', WebGLShaderDataType.Int, offsetArr.length)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 ivec2 fragCoord = ivec2(gl_FragCoord.xy);
                 int order = int(texelFetch(orderTex, fragCoord, 0).r);
                 for (int i = 0; i < counts; i++) {
@@ -48,7 +45,8 @@ export class SplatReorderMaterial extends PassQuadMaterialBase {
                     order += cond * offsetArr[i];
                 }
                 pc_fragColor_0 = uvec4(order, 0u, 0u, 0u);
-            `);
+            `,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {

@@ -53,7 +53,7 @@ export class Euler {
         this._y = y || 0;
         this._z = z || 0;
         this._order = order || Euler.DefaultOrder;
-        this.onChangeCallback = function () { };
+        this.onChangeCallback = function () {};
     }
 
     get x(): number {
@@ -129,81 +129,92 @@ export class Euler {
         const clamp = _Math.clamp;
         // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
         const te = m._elements;
-        const m11 = te[0], m12 = te[4], m13 = te[8],
-            m21 = te[1], m22 = te[5], m23 = te[9],
-            m31 = te[2], m32 = te[6], m33 = te[10];
+        const m11 = te[0],
+            m12 = te[4],
+            m13 = te[8],
+            m21 = te[1],
+            m22 = te[5],
+            m23 = te[9],
+            m31 = te[2],
+            m32 = te[6],
+            m33 = te[10];
         order = order || this._order;
         switch (order) {
-            case 'XYZ': {
-                this._y = Math.asin(clamp(m13, - 1, 1));
-                if (Math.abs(m13) < 0.99999) {
-                    this._x = Math.atan2(- m23, m33);
-                    this._z = Math.atan2(- m12, m11);
-                } else {
-                    this._x = Math.atan2(m32, m22);
-                    this._z = 0;
+            case 'XYZ':
+                {
+                    this._y = Math.asin(clamp(m13, -1, 1));
+                    if (Math.abs(m13) < 0.99999) {
+                        this._x = Math.atan2(-m23, m33);
+                        this._z = Math.atan2(-m12, m11);
+                    } else {
+                        this._x = Math.atan2(m32, m22);
+                        this._z = 0;
+                    }
                 }
-            }
                 break;
-            case 'YXZ': {
-                this._x = Math.asin(- clamp(m23, - 1, 1));
-                if (Math.abs(m23) < 0.99999) {
-                    this._y = Math.atan2(m13, m33);
-                    this._z = Math.atan2(m21, m22);
-                } else {
-                    this._y = Math.atan2(- m31, m11);
-                    this._z = 0;
+            case 'YXZ':
+                {
+                    this._x = Math.asin(-clamp(m23, -1, 1));
+                    if (Math.abs(m23) < 0.99999) {
+                        this._y = Math.atan2(m13, m33);
+                        this._z = Math.atan2(m21, m22);
+                    } else {
+                        this._y = Math.atan2(-m31, m11);
+                        this._z = 0;
+                    }
                 }
-            }
                 break;
-            case 'ZXY': {
-                this._x = Math.asin(clamp(m32, - 1, 1));
-                if (Math.abs(m32) < 0.99999) {
-                    this._y = Math.atan2(- m31, m33);
-                    this._z = Math.atan2(- m12, m22);
-                } else {
-                    this._y = 0;
-                    this._z = Math.atan2(m21, m11);
+            case 'ZXY':
+                {
+                    this._x = Math.asin(clamp(m32, -1, 1));
+                    if (Math.abs(m32) < 0.99999) {
+                        this._y = Math.atan2(-m31, m33);
+                        this._z = Math.atan2(-m12, m22);
+                    } else {
+                        this._y = 0;
+                        this._z = Math.atan2(m21, m11);
+                    }
                 }
-            }
                 break;
-            case 'ZYX': {
-                this._y = Math.asin(- clamp(m31, - 1, 1));
-                if (Math.abs(m31) < 0.99999) {
-                    this._x = Math.atan2(m32, m33);
-                    this._z = Math.atan2(m21, m11);
-                } else {
-                    this._x = 0;
-                    this._z = Math.atan2(- m12, m22);
+            case 'ZYX':
+                {
+                    this._y = Math.asin(-clamp(m31, -1, 1));
+                    if (Math.abs(m31) < 0.99999) {
+                        this._x = Math.atan2(m32, m33);
+                        this._z = Math.atan2(m21, m11);
+                    } else {
+                        this._x = 0;
+                        this._z = Math.atan2(-m12, m22);
+                    }
                 }
-            }
                 break;
-            case 'YZX': {
-                this._z = Math.asin(clamp(m21, - 1, 1));
-                if (Math.abs(m21) < 0.99999) {
-                    this._x = Math.atan2(- m23, m22);
-                    this._y = Math.atan2(- m31, m11);
-                } else {
-                    this._x = 0;
-                    this._y = Math.atan2(m13, m33);
+            case 'YZX':
+                {
+                    this._z = Math.asin(clamp(m21, -1, 1));
+                    if (Math.abs(m21) < 0.99999) {
+                        this._x = Math.atan2(-m23, m22);
+                        this._y = Math.atan2(-m31, m11);
+                    } else {
+                        this._x = 0;
+                        this._y = Math.atan2(m13, m33);
+                    }
                 }
-            }
                 break;
-            case 'XZY': {
-                this._z = Math.asin(- clamp(m12, - 1, 1));
-                if (Math.abs(m12) < 0.99999) {
-                    this._x = Math.atan2(m32, m22);
-                    this._y = Math.atan2(m13, m11);
-                } else {
-                    this._x = Math.atan2(- m23, m33);
-                    this._y = 0;
+            case 'XZY':
+                {
+                    this._z = Math.asin(-clamp(m12, -1, 1));
+                    if (Math.abs(m12) < 0.99999) {
+                        this._x = Math.atan2(m32, m22);
+                        this._y = Math.atan2(m13, m11);
+                    } else {
+                        this._x = Math.atan2(-m23, m33);
+                        this._y = 0;
+                    }
                 }
-            }
                 break;
             default:
                 logger.unsupported('EGS.Euler: .setFromRotationMatrix() given unsupported order: ' + order);
                 break;
-
         }
         this._order = order;
         if (update !== false) {
@@ -244,7 +255,7 @@ export class Euler {
      * Checks for strict equality of this euler and {@link Euler| euler}.
      */
     equals(euler: Euler): boolean {
-        return (euler._x === this._x) && (euler._y === this._y) && (euler._z === this._z) && (euler._order === this._order);
+        return euler._x === this._x && euler._y === this._y && euler._z === this._z && euler._order === this._order;
     }
     /**
      * Array of length 3 or 4. The optional 4th argument corresponds from the {@link order| order}.

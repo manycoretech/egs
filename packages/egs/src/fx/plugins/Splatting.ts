@@ -31,7 +31,11 @@ import type { Splat } from '../../scene/splat/Splat';
 import { TextureFormat, TextureDimension, TextureViewDimension } from '../../elements/textures/types';
 import { SourceTexture } from '../../elements/textures/SourceTexture';
 
-let sortSplats: (splatCounts: number, sorting: Uint16Array, order: Uint32Array) => Promise<{ activeSplats: number; sorting: Uint16Array; ordering: Uint32Array; }>;
+let sortSplats: (
+    splatCounts: number,
+    sorting: Uint16Array,
+    order: Uint32Array,
+) => Promise<{ activeSplats: number; sorting: Uint16Array; ordering: Uint32Array }>;
 export function setSortSplats(fn: typeof sortSplats) {
     sortSplats = fn;
 }
@@ -133,8 +137,17 @@ export class SplattingPlugin extends PipelinePlugin {
         this.splattingGeometry.index = new BufferAttribute(indexArr, 1);
         this.splattingGeometry.setAttribute('position', new BufferAttribute(positionArr, 3));
         this.reorderMaterial.orderTex = new SourceTexture(
-            TextureDimension.D2, TextureViewDimension.D2, TextureFormat.R32Uint, 1, 1, 1, false, false
-        ).configAsDataTexture().setLevelData(new Uint32Array([0]), 0);
+            TextureDimension.D2,
+            TextureViewDimension.D2,
+            TextureFormat.R32Uint,
+            1,
+            1,
+            1,
+            false,
+            false,
+        )
+            .configAsDataTexture()
+            .setLevelData(new Uint32Array([0]), 0);
         this.highlightKernelMesh.drawMode = DrawMode.Points;
         this.highlightKernelGeometry.setAttribute('position', new BufferAttribute(new Float32Array([0, 0, 0]), 3));
     }
@@ -143,9 +156,9 @@ export class SplattingPlugin extends PipelinePlugin {
     private sortLastVersion: number = 0;
     private sortingBuffer?: Uint32Array;
     private sortTaskRunning: boolean = false;
-    private pendingSortTask?: { counts: number, target: RenderTarget, splats: Splat[] };
+    private pendingSortTask?: { counts: number; target: RenderTarget; splats: Splat[] };
     private orderBuffer?: Uint32Array;
-    private orderLayout: Array<{ id: number, counts: number }> = [];
+    private orderLayout: Array<{ id: number; counts: number }> = [];
     private async flushSortTask() {
         // this.pendingSortTask maybe undefined because of async
         if (this.sortCurrentVersion === this.sortLastVersion || this.sortTaskRunning || !this.pendingSortTask) {
@@ -158,7 +171,7 @@ export class SplattingPlugin extends PipelinePlugin {
 
         const { renderer, reorderMaterial, sortLastVersion } = this;
         const { counts, target, splats } = this.pendingSortTask;
-        const orderLayout: Array<{ id: number, counts: number }> = [];
+        const orderLayout: Array<{ id: number; counts: number }> = [];
         for (let i = 0; i < splats.length; i++) {
             const splat = splats[i];
             orderLayout[i] = { id: splat.id, counts: splat.counts };
@@ -178,7 +191,11 @@ export class SplattingPlugin extends PipelinePlugin {
             const height = Math.ceil(counts / width);
             orderBuffer = new Uint32Array(width * height);
         }
-        const { activeSplats, sorting: backSorting, ordering } = await sortSplats(counts, new Uint16Array(sorting.buffer), orderBuffer);
+        const {
+            activeSplats,
+            sorting: backSorting,
+            ordering,
+        } = await sortSplats(counts, new Uint16Array(sorting.buffer), orderBuffer);
         this.sortingBuffer = new Uint32Array(backSorting.buffer);
         const prevOrderTex = reorderMaterial.orderTex;
         if (prevOrderTex) {
@@ -189,13 +206,22 @@ export class SplattingPlugin extends PipelinePlugin {
         this.splattingGeometry.instancedCount = Math.ceil(activeSplats / SPLAT_BLOCK_COUNT);
         this.splattingMaterial.activeSplats =
             this.repackMaterial.activeSplats =
-            this.highlightKernelGeometry.instancedCount = activeSplats;
+            this.highlightKernelGeometry.instancedCount =
+                activeSplats;
         const w = Math.max(1, Math.min(Math.ceil(Math.sqrt(activeSplats) / 2) * 2, Capabilities.MAX_TEXTURE_SIZE));
         const h = Math.max(1, Math.ceil(activeSplats / w));
         reorderMaterial.orderTex = new SourceTexture(
-            TextureDimension.D2, TextureViewDimension.D2, TextureFormat.R32Uint, w, h, 1,
-            false, false
-        ).configAsDataTexture().setLevelData(ordering.subarray(0, w * h), 0);
+            TextureDimension.D2,
+            TextureViewDimension.D2,
+            TextureFormat.R32Uint,
+            w,
+            h,
+            1,
+            false,
+            false,
+        )
+            .configAsDataTexture()
+            .setLevelData(ordering.subarray(0, w * h), 0);
 
         renderer.renderer.queueFlushTexture(reorderMaterial.orderTex);
         renderer.renderer.flushCommands();
@@ -219,7 +245,7 @@ export class SplattingPlugin extends PipelinePlugin {
         this.sortLastVersion++;
     }
 
-    destroy() { }
+    destroy() {}
 
     private sortSplatDistance: number = 0.1;
     private sortSplatCoorient: number = 0.99999;
@@ -232,17 +258,28 @@ export class SplattingPlugin extends PipelinePlugin {
     updateEffect(sceneAdaptor: SceneAdaptor) {
         const {
             forceUpdate,
-            sortSplatDistance, sortSplatCoorient, sortCameraDistance, sortCameraCoorient,
-            prevSceneVersion, prevSplatCache, prevSortCameraMatrix, prevSortCameraLayer,
-            orderLayout, reorderMaterial,
-            packQueue, precalculateQueue,
+            sortSplatDistance,
+            sortSplatCoorient,
+            sortCameraDistance,
+            sortCameraCoorient,
+            prevSceneVersion,
+            prevSplatCache,
+            prevSortCameraMatrix,
+            prevSortCameraLayer,
+            orderLayout,
+            reorderMaterial,
+            packQueue,
+            precalculateQueue,
         } = this;
 
-        const { scene: { splatManager }, camera } = sceneAdaptor;
+        const {
+            scene: { splatManager },
+            camera,
+        } = sceneAdaptor;
         camera.updateMatrixWorld();
 
         const splats = splatManager.splats;
-        const reorderLayout: Array<{ start: number, end: number, offset: number }> = [];
+        const reorderLayout: Array<{ start: number; end: number; offset: number }> = [];
         let start = 0;
         let offset = 0;
         let orderIdx = 0;
@@ -253,7 +290,7 @@ export class SplattingPlugin extends PipelinePlugin {
             reorderLayout[orderIdx] = {
                 start,
                 end: start + counts,
-                offset: isDeleted ? (1 << 30) : -offset,
+                offset: isDeleted ? 1 << 30 : -offset,
             };
             if (isDeleted) {
                 offset += counts;
@@ -264,7 +301,7 @@ export class SplattingPlugin extends PipelinePlugin {
         }
 
         {
-            const reorderData: Array<{ start: number, end: number, offset: number }> = [];
+            const reorderData: Array<{ start: number; end: number; offset: number }> = [];
             let start = 0;
             let end = 0;
             let offset = 0;
@@ -319,7 +356,12 @@ export class SplattingPlugin extends PipelinePlugin {
         for (let i = 0; i < splats.length; i++) {
             const splat = splats[i];
             const cache = prevSplatCache.get(splat.id)!;
-            const isDirty = forceUpdate || isSceneDirty || isCameraLayerDirty || (cache.version !== splat.version) || !splat.matrixWorld.equals(cache.matrix);
+            const isDirty =
+                forceUpdate ||
+                isSceneDirty ||
+                isCameraLayerDirty ||
+                cache.version !== splat.version ||
+                !splat.matrixWorld.equals(cache.matrix);
             if (!isDirty) {
                 continue;
             }
@@ -364,7 +406,7 @@ export class SplattingPlugin extends PipelinePlugin {
         this.forceUpdate = false;
     }
 
-    updateFrameSize() { }
+    updateFrameSize() {}
 
     updateGraphHash(hasher: HashKeyBuilder) {
         hasher
@@ -382,12 +424,24 @@ export class SplattingPlugin extends PipelinePlugin {
     updateRenderGraph(graph: RenderGraph) {
         const {
             scene,
-            packHighPrecisionEnabled, packMaterial, packQuad, packAttachSize,
-            precalculateEnabled, precalculateMaterial, precalculateQuad,
-            sortMaterial, sortQuad, sortPingPongTarget,
-            repackEnabled, repackMaterial, repackQuat, repackAttachSize,
-            compositeEnabled, compositeHighPrecisionAttachEnabled,
-            toneMappingEnabled, highlightKernelEnabled,
+            packHighPrecisionEnabled,
+            packMaterial,
+            packQuad,
+            packAttachSize,
+            precalculateEnabled,
+            precalculateMaterial,
+            precalculateQuad,
+            sortMaterial,
+            sortQuad,
+            sortPingPongTarget,
+            repackEnabled,
+            repackMaterial,
+            repackQuat,
+            repackAttachSize,
+            compositeEnabled,
+            compositeHighPrecisionAttachEnabled,
+            toneMappingEnabled,
+            highlightKernelEnabled,
         } = this;
         const splatManager = scene.scene.splatManager;
 
@@ -410,16 +464,22 @@ export class SplattingPlugin extends PipelinePlugin {
 
         const packTarget = target('pack_splat_target', false, false)
             .attach(packedSplatsCovAttachment)
-            .attach(colorAttachment('pack_splat_center_attachment').modify(des => {
-                des.format = packHighPrecisionEnabled ? TextureFormat.Rgba32Float : TextureFormat.Rgba16Float;
-                des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
-            }))
+            .attach(
+                colorAttachment('pack_splat_center_attachment').modify(des => {
+                    des.format = packHighPrecisionEnabled ? TextureFormat.Rgba32Float : TextureFormat.Rgba16Float;
+                    des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
+                }),
+            )
             .modify(node => {
                 if (precalculateEnabled) {
-                    node.attach(colorAttachment('pack_splat_color_attachment').modify(des => {
-                        des.format = packHighPrecisionEnabled ? TextureFormat.Rgba16Float : TextureFormat.Rgba8Unorm;
-                        des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
-                    }));
+                    node.attach(
+                        colorAttachment('pack_splat_color_attachment').modify(des => {
+                            des.format = packHighPrecisionEnabled
+                                ? TextureFormat.Rgba16Float
+                                : TextureFormat.Rgba8Unorm;
+                            des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
+                        }),
+                    );
                 }
             })
             .keepContent()
@@ -509,32 +569,34 @@ export class SplattingPlugin extends PipelinePlugin {
         }
 
         const reorderTarget = target('reorder_target', false, false)
-            .attach(colorAttachment('reorder_attachment').modify(des => {
-                des.format = TextureFormat.R32Uint;
-                des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
-            }))
+            .attach(
+                colorAttachment('reorder_attachment').modify(des => {
+                    des.format = TextureFormat.R32Uint;
+                    des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
+                }),
+            )
             .keepContent()
             .resize(() => {
                 const orderTex = this.reorderMaterial.orderTex;
                 return { width: orderTex.width, height: orderTex.height };
             })
-            .from([
-                pass('reorder_pass')
-                    .disableClear()
-                    .use(this.reorderQuad),
-            ]);
+            .from([pass('reorder_pass').disableClear().use(this.reorderQuad)]);
 
         let resourceTarget = packTarget;
         if (repackEnabled) {
             resourceTarget = target('repack_splat_target', false, false)
-                .attach(colorAttachment('repack_splat_cov_attachment').modify(des => {
-                    des.format = TextureFormat.Rgba32Uint;
-                    des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
-                }))
-                .attach(colorAttachment('repack_splat_center_attachment').modify(des => {
-                    des.format = packHighPrecisionEnabled ? TextureFormat.Rgba32Float : TextureFormat.Rgba16Float;
-                    des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
-                }))
+                .attach(
+                    colorAttachment('repack_splat_cov_attachment').modify(des => {
+                        des.format = TextureFormat.Rgba32Uint;
+                        des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
+                    }),
+                )
+                .attach(
+                    colorAttachment('repack_splat_center_attachment').modify(des => {
+                        des.format = packHighPrecisionEnabled ? TextureFormat.Rgba32Float : TextureFormat.Rgba16Float;
+                        des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
+                    }),
+                )
                 .keepContent()
                 .resize(() => {
                     const pixels = this.splattingMaterial.activeSplats;
@@ -561,7 +623,7 @@ export class SplattingPlugin extends PipelinePlugin {
                             const { width, height } = target!;
                             const m = repackMaterial;
                             m.resolution.set(width, height);
-                            renderer.activeResources.forEach((input, name) => (m as any)[name] = input);
+                            renderer.activeResources.forEach((input, name) => ((m as any)[name] = input));
                             repackQuat.render(renderer);
                             this.repackIsDirty = false;
                         }),
@@ -581,7 +643,7 @@ export class SplattingPlugin extends PipelinePlugin {
                     .disableClear()
                     .input('centerTex', packTarget, 1)
                     .use((renderer, target) => {
-                        if (!this.isSortDirty || (performance.now() - this.sortLastTime) < this.sortMinDuration) {
+                        if (!this.isSortDirty || performance.now() - this.sortLastTime < this.sortMinDuration) {
                             return;
                         }
                         const { width, height } = target!;
@@ -607,18 +669,28 @@ export class SplattingPlugin extends PipelinePlugin {
                 .input('centerTex', resourceTarget, 1)
                 .use(renderer => {
                     const m = this.splattingMaterial;
-                    renderer.activeResources.forEach((input, name) => (m as any)[name] = input);
-                    renderer.renderer.renderDrawcall(this.splattingGeometry, this.splattingMaterial, this.splattingMesh, null);
+                    renderer.activeResources.forEach((input, name) => ((m as any)[name] = input));
+                    renderer.renderer.renderDrawcall(
+                        this.splattingGeometry,
+                        this.splattingMaterial,
+                        this.splattingMesh,
+                        null,
+                    );
                     this.shouldRenderNextFrame = false;
                     splatManager.splats.forEach(item => item.onUpdateRenderingStability(!this.isSorting));
-                })
+                }),
         ]);
 
         if (compositeEnabled || toneMappingEnabled) {
             const splattingTarget = target('splatting_target', false, true)
-                .attach(colorAttachment('splatting_color_attachment').modify(des => {
-                    des.format = toneMappingEnabled || compositeHighPrecisionAttachEnabled ? TextureFormat.Rgba16Float : TextureFormat.Rgba8Unorm;
-                }))
+                .attach(
+                    colorAttachment('splatting_color_attachment').modify(des => {
+                        des.format =
+                            toneMappingEnabled || compositeHighPrecisionAttachEnabled
+                                ? TextureFormat.Rgba16Float
+                                : TextureFormat.Rgba8Unorm;
+                    }),
+                )
                 .from(graph.removeAllPasses());
             if (toneMappingEnabled) {
                 graph.addPass([
@@ -645,8 +717,13 @@ export class SplattingPlugin extends PipelinePlugin {
                     .input('centerTex', packTarget, 1)
                     .use(renderer => {
                         const m = this.highlightKernelMaterial;
-                        renderer.activeResources.forEach((input, name) => (m as any)[name] = input);
-                        renderer.renderer.renderDrawcall(this.highlightKernelGeometry, this.highlightKernelMaterial, this.highlightKernelMesh, null);
+                        renderer.activeResources.forEach((input, name) => ((m as any)[name] = input));
+                        renderer.renderer.renderDrawcall(
+                            this.highlightKernelGeometry,
+                            this.highlightKernelMaterial,
+                            this.highlightKernelMesh,
+                            null,
+                        );
                     }),
             ]);
         }
@@ -730,7 +807,7 @@ export class SplattingPlugin extends PipelinePlugin {
                 get: () => this.splattingMaterial.selectedColor.clone(),
                 set: (v: Vector4) => {
                     this.splattingMaterial.selectedColor.copy(v);
-                }
+                },
             },
             sort: {
                 sortRadial: {
@@ -782,7 +859,7 @@ export class SplattingPlugin extends PipelinePlugin {
                     set: (v: boolean) => {
                         this.compositeHighPrecisionAttachEnabled = v;
                     },
-                }
+                },
             },
             toneMapping: {
                 enabled: {
@@ -802,14 +879,14 @@ export class SplattingPlugin extends PipelinePlugin {
                     set: (v: ToneMapping) => {
                         this.toneMappingMaterial.toneMapping = v;
                         this.toneMappingMaterial.notifyRecompileShader();
-                    }
+                    },
                 },
                 exposure: {
                     get: () => this.toneMappingMaterial.exposure,
                     set: (v: number) => {
                         this.toneMappingMaterial.exposure = v;
-                    }
-                }
+                    },
+                },
             },
             highlightKernel: {
                 enabled: {

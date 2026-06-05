@@ -3,7 +3,7 @@ import type { Deserializer, Serializer } from '../../../utils/Serialization';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 import { BufferGeometry } from './BufferGeometry';
 import { ContentBridge, hasManagedContentAPI } from '../../../ContentAPI';
-import type { IPopbufferInfo,IMetaBlock,IPopbufferAttributes } from './IPopBufferInfo';
+import type { IPopbufferInfo, IMetaBlock, IPopbufferAttributes } from './IPopBufferInfo';
 
 export interface Metadata {
     boxMin: Readonly<Vector3>;
@@ -27,18 +27,21 @@ class WrappedPopbufferInfo implements IPopbufferInfo {
     verticeDataLengthForEachLevel: any[];
 
     private bufferAttributes: {
-        indices: BufferAttribute<Uint16Array | Uint32Array>,
-        position: BufferAttribute<Float32Array>,
-        uv: BufferAttribute<Float32Array>,
-        normal: BufferAttribute<Float32Array>
+        indices: BufferAttribute<Uint16Array | Uint32Array>;
+        position: BufferAttribute<Float32Array>;
+        uv: BufferAttribute<Float32Array>;
+        normal: BufferAttribute<Float32Array>;
     };
 
-    constructor(source: IPopbufferInfo, bufferAttributes: {
-        indices: BufferAttribute<Uint16Array | Uint32Array>,
-        position: BufferAttribute<Float32Array>,
-        uv: BufferAttribute<Float32Array>,
-        normal: BufferAttribute<Float32Array>
-    }) {
+    constructor(
+        source: IPopbufferInfo,
+        bufferAttributes: {
+            indices: BufferAttribute<Uint16Array | Uint32Array>;
+            position: BufferAttribute<Float32Array>;
+            uv: BufferAttribute<Float32Array>;
+            normal: BufferAttribute<Float32Array>;
+        },
+    ) {
         this.version = source.version;
         this.blocks = source.blocks;
         this.currentVertexCount = source.currentVertexCount;
@@ -51,7 +54,7 @@ class WrappedPopbufferInfo implements IPopbufferInfo {
             bufferAttributes: {
                 value: bufferAttributes,
                 enumerable: false,
-                configurable: false
+                configurable: false,
             },
             indices: {
                 get(this: WrappedPopbufferInfo) {
@@ -61,7 +64,7 @@ class WrappedPopbufferInfo implements IPopbufferInfo {
                     this.bufferAttributes.indices.array = data;
                 },
                 enumerable: true,
-                configurable: true
+                configurable: true,
             },
             vertices: {
                 get(this: WrappedPopbufferInfo) {
@@ -71,7 +74,7 @@ class WrappedPopbufferInfo implements IPopbufferInfo {
                     this.bufferAttributes.position.array = data;
                 },
                 enumerable: true,
-                configurable: true
+                configurable: true,
             },
             textures: {
                 get(this: WrappedPopbufferInfo) {
@@ -81,7 +84,7 @@ class WrappedPopbufferInfo implements IPopbufferInfo {
                     this.bufferAttributes.uv.array = data;
                 },
                 enumerable: true,
-                configurable: true
+                configurable: true,
             },
             normals: {
                 get(this: WrappedPopbufferInfo) {
@@ -91,7 +94,7 @@ class WrappedPopbufferInfo implements IPopbufferInfo {
                     this.bufferAttributes.normal.array = data;
                 },
                 enumerable: true,
-                configurable: true
+                configurable: true,
             },
         });
     }
@@ -156,7 +159,9 @@ export class PopBufferGeometry extends BufferGeometry {
      * @param model the given model data.
      */
     setModel(model?: IPopbufferInfo): void {
-        if (!model) { return; }
+        if (!model) {
+            return;
+        }
         let indicesData = model.indices;
         let uvData = model.textures;
         let normalData = model.normals;
@@ -188,7 +193,7 @@ export class PopBufferGeometry extends BufferGeometry {
                 indices,
                 uv,
                 normal,
-                position
+                position,
             });
             this.computeBoundingBox();
             this.computeMetadata();
@@ -227,7 +232,7 @@ export class PopBufferGeometry extends BufferGeometry {
             boxMin,
             boxSizeMagnitude,
             vertexGridSize,
-            vertexConstant
+            vertexConstant,
         };
     }
     /**
@@ -279,11 +284,15 @@ export class PopBufferGeometry extends BufferGeometry {
             textures: attributes.uv.array.slice() as Float32Array,
             normals: attributes.normal.array.slice() as Float32Array,
             blocks: data.blocks as IMetaBlock[],
-            maxPrecision: Math.ceil(Math.log2(Math.max(
-                Math.floor(boxMax.x - boxMin.x),
-                Math.floor(boxMax.y - boxMin.y),
-                Math.floor(boxMax.z - boxMin.z),
-            ))),
+            maxPrecision: Math.ceil(
+                Math.log2(
+                    Math.max(
+                        Math.floor(boxMax.x - boxMin.x),
+                        Math.floor(boxMax.y - boxMin.y),
+                        Math.floor(boxMax.z - boxMin.z),
+                    ),
+                ),
+            ),
             levelPrecisions: data.levelPrecisions,
             currentVertexCount: data.currentVertexCount,
             currentBlockFaceCounts: data.currentBlockFaceCounts,

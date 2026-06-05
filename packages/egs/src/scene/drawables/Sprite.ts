@@ -1,4 +1,3 @@
-
 import { Vector3 } from '../../math/Vector3';
 import { Vector2 } from '../../math/Vector2';
 import { Matrix4 } from '../../math/Matrix4';
@@ -30,14 +29,21 @@ const uvA = new Vector2();
 const uvB = new Vector2();
 const uvC = new Vector2();
 
-function transformVertex(vertexPosition: Vector2, mvPosition: Vector2, center: Vector2, scale: Vector2, sin?: number, cos?: number) {
+function transformVertex(
+    vertexPosition: Vector2,
+    mvPosition: Vector2,
+    center: Vector2,
+    scale: Vector2,
+    sin?: number,
+    cos?: number,
+) {
     // compute position in camera space
     alignedPosition.subVectors(vertexPosition, center).addScalar(0.5).multiply(scale);
 
     // to check if rotation is not zero
     if (sin !== undefined) {
-        rotatedPosition.x = (cos! * alignedPosition.x) - (sin * alignedPosition.y);
-        rotatedPosition.y = (sin * alignedPosition.x) + (cos! * alignedPosition.y);
+        rotatedPosition.x = cos! * alignedPosition.x - sin * alignedPosition.y;
+        rotatedPosition.y = sin * alignedPosition.x + cos! * alignedPosition.y;
     } else {
         rotatedPosition.copy(alignedPosition);
     }
@@ -48,7 +54,6 @@ function transformVertex(vertexPosition: Vector2, mvPosition: Vector2, center: V
 
     // transform to world space
     vertexPosition.applyMatrix4(viewWorldMatrix);
-
 }
 /**
  * A sprite is a plane that always faces towards the camera, generally with a partially transparent texture applied.
@@ -59,7 +64,7 @@ export class Sprite<T extends Texture2D | TextureV2 = Texture2D> extends Drawabl
      * A value of (0.5, 0.5) corresponds to the midpoint of the sprite.
      * A value of (0, 0) corresponds to the lower left corner of the sprite. The default is (0.5, 0.5).
      */
-    center: Vector2;// = new Vector2(0.5, 0.5);
+    center: Vector2; // = new Vector2(0.5, 0.5);
     /**
      * The type of this Object3D.
      */
@@ -150,7 +155,7 @@ export class Sprite<T extends Texture2D | TextureV2 = Texture2D> extends Drawabl
             uv: Triangle.getUV(intersectPoint, vA, vB, vC, uvA, uvB, uvC, new Vector2()),
             primitiveIndex: 0,
             face: undefined,
-            object: this
+            object: this,
         });
     }
     /**
@@ -165,7 +170,9 @@ export class Sprite<T extends Texture2D | TextureV2 = Texture2D> extends Drawabl
      */
     copy(source: Sprite<T>) {
         super.copy(source);
-        if (source.center !== undefined) { this.center.copy(source.center); }
+        if (source.center !== undefined) {
+            this.center.copy(source.center);
+        }
         return this;
     }
     /**
@@ -174,9 +181,7 @@ export class Sprite<T extends Texture2D | TextureV2 = Texture2D> extends Drawabl
      */
     serialize(ctx: Serializer) {
         super.serialize(ctx);
-        ctx.puts<Sprite>([
-            'center'
-        ]);
+        ctx.puts<Sprite>(['center']);
     }
     /**
      * Parse the data for this class from string according to serializing format.
@@ -184,8 +189,6 @@ export class Sprite<T extends Texture2D | TextureV2 = Texture2D> extends Drawabl
      */
     deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
-        ctx.reads<Sprite>([
-            'center'
-        ]);
+        ctx.reads<Sprite>(['center']);
     }
 }

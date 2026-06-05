@@ -5,8 +5,8 @@ import type { ISkinnedMesh, Skeleton } from './Skeleton';
 export const SkeletonUpdatedEvent = new EventType();
 
 interface SkeletonBinding {
-    mixer: AnimationMixer,
-    meshes: SkinnedMesh[],
+    mixer: AnimationMixer;
+    meshes: SkinnedMesh[];
 }
 
 /**
@@ -18,8 +18,8 @@ export class AnimationPlugin implements __INTERNAL__.ViewerPlugin {
     private skeletonMap = new Map<Skeleton, SkeletonBinding>();
     private viewer: Viewer | null = null;
 
-    init() { }
-    destroy() { }
+    init() {}
+    destroy() {}
 
     beforeRendering() {
         const deltaTime = this.clock.getDelta();
@@ -39,7 +39,7 @@ export class AnimationPlugin implements __INTERNAL__.ViewerPlugin {
         });
     }
 
-    afterRendering() { }
+    afterRendering() {}
 
     /**
      * Register this animation plugin to the viewer.

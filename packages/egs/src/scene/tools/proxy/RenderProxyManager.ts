@@ -21,7 +21,7 @@ export class RenderProxyManager {
 
     // the analyser of free renderable
     private freeDynamicAnalyser = new DynamicAnalyser();
-    private allRenderables = new Set<Drawable>();   // this set contains all render objects in the scene
+    private allRenderables = new Set<Drawable>(); // this set contains all render objects in the scene
     private allFreeRenderables = new DrawableSet(); // this set contains render objects that not been proxyed such as instancePool
 
     private instancePool = new InstancePool(this);
@@ -29,13 +29,13 @@ export class RenderProxyManager {
 
     constructor(scene: Scene3D) {
         this.scene = scene;
-        this.allFreeRenderables.on(DrawableAdd, (d) => {
+        this.allFreeRenderables.on(DrawableAdd, d => {
             this.freeDynamicAnalyser.onObjectAdd(d);
         });
-        this.allFreeRenderables.on(DrawableDelete, (d) => {
+        this.allFreeRenderables.on(DrawableDelete, d => {
             this.freeDynamicAnalyser.onObjectDelete(d);
         });
-        this.allFreeRenderables.on(DrawableChange, (d) => {
+        this.allFreeRenderables.on(DrawableChange, d => {
             this.freeDynamicAnalyser.onObjectChange(d);
         });
         this.freeDynamicAnalyser.onStaticFrameDirty = () => {
@@ -233,10 +233,12 @@ export class RenderProxyManager {
     }
 
     private isCachedDrawableListDirty(isUseProxy: boolean) {
-        return this.drawableListAllCache === undefined ||
+        return (
+            this.drawableListAllCache === undefined ||
             this.isLastBatchUseProxy !== isUseProxy ||
             this.scene.anyDrawableChanged ||
-            this.isProxyChanged;
+            this.isProxyChanged
+        );
     }
 
     cleanDrawableListCache() {
@@ -286,9 +288,14 @@ export class RenderProxyManager {
         if (this.overlayDrawableListCache) {
             this.overlayDrawableListCache.destroy();
         }
-        const drawableList = this.overlayDrawableListCache = new DrawableList();
+        const drawableList = (this.overlayDrawableListCache = new DrawableList());
         if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
-            PipelineContentBridge.drawableListCreateFromScene(drawableList, this.scene, false, DrawableRenderMode.Overlay);
+            PipelineContentBridge.drawableListCreateFromScene(
+                drawableList,
+                this.scene,
+                false,
+                DrawableRenderMode.Overlay,
+            );
         }
         const extractor = extractorCreator(drawableList, DrawableRenderMode.Overlay);
         // overlay always free not proxied

@@ -1,7 +1,12 @@
 import { PassQuadMaterialBase } from './PassMaterialBase';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderInjectionTypes, ShaderExtensionTypes, type ShaderBuilder, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    ShaderInjectionTypes,
+    ShaderExtensionTypes,
+    type ShaderBuilder,
+    ShaderVaryingTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import { Blending } from '../../../utils/Constants';
 import type { Texture } from '../../textures/Texture';
 import { Matrix3 } from '../../../math/Matrix3';
@@ -22,7 +27,8 @@ export class CopyMaterial extends PassQuadMaterialBase {
     }
 
     extendShaderShape(builder: ShaderBuilder) {
-        builder.addVarying(ShaderVaryingTypes.fragUV)
+        builder
+            .addVarying(ShaderVaryingTypes.fragUV)
             .addUniform('uvTransform', WebGLShaderDataType.Mat3)
             .inject(ShaderInjectionTypes.vary_uv, 'vUv = (uvTransform * vec3(uv, 1.)).xy;')
             .inject(ShaderInjectionTypes.gl_Position, 'gl_Position = vec4(position, 1.0);');
@@ -32,12 +38,15 @@ export class CopyMaterial extends PassQuadMaterialBase {
         b.addUniform('tDiffuse', WebGLShaderDataType.Sampler2D)
             .addUniform('opacity', WebGLShaderDataType.Float)
             .addUniform('uIsRepeat', WebGLShaderDataType.Float)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
             if (uIsRepeat < 0.5 && (vUv.x > 1.0 || vUv.x < 0.0 || vUv.y > 1.0 || vUv.y < 0.0)) {
                 discard;
             }
             gl_FragColor = opacity * texture2D(tDiffuse, vUv);
-            `);
+            `,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {
@@ -63,8 +72,7 @@ export class CopyColorAndDepthMaterial extends CopyMaterial {
 
     extendShaderShading(b: ShaderBuilder) {
         super.extendShaderShading(b);
-        b
-            .addUniform('tDepth', WebGLShaderDataType.Sampler2D)
+        b.addUniform('tDepth', WebGLShaderDataType.Sampler2D)
             .addExtension(ShaderExtensionTypes.GL_EXT_frag_depth)
             .inject(ShaderInjectionTypes.gl_FragDepthEXT, 'gl_FragDepthEXT = texture2D(tDepth, vUv).x;');
     }
@@ -87,9 +95,9 @@ export class MixColorAndDepthMaterial extends CopyMaterial {
 
     extendShaderShading(b: ShaderBuilder) {
         super.extendShaderShading(b);
-        b
-            .addUniform('tDepth', WebGLShaderDataType.Sampler2D)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+        b.addUniform('tDepth', WebGLShaderDataType.Sampler2D).inject(
+            ShaderInjectionTypes.gl_FragColor,
+            `
                 float originDepth = texture2D(tDepth, vUv).x;
                 vec4 rgba = texture2D(tDiffuse, vUv);
                 float d = 1.0 - originDepth;
@@ -101,14 +109,14 @@ export class MixColorAndDepthMaterial extends CopyMaterial {
                     res = 0.0; // do it for alpha picking
                 }
                 gl_FragColor = vec4(rgba.rgb, res / 255.0);
-            `);
+            `,
+        );
     }
 
     updateShadingUniforms(program: WGLProgram) {
         super.updateShadingUniforms(program);
         program.setTexture2D('tDepth', this.depth);
     }
-
 }
 
 export class CopyDepthMaterial extends PassQuadMaterialBase {

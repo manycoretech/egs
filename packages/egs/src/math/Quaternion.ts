@@ -20,12 +20,12 @@ export class Quaternion {
         this._x = x || 0;
         this._y = y || 0;
         this._z = z || 0;
-        this._w = (w !== undefined) ? w : 1;
+        this._w = w !== undefined ? w : 1;
     }
     /**
      * The function will be called when {@link _x| x}, {@link _y| y} {@link _z| z} and {@link _w| w} is changed.
      */
-    onChangeCallback() { }
+    onChangeCallback() {}
 
     get x(): number {
         return this._x;
@@ -86,7 +86,15 @@ export class Quaternion {
      * @param srcOffset1 An offset into the array `src1`.
      * @param t Normalized interpolation factor (between 0 and 1).
      */
-    static slerpFlat(dst: number[], dstOffset: number, src0: number[], srcOffset0: number, src1: number[], srcOffset1: number, t: number): void {
+    static slerpFlat(
+        dst: number[],
+        dstOffset: number,
+        src0: number[],
+        srcOffset0: number,
+        src1: number[],
+        srcOffset1: number,
+        t: number,
+    ): void {
         // fuzz-free, array-based Quaternion SLERP operation
         let x0 = src0[srcOffset0 + 0],
             y0 = src0[srcOffset0 + 1],
@@ -99,7 +107,7 @@ export class Quaternion {
         if (w0 !== w1 || x0 !== x1 || y0 !== y1 || z0 !== z1) {
             let s = 1 - t;
             const cos = x0 * x1 + y0 * y1 + z0 * z1 + w0 * w1;
-            const dir = (cos >= 0 ? 1 : - 1);
+            const dir = cos >= 0 ? 1 : -1;
             const sqrSin = 1 - cos * cos;
 
             // Skip the Slerp for tiny steps to avoid numeric problems:
@@ -257,9 +265,15 @@ export class Quaternion {
         // http://www.euclideanspace.com/maths/geometry/rotations/conversions/matrixToQuaternion/index.htm
         // assumes the upper 3x3 of m is a pure rotation matrix (i.e, unscaled)
         const te = m._elements;
-        const m11 = te[0], m12 = te[4], m13 = te[8],
-            m21 = te[1], m22 = te[5], m23 = te[9],
-            m31 = te[2], m32 = te[6], m33 = te[10],
+        const m11 = te[0],
+            m12 = te[4],
+            m13 = te[8],
+            m21 = te[1],
+            m22 = te[5],
+            m23 = te[9],
+            m31 = te[2],
+            m32 = te[6],
+            m33 = te[10],
             trace = m11 + m22 + m33;
         let s;
 
@@ -304,9 +318,9 @@ export class Quaternion {
         if (r < EPS) {
             r = 0;
             if (Math.abs(vFrom.x) > Math.abs(vFrom.z)) {
-                tmpVec3.set(- vFrom.y, vFrom.x, 0);
+                tmpVec3.set(-vFrom.y, vFrom.x, 0);
             } else {
-                tmpVec3.set(0, - vFrom.z, vFrom.y);
+                tmpVec3.set(0, -vFrom.z, vFrom.y);
             }
         } else {
             tmpVec3.crossVectors(vFrom, vTo);
@@ -329,9 +343,9 @@ export class Quaternion {
      * represents the same rotation in the opposite direction about the rotational axis.
      */
     conjugate(): Quaternion {
-        this._x *= - 1;
-        this._y *= - 1;
-        this._z *= - 1;
+        this._x *= -1;
+        this._y *= -1;
+        this._z *= -1;
         this.onChangeCallback();
         return this;
     }
@@ -395,8 +409,14 @@ export class Quaternion {
      */
     multiplyQuaternions(a: Quaternion, b: Quaternion): Quaternion {
         // from http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/code/index.htm
-        const qax = a._x, qay = a._y, qaz = a._z, qaw = a._w,
-            qbx = b._x, qby = b._y, qbz = b._z, qbw = b._w;
+        const qax = a._x,
+            qay = a._y,
+            qaz = a._z,
+            qaw = a._w,
+            qbx = b._x,
+            qby = b._y,
+            qbz = b._z,
+            qbw = b._w;
         this._x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
         this._y = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
         this._z = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
@@ -423,15 +443,18 @@ export class Quaternion {
         if (t === 1) {
             return this.copy(qb);
         }
-        const x = this._x, y = this._y, z = this._z, w = this._w;
+        const x = this._x,
+            y = this._y,
+            z = this._z,
+            w = this._w;
         // http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/slerp/
         let cosHalfTheta = w * qb._w + x * qb._x + y * qb._y + z * qb._z;
         if (cosHalfTheta < 0) {
-            this._w = - qb._w;
-            this._x = - qb._x;
-            this._y = - qb._y;
-            this._z = - qb._z;
-            cosHalfTheta = - cosHalfTheta;
+            this._w = -qb._w;
+            this._x = -qb._x;
+            this._y = -qb._y;
+            this._z = -qb._z;
+            cosHalfTheta = -cosHalfTheta;
         } else {
             this.copy(qb);
         }
@@ -458,10 +481,10 @@ export class Quaternion {
         const ratioA = Math.sin((1 - t) * halfTheta) / sinHalfTheta;
         const ratioB = Math.sin(t * halfTheta) / sinHalfTheta;
 
-        this._w = (w * ratioA + this._w * ratioB);
-        this._x = (x * ratioA + this._x * ratioB);
-        this._y = (y * ratioA + this._y * ratioB);
-        this._z = (z * ratioA + this._z * ratioB);
+        this._w = w * ratioA + this._w * ratioB;
+        this._x = x * ratioA + this._x * ratioB;
+        this._y = y * ratioA + this._y * ratioB;
+        this._z = z * ratioA + this._z * ratioB;
         this.onChangeCallback();
         return this;
     }
@@ -471,7 +494,12 @@ export class Quaternion {
      * @param v Quaternion that this quaternion will be compared to.
      */
     equals(quaternion: Quaternion): boolean {
-        return (quaternion._x === this._x) && (quaternion._y === this._y) && (quaternion._z === this._z) && (quaternion._w === this._w);
+        return (
+            quaternion._x === this._x &&
+            quaternion._y === this._y &&
+            quaternion._z === this._z &&
+            quaternion._w === this._w
+        );
     }
     /**
      * Sets this quaternion's {@link x| x}, {@link y| y}, {@link z| z} and {@link w| w} properties from an array.

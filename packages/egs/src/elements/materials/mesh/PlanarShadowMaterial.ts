@@ -15,9 +15,10 @@ export class PlanarShadowMaterial extends SceneMaterial {
     }
 
     extendShaderShading(b: ShaderBuilder) {
-        b
-            .addUniform('intensity', WebGLShaderDataType.Float)
-            .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = vec4(vec3(1.0 - intensity), 1.0);');
+        b.addUniform('intensity', WebGLShaderDataType.Float).inject(
+            ShaderInjectionTypes.gl_FragColor,
+            'gl_FragColor = vec4(vec3(1.0 - intensity), 1.0);',
+        );
     }
 
     copy(other: PlanarShadowMaterial) {

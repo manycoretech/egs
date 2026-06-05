@@ -1,5 +1,5 @@
-import type { TypedArray,Nullable } from '../../../utils/Utils';
-import type { ShaderInputDescriptor,UniformBlockDescriptor,UniformArrayDescriptor } from '../Shader';
+import type { TypedArray, Nullable } from '../../../utils/Utils';
+import type { ShaderInputDescriptor, UniformBlockDescriptor, UniformArrayDescriptor } from '../Shader';
 import type { WebGLShaderDataType } from '../../webgl/WGLConstants';
 import type { WGLProgram } from '../../webgl/WGLProgram';
 import { Capabilities } from '../../Capabilities';
@@ -38,7 +38,8 @@ export class UniformBlockObject {
         return new UniformBlockObject(name);
     }
 
-    createItem(name: string, type: WebGLShaderDataType, defaultValue: any) { // todo : constraint type to none texture type
+    createItem(name: string, type: WebGLShaderDataType, defaultValue: any) {
+        // todo : constraint type to none texture type
         this.uniforms.push({ name, type });
         this.data.set(name, { value: defaultValue, offset: 0, isDirty: true });
         return this;
@@ -53,7 +54,7 @@ export class UniformBlockObject {
     getDescriptor(): UniformBlockDescriptor {
         return {
             name: this.name,
-            uniforms: this.uniforms
+            uniforms: this.uniforms,
         };
     }
 
@@ -86,11 +87,12 @@ export class UniformBlockObject {
             if (layouts !== undefined) {
                 this.buffer = new Float32Array(layouts.all / 4);
                 let i = 0;
-                this.data.forEach((g) => { // this is inset order, is same like shader
+                this.data.forEach(g => {
+                    // this is inset order, is same like shader
                     g.offset = layouts.offsets[i] / 4;
                     i++;
                 });
-                this.arrayData.forEach((g) => {
+                this.arrayData.forEach(g => {
                     g.offset = layouts.offsets[i] / 4;
                     i++;
                 });

@@ -15,7 +15,7 @@ export class Logger {
         if (!ENV.isDebugEnable) {
             return;
         }
-        // eslint-disable-next-line no-restricted-syntax
+        // oxlint-disable-next-line
         console.log('EGS:', ...param);
     }
 
@@ -23,7 +23,7 @@ export class Logger {
         if (!ENV.isDebugEnable) {
             return;
         }
-        // eslint-disable-next-line no-restricted-syntax
+        // oxlint-disable-next-line
         console.warn('EGS:', ...param);
     }
 
@@ -33,7 +33,7 @@ export class Logger {
             return;
         }
         const error: Error = typeof content === 'string' ? new Error(`EGS Exception: <${type}> ${content}`) : content;
-        // eslint-disable-next-line no-restricted-syntax
+        // oxlint-disable-next-line
         console.error(error);
     }
 

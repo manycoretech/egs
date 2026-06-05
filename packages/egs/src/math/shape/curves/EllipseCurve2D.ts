@@ -27,7 +27,17 @@ export class EllipseCurve2D extends Curve2D {
      * @param { number } aRotation The rotation angle of the ellipse in radians, counterclockwise from the positive X axis (optional). Default is 0.
      * @param { number } divisions How many parts will each curve been seperated(Optional).
      */
-    constructor(aX?: number, aY?: number, xRadius?: number, yRadius?: number, aStartAngle?: number, aEndAngle?: number, aClockwise?: boolean, aRotation?: number, divisions?: number) {
+    constructor(
+        aX?: number,
+        aY?: number,
+        xRadius?: number,
+        yRadius?: number,
+        aStartAngle?: number,
+        aEndAngle?: number,
+        aClockwise?: boolean,
+        aRotation?: number,
+        divisions?: number,
+    ) {
         super();
         this.type = 'EllipseCurve2D';
 
@@ -47,11 +57,29 @@ export class EllipseCurve2D extends Curve2D {
     }
 
     serialize(ctx: Serializer) {
-        ctx.puts<EllipseCurve2D>(['aX', 'aY', 'xRadius', 'yRadius', 'aStartAngle', 'aEndAngle', 'aClockwise', 'aRotation']);
+        ctx.puts<EllipseCurve2D>([
+            'aX',
+            'aY',
+            'xRadius',
+            'yRadius',
+            'aStartAngle',
+            'aEndAngle',
+            'aClockwise',
+            'aRotation',
+        ]);
     }
 
     deserialize(ctx: Deserializer) {
-        ctx.reads<EllipseCurve2D>(['aX', 'aY', 'xRadius', 'yRadius', 'aStartAngle', 'aEndAngle', 'aClockwise', 'aRotation']);
+        ctx.reads<EllipseCurve2D>([
+            'aX',
+            'aY',
+            'xRadius',
+            'yRadius',
+            'aStartAngle',
+            'aEndAngle',
+            'aClockwise',
+            'aRotation',
+        ]);
     }
 
     className(): string {
@@ -90,7 +118,7 @@ export class EllipseCurve2D extends Curve2D {
 
         if (this.aClockwise === true && !samePoints) {
             if (deltaAngle === twoPi) {
-                deltaAngle = - twoPi;
+                deltaAngle = -twoPi;
             } else {
                 deltaAngle = deltaAngle - twoPi;
             }

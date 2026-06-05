@@ -1,13 +1,37 @@
-import { type Texture, type Texture2D, SamplerFilter, SamplerWrap, type Material, Side, MeshPhongMaterial, Color, BufferAttribute, BufferGeometry, EnvMapIBLShaderComponent } from '@qunhe/egs';
-import { type IMaterial, type ISampler, type ITexture, type IImage, type IBuffer, type IBufferView, type IPrimitive, type IAccessor, type GLTF, AccessorComponentType, ALPHA_MODES } from './type';
+import {
+    type Texture,
+    type Texture2D,
+    SamplerFilter,
+    SamplerWrap,
+    type Material,
+    Side,
+    MeshPhongMaterial,
+    Color,
+    BufferAttribute,
+    BufferGeometry,
+    EnvMapIBLShaderComponent,
+} from '@qunhe/egs';
+import {
+    type IMaterial,
+    type ISampler,
+    type ITexture,
+    type IImage,
+    type IBuffer,
+    type IBufferView,
+    type IPrimitive,
+    type IAccessor,
+    type GLTF,
+    AccessorComponentType,
+    ALPHA_MODES,
+} from './type';
 import { MaterialsUnlitExtension, TextureTransformExtension } from './extensions';
 import { DEFAULT_MATERIAL, WEBGL_COMPONENT_TYPES, ACCESSOR_TYPE_SIZES, EMPTY_TEXTURE, ATTRIBUTE_MAP } from './const';
 import type { TransformExtensionData } from './extensions/texture_transform_extension';
 
 interface ResourceManagerConfig {
-    binaryBuffer?: ArrayBuffer,
-    extensions: Record<string, any>,
-    textureLoader: (url: string) => Promise<Texture>,
+    binaryBuffer?: ArrayBuffer;
+    extensions: Record<string, any>;
+    textureLoader: (url: string) => Promise<Texture>;
 }
 
 export class ResourceManager {
@@ -73,8 +97,7 @@ export class ResourceManager {
         const meta = this.bufferViews[index];
         const byteLength = meta.byteLength || 0;
         const byteOffset = meta.byteOffset || 0;
-        result = this.getBuffer(meta.buffer)
-            .then(source => source.slice(byteOffset, byteOffset + byteLength));
+        result = this.getBuffer(meta.buffer).then(source => source.slice(byteOffset, byteOffset + byteLength));
         this.bufferViewMap.set(index, result);
         return result;
     }
@@ -137,8 +160,8 @@ export class ResourceManager {
                     }
                 }
             }
-            texture.configStorage(s => s.flipY = false);
-            texture.configSampler((s) => {
+            texture.configStorage(s => (s.flipY = false));
+            texture.configSampler(s => {
                 s.magFilter = sampler.magFilter;
                 s.minFilter = sampler.minFilter;
                 s.wrapS = sampler.wrapS;
@@ -192,21 +215,23 @@ export class ResourceManager {
             }
             result = Promise.resolve(material);
             if (baseColorTexture !== undefined) {
-                result = Promise.all([
-                    Promise.resolve(material),
-                    this.getTexture(baseColorTexture.index),
-                ]).then(([material, texture]) => {
-                    material.setValues({ texture: texture as Texture2D });
-                    return material;
-                });
+                result = Promise.all([Promise.resolve(material), this.getTexture(baseColorTexture.index)]).then(
+                    ([material, texture]) => {
+                        material.setValues({ texture: texture as Texture2D });
+                        return material;
+                    },
+                );
             }
         }
 
         result = result.then(material => {
             if (this.extensions[TextureTransformExtension.EXTENSION_NAME]) {
-                const transform: TransformExtensionData | undefined = meta.pbrMetallicRoughness?.baseColorTexture?.extensions?.[TextureTransformExtension.EXTENSION_NAME];
+                const transform: TransformExtensionData | undefined =
+                    meta.pbrMetallicRoughness?.baseColorTexture?.extensions?.[TextureTransformExtension.EXTENSION_NAME];
                 if (transform) {
-                    const extension = this.extensions[TextureTransformExtension.EXTENSION_NAME] as TextureTransformExtension;
+                    const extension = this.extensions[
+                        TextureTransformExtension.EXTENSION_NAME
+                    ] as TextureTransformExtension;
                     extension.update(material, transform);
                 }
             }
@@ -261,7 +286,8 @@ export class ResourceManager {
                 const elementBytes = TypedArray.BYTES_PER_ELEMENT;
                 const itemBytes = elementBytes * itemSize;
                 const byteOffset = meta.byteOffset || 0;
-                const byteStride = meta.bufferView !== undefined ? this.bufferViews[meta.bufferView].byteStride : undefined;
+                const byteStride =
+                    meta.bufferView !== undefined ? this.bufferViews[meta.bufferView].byteStride : undefined;
 
                 // The buffer is not interleaved if the stride is the item size in bytes.
                 if (byteStride && byteStride !== itemBytes) {
@@ -270,7 +296,7 @@ export class ResourceManager {
                     const view = new Uint8Array(buffer);
                     for (let i = 0; i < count; i++) {
                         const start = byteOffset + i * byteStride;
-                        for(let j = 0; j < itemBytes; j++) {
+                        for (let j = 0; j < itemBytes; j++) {
                             array[i * itemBytes + j] = view[start + j];
                         }
                     }
@@ -329,13 +355,21 @@ export class ResourceManager {
                 continue;
             }
             // transform weights and joints attribute buffer type
-            const type = name === 'weights' ? AccessorComponentType.FLOAT :
-                name === 'joints' ? AccessorComponentType.UNSIGNED_SHORT : undefined;
-            const attribute = this.getAccessor(attributes[attr], type).then(attr => { geometry.setAttribute(name, attr); });
+            const type =
+                name === 'weights'
+                    ? AccessorComponentType.FLOAT
+                    : name === 'joints'
+                      ? AccessorComponentType.UNSIGNED_SHORT
+                      : undefined;
+            const attribute = this.getAccessor(attributes[attr], type).then(attr => {
+                geometry.setAttribute(name, attr);
+            });
             attributePromises.push(attribute);
         }
         if (meta.indices !== undefined) {
-            const indices = this.getAccessor(meta.indices).then(attr => { geometry.index = attr as BufferAttribute<Uint32Array>; });
+            const indices = this.getAccessor(meta.indices).then(attr => {
+                geometry.index = attr as BufferAttribute<Uint32Array>;
+            });
             attributePromises.push(indices);
         }
 

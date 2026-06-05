@@ -25,8 +25,8 @@ export class StylizePlugin extends PipelinePlugin {
         this.filterMaterial.destroy();
     }
 
-    updateFrameSize() { }
-    updateEffect() { }
+    updateFrameSize() {}
+    updateEffect() {}
 
     updateGraphHash(hasher: HashKeyBuilder) {
         hasher.bool(this.useDepth);
@@ -102,7 +102,7 @@ export class StylizePlugin extends PipelinePlugin {
                 set: (v: number) => {
                     this.filterMaterial.hue = v;
                     this.filterMaterial.notifyRecompileShader();
-                }
+                },
             },
             lut: {
                 get: () => this.filterMaterial.lut,
@@ -124,8 +124,8 @@ export class StylizePlugin extends PipelinePlugin {
                     this.filterMaterial.depth = null;
                     this.filterMaterial.target = v;
                     this.filterMaterial.notifyRecompileShader();
-                }
-            }
+                },
+            },
         };
     }
 }

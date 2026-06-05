@@ -1,4 +1,14 @@
-import { Application, type Object3D, Matrix4, Texture2D, _Math, WebGLPixelFormat, TextureDataType, __INTERNAL__, type SkinnedMesh } from '@qunhe/egs';
+import {
+    Application,
+    type Object3D,
+    Matrix4,
+    Texture2D,
+    _Math,
+    WebGLPixelFormat,
+    TextureDataType,
+    __INTERNAL__,
+    type SkinnedMesh,
+} from '@qunhe/egs';
 import semver from 'semver';
 
 import Object3DChangeEvent = __INTERNAL__.Object3DChangeEvent;
@@ -57,7 +67,11 @@ export class Skeleton {
         }
 
         this.boneTexture = Texture2D.createByMainLayerSource(
-            this.boneMatrices, WebGLPixelFormat.RGBA, TextureDataType.FloatType, size, size,
+            this.boneMatrices,
+            WebGLPixelFormat.RGBA,
+            TextureDataType.FloatType,
+            size,
+            size,
         ).configAsDataTexture();
 
         for (let i = 0; i < bones.length; i++) {

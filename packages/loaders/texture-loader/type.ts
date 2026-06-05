@@ -1,13 +1,20 @@
-import type { CompressTextureType, LayerSource, MipLevelSource, TextureFormat, Viewer, IViewerContext } from '@qunhe/egs';
+import type {
+    CompressTextureType,
+    LayerSource,
+    MipLevelSource,
+    TextureFormat,
+    Viewer,
+    IViewerContext,
+} from '@qunhe/egs';
 
 export interface LoadResult {
     format: TextureFormat;
-    data: Array<MipLevelSource | LayerSource[]>,
-    width: number,
-    height: number,
-    depthOrArrayLayers: number,
-    mipmaps: boolean,
-    autoGenerateMipmap: boolean
+    data: Array<MipLevelSource | LayerSource[]>;
+    width: number;
+    height: number;
+    depthOrArrayLayers: number;
+    mipmaps: boolean;
+    autoGenerateMipmap: boolean;
 }
 
 export enum TextureContainerType {
@@ -20,23 +27,22 @@ export enum TextureContainerType {
 }
 
 export interface LoaderOptions {
-    containerType?: TextureContainerType
+    containerType?: TextureContainerType;
     /**
      * some compressed texture needs viewer. E.G. KTX2 Basis transcode
      */
-    context?: Viewer | IViewerContext,
+    context?: Viewer | IViewerContext;
     /**
      * manual specify supported compressed texture types.
      */
-    supportedTypes?: CompressTextureType[],
+    supportedTypes?: CompressTextureType[];
     /**
      * same as HTMLImageElement.crossOrigin
      */
-    crossOrigin?: string,
+    crossOrigin?: string;
     /**
      * set false to force disable mipmaps.
      * @default `true`
      */
-    mipmaps?: boolean
+    mipmaps?: boolean;
 }
-

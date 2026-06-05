@@ -37,10 +37,7 @@ export class QuadraticBezierCurve2D extends Curve2D {
         const v1 = this.v1;
         const v2 = this.v2;
 
-        point.set(
-            _Math.QuadraticBezier(t, v0.x, v1.x, v2.x),
-            _Math.QuadraticBezier(t, v0.y, v1.y, v2.y)
-        );
+        point.set(_Math.QuadraticBezier(t, v0.x, v1.x, v2.x), _Math.QuadraticBezier(t, v0.y, v1.y, v2.y));
 
         return point;
     }

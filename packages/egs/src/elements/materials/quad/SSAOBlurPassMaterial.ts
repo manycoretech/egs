@@ -63,8 +63,7 @@ export class SSAOBlurPassMaterial extends PassQuadMaterialBase {
     }
 
     extendShaderShading(b: ShaderBuilder) {
-        b
-            .addFragDefine(`#define KERNEL_RADIUS ${this.KERNEL_RADIUS}`)
+        b.addFragDefine(`#define KERNEL_RADIUS ${this.KERNEL_RADIUS}`)
             .addUniform('map', WebGLShaderDataType.Sampler2D)
             .addUniform('depthMap', WebGLShaderDataType.Sampler2D)
             .addUniform('axis', WebGLShaderDataType.Vec2)

@@ -20,9 +20,7 @@ export class SplatRepackMaterial extends PassQuadMaterialBase {
     }
 
     generateShaderKey() {
-        return HashKeyBuilder.getInstance()
-            .raw(this.className())
-            .getKey();
+        return HashKeyBuilder.getInstance().raw(this.className()).getKey();
     }
 
     extendShaderShading(builder: ShaderBuilder) {
@@ -39,7 +37,9 @@ export class SplatRepackMaterial extends PassQuadMaterialBase {
             .addUniform('packedTexWidth', WebGLShaderDataType.UInt)
             .addUniform('orderTex', WebGLShaderDataType.USampler2D)
             .addUniform('orderTexWidth', WebGLShaderDataType.UInt)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 ivec2 fragCoord = ivec2(gl_FragCoord.xy);
                 uint orderIndex = uint(fragCoord.y * resolution.x + fragCoord.x);
                 if (orderIndex >= activeSplats) {
@@ -49,7 +49,8 @@ export class SplatRepackMaterial extends PassQuadMaterialBase {
                 ivec2 texCoord = ivec2(splatIndex % packedTexWidth, splatIndex / packedTexWidth);
                 pc_fragColor_0 = texelFetch(covTex, texCoord, 0);
                 pc_fragColor_1 = texelFetch(centerTex, texCoord, 0);
-            `);
+            `,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {

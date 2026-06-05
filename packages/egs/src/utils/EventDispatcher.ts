@@ -8,7 +8,7 @@ export class EventType<Payload = never> {
     payload?: Payload;
     symbol = Symbol();
 
-    constructor(public description: string = '') { }
+    constructor(public description: string = '') {}
 }
 
 export interface Listener<Payload = never> {
@@ -29,7 +29,7 @@ export class EventDispatcher {
         this._uuid = uuid;
     }
 
-    _listeners: Map<Symbol, Listener[]> = new Map();
+    _listeners: Map<symbol, Listener[]> = new Map();
     /**
      * Adds a listener to an event type.
      * @param type The type of event to listen to.
@@ -43,7 +43,7 @@ export class EventDispatcher {
 
         listeners = this._listeners.get(type.symbol)!;
 
-        if (listeners.indexOf(listener) === - 1) {
+        if (listeners.indexOf(listener) === -1) {
             listeners.push(listener);
         }
     }
@@ -63,7 +63,7 @@ export class EventDispatcher {
      */
     has<T>(type: EventType<T>, listener: Listener<T>) {
         const listeners = this._listeners.get(type.symbol);
-        return listeners !== undefined && listeners.indexOf(listener) !== - 1;
+        return listeners !== undefined && listeners.indexOf(listener) !== -1;
     }
     /**
      * Removes a listener from listening list.
@@ -72,7 +72,7 @@ export class EventDispatcher {
         const listeners = this._listeners.get(type.symbol);
         if (listeners !== undefined) {
             const index = listeners.indexOf(listener);
-            if (index !== - 1) {
+            if (index !== -1) {
                 listeners.splice(index, 1);
             }
         }
@@ -104,37 +104,30 @@ export class EventDispatcher {
 export abstract class ElementEventDispatcher extends BaseElement implements EventDispatcher {
     _uuid: any = null;
     uuid: string;
-    _listeners: Map<Symbol, Listener[]> = new Map();
-    on<T>(_type: EventType<T>, _listener: Listener<T>): void {
-    }
-    once<T>(_type: EventType<T>, _listener: Listener<T>): void {
-    }
+    _listeners: Map<symbol, Listener[]> = new Map();
+    on<T>(_type: EventType<T>, _listener: Listener<T>): void {}
+    once<T>(_type: EventType<T>, _listener: Listener<T>): void {}
     has<T>(_type: EventType<T>, _listener: Listener<T>): boolean {
         return false;
     }
-    off<T>(_type: EventType<T>, _listener: Listener<T>): void {
-    }
+    off<T>(_type: EventType<T>, _listener: Listener<T>): void {}
     emit(type: EventType<never>): void;
     emit<T>(type: EventType<T>, payload: T): void;
-    emit(..._args: any[]): void {
-    }
-    clearAllListeners(): void {
-    }
+    emit(..._args: any[]): void {}
+    clearAllListeners(): void {}
 }
 applyMixins(ElementEventDispatcher, [EventDispatcher]);
-Object.defineProperty(ElementEventDispatcher.prototype,
-    'uuid', {
-    get () {
+Object.defineProperty(ElementEventDispatcher.prototype, 'uuid', {
+    get() {
         if (!this._uuid) {
             this._uuid = _Math.generateUUID();
         }
         return this._uuid;
     },
-    set (uuid) {
+    set(uuid) {
         this._uuid = uuid;
-    }
-},
-);
+    },
+});
 
 // https://www.tslang.cn/docs/handbook/mixins.html
 function applyMixins(derivedCtor: any, baseCtors: any[]) {

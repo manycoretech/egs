@@ -18,7 +18,10 @@ export class FPSTimer extends EventDispatcher {
         return this.activeTickCounter.getLast();
     }
 
-    setupAnimationFunction(requestAnimationFrame: typeof globalThis.requestAnimationFrame, cancelAnimationFrame: typeof globalThis.cancelAnimationFrame) {
+    setupAnimationFunction(
+        requestAnimationFrame: typeof globalThis.requestAnimationFrame,
+        cancelAnimationFrame: typeof globalThis.cancelAnimationFrame,
+    ) {
         const enabled = this.enabled;
         this.stop();
         this.requestAnimationFrame = requestAnimationFrame;
@@ -29,7 +32,10 @@ export class FPSTimer extends EventDispatcher {
     }
 
     resetDefaultAnimationFunction() {
-        this.setupAnimationFunction(DEFAULT_RAF_FUNCTION.requestAnimationFrame, DEFAULT_RAF_FUNCTION.cancelAnimationFrame);
+        this.setupAnimationFunction(
+            DEFAULT_RAF_FUNCTION.requestAnimationFrame,
+            DEFAULT_RAF_FUNCTION.cancelAnimationFrame,
+        );
     }
 
     start(): void {

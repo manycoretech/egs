@@ -14,7 +14,14 @@ export class ArcCurve2D extends EllipseCurve2D {
      * @param { number } aEndAngle The end angle of the curve in radians starting from the positive X axis. Default is 2 PI.
      * @param { number } aClockwise Whether the ellipse is drawn clockwise. Default is false.
      */
-    constructor(aX?: number, aY?: number, aRadius?: number, aStartAngle?: number, aEndAngle?: number, aClockwise?: boolean) {
+    constructor(
+        aX?: number,
+        aY?: number,
+        aRadius?: number,
+        aStartAngle?: number,
+        aEndAngle?: number,
+        aClockwise?: boolean,
+    ) {
         super(aX, aY, aRadius, aRadius, aStartAngle, aEndAngle, aClockwise);
         this.type = 'ArcCurve';
     }
@@ -29,7 +36,7 @@ export class ArcCurve2D extends EllipseCurve2D {
             const sweep = this.aEndAngle - this.aStartAngle;
             divisions = Curve.segmentsCount(
                 Math.abs(sweep) * this.xRadius,
-                Math.ceil(Math.abs(sweep) / _Math.PI_2) * 40
+                Math.ceil(Math.abs(sweep) / _Math.PI_2) * 40,
             );
         }
         return super.getPoints(divisions);

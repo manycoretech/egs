@@ -1,4 +1,4 @@
-import type { } from '@qunhe/egs-typings';
+import type {} from '@qunhe/egs-typings';
 export * from './src/EGS';
 import * as EGS from './src/EGS';
 export default EGS;

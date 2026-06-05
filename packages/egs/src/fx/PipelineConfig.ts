@@ -25,8 +25,8 @@ import type { Texture } from '../elements/textures/Texture';
 
 export interface PipelineConfig {
     MSAA: {
-        enabled: ConfigCell<boolean>
-    },
+        enabled: ConfigCell<boolean>;
+    };
     SceneClip: ReturnType<SceneClipPlugin['createConfig']>;
     AO: ReturnType<AOPlugin['createConfig']>;
     Background: ReturnType<BackgroundPlugin['createConfig']>;
@@ -53,8 +53,8 @@ export function createPipelineConfig(pipeline: PostPipeline, renderingConfig: Re
                         renderingConfig.MSAA = v;
                         pipeline.resetContentCache();
                     }
-                }
-            }
+                },
+            },
         },
         SceneClip: pipeline.sceneClipPlugin.createConfig(),
         AO: pipeline.aoPlugin.createConfig(),
@@ -78,123 +78,123 @@ export function createPipelineConfig(pipeline: PostPipeline, renderingConfig: Re
  * @deprecated
  */
 export interface DeprecatedPipelineConfig {
-    isPreferMultiSampling: ConfigCell<boolean>,
+    isPreferMultiSampling: ConfigCell<boolean>;
     debug: {
-        enabled: ConfigCell<boolean>,
-    }
+        enabled: ConfigCell<boolean>;
+    };
     renderMode: {
-        type: ConfigCell<RenderMode>,
+        type: ConfigCell<RenderMode>;
     };
     deferred: {
-        enabled: ConfigCell<boolean>,
-        enableWhiteBalance: ConfigCell<boolean>,
-        enablePseudoColor: ConfigCell<boolean>,
+        enabled: ConfigCell<boolean>;
+        enableWhiteBalance: ConfigCell<boolean>;
+        enablePseudoColor: ConfigCell<boolean>;
         pseudoColorConfig: ConfigCell<{
-            colors: number[],
-            gradations: number[],
-        }>,
-        temperature: ConfigCell<number>,
-        autoExposedEnabled: ConfigCell<boolean>,
-        keyMinuend: ConfigCell<number>,
-        gamma: ConfigCell<number>,
-        multiplier: ConfigCell<number>,
-        burnValue: ConfigCell<number>,
-        contrast: ConfigCell<number>,
-    }
+            colors: number[];
+            gradations: number[];
+        }>;
+        temperature: ConfigCell<number>;
+        autoExposedEnabled: ConfigCell<boolean>;
+        keyMinuend: ConfigCell<number>;
+        gamma: ConfigCell<number>;
+        multiplier: ConfigCell<number>;
+        burnValue: ConfigCell<number>;
+        contrast: ConfigCell<number>;
+    };
     OIT: {
-        enabled: ConfigCell<boolean>
-    }
+        enabled: ConfigCell<boolean>;
+    };
     outline: {
-        useMrt: ConfigCell<boolean>,
-        highQuality: ConfigCell<boolean>,
-        enablePhongSolidMode: ConfigCell<boolean>,
-        enableDepth: ConfigCell<boolean>,
-        outlineMaskEnabled: ConfigCell<boolean>,
-        outlineColor: ConfigCell<Color>,
-        solidBaseColor: ConfigCell<Color>,
-        edgeThickness: ConfigCell<number>,
-        indexEdgeThickness: ConfigCell<number>,
-        normalEdgeThickness: ConfigCell<number>,
-        depthEdgeThickness: ConfigCell<number>,
-        coefficient: ConfigCell<number>,
-        normalCoefficient: ConfigCell<number>,
-        indexCoefficient: ConfigCell<number>,
-        depthCoefficient: ConfigCell<number>,
+        useMrt: ConfigCell<boolean>;
+        highQuality: ConfigCell<boolean>;
+        enablePhongSolidMode: ConfigCell<boolean>;
+        enableDepth: ConfigCell<boolean>;
+        outlineMaskEnabled: ConfigCell<boolean>;
+        outlineColor: ConfigCell<Color>;
+        solidBaseColor: ConfigCell<Color>;
+        edgeThickness: ConfigCell<number>;
+        indexEdgeThickness: ConfigCell<number>;
+        normalEdgeThickness: ConfigCell<number>;
+        depthEdgeThickness: ConfigCell<number>;
+        coefficient: ConfigCell<number>;
+        normalCoefficient: ConfigCell<number>;
+        indexCoefficient: ConfigCell<number>;
+        depthCoefficient: ConfigCell<number>;
     };
     toon: {
-        tooniness: ConfigCell<number>,
-        toonColor: ConfigCell<Color>,
-        diffuseColor: ConfigCell<Color>,
-        smoothnessMin: ConfigCell<number>,
-        smoothnessMax: ConfigCell<number>,
+        tooniness: ConfigCell<number>;
+        toonColor: ConfigCell<Color>;
+        diffuseColor: ConfigCell<Color>;
+        smoothnessMin: ConfigCell<number>;
+        smoothnessMax: ConfigCell<number>;
     };
     stylizeFilter: {
-        enabled: ConfigCell<boolean>,
+        enabled: ConfigCell<boolean>;
         /** @deprecated use target instead */
-        applyToBackgroundAndGround: ConfigCell<boolean>,
-        target: ConfigCell<FilterTarget>,
-        brightness: ConfigCell<number>,
-        contrast: ConfigCell<number>,
-        saturation: ConfigCell<number>,
-        hue: ConfigCell<number>
-        colorBalance: ConfigCell<Vector3>,
-        texture: ConfigCell<Texture | null>,
-        lut: ConfigCell<Texture | null>,
+        applyToBackgroundAndGround: ConfigCell<boolean>;
+        target: ConfigCell<FilterTarget>;
+        brightness: ConfigCell<number>;
+        contrast: ConfigCell<number>;
+        saturation: ConfigCell<number>;
+        hue: ConfigCell<number>;
+        colorBalance: ConfigCell<Vector3>;
+        texture: ConfigCell<Texture | null>;
+        lut: ConfigCell<Texture | null>;
     };
     ao: {
-        enabled: ConfigCell<boolean>,
-        aoBias: ConfigCell<number>,
-        aoRadius: ConfigCell<number>,
-        aoIntensity: ConfigCell<number>,
-        blurKernelRadius: ConfigCell<number>,
-        blurEdgeSharpness: ConfigCell<number>
+        enabled: ConfigCell<boolean>;
+        aoBias: ConfigCell<number>;
+        aoRadius: ConfigCell<number>;
+        aoIntensity: ConfigCell<number>;
+        blurKernelRadius: ConfigCell<number>;
+        blurEdgeSharpness: ConfigCell<number>;
     };
     planarShadow: {
-        enabled: ConfigCell<boolean>,
-        downScale: ConfigCell<number>,
-        intensity: ConfigCell<number>,
-        blurKernelRadius: ConfigCell<number>,
-        maxGroundThickness: ConfigCell<number>,
-        maxGroundHeight: ConfigCell<number>,
+        enabled: ConfigCell<boolean>;
+        downScale: ConfigCell<number>;
+        intensity: ConfigCell<number>;
+        blurKernelRadius: ConfigCell<number>;
+        maxGroundThickness: ConfigCell<number>;
+        maxGroundHeight: ConfigCell<number>;
     };
     shadow: {
-        enableTemporal: ConfigCell<boolean>,
-        targetJitterSize: ConfigCell<number>,
+        enableTemporal: ConfigCell<boolean>;
+        targetJitterSize: ConfigCell<number>;
     };
     highLight: {
-        enabled: ConfigCell<boolean>,
-        width: ConfigCell<number>,
-        colorA: ConfigCell<Color>,
-        colorB: ConfigCell<Color>,
-        borderOpacity: ConfigCell<number>,
-        innerOpacity: ConfigCell<number>,
+        enabled: ConfigCell<boolean>;
+        width: ConfigCell<number>;
+        colorA: ConfigCell<Color>;
+        colorB: ConfigCell<Color>;
+        borderOpacity: ConfigCell<number>;
+        innerOpacity: ConfigCell<number>;
     };
     transparentLine: {
-        opacity: ConfigCell<number>,
-        transparentColor: ConfigCell<Color>,
-        lineColor: ConfigCell<Color>,
-        edgeThreshold: ConfigCell<number>,
-        drawWithOriginalMaterial: ConfigCell<boolean>,
-        drawAdditionalLines: ConfigCell<boolean>
+        opacity: ConfigCell<number>;
+        transparentColor: ConfigCell<Color>;
+        lineColor: ConfigCell<Color>;
+        edgeThreshold: ConfigCell<number>;
+        drawWithOriginalMaterial: ConfigCell<boolean>;
+        drawAdditionalLines: ConfigCell<boolean>;
     };
     taa: {
-        enabled: ConfigCell<boolean>,
-        maxSample: ConfigCell<number>,
-        outputSample: ConfigCell<number>,
-        waitingTime: ConfigCell<number>,
+        enabled: ConfigCell<boolean>;
+        maxSample: ConfigCell<number>;
+        outputSample: ConfigCell<number>;
+        waitingTime: ConfigCell<number>;
     };
     staticFrameCache: {
-        enabled: ConfigCell<boolean>,
+        enabled: ConfigCell<boolean>;
     };
     composite: {
-        enabled: ConfigCell<boolean>,
-        multiSamplingEnabled: ConfigCell<boolean>,
-        staticFrameCacheEnabled: ConfigCell<boolean>,
+        enabled: ConfigCell<boolean>;
+        multiSamplingEnabled: ConfigCell<boolean>;
+        staticFrameCacheEnabled: ConfigCell<boolean>;
     };
     sceneClip: {
-        enabled: ConfigCell<boolean>,
-        clippingEnabled: ConfigCell<boolean>,
-        clippingPlanes: ConfigCell<Plane[]>,
+        enabled: ConfigCell<boolean>;
+        clippingEnabled: ConfigCell<boolean>;
+        clippingPlanes: ConfigCell<Plane[]>;
     };
     Splatting: PipelineConfig['Splatting'];
     /**
@@ -204,7 +204,13 @@ export interface DeprecatedPipelineConfig {
     __INTERNAL__: PipelineConfig;
 }
 
-export function createDeprecatedPipelineConfig(pipeline: PostPipeline, renderingConfig: RenderingConfig, updateGpuDrivenEnabled?: (value: boolean) => void, updateTlsFlag?: (value: boolean) => void, optConfig?: PipelineConfig): DeprecatedPipelineConfig {
+export function createDeprecatedPipelineConfig(
+    pipeline: PostPipeline,
+    renderingConfig: RenderingConfig,
+    updateGpuDrivenEnabled?: (value: boolean) => void,
+    updateTlsFlag?: (value: boolean) => void,
+    optConfig?: PipelineConfig,
+): DeprecatedPipelineConfig {
     let config: PipelineConfig;
     if (!optConfig) {
         config = createPipelineConfig(pipeline, renderingConfig);
@@ -308,14 +314,14 @@ export function createDeprecatedPipelineConfig(pipeline: PostPipeline, rendering
         debug: {
             enabled: {
                 get: () => false,
-                set: (_v: boolean) => { },
+                set: (_v: boolean) => {},
             },
         },
         isPreferMultiSampling: config.Composite.multiSamplingEnabled,
         renderMode: {
             type: {
                 get: () => pipeline.currentRenderMode,
-                set: (v) => {
+                set: v => {
                     pipeline.currentRenderMode = v;
                     resetUserRenderMode();
                     switch (v) {
@@ -377,7 +383,7 @@ export function createDeprecatedPipelineConfig(pipeline: PostPipeline, rendering
                     config.Deferred.pseudoColors.set(colors);
                     config.Deferred.pseudoGradations.set(gradations);
                 },
-            }
+            },
         },
         outline: {
             ...config.Outline,
@@ -396,8 +402,8 @@ export function createDeprecatedPipelineConfig(pipeline: PostPipeline, rendering
                 },
                 get() {
                     return config.Stylize.target.get() === FilterTarget.All;
-                }
-            }
+                },
+            },
         },
         toon: config.Forward.toon,
         ao: config.AO,
@@ -405,7 +411,7 @@ export function createDeprecatedPipelineConfig(pipeline: PostPipeline, rendering
             ...config.Forward.planarShadow,
             downScale: {
                 get: () => 0,
-                set: (_v: number) => { },
+                set: (_v: number) => {},
             },
             enabled: {
                 get: () => userConfig.isPlanarShadowEnabled,

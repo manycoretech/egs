@@ -60,7 +60,9 @@ function createFragment(hightQuality: boolean) {
         float alpha = 0.0;
         vec2 offset = width * texelSize;
 
-        ${hightQuality ? `
+        ${
+            hightQuality
+                ? `
             float sum = 0.0;
             // sample near the border and give them higher weight
             sum += 8.0 * texture2D(map, vUv + vec2(texelSize.x, 0.0)).r;               // sample around the frag
@@ -79,7 +81,8 @@ function createFragment(hightQuality: boolean) {
             float weight = 1.0 - clamp(sum / MAX_SAMPLER_NUM, 0.0, 1.0);
             // smooth the result to make AA
             alpha = -sin(PI2 * weight);
-        ` : `
+        `
+                : `
             float sum = 0.0;
             // sample around the frag, if any sample is not zero, this texel is on the line.
             sum += texture2D(map, vUv + vec2(offset.x, 0)).r;
@@ -92,7 +95,8 @@ function createFragment(hightQuality: boolean) {
             sum += texture2D(map, vUv + vec2(offset.x, -offset.y)).r;
             sum += texture2D(map, vUv + vec2(-offset.x, -offset.y)).r;
             alpha = 1.0 - step(sum, 0.1);
-        `}
+        `
+        }
 
         float edge = step(0.5, texture2D(map, vUv).r);
         gl_FragColor = (1.0 - edge) * vec4(borderColor, alpha * borderOpacity) + edge * vec4(innerColor, innerOpacity);

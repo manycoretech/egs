@@ -13,8 +13,8 @@ export class ArrayCamera extends ElementEventDispatcher {
      */
     isArrayCamera = true;
     /**
-    * An array of cameras.
-    */
+     * An array of cameras.
+     */
     cameras: Camera3D[];
 
     constructor(arr: Camera3D[] = []) {

@@ -18,7 +18,11 @@ export interface WGLBufferData {
 // If a buffer is created, a WebGLBuffer object with information of data type and bytes would be returned.
 // This class instances will be manged by BufferManager.
 export class WGLBuffer {
-    static createWGLBufferData(gl: WebGLRenderingContext | WebGL2RenderingContext, attribute: BufferAttribute, bufferType: number): WGLBufferData {
+    static createWGLBufferData(
+        gl: WebGLRenderingContext | WebGL2RenderingContext,
+        attribute: BufferAttribute,
+        bufferType: number,
+    ): WGLBufferData {
         const array = attribute.array;
         const usage = attribute.dynamic ? gl.DYNAMIC_DRAW : gl.STATIC_DRAW;
 
@@ -66,22 +70,32 @@ export class WGLBuffer {
         };
     }
 
-    static updateWGLBufferData(gl: WebGLRenderingContext | WebGL2RenderingContext, buffer: WebGLBuffer, attribute: BufferAttribute, bufferType: number): void {
+    static updateWGLBufferData(
+        gl: WebGLRenderingContext | WebGL2RenderingContext,
+        buffer: WebGLBuffer,
+        attribute: BufferAttribute,
+        bufferType: number,
+    ): void {
         const array = attribute.array;
         const updateRange = attribute.updateRange;
         gl.bindBuffer(bufferType, buffer);
 
         if (attribute.dynamic === false) {
             gl.bufferData(bufferType, array, gl.STATIC_DRAW);
-        } else if (updateRange.count === - 1) {
+        } else if (updateRange.count === -1) {
             // Not using update ranges
             gl.bufferSubData(bufferType, 0, array);
         } else if (updateRange.count === 0) {
-            logger.invalidInput('Dynamic EGS.BufferAttribute marked as needsUpdate but updateRange.count is 0, ensure you are using set methods or updating manually.');
+            logger.invalidInput(
+                'Dynamic EGS.BufferAttribute marked as needsUpdate but updateRange.count is 0, ensure you are using set methods or updating manually.',
+            );
         } else {
-            gl.bufferSubData(bufferType, updateRange.offset * array.BYTES_PER_ELEMENT,
-                array.subarray(updateRange.offset, updateRange.offset + updateRange.count));
-            updateRange.count = - 1; // reset range
+            gl.bufferSubData(
+                bufferType,
+                updateRange.offset * array.BYTES_PER_ELEMENT,
+                array.subarray(updateRange.offset, updateRange.offset + updateRange.count),
+            );
+            updateRange.count = -1; // reset range
         }
     }
 }

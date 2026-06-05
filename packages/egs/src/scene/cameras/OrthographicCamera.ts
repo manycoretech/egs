@@ -27,52 +27,87 @@ export class OrthographicCamera extends Camera3D {
     /**
      * Scale width and height of view frustum.
      */
-    get zoom() { return this._zoom; }
-    set zoom(v) { this._zoom = v; this.notifyCameraChanged(); }
+    get zoom() {
+        return this._zoom;
+    }
+    set zoom(v) {
+        this._zoom = v;
+        this.notifyCameraChanged();
+    }
 
     @cameraState()
     protected _left: number;
     /**
      * Distance from projective plane center to left side.
      */
-    get left() { return this._left; }
-    set left(v) { this._left = v; this.notifyCameraChanged(); }
+    get left() {
+        return this._left;
+    }
+    set left(v) {
+        this._left = v;
+        this.notifyCameraChanged();
+    }
 
     @cameraState()
     protected _right: number;
     /**
      * Distance from projective plane center to right side.
      */
-    get right() { return this._right; }
-    set right(v) { this._right = v; this.notifyCameraChanged(); }
+    get right() {
+        return this._right;
+    }
+    set right(v) {
+        this._right = v;
+        this.notifyCameraChanged();
+    }
     /**
      * Distance from projective plane center to top side.
      */
     @cameraState()
     protected _top: number;
-    get top() { return this._top; }
-    set top(v) { this._top = v; this.notifyCameraChanged(); }
+    get top() {
+        return this._top;
+    }
+    set top(v) {
+        this._top = v;
+        this.notifyCameraChanged();
+    }
     /**
      * Distance from projective plane center to bottom side.
      */
     @cameraState()
     protected _bottom: number;
-    get bottom() { return this._bottom; }
-    set bottom(v) { this._bottom = v; this.notifyCameraChanged(); }
+    get bottom() {
+        return this._bottom;
+    }
+    set bottom(v) {
+        this._bottom = v;
+        this.notifyCameraChanged();
+    }
     /**
      * Distance from camera position to near plane of view frustum.
      */
     @cameraState()
     private _near: number;
-    get near() { return this._near; }
-    set near(v) { this._near = v; this.notifyCameraChanged(); }
+    get near() {
+        return this._near;
+    }
+    set near(v) {
+        this._near = v;
+        this.notifyCameraChanged();
+    }
     /**
      * Distance from camera position to far plane of view frustum.
      */
     @cameraState()
     private _far: number;
-    get far() { return this._far; }
-    set far(v) { this._far = v; this.notifyCameraChanged(); }
+    get far() {
+        return this._far;
+    }
+    set far(v) {
+        this._far = v;
+        this.notifyCameraChanged();
+    }
     /**
      * Frustum window specification or null.
      * This is set using the {@link setViewOffset| setViewOffset } method and cleared using {@link clearViewOffset| clearViewOffset }.
@@ -85,13 +120,13 @@ export class OrthographicCamera extends Camera3D {
         ContentBridge.cameraInit(this);
         this.zoom = 1;
 
-        this.left = (left !== undefined) ? left : - 1;
-        this.right = (right !== undefined) ? right : 1;
-        this.top = (top !== undefined) ? top : 1;
-        this.bottom = (bottom !== undefined) ? bottom : - 1;
+        this.left = left !== undefined ? left : -1;
+        this.right = right !== undefined ? right : 1;
+        this.top = top !== undefined ? top : 1;
+        this.bottom = bottom !== undefined ? bottom : -1;
 
-        this.near = (near !== undefined) ? near : 0.1;
-        this.far = (far !== undefined) ? far : 2000;
+        this.near = near !== undefined ? near : 0.1;
+        this.far = far !== undefined ? far : 2000;
 
         this.updateProjectionMatrix();
     }
@@ -128,7 +163,7 @@ export class OrthographicCamera extends Camera3D {
                 offsetX: 0,
                 offsetY: 0,
                 width: 1,
-                height: 1
+                height: 1,
             };
         }
 
@@ -158,7 +193,7 @@ export class OrthographicCamera extends Camera3D {
      * this method will have to be called for the changes to take effect.
      * @param { Object } jitter if jitters need to be applied on this camera, this parameter need to be given.
      */
-    updateProjectionMatrix(jitter?: { offset: Vector2, canvas_size: Vector2 }) {
+    updateProjectionMatrix(jitter?: { offset: Vector2; canvas_size: Vector2 }) {
         const dx = (this.right - this.left) / (2 * this.zoom);
         const dy = (this.top - this.bottom) / (2 * this.zoom);
         const cx = (this.right + this.left) / 2;
@@ -182,8 +217,8 @@ export class OrthographicCamera extends Camera3D {
         }
 
         if (jitter) {
-            const offsetX = (jitter.offset.x - 0.5) * (right - left) / jitter.canvas_size.x;
-            const offsetY = (jitter.offset.y - 0.5) * (top - bottom) / jitter.canvas_size.y;
+            const offsetX = ((jitter.offset.x - 0.5) * (right - left)) / jitter.canvas_size.x;
+            const offsetY = ((jitter.offset.y - 0.5) * (top - bottom)) / jitter.canvas_size.y;
             left += offsetX;
             right += offsetX;
             top += offsetY;
@@ -217,7 +252,7 @@ export class OrthographicCamera extends Camera3D {
      */
     castRay(ray: Ray, coords: Vector2) {
         ray.origin.set(coords.x, coords.y, (this.near + this.far) / (this.near - this.far)).unproject(this); // set origin in plane of camera
-        ray.direction.set(0, 0, - 1).transformDirection(this.matrixWorld);
+        ray.direction.set(0, 0, -1).transformDirection(this.matrixWorld);
     }
     /**
      * Store the attributes of this class into string as serializing format.
@@ -225,9 +260,7 @@ export class OrthographicCamera extends Camera3D {
      */
     serialize(ctx: Serializer) {
         super.serialize(ctx);
-        ctx.puts<OrthographicCamera>([
-            'zoom', 'left', 'right', 'top', 'bottom', 'near', 'far'
-        ]);
+        ctx.puts<OrthographicCamera>(['zoom', 'left', 'right', 'top', 'bottom', 'near', 'far']);
         ctx.putRaw('view', ctx.deepClone(this.view));
     }
     /**
@@ -236,9 +269,7 @@ export class OrthographicCamera extends Camera3D {
      */
     deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
-        ctx.reads<OrthographicCamera>([
-            'zoom', 'left', 'right', 'top', 'bottom', 'near', 'far'
-        ]);
+        ctx.reads<OrthographicCamera>(['zoom', 'left', 'right', 'top', 'bottom', 'near', 'far']);
         this.view = ctx.readRaw('view');
     }
     /**

@@ -24,7 +24,7 @@ export interface CylinderShapeParameter {
 }
 
 export function cylinder(param: Partial<CylinderShapeParameter>): BufferGeometry {
-    return new CylinderBufferGeometry(...Object.values(param) as any);
+    return new CylinderBufferGeometry(...(Object.values(param) as any));
 }
 
 export function cone(params: Omit<Partial<CylinderShapeParameter>, 'radiusTop'>) {
@@ -43,7 +43,16 @@ class CylinderBufferGeometry extends BufferGeometry {
         thetaLength: number;
     };
 
-    constructor(radiusTop: number = 1, radiusBottom: number = 1, height: number = 1, radialSegments: number = 8, heightSegments: number = 1, openEnded: boolean = false, thetaStart: number = 0, thetaLength: number = Math.PI * 2) {
+    constructor(
+        radiusTop: number = 1,
+        radiusBottom: number = 1,
+        height: number = 1,
+        radialSegments: number = 8,
+        heightSegments: number = 1,
+        openEnded: boolean = false,
+        thetaStart: number = 0,
+        thetaLength: number = Math.PI * 2,
+    ) {
         super();
         this.type = 'CylinderBufferGeometry';
 
@@ -55,7 +64,7 @@ class CylinderBufferGeometry extends BufferGeometry {
             heightSegments,
             openEnded,
             thetaStart,
-            thetaLength
+            thetaLength,
         };
 
         const scope = this;
@@ -117,7 +126,7 @@ class CylinderBufferGeometry extends BufferGeometry {
 
                     // vertex
                     vertex.x = radius * sinTheta;
-                    vertex.y = - v * height + halfHeight;
+                    vertex.y = -v * height + halfHeight;
                     vertex.z = radius * cosTheta;
                     vertices.push(vertex.x, vertex.y, vertex.z);
 
@@ -165,8 +174,8 @@ class CylinderBufferGeometry extends BufferGeometry {
             const uv = new Vector2();
             const vertex = new Vector3();
             let groupCount = 0;
-            const radius = (top === true) ? radiusTop : radiusBottom;
-            const sign = (top === true) ? 1 : - 1;
+            const radius = top === true ? radiusTop : radiusBottom;
+            const sign = top === true ? 1 : -1;
 
             // save the index of the first center vertex
             const centerIndexStart = index;
@@ -202,8 +211,8 @@ class CylinderBufferGeometry extends BufferGeometry {
                 normals.push(0, sign, 0);
 
                 // uv
-                uv.x = (cosTheta * 0.5) + 0.5;
-                uv.y = (sinTheta * 0.5 * sign) + 0.5;
+                uv.x = cosTheta * 0.5 + 0.5;
+                uv.y = sinTheta * 0.5 * sign + 0.5;
                 uvs.push(uv.x, uv.y);
 
                 // increase index

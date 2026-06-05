@@ -10,15 +10,15 @@ export class SceneClipPlugin extends PipelinePlugin {
     private clippingEnabledCached: boolean = false;
     private clippingPlanesCached: Plane[] = [];
 
-    destroy() { }
+    destroy() {}
 
-    updateEffect() { }
+    updateEffect() {}
 
-    updateFrameSize() { }
+    updateFrameSize() {}
 
-    updateGraphHash() { }
+    updateGraphHash() {}
 
-    updateRenderGraph() { }
+    updateRenderGraph() {}
 
     setSceneClip(scene: Scene3D) {
         if (!this.enabled) {

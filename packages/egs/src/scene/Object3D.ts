@@ -6,9 +6,7 @@ import { Vector3 } from '../math/Vector3';
 import { WatchedVector3 } from '../math/WatchedVector3';
 import type { Scene3D } from '../scene/Scene3D';
 import { EventType, ElementEventDispatcher, type Listener } from '../utils/EventDispatcher';
-import type {
-    Deserializer, Serializer, SerializerableDelegatedAsReference
-} from '../utils/Serialization';
+import type { Deserializer, Serializer, SerializerableDelegatedAsReference } from '../utils/Serialization';
 import type { Nullable } from '../utils/Utils';
 import { Layers, LayerChangeEvent } from './tools/Layers';
 import { TypeAssert } from './tools/TypeAssert';
@@ -276,13 +274,15 @@ export class Object3D extends ElementEventDispatcher implements SerializerableDe
     private _position = new WatchedVector3(0, 0, 0);
     private _rotation = new Euler();
     private _scale = new WatchedVector3(1, 1, 1);
-    private _quaternion = new Quaternion();             // a vector of x,y,z and w
-    protected _matrix = new Matrix4();                  // model matrix
+    private _quaternion = new Quaternion(); // a vector of x,y,z and w
+    protected _matrix = new Matrix4(); // model matrix
 
     constructor() {
         super();
         this.id = object3DId++;
-        const dispatcher = () => { this.setMatrixDirty(); };
+        const dispatcher = () => {
+            this.setMatrixDirty();
+        };
         this._position.onChange = dispatcher;
         this._scale.onChange = dispatcher;
         linkRotation(this._rotation, this.quaternion, dispatcher);
@@ -435,7 +435,8 @@ export class Object3D extends ElementEventDispatcher implements SerializerableDe
      * @param {number} updateID This number is used to identify the render.
      */
     updateWorldRenderData(updateID: number): boolean {
-        if (this.matrixWorldNeedsUpdate ||
+        if (
+            this.matrixWorldNeedsUpdate ||
             (this.parent !== null && this.parent.worldMatrixUpdateTimestamp === updateID)
         ) {
             if (this.scene !== null) {
@@ -680,7 +681,8 @@ export class Object3D extends ElementEventDispatcher implements SerializerableDe
             this.updateGroupLayer([object]);
         }
 
-        if (this.scene !== null) { // attach to scene
+        if (this.scene !== null) {
+            // attach to scene
             if (object.scene !== null) {
                 throw 'object has attached to another scene, remove it before add to another one';
             } else {
@@ -703,7 +705,7 @@ export class Object3D extends ElementEventDispatcher implements SerializerableDe
      */
     remove(object: Object3D) {
         const index = this.children.indexOf(object);
-        if (index !== - 1) {
+        if (index !== -1) {
             ContentBridge.sceneNodeRemove(this, object);
             this.children.splice(index, 1);
 
@@ -775,7 +777,9 @@ export class Object3D extends ElementEventDispatcher implements SerializerableDe
      * @param {any} value Value of the given property.
      */
     getObjectByProperty(name: string, value: any): Object3D {
-        if ((this as any)[name] === value) { return this; }
+        if ((this as any)[name] === value) {
+            return this;
+        }
         for (let i = 0, l = this.children.length; i < l; i++) {
             const child = this.children[i];
             const object = child.getObjectByProperty(name, value);
@@ -853,7 +857,9 @@ export class Object3D extends ElementEventDispatcher implements SerializerableDe
      * @param {function} callback A function with as first argument an object3D object.
      */
     traverseVisible(callback: (object: Object3D) => any) {
-        if (this.visible === false) { return; }
+        if (this.visible === false) {
+            return;
+        }
         callback(this);
         const children = this.children;
         for (let i = 0, l = children.length; i < l; i++) {
@@ -969,9 +975,7 @@ export class Object3D extends ElementEventDispatcher implements SerializerableDe
      * It may cause that this method can not be used directly.
      */
     serialize(ctx: Serializer) {
-        ctx.puts<Object3D>([
-            'name', 'visible', 'layers', 'matrix', 'children'
-        ]);
+        ctx.puts<Object3D>(['name', 'visible', 'layers', 'matrix', 'children']);
     }
     /**
      * Parse the data for this class from string according to serializing format.
@@ -979,9 +983,7 @@ export class Object3D extends ElementEventDispatcher implements SerializerableDe
      * It may cause that this method can not be used directly.
      */
     deserialize(ctx: Deserializer) {
-        ctx.reads<Object3D>([
-            'name', 'visible', 'matrix', 'children'
-        ]);
+        ctx.reads<Object3D>(['name', 'visible', 'matrix', 'children']);
         // this should set manually, because the layer not support setter and wasm not sync change
         this.layers.setSerializeData(ctx.readCustom('layers'));
         this.matrix.decompose(this.position, this.quaternion, this.scale);
@@ -1000,7 +1002,9 @@ export class Object3D extends ElementEventDispatcher implements SerializerableDe
      * @param {boolean} recursive if true, descendants of the object are also cloned. Default is true.
      */
     copy(source: Object3D, recursive?: boolean) {
-        if (recursive === undefined) { recursive = true; }
+        if (recursive === undefined) {
+            recursive = true;
+        }
         this.name = source.name;
         this.up.copy(source.up);
         this.position.copy(source.position);
@@ -1031,7 +1035,6 @@ export class Object3D extends ElementEventDispatcher implements SerializerableDe
         scene.onNodeDelete(this);
         this.scene = null;
     }
-
 }
 
 export abstract class CombinedObjectGroup extends Object3D {

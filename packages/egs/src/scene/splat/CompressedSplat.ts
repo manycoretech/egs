@@ -30,9 +30,14 @@ export class CompressedSplat extends Splat {
     sh4Tex?: SourceTexture;
 
     constructor(
-        counts: number, shDegree: number,
-        splat1Tex: SourceTexture, splat2Tex: SourceTexture,
-        sh1Tex?: SourceTexture, sh2Tex?: SourceTexture, sh3Tex?: SourceTexture, sh4Tex?: SourceTexture,
+        counts: number,
+        shDegree: number,
+        splat1Tex: SourceTexture,
+        splat2Tex: SourceTexture,
+        sh1Tex?: SourceTexture,
+        sh2Tex?: SourceTexture,
+        sh3Tex?: SourceTexture,
+        sh4Tex?: SourceTexture,
     ) {
         super(counts, shDegree);
         this.splat1Tex = splat1Tex;
@@ -102,22 +107,32 @@ export class CompressedSplat extends Splat {
     createUnpackSHShader() {
         const { shDegree } = this;
         return `
-            ${shDegree > 0 ? `
+            ${
+                shDegree > 0
+                    ? `
                 ivec2 coord = ivec2(index % extraTex2_width, index / extraTex1_width);
                 uvec4 pixel_0 = texelFetch(extraTex2, coord, 0);
                 vec3 sh1_0 = unpack111011s(pixel_0.x);
                 vec3 sh1_1 = unpack111011s(pixel_0.y);
                 vec3 sh1_2 = unpack111011s(pixel_0.z);
-            ` : ''}
-            ${shDegree > 1 ? `
+            `
+                    : ''
+            }
+            ${
+                shDegree > 1
+                    ? `
                 uvec4 pixel_1 = texelFetch(extraTex3, coord, 0);
                 vec3 sh2_0 = unpack111011s(pixel_0.w);
                 vec3 sh2_1 = unpack111011s(pixel_1.x);
                 vec3 sh2_2 = unpack111011s(pixel_1.y);
                 vec3 sh2_3 = unpack111011s(pixel_1.z);
                 vec3 sh2_4 = unpack111011s(pixel_1.w);
-            ` : ``}
-            ${shDegree > 2 ? `
+            `
+                    : ``
+            }
+            ${
+                shDegree > 2
+                    ? `
                 uvec4 pixel_2 = texelFetch(extraTex4, coord, 0);
                 uvec4 pixel_3 = texelFetch(extraTex5, coord, 0);
                 vec3 sh3_0 = unpack111011s(pixel_2.x);
@@ -127,7 +142,9 @@ export class CompressedSplat extends Splat {
                 vec3 sh3_4 = unpack111011s(pixel_3.x);
                 vec3 sh3_5 = unpack111011s(pixel_3.y);
                 vec3 sh3_6 = unpack111011s(pixel_3.z);
-            ` : ``}
+            `
+                    : ``
+            }
         `;
     }
 

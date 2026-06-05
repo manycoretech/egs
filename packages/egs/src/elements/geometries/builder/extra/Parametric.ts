@@ -30,7 +30,7 @@ export class ParametricBufferGeometry extends BufferGeometry {
         this.parameters = {
             func,
             slices,
-            stacks
+            stacks,
         };
 
         // buffers

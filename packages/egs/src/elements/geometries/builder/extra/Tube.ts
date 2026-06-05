@@ -13,7 +13,13 @@ export interface TubeShapeParameter {
 }
 
 export function tube(params: Partial<TubeShapeParameter>): BufferGeometry {
-    return new TubeBufferGeometry(params.path!, params.tubularSegments, params.radius, params.radialSegments, params.closed);
+    return new TubeBufferGeometry(
+        params.path!,
+        params.tubularSegments,
+        params.radius,
+        params.radialSegments,
+        params.closed,
+    );
 }
 
 export class TubeBufferGeometry extends BufferGeometry {
@@ -34,14 +40,20 @@ export class TubeBufferGeometry extends BufferGeometry {
      * @param radialSegments The number of segments that make up the cross-section, default is 8.
      * @param closed Boolean Is the tube open or closed, default is false.
      */
-    constructor(path: Curve<Vector3>, tubularSegments: number = 64, radius: number = 1, radialSegments: number = 8, closed: boolean = false) {
+    constructor(
+        path: Curve<Vector3>,
+        tubularSegments: number = 64,
+        radius: number = 1,
+        radialSegments: number = 8,
+        closed: boolean = false,
+    ) {
         super();
         this.parameters = {
             path,
             tubularSegments,
             radius,
             radialSegments,
-            closed
+            closed,
         };
         const frames = path.computeFrenetFrames(tubularSegments, closed);
 
@@ -82,7 +94,7 @@ export class TubeBufferGeometry extends BufferGeometry {
             // at the regular position on the given path
             //
             // if the geometry is closed, duplicate the first row of vertices and normals (uvs will differ)
-            generateSegment((closed === false) ? tubularSegments : 0);
+            generateSegment(closed === false ? tubularSegments : 0);
 
             // uvs are generated in a separate function.
             // this makes it easy compute correct values for closed geometries
@@ -102,14 +114,14 @@ export class TubeBufferGeometry extends BufferGeometry {
 
             // generate normals and vertices for the current segment
             for (j = 0; j <= radialSegments; j++) {
-                const v = j / radialSegments * Math.PI * 2;
+                const v = (j / radialSegments) * Math.PI * 2;
                 const sin = Math.sin(v);
-                const cos = - Math.cos(v);
+                const cos = -Math.cos(v);
 
                 // normal
-                normal.x = (cos * N.x + sin * B.x);
-                normal.y = (cos * N.y + sin * B.y);
-                normal.z = (cos * N.z + sin * B.z);
+                normal.x = cos * N.x + sin * B.x;
+                normal.y = cos * N.y + sin * B.y;
+                normal.z = cos * N.z + sin * B.z;
                 normal.normalize();
                 normals.push(normal.x, normal.y, normal.z);
 

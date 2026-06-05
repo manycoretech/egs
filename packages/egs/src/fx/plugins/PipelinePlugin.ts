@@ -10,7 +10,9 @@ export interface ConfigCell<T> {
     set: (value: T) => void;
 }
 
-interface ConfigCellObject { [key: string]: ConfigCell<any> | ConfigCellObject }
+interface ConfigCellObject {
+    [key: string]: ConfigCell<any> | ConfigCellObject;
+}
 
 export interface IEffectConfig {
     isPerformanceSlow: boolean;
@@ -21,12 +23,12 @@ export interface IEffectConfig {
 }
 
 export interface DrivenCullingConfig {
-    frustumCullingEnabled: boolean,
-    occlusionCullingEnabled: boolean,
-    detailCullingEnabled: boolean,
-    layersCullingEnabled: boolean,
-    triCullingEnabled: boolean,
-    occlusionCullingBias: number,
+    frustumCullingEnabled: boolean;
+    occlusionCullingEnabled: boolean;
+    detailCullingEnabled: boolean;
+    layersCullingEnabled: boolean;
+    triCullingEnabled: boolean;
+    occlusionCullingBias: number;
 }
 /**
  * Texture compression supported by render time compression
@@ -38,23 +40,23 @@ export enum TextureCompression {
     BC7,
 }
 export interface GpuDrivenConfig {
-    enabled: boolean,
-    requested: boolean, // flag to indicate if the user requested to enable it
-    textureCompression: TextureCompression,
+    enabled: boolean;
+    requested: boolean; // flag to indicate if the user requested to enable it
+    textureCompression: TextureCompression;
 }
 
 /**
  * some global rendering config.
  */
 export interface RenderingConfig {
-    tlsFlags: number,
-    gpuDriven: GpuDrivenConfig,
-    MSAA: boolean
+    tlsFlags: number;
+    gpuDriven: GpuDrivenConfig;
+    MSAA: boolean;
 }
 
 export interface PipelineContext {
-    renderingConfig: RenderingConfig,
-    drivenCullingConfig: DrivenCullingConfig
+    renderingConfig: RenderingConfig;
+    drivenCullingConfig: DrivenCullingConfig;
 }
 
 export abstract class PipelinePlugin {
@@ -102,7 +104,12 @@ export abstract class PipelinePlugin {
     abstract destroy(): void;
 
     abstract updateFrameSize(width: number, height: number): void;
-    abstract updateEffect(scene: SceneAdaptor, isFrameStable: boolean, isCameraStable: boolean, effectConfig: IEffectConfig): void;
+    abstract updateEffect(
+        scene: SceneAdaptor,
+        isFrameStable: boolean,
+        isCameraStable: boolean,
+        effectConfig: IEffectConfig,
+    ): void;
 
     abstract updateGraphHash(hasher: HashKeyBuilder): void;
     abstract updateRenderGraph(graph: RenderGraph, context: PipelineContext, depthPyramid: RenderTargetNode): void;

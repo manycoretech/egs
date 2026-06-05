@@ -32,7 +32,13 @@ export class DiskAreaLight extends AreaLight {
         return 'DiskAreaLight';
     }
 
-    constructor(color: number | string = 0xffffff, intensity: number = 1, width?: number, height?: number, specularStrength?: number) {
+    constructor(
+        color: number | string = 0xffffff,
+        intensity: number = 1,
+        width?: number,
+        height?: number,
+        specularStrength?: number,
+    ) {
         super(color, intensity);
         this.width = width ? width : 100;
         this.height = height ? height : 100;

@@ -13,7 +13,7 @@ export interface SphereShapeParameter {
 }
 
 export function sphere(param: Partial<SphereShapeParameter>): BufferGeometry {
-    return new SphereBufferGeometry(...Object.values(param) as any);
+    return new SphereBufferGeometry(...(Object.values(param) as any));
 }
 
 export class SphereBufferGeometry extends BufferGeometry {
@@ -38,7 +38,15 @@ export class SphereBufferGeometry extends BufferGeometry {
      * @param thetaStart — specify vertical starting angle. Default is 0.
      * @param thetaLength — specify vertical sweep angle size. Default is Math.PI.
      */
-    constructor(radius: number = 1, widthSegments: number = 8, heightSegments: number = 6, phiStart: number = 0, phiLength: number = Math.PI * 2, thetaStart: number = 0, thetaLength: number = Math.PI) {
+    constructor(
+        radius: number = 1,
+        widthSegments: number = 8,
+        heightSegments: number = 6,
+        phiStart: number = 0,
+        phiLength: number = Math.PI * 2,
+        thetaStart: number = 0,
+        thetaLength: number = Math.PI,
+    ) {
         super();
         this.type = 'SphereBufferGeometry';
 
@@ -49,7 +57,7 @@ export class SphereBufferGeometry extends BufferGeometry {
             phiStart,
             phiLength,
             thetaStart,
-            thetaLength
+            thetaLength,
         };
 
         widthSegments = Math.max(3, Math.floor(widthSegments));
@@ -76,7 +84,7 @@ export class SphereBufferGeometry extends BufferGeometry {
             for (ix = 0; ix <= widthSegments; ix++) {
                 const u = ix / widthSegments;
                 // vertex
-                vertex.x = - radius * Math.cos(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
+                vertex.x = -radius * Math.cos(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
                 vertex.y = radius * Math.cos(thetaStart + v * thetaLength);
                 vertex.z = radius * Math.sin(phiStart + u * phiLength) * Math.sin(thetaStart + v * thetaLength);
                 vertices.push(vertex.x, vertex.y, vertex.z);

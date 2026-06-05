@@ -9,7 +9,7 @@ import { Color } from '../math/Color';
 import { setupWebGLCapabilities, WGLCapabilities } from './webgl/WGLCapabilities';
 import { FatLineSegments } from '../scene/drawables/FatLineSegments';
 import type { BufferGeometryBase, BufferRange } from '../elements/geometries/containers/BufferGeometry';
-import type { Nullable,TypedArray,IRange } from '../utils/Utils';
+import type { Nullable, TypedArray, IRange } from '../utils/Utils';
 import type { WGLBufferData } from './webgl/WGLBuffer';
 import { TypeAssert } from '../scene/tools/TypeAssert';
 import type { Drawable } from '../scene/drawables/Drawable';
@@ -22,7 +22,15 @@ import { InstancePool } from '../scene/tools/proxy/InstancePool';
 import { WebGLPixelFormat } from './webgl/WGLConstants';
 import { logger } from '../utils/Logger';
 import { EventDispatcher } from '../utils/EventDispatcher';
-import { type IRenderer, type MemoryInfo, RendererBackend, RendererState, type RendererParameters, ContextLostEvent, RenderCtxInfo } from './IRenderer';
+import {
+    type IRenderer,
+    type MemoryInfo,
+    RendererBackend,
+    RendererState,
+    type RendererParameters,
+    ContextLostEvent,
+    RenderCtxInfo,
+} from './IRenderer';
 import type { RenderStatistics } from '../Viewer';
 import { DefaultMaterialDispatcher, type MaterialDispatcher } from './MaterialDispatcher';
 import type { RenderTarget } from '../elements/textures/RenderTarget';
@@ -34,24 +42,24 @@ import type { ShaderComponentRegistry } from '../scene/ShaderComponentRegistry';
 const MAX_COLOR_ATTACHMENTS = 8;
 
 interface RenderPass {
-    active: boolean,
-    target?: RenderTarget,
-    resolveTarget?: RenderTarget,
-    viewport: Vector4,
-    scissorTest: boolean,
-    scissor: Vector4,
-    store: boolean,
-    resolveContent: boolean,
-    resolveDepth: boolean,
-    generateMipmap: boolean,
-    drawBuffers: number[],
-    clearColor: Color,
-    clearAlpha: number,
+    active: boolean;
+    target?: RenderTarget;
+    resolveTarget?: RenderTarget;
+    viewport: Vector4;
+    scissorTest: boolean;
+    scissor: Vector4;
+    store: boolean;
+    resolveContent: boolean;
+    resolveDepth: boolean;
+    generateMipmap: boolean;
+    drawBuffers: number[];
+    clearColor: Color;
+    clearAlpha: number;
     clearFlags: {
-        color: boolean,
-        depth: boolean,
-        stencil: boolean,
-    },
+        color: boolean;
+        depth: boolean;
+        stencil: boolean;
+    };
 }
 
 const DEFAULT_DRAW_BUFFERS = [36064]; // WebGLRenderingContext.COLOR_ATTACHMENT0
@@ -71,10 +79,10 @@ export class Renderer extends EventDispatcher implements IRenderer {
 
     parameters: RendererParameters;
 
-    domElement: HTMLCanvasElement;                               // A Canvas where the renderer draws its output.
+    domElement: HTMLCanvasElement; // A Canvas where the renderer draws its output.
     // This is automatically created by the renderer in the constructor (if not provided already);
     // you just need to add it to your page.
-    gl: WebGLRenderingContext | WebGL2RenderingContext;          // The HTML5 Canvas's 'webgl' context obtained from the canvas where the renderer will draw.
+    gl: WebGLRenderingContext | WebGL2RenderingContext; // The HTML5 Canvas's 'webgl' context obtained from the canvas where the renderer will draw.
 
     readonly renderInfo = new RenderInfo();
     wglState: WGLState;
@@ -98,8 +106,8 @@ export class Renderer extends EventDispatcher implements IRenderer {
     private _canvas: HTMLCanvasElement;
     private _scissorTest: boolean = false;
     private _currentGeometryProgram: {
-        geometry: Nullable<number>,
-        program: Nullable<number>,
+        geometry: Nullable<number>;
+        program: Nullable<number>;
     } = { geometry: null, program: null };
     private _destroyed = false;
     private renderPass: RenderPass = {
@@ -119,7 +127,7 @@ export class Renderer extends EventDispatcher implements IRenderer {
         clearFlags: {
             color: false,
             depth: false,
-            stencil: false
+            stencil: false,
         },
     };
     private drawFrameBuffer: number;
@@ -155,10 +163,14 @@ export class Renderer extends EventDispatcher implements IRenderer {
             preserveDrawingBuffer: parameters.preserveDrawingBuffer,
             powerPreference: parameters.powerPreference,
         };
-        this.gl = parameters.context ??
-            this._canvas.getContext(parameters.preferWebGL1 ? 'webgl' : 'webgl2', contextAttributes) as WebGL2RenderingContext ??
+        this.gl =
+            parameters.context ??
+            (this._canvas.getContext(
+                parameters.preferWebGL1 ? 'webgl' : 'webgl2',
+                contextAttributes,
+            ) as WebGL2RenderingContext) ??
             this._canvas.getContext('webgl', contextAttributes) ??
-            this._canvas.getContext('experimental-webgl', contextAttributes) as WebGLRenderingContext;
+            (this._canvas.getContext('experimental-webgl', contextAttributes) as WebGLRenderingContext);
         if (!this.gl) {
             throw new Error(`create WebGL2 or WebGL context fail.`);
         }
@@ -190,11 +202,7 @@ export class Renderer extends EventDispatcher implements IRenderer {
         this.bufferRenderer = new WGLBufferRenderer(this.gl, this.renderInfo, this.extensions);
         this.indexedBufferRenderer = new WGLIndexedBufferRenderer(this.gl, this.renderInfo, this.extensions);
         this.ctx_info = new RenderCtxInfo(this.gl, this.extensions);
-        this._cachedFBO = [
-            this.gl.createFramebuffer()!,
-            this.gl.createFramebuffer()!,
-            this.gl.createFramebuffer()!,
-        ];
+        this._cachedFBO = [this.gl.createFramebuffer()!, this.gl.createFramebuffer()!, this.gl.createFramebuffer()!];
 
         if (!WGLCapabilities.IS_SUPPORT_INSTANCE) {
             FatLineSegments.UseFallBack = true;
@@ -213,7 +221,7 @@ export class Renderer extends EventDispatcher implements IRenderer {
         this.renderInfo.resetFrameStart();
     }
 
-    afterFrameRender() { }
+    afterFrameRender() {}
 
     getGPUInfo() {
         return this.ctx_info.output();
@@ -275,17 +283,17 @@ export class Renderer extends EventDispatcher implements IRenderer {
         this.setViewport(0, 0, width, height);
     }
 
-    getSize(): { width: number; height: number; } {
+    getSize(): { width: number; height: number } {
         return {
             width: this._width,
-            height: this._height
+            height: this._height,
         };
     }
 
-    getDrawingBufferSize(): { width: number; height: number; } {
+    getDrawingBufferSize(): { width: number; height: number } {
         return {
             width: this._width * this._pixelRatio,
-            height: this._height * this._pixelRatio
+            height: this._height * this._pixelRatio,
         };
     }
 
@@ -400,8 +408,10 @@ export class Renderer extends EventDispatcher implements IRenderer {
 
     private useGeometry(geometry: BufferGeometryBase, program: WGLProgram) {
         let updateBuffers = false;
-        if (this._currentGeometryProgram.geometry !== geometry.id ||
-            this._currentGeometryProgram.program !== program.id) {
+        if (
+            this._currentGeometryProgram.geometry !== geometry.id ||
+            this._currentGeometryProgram.program !== program.id
+        ) {
             this._currentGeometryProgram.geometry = geometry.id;
             this._currentGeometryProgram.program = program.id;
             updateBuffers = true;
@@ -414,7 +424,12 @@ export class Renderer extends EventDispatcher implements IRenderer {
     }
 
     // core render method
-    renderDrawcall(geometry: BufferGeometryBase, material: Material, object: Drawable, range: Nullable<BufferRange>): void {
+    renderDrawcall(
+        geometry: BufferGeometryBase,
+        material: Material,
+        object: Drawable,
+        range: Nullable<BufferRange>,
+    ): void {
         if (this._isContextLost) {
             return;
         }
@@ -534,16 +549,10 @@ export class Renderer extends EventDispatcher implements IRenderer {
      * bind Target -> set viewport -> set scissor -> clear
      */
     beginPass(store: boolean, resolveContent: boolean, resolveDepth: boolean, generateMipmap: boolean) {
-        const { renderPass: {
-            target,
-            viewport,
-            scissorTest,
-            scissor,
-            drawBuffers,
-            clearColor,
-            clearAlpha,
-            clearFlags,
-        }, wglState } = this;
+        const {
+            renderPass: { target, viewport, scissorTest, scissor, drawBuffers, clearColor, clearAlpha, clearFlags },
+            wglState,
+        } = this;
         this.bindTarget(target, drawBuffers);
 
         wglState.setViewport(viewport);
@@ -554,7 +563,7 @@ export class Renderer extends EventDispatcher implements IRenderer {
         if (clearFlags.color || clearFlags.depth || clearFlags.stencil) {
             wglState.colorState.setMask(true);
             wglState.depthState.setMask(true);
-            wglState.stencilState.setMask(0xFFFFFFFF);
+            wglState.stencilState.setMask(0xffffffff);
             wglState.setColorClear(clearColor.r, clearColor.g, clearColor.b, clearAlpha);
             wglState.clear(clearFlags.color, clearFlags.depth, clearFlags.stencil);
         }
@@ -569,25 +578,26 @@ export class Renderer extends EventDispatcher implements IRenderer {
     }
 
     endPass() {
-        const { _cachedFBO, resourceManager, wglState, drawFrameBuffer, readFrameBuffer,
-            renderPass: {
-                resolveContent,
-                resolveDepth,
-                generateMipmap,
-                drawBuffers,
-                target,
-                resolveTarget,
-            },
+        const {
+            _cachedFBO,
+            resourceManager,
+            wglState,
+            drawFrameBuffer,
+            readFrameBuffer,
+            renderPass: { resolveContent, resolveDepth, generateMipmap, drawBuffers, target, resolveTarget },
         } = this;
         const gl = this.gl as WebGL2RenderingContext;
 
         // resolve multi sampled target
         if (target && target.multiSample && resolveTarget && this.backend === RendererBackend.WEBGL2_JS) {
             const { depth: dstDepth, colors, width, height } = resolveTarget;
-            const enableStencil = !!dstDepth && dstDepth.glFormat.external(this.backend) === WebGLPixelFormat.DepthStencil;
+            const enableStencil =
+                !!dstDepth && dstDepth.glFormat.external(this.backend) === WebGLPixelFormat.DepthStencil;
             const depthAttachment = enableStencil ? gl.DEPTH_STENCIL_ATTACHMENT : gl.DEPTH_ATTACHMENT;
             const dstTextures = colors.map(c => resourceManager.textureManager.getAttachment(c, wglState));
-            const dstDepthBuffer: WGLRenderAttachment | null = dstDepth ? resourceManager.textureManager.getAttachment(dstDepth, wglState) : null;
+            const dstDepthBuffer: WGLRenderAttachment | null = dstDepth
+                ? resourceManager.textureManager.getAttachment(dstDepth, wglState)
+                : null;
             // should always call after begin pass
             // just switch framebuffer, read from current draw framebuffer
             // write to copy framebuffer
@@ -595,9 +605,14 @@ export class Renderer extends EventDispatcher implements IRenderer {
             gl.bindFramebuffer(drawFrameBuffer, _cachedFBO[1]);
 
             if (dstDepth) {
-                dstDepth.attach(gl, this.backend, drawFrameBuffer,
-                    0, dstDepthBuffer!,
-                    resolveTarget.layer, resolveTarget.level
+                dstDepth.attach(
+                    gl,
+                    this.backend,
+                    drawFrameBuffer,
+                    0,
+                    dstDepthBuffer!,
+                    resolveTarget.layer,
+                    resolveTarget.level,
                 );
             }
 
@@ -606,9 +621,14 @@ export class Renderer extends EventDispatcher implements IRenderer {
                     if (drawBuffers[i] === gl.NONE) {
                         return;
                     }
-                    attachment.attach(gl, this.backend, this.drawFrameBuffer,
-                        0, dstTextures[i],
-                        resolveTarget.level, resolveTarget.layer
+                    attachment.attach(
+                        gl,
+                        this.backend,
+                        this.drawFrameBuffer,
+                        0,
+                        dstTextures[i],
+                        resolveTarget.level,
+                        resolveTarget.layer,
                     );
                     gl.readBuffer(gl.COLOR_ATTACHMENT0 + i);
                     gl.blitFramebuffer(0, 0, width, height, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.NEAREST);
@@ -647,14 +667,13 @@ export class Renderer extends EventDispatcher implements IRenderer {
         if (target && !this.renderPass.store && this.backend === RendererBackend.WEBGL2_JS) {
             const attachments = target.colors.map((_, i) => this.gl.COLOR_ATTACHMENT0 + i);
             if (target.depth) {
-                attachments.push(target.depth.glFormat.external(this.backend) === WebGLPixelFormat.DepthStencil ?
-                    gl.DEPTH_STENCIL_ATTACHMENT : gl.DEPTH_ATTACHMENT
+                attachments.push(
+                    target.depth.glFormat.external(this.backend) === WebGLPixelFormat.DepthStencil
+                        ? gl.DEPTH_STENCIL_ATTACHMENT
+                        : gl.DEPTH_ATTACHMENT,
                 );
             }
-            gl.invalidateFramebuffer(
-                this.drawFrameBuffer,
-                attachments
-            );
+            gl.invalidateFramebuffer(this.drawFrameBuffer, attachments);
         }
 
         this.renderPass.scissorTest = false;
@@ -702,8 +721,12 @@ export class Renderer extends EventDispatcher implements IRenderer {
     }
 
     private checkAndBindTargetForReading(target: RenderTarget, range: IRange) {
-        if ((range.x >= 0 && range.x <= (target.width - range.width)) &&
-            (range.y >= 0 && range.y <= (target.height - range.height))) {
+        if (
+            range.x >= 0 &&
+            range.x <= target.width - range.width &&
+            range.y >= 0 &&
+            range.y <= target.height - range.height
+        ) {
             return true;
         } else {
             logger.webglError('read pixel range exceed render target');
@@ -726,7 +749,15 @@ export class Renderer extends EventDispatcher implements IRenderer {
         const readHandle = resourceManager.textureManager.getAttachment(texture, wglState);
         gl.bindFramebuffer(this.readFrameBuffer, _cachedFBO[2]);
         gl.framebufferTexture2D(this.readFrameBuffer, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, readHandle, 0);
-        gl.readPixels(range.x, range.y, range.width, range.height, texture.glFormat.external(this.backend), texture.glFormat.dataType(this.backend), result);
+        gl.readPixels(
+            range.x,
+            range.y,
+            range.width,
+            range.height,
+            texture.glFormat.external(this.backend),
+            texture.glFormat.dataType(this.backend),
+            result,
+        );
         gl.framebufferTexture2D(this.readFrameBuffer, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, null, 0);
         gl.bindFramebuffer(this.readFrameBuffer, null);
     }
@@ -753,7 +784,15 @@ export class Renderer extends EventDispatcher implements IRenderer {
         const buf = gl.createBuffer()!;
         gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buf);
         gl.bufferData(gl.PIXEL_PACK_BUFFER, result.byteLength, gl.STREAM_READ);
-        gl.readPixels(range.x, range.y, range.width, range.height, texture.glFormat.external(this.backend), texture.glFormat.dataType(this.backend), 0);
+        gl.readPixels(
+            range.x,
+            range.y,
+            range.width,
+            range.height,
+            texture.glFormat.external(this.backend),
+            texture.glFormat.dataType(this.backend),
+            0,
+        );
         gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
 
         gl.framebufferTexture2D(this.readFrameBuffer, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, null, 0);
@@ -785,7 +824,7 @@ export class Renderer extends EventDispatcher implements IRenderer {
         };
     }
 
-    releaseUnusedResources() { }
+    releaseUnusedResources() {}
 
     queueFlushTexture(texture: Texture) {
         this.resourceManager.textureManager.get(texture, this.wglState);

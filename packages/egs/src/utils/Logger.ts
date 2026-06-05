@@ -1,10 +1,10 @@
 export { logger } from '@qunhe/egs-lib';
 
 interface KtrackerEvent {
-    eventType: string,
-    data?: Record<string, number>,
-    error?: Error,
-    labels?: Record<string, string>,
+    eventType: string;
+    data?: Record<string, number>;
+    error?: Error;
+    labels?: Record<string, string>;
 }
 
 let isKtrackerAvailable = true;
@@ -14,7 +14,7 @@ export function sendKtrackerEvent(message: KtrackerEvent, isSendToError: boolean
     }
     message.labels = {
         feBu: 'kujiale-fe-tool-egs-logger',
-        ...(message.labels || {}),
+        ...message.labels,
     };
     try {
         if (isSendToError) {
@@ -24,7 +24,7 @@ export function sendKtrackerEvent(message: KtrackerEvent, isSendToError: boolean
         }
     } catch {
         isKtrackerAvailable = false;
-        // eslint-disable-next-line no-restricted-syntax
+        // oxlint-disable-next-line
         console.warn('Failed to send ktracker event! Ktracker maybe unavailable');
     }
 }

@@ -39,10 +39,7 @@ export class SplineCurve2D extends Curve2D {
         const p2 = points[intPoint > points.length - 2 ? points.length - 1 : intPoint + 1];
         const p3 = points[intPoint > points.length - 3 ? points.length - 1 : intPoint + 2];
 
-        point.set(
-            _Math.CatmullRom(weight, p0.x, p1.x, p2.x, p3.x),
-            _Math.CatmullRom(weight, p0.y, p1.y, p2.y, p3.y)
-        );
+        point.set(_Math.CatmullRom(weight, p0.x, p1.x, p2.x, p3.x), _Math.CatmullRom(weight, p0.y, p1.y, p2.y, p3.y));
 
         return point;
     }

@@ -4,18 +4,21 @@ import { type ISplatData, type ISingleSplat, ISamplerFormat } from './utils';
 export type SogMetadata = {
     counts: number;
     shDegree: number;
-    means: { mins: [number, number, number], maxs: [number, number, number] };
-} & ({
-    version: 1;
-    scales: { mins: [number, number, number], maxs: [number, number, number] };
-    sh0: { mins: [number, number, number, number], maxs: [number, number, number, number] };
-    shN?: { mins: number, maxs: number };
-} | {
-    version: 2;
-    scales: { codebook: number[] };
-    sh0: { codebook: number[] };
-    shN?: { codebook: number[] };
-});
+    means: { mins: [number, number, number]; maxs: [number, number, number] };
+} & (
+    | {
+          version: 1;
+          scales: { mins: [number, number, number]; maxs: [number, number, number] };
+          sh0: { mins: [number, number, number, number]; maxs: [number, number, number, number] };
+          shN?: { mins: number; maxs: number };
+      }
+    | {
+          version: 2;
+          scales: { codebook: number[] };
+          sh0: { codebook: number[] };
+          shN?: { codebook: number[] };
+      }
+);
 
 export class SogSplatData extends SplatData {
     counts: number = 0;
@@ -36,8 +39,13 @@ export class SogSplatData extends SplatData {
 
     load(
         meta: SogMetadata,
-        meansL: Uint8Array, meansU: Uint8Array, quats: Uint8Array, scales: Uint8Array,
-        colors: Uint8Array, shNLabels?: Uint8Array, shNCentroids?: Uint8Array,
+        meansL: Uint8Array,
+        meansU: Uint8Array,
+        quats: Uint8Array,
+        scales: Uint8Array,
+        colors: Uint8Array,
+        shNLabels?: Uint8Array,
+        shNCentroids?: Uint8Array,
     ) {
         this.meta = meta;
         this.meansL = meansL;
@@ -114,12 +122,22 @@ export class SogSplatData extends SplatData {
             counts: this.meta.counts,
             shDegree: this.meta.shDegree,
             samplers: [
-                this.meansL, this.meansU, this.quats, this.scales,
-                this.colors, this.shNLabels, this.shNCentroids,
-            ].filter(v => !!v).map(v => ({
-                width: 1, height: 1, depth: 1, format: ISamplerFormat.RGBA_UINT,
-                source: v!,
-            })),
+                this.meansL,
+                this.meansU,
+                this.quats,
+                this.scales,
+                this.colors,
+                this.shNLabels,
+                this.shNCentroids,
+            ]
+                .filter(v => !!v)
+                .map(v => ({
+                    width: 1,
+                    height: 1,
+                    depth: 1,
+                    format: ISamplerFormat.RGBA_UINT,
+                    source: v!,
+                })),
             extras: [this.meta],
         };
     }

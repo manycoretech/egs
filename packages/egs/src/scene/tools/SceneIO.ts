@@ -1,7 +1,15 @@
 import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
 import { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';
 import { Curve2D } from '../../math/shape/curves/Curve2D';
-import { ArcCurve2D, CubicBezierCurve2D, CubicBezierCurve3D, EllipseCurve2D, LineCurve2D, QuadraticBezierCurve2D, SplineCurve2D } from '../../math/shape/curves/Curves';
+import {
+    ArcCurve2D,
+    CubicBezierCurve2D,
+    CubicBezierCurve3D,
+    EllipseCurve2D,
+    LineCurve2D,
+    QuadraticBezierCurve2D,
+    SplineCurve2D,
+} from '../../math/shape/curves/Curves';
 import { Circle } from '../../math/shape/plane/Circle';
 import { Ellipse } from '../../math/shape/plane/Ellipse';
 import { Path } from '../../math/shape/plane/Path';
@@ -136,7 +144,7 @@ export function downloadStringAsFile(str: string, name: string): void {
  * Serialize given scene and store into Blob.
  * @param { Scene3D } scene which scene need to be serialized
  */
-export function serializeScene(scene: Scene3D): { geoBufferLength: number, geoBuffer: ArrayBuffer[], sceneData: any } {
+export function serializeScene(scene: Scene3D): { geoBufferLength: number; geoBuffer: ArrayBuffer[]; sceneData: any } {
     const serializer = new Serializer();
     const rootUuid = serializer.serialize(scene).data;
     const data = {
@@ -147,7 +155,7 @@ export function serializeScene(scene: Scene3D): { geoBufferLength: number, geoBu
     return { geoBufferLength: serializer.byteLengthAll, geoBuffer: serializer.buffer, sceneData: data };
 }
 
-export function serializeObject3D(objects: Object3D[]): { data: any, geoBuffer: ArrayBuffer[], objectId: string[] } {
+export function serializeObject3D(objects: Object3D[]): { data: any; geoBuffer: ArrayBuffer[]; objectId: string[] } {
     const serializer = new Serializer();
     const result = objects.map(o => {
         return serializer.serialize(o).data;
@@ -161,7 +169,12 @@ export async function deepCloneObject3D(objects: Object3D[]): Promise<Object3D[]
         return serializer.serialize(o).data;
     });
     const geo = serializer.buffer;
-    const deserializer = new Deserializer({ resource: serializer.serializedResource }, geo, EGSSerializerMetaData, false);
+    const deserializer = new Deserializer(
+        { resource: serializer.serializedResource },
+        geo,
+        EGSSerializerMetaData,
+        false,
+    );
     const results = deserializer.deserializeObjectsById(objectsId);
     await deserializer.loadResourceAsync(() => {
         results.forEach(object => {

@@ -50,24 +50,9 @@ export class CompositePlugin extends PipelinePlugin {
         const y1 = 1 - this.bound.y * 2;
         const x1 = x0 + this.bound.z * 2;
         const y0 = y1 - this.bound.w * 2;
-        const vertices: number[] = [
-            x0, y0, 0,
-            x1, y0, 0,
-            x1, y1, 0,
-            x0, y1, 0,
-        ];
+        const vertices: number[] = [x0, y0, 0, x1, y0, 0, x1, y1, 0, x0, y1, 0];
         const isWebGPU = this.renderer.renderer.backend === RendererBackend.WEBGPU_WASM;
-        const uvs: number[] = isWebGPU ? [
-            0, 1,
-            1, 1,
-            1, 0,
-            0, 0
-        ] : [
-                0, 0,
-                1, 0,
-                1, 1,
-                0, 1,
-            ];
+        const uvs: number[] = isWebGPU ? [0, 1, 1, 1, 1, 0, 0, 0] : [0, 0, 1, 0, 1, 1, 0, 1];
         const geometry = new BufferGeometry();
         geometry.addAttribute('position', new BufferAttribute(new Float32Array(vertices), 3));
         geometry.addAttribute('uv', new BufferAttribute(new Float32Array(uvs), 2));
@@ -116,37 +101,28 @@ export class CompositePlugin extends PipelinePlugin {
     }
 
     updateGraphHash(hasher: HashKeyBuilder) {
-        hasher
-            .bool(this.multiSamplingEnabled)
-            .bool(this.staticFrameCacheEnabled)
-            .bool(this.hasStaticCacheFrame);
+        hasher.bool(this.multiSamplingEnabled).bool(this.staticFrameCacheEnabled).bool(this.hasStaticCacheFrame);
     }
 
     updateRenderGraph(graph: RenderGraph) {
         const allPasses = graph.removeAllPasses();
-        const compositeTarget = target(COMPOSITE_TARGET_NAME)
-            .setFilter(false, false)
-            .keepContent();
+        const compositeTarget = target(COMPOSITE_TARGET_NAME).setFilter(false, false).keepContent();
         let compositeOutputTarget = compositeTarget;
         if (this.multiSamplingEnabled) {
-            compositeOutputTarget = target(`${COMPOSITE_TARGET_NAME}_msaa`)
-                .enableMultiSample();
+            compositeOutputTarget = target(`${COMPOSITE_TARGET_NAME}_msaa`).enableMultiSample();
         }
 
         if (!this.staticFrameCacheEnabled || !this.hasStaticCacheFrame) {
             const updateCachePass = pass('update_cache_pass')
                 .disableClear()
-                .use(() => { })
+                .use(() => {})
                 .after(() => {
                     this.hasStaticCacheFrame = this.staticFrameCacheEnabled;
                 });
             if (this.multiSamplingEnabled) {
                 updateCachePass.resolveTo(compositeTarget, true, true);
             }
-            compositeOutputTarget.from([
-                ...allPasses,
-                updateCachePass,
-            ]);
+            compositeOutputTarget.from([...allPasses, updateCachePass]);
         }
 
         graph.addPass([
@@ -156,7 +132,12 @@ export class CompositePlugin extends PipelinePlugin {
                 .config(({ renderer }) => {
                     const { width, height } = renderer.getSize();
                     if (this.bound) {
-                        renderer.setScissor(this.bound.x * width, this.bound.y * height, this.bound.z * width, this.bound.w * height);
+                        renderer.setScissor(
+                            this.bound.x * width,
+                            this.bound.y * height,
+                            this.bound.z * width,
+                            this.bound.w * height,
+                        );
                         renderer.setScissorTest(true);
                     } else {
                         renderer.setScissor(0, 0, width, height);

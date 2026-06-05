@@ -10,13 +10,13 @@ import type { ReadonlyVector4 } from '../../../math/Vector4';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 
 export abstract class JsNoImplMaterial extends Material {
-    extendShaderShape(_builder: ShaderBuilder, _registry: ShaderComponentRegistry): void { }
-    extendShaderShading(_builder: ShaderBuilder, _registry: ShaderComponentRegistry): void { }
+    extendShaderShape(_builder: ShaderBuilder, _registry: ShaderComponentRegistry): void {}
+    extendShaderShading(_builder: ShaderBuilder, _registry: ShaderComponentRegistry): void {}
     computeShapeKey(_registry: ShaderComponentRegistry): string {
         return '';
     }
-    updateShapeUniforms(_program: WGLProgram, _registry: ShaderComponentRegistry): void { }
-    updateShadingUniforms(_program: WGLProgram, _registry: ShaderComponentRegistry): void { }
+    updateShapeUniforms(_program: WGLProgram, _registry: ShaderComponentRegistry): void {}
+    updateShadingUniforms(_program: WGLProgram, _registry: ShaderComponentRegistry): void {}
 }
 
 export abstract class BackgroundLikeMaterial extends Material {
@@ -44,7 +44,7 @@ export abstract class BackgroundLikeMaterial extends Material {
 }
 
 export interface DeferredMaterial extends Material {
-    isSupportDeferred: true,
+    isSupportDeferred: true;
     extendEncodeDeferred(builder: ShaderBuilder): void;
     updateDeferredUniform(p: WGLProgram): void;
 }

@@ -1,7 +1,10 @@
-
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { Utils, type Nullable } from '../../../utils/Utils';
-import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+    ShaderVaryingTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import type { MaterialParameters } from '../Material';
 import { ColorShaderComponent } from '../../../renderer/shader/components/ColorShaderComponent';
 import { AlphaShaderComponent } from '../../../renderer/shader/components/AlphaShaderComponent';
@@ -19,11 +22,11 @@ import type { TextureV2 } from '../../textures/TextureV2';
 import type { Texture } from '../../textures/Texture';
 
 export type MeshBasicMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters & {
-    color?: number | string | Color,
-    opacity?: number,
-    texture?: Nullable<T>,
-    uvTransform?: ReadonlyMatrix3,
-    enableVertexColor?: boolean,
+    color?: number | string | Color;
+    opacity?: number;
+    texture?: Nullable<T>;
+    uvTransform?: ReadonlyMatrix3;
+    enableVertexColor?: boolean;
 };
 /**
  * A material for drawing geometries in a simple shaded way.
@@ -110,11 +113,14 @@ export class MeshBasicMaterial<T extends Texture2D | TextureV2 = Texture2D> exte
      * @internal
      */
     generateShaderKey(r: ShaderComponentRegistry) {
-        return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
-            .hasItem(this.color.texture)
-            .hasItem(this.alpha.texture)
-            .bool(this.enableVertexColor)
-            .getKey();
+        return (
+            super.generateShaderKey(r) +
+            HashKeyBuilder.getInstance()
+                .hasItem(this.color.texture)
+                .hasItem(this.alpha.texture)
+                .bool(this.enableVertexColor)
+                .getKey()
+        );
     }
     /**
      * @internal

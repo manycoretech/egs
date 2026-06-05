@@ -2,7 +2,7 @@
 
 ## DEV
 
-- 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`
+- 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`，迁移至`OXC`
 - `Worker`改进为`module`
 
 ## 1.0.3

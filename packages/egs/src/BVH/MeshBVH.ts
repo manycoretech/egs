@@ -159,7 +159,7 @@ export class MeshBVH {
                 const start = triIndex * 3;
                 for (let i = 0; i < groups.length; i++) {
                     const group = groups[i];
-                    if (start >= group.start && (start + 9) < (group.start + group.count)) {
+                    if (start >= group.start && start + 9 < group.start + group.count) {
                         material = materials[group.materialIndex];
                         break;
                     }

@@ -1,5 +1,9 @@
 import { type MaterialParameters, copyItem } from '../Material';
-import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+    ShaderVaryingTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
@@ -11,7 +15,7 @@ import type { Texture2D } from '../../textures/Texture2D';
 import type { TextureV2 } from '../../textures/TextureV2';
 
 export type RoomBoxMaterialParameter<T extends TextureV2 | Texture2D = Texture2D> = MaterialParameters & {
-    texture?: T,
+    texture?: T;
 };
 
 /**

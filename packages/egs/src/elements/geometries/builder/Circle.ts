@@ -36,7 +36,7 @@ class CircleBufferGeometry extends BufferGeometry {
             radius,
             segments,
             thetaStart,
-            thetaLength
+            thetaLength,
         };
         segments = Math.max(3, segments);
 
@@ -57,8 +57,8 @@ class CircleBufferGeometry extends BufferGeometry {
         normals.push(0, 0, 1);
         uvs.push(0.5, 0.5);
 
-        for (s = 0, i = 3; s <= segments; s++ , i += 3) {
-            const segment = thetaStart + s / segments * thetaLength;
+        for (s = 0, i = 3; s <= segments; s++, i += 3) {
+            const segment = thetaStart + (s / segments) * thetaLength;
 
             // vertex
             vertex.x = radius * Math.cos(segment);

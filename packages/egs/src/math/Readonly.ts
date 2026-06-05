@@ -26,5 +26,5 @@ export const readonlyMath = {
     },
     mat4: function mat4() {
         return new Matrix4().cloneReadonly();
-    }
+    },
 };

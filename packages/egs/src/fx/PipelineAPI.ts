@@ -1,4 +1,10 @@
-import type { DrawableList, ProjectedDrawcallList, Drawcall, RenderObjectsType, DrawcallListClassifyType } from '../scene/tools/DrawcallList';
+import type {
+    DrawableList,
+    ProjectedDrawcallList,
+    Drawcall,
+    RenderObjectsType,
+    DrawcallListClassifyType,
+} from '../scene/tools/DrawcallList';
 import type { IRenderer } from '../renderer/IRenderer';
 import type { MaterialDispatcher } from '../renderer/MaterialDispatcher';
 import type { Camera3D } from '../scene/cameras/Camera3D';
@@ -19,7 +25,7 @@ export enum ShadowMode {
 type Filter<T> = (drawcall: T) => boolean;
 
 function not<T>(f: Filter<T>): Filter<T> {
-    return (drawcall) => !f(drawcall);
+    return drawcall => !f(drawcall);
 }
 
 // function and<T>(f: Filter<T>, f2: Filter<T>): Filter<T> {
@@ -40,7 +46,8 @@ function isOutlineDisableMode(drawcall: Drawcall): boolean {
     return drawcall.object.outlineRenderMode === OutlineRenderMode.DisableOutline;
 }
 
-const isTransparentLineNormal = (object: Drawable) => !TypeAssert.isMesh(object) || object.useOriginMaterialInTransparentMode;
+const isTransparentLineNormal = (object: Drawable) =>
+    !TypeAssert.isMesh(object) || object.useOriginMaterialInTransparentMode;
 const isTransparentLineNormalDrawcall = (d: Drawcall) => isTransparentLineNormal(d.object);
 
 const tmpVec3 = new Vector3();
@@ -64,7 +71,11 @@ export interface IPipelineFilter<T extends Drawcall | Drawable = any> {
     (o: T): boolean;
 }
 
-export const PipelineFilters = (function <T extends Record<string, (...p: any[]) => (d: Drawcall | Drawable) => boolean>>(data: T): {
+export const PipelineFilters = (function <
+    T extends Record<string, (...p: any[]) => (d: Drawcall | Drawable) => boolean>,
+>(
+    data: T,
+): {
     [K in keyof T]: (...p: Parameters<T[K]>) => IPipelineFilter<Parameters<ReturnType<T[K]>>[0]>;
 } {
     return Object.keys(data).reduce((prev, k, i, arr) => {
@@ -82,19 +93,24 @@ export const PipelineFilters = (function <T extends Record<string, (...p: any[])
     isOutlineEncode: () => isOutlineDefaultMode,
     isOutlineDisable: () => isOutlineDisableMode,
 
-    isDeferPhong: (overrideTransparent: boolean) => (d: Drawcall) => (overrideTransparent || !d.material.transparent) && TypeAssert.isDeferredMaterial(d.material),
+    isDeferPhong: (overrideTransparent: boolean) => (d: Drawcall) =>
+        (overrideTransparent || !d.material.transparent) && TypeAssert.isDeferredMaterial(d.material),
     isNotDeferPhong: () => (d: Drawcall) => !TypeAssert.isDeferredMaterial(d.material),
-    isDeferTransparent: (overrideTransparent: boolean) => (d: Drawcall) => (!overrideTransparent && d.material.transparent) && TypeAssert.isDeferredMaterial(d.material),
+    isDeferTransparent: (overrideTransparent: boolean) => (d: Drawcall) =>
+        !overrideTransparent && d.material.transparent && TypeAssert.isDeferredMaterial(d.material),
 
-    planarShadowCaster: (maxGroundHeight: number) => (drawcall: Drawcall) => drawcall.object.castPlanarShadow &&
+    planarShadowCaster: (maxGroundHeight: number) => (drawcall: Drawcall) =>
+        drawcall.object.castPlanarShadow &&
         TypeAssert.isMesh(drawcall.object) &&
         drawcall.object.worldBoundingBox.max.z > maxGroundHeight,
     planarShadowReceiver: isPlanarShadowReceiver,
-    planarShadowExclude: (maxGroundHeight: number, maxGroundThickness: number) => not(isPlanarShadowReceiver(maxGroundHeight, maxGroundThickness)),
+    planarShadowExclude: (maxGroundHeight: number, maxGroundThickness: number) =>
+        not(isPlanarShadowReceiver(maxGroundHeight, maxGroundThickness)),
 
     transparentLineNormal: () => isTransparentLineNormalDrawcall,
     transparentLineNotNormal: () => not(isTransparentLineNormalDrawcall),
-    transparentLineAdditional: () => (d: Drawcall) => TypeAssert.isLineSegments(d.object) || TypeAssert.isFatLineSegments(d.object),
+    transparentLineAdditional: () => (d: Drawcall) =>
+        TypeAssert.isLineSegments(d.object) || TypeAssert.isFatLineSegments(d.object),
     isDrawCallShadowMapCaster: () => (d: Drawcall) => d.object.castShadow && TypeAssert.isMesh(d.object),
 
     // drawable filter
@@ -109,21 +125,59 @@ export interface PipelineAPI {
     materialDispatcherUpdate(m: MaterialDispatcher): void;
 
     drawableListCreate(list: DrawableList, capacity?: number): void;
-    drawableListCreateFromScene(list: DrawableList, scene: Scene3D, isUseProxy: boolean, renderMode?: DrawableRenderMode): void;
+    drawableListCreateFromScene(
+        list: DrawableList,
+        scene: Scene3D,
+        isUseProxy: boolean,
+        renderMode?: DrawableRenderMode,
+    ): void;
     drawableListCreateFromFilter(list: DrawableList, filter: IPipelineFilter<Drawable>, target: DrawableList): void;
     drawableListAddDrawable(list: DrawableList, drawable: Drawable): void;
     drawableListUpdateSceneAndUse(list: DrawableList, scene: Scene3D): void;
     drawableListDestroy(list: DrawableList): void;
 
-    drawcallListCreate(list: ProjectedDrawcallList, camera: Camera3D, cameraCulling: boolean, classifyType: DrawcallListClassifyType, enableLights: boolean): void;
+    drawcallListCreate(
+        list: ProjectedDrawcallList,
+        camera: Camera3D,
+        cameraCulling: boolean,
+        classifyType: DrawcallListClassifyType,
+        enableLights: boolean,
+    ): void;
     drawcallListCreateFromDynamic(list: ProjectedDrawcallList, scene: Scene3D, camera: Camera3D): void;
     drawcallListCreateFromStatic(list: ProjectedDrawcallList, scene: Scene3D, camera: Camera3D): void;
-    drawcallListCreateFromDrawableList(list: ProjectedDrawcallList, drawableList: DrawableList, camera: Camera3D, cameraCulling: boolean, layerCulling: boolean, visibilityCulling: boolean, selections?: Array<{ groupIndex?: number[]; instanceIndex?: number; }>): void;
+    drawcallListCreateFromDrawableList(
+        list: ProjectedDrawcallList,
+        drawableList: DrawableList,
+        camera: Camera3D,
+        cameraCulling: boolean,
+        layerCulling: boolean,
+        visibilityCulling: boolean,
+        selections?: Array<{ groupIndex?: number[]; instanceIndex?: number }>,
+    ): void;
     drawcallListDestroy(list: ProjectedDrawcallList): void;
 
-    renderDrawcallList(list: ProjectedDrawcallList, renderer: IRenderer, renderObjectsType: RenderObjectsType, filter?: IPipelineFilter<Drawcall>): void;
-    renderDeferLight(renderer: IRenderer, scene: Scene3D, light: Light, shadowMode: ShadowMode, deferMesh: Drawable, deferCamera: Camera3D): void;
-    renderDeferLights(renderer: IRenderer, scene: Scene3D, lights: Light[], shadowMode: ShadowMode, deferMesh: Drawable, deferCamera: Camera3D): void;
+    renderDrawcallList(
+        list: ProjectedDrawcallList,
+        renderer: IRenderer,
+        renderObjectsType: RenderObjectsType,
+        filter?: IPipelineFilter<Drawcall>,
+    ): void;
+    renderDeferLight(
+        renderer: IRenderer,
+        scene: Scene3D,
+        light: Light,
+        shadowMode: ShadowMode,
+        deferMesh: Drawable,
+        deferCamera: Camera3D,
+    ): void;
+    renderDeferLights(
+        renderer: IRenderer,
+        scene: Scene3D,
+        lights: Light[],
+        shadowMode: ShadowMode,
+        deferMesh: Drawable,
+        deferCamera: Camera3D,
+    ): void;
 
     getRenderListLength(list: ProjectedDrawcallList, renderObjectsType: RenderObjectsType): number | undefined;
     drawcallListGetCameraClosestDistance(list: DrawableList, camera: Camera3D): number | undefined;

@@ -19,7 +19,7 @@ export interface DebouncedFunction<F extends (...args: any[]) => void> {
 export function debounce<F extends (...args: any[]) => void>(
     func: F,
     debounceMs: number,
-    { signal, edges }: DebounceOptions = {}
+    { signal, edges }: DebounceOptions = {},
 ): DebouncedFunction<F> {
     let pendingThis: any = undefined;
     let pendingArgs: Parameters<F> | null = null;
@@ -79,7 +79,7 @@ export function debounce<F extends (...args: any[]) => void>(
             return;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-this-alias
+        // oxlint-disable-next-line typescript/no-this-alias
         pendingThis = this;
         pendingArgs = args;
 
@@ -115,7 +115,7 @@ export interface ThrottledFunction<F extends (...args: any[]) => void> {
 export function throttle<F extends (...args: any[]) => void>(
     func: F,
     throttleMs: number,
-    { signal, edges = ['leading', 'trailing'] }: ThrottleOptions = {}
+    { signal, edges = ['leading', 'trailing'] }: ThrottleOptions = {},
 ): ThrottledFunction<F> {
     let pendingAt: number | null = null;
 
@@ -125,7 +125,7 @@ export function throttle<F extends (...args: any[]) => void>(
             func.apply(this, args);
         },
         throttleMs,
-        { signal, edges }
+        { signal, edges },
     );
 
     const throttled = function (this: any, ...args: Parameters<F>) {

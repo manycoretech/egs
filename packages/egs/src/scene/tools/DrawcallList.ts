@@ -7,7 +7,11 @@ import type { BufferGeometryBase, BufferRange } from '../../elements/geometries/
 import type { Material } from '../../elements/materials/Material';
 import type { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';
 import type { Renderable } from '../renderables/IRenderable';
-import { PipelineContentBridge, PipelineContentAPIForRenderingAndFilteringEnabled, type IPipelineFilter } from '../../fx/PipelineAPI';
+import {
+    PipelineContentBridge,
+    PipelineContentAPIForRenderingAndFilteringEnabled,
+    type IPipelineFilter,
+} from '../../fx/PipelineAPI';
 import type { PerspectiveCamera } from '../cameras/PerspectiveCamera';
 import type { Box3 } from '../../math/Box3';
 import { Frustum } from '../../math/Frustum';
@@ -27,14 +31,17 @@ export interface Drawcall {
     geometry: BufferGeometryBase;
 }
 
-export function filterBy(content: () => ProjectedDrawcallList, f: () => IPipelineFilter<Drawcall>): () => FilteredDrawcallList {
+export function filterBy(
+    content: () => ProjectedDrawcallList,
+    f: () => IPipelineFilter<Drawcall>,
+): () => FilteredDrawcallList {
     return () => content().filterBy(f);
 }
 
 export class FilteredDrawcallList implements Renderable {
     filter: IPipelineFilter<Drawcall>;
 
-    constructor(readonly list: ProjectedDrawcallList) { }
+    constructor(readonly list: ProjectedDrawcallList) {}
 
     config(_: IRenderer) {
         return true;
@@ -46,9 +53,9 @@ export class FilteredDrawcallList implements Renderable {
 }
 
 interface DrawcallListClassifyResult {
-    opaque: Drawcall[],
-    transparent: Drawcall[],
-    extraDrawcallList: Map<number, Drawcall[]>,
+    opaque: Drawcall[];
+    transparent: Drawcall[];
+    extraDrawcallList: Map<number, Drawcall[]>;
 }
 
 export interface DrawcallListClassifyType {
@@ -56,7 +63,11 @@ export interface DrawcallListClassifyType {
     (opaque: Drawcall[], transparent: Drawcall[]): DrawcallListClassifyResult;
 }
 
-export const DrawcallListClassifyList = (function <T extends Record<string, (opaque: Drawcall[], transparent: Drawcall[]) => DrawcallListClassifyResult>>(data: T): {
+export const DrawcallListClassifyList = (function <
+    T extends Record<string, (opaque: Drawcall[], transparent: Drawcall[]) => DrawcallListClassifyResult>,
+>(
+    data: T,
+): {
     [K in keyof T]: DrawcallListClassifyType;
 } {
     return Object.keys(data).reduce((p, k, i, arr) => {
@@ -126,7 +137,7 @@ export const DrawcallListClassifyList = (function <T extends Record<string, (opa
             transparent: [],
             extraDrawcallList: new Map(),
         };
-    }
+    },
 });
 
 export enum RenderObjectsType {
@@ -145,7 +156,7 @@ export class ProjectedDrawcallList implements Renderable {
         public opaque: Drawcall[],
         public transparent: Drawcall[],
         private camera: Camera3D,
-    ) { }
+    ) {}
 
     useOnce = true;
     private destroyed = false;
@@ -178,7 +189,11 @@ export class ProjectedDrawcallList implements Renderable {
         }
     }
 
-    render(renderer: IRenderer, renderObjectsType: RenderObjectsType = RenderObjectsType.Default, filter?: IPipelineFilter<Drawcall>) {
+    render(
+        renderer: IRenderer,
+        renderObjectsType: RenderObjectsType = RenderObjectsType.Default,
+        filter?: IPipelineFilter<Drawcall>,
+    ) {
         if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
             PipelineContentBridge.renderDrawcallList(this, renderer, renderObjectsType, filter);
         } else {
@@ -334,7 +349,7 @@ export class DrawableList {
             return PipelineContentBridge.drawcallListGetCameraClosestDistance(this, camera) ?? 1;
         } else {
             const boxes: Box3[] = [];
-            this.forEach((object) => {
+            this.forEach(object => {
                 boxes.push(object.worldBoundingBox);
             });
             return new Frustum().getCameraClosestDistanceFromBoxes(camera, boxes);
@@ -343,7 +358,7 @@ export class DrawableList {
 }
 
 function sortByRenderOrderAndProgram(a: Drawcall, b: Drawcall): number {
-    return (a.object.renderOrder - b.object.renderOrder) || (a.material.programId - b.material.programId);
+    return a.object.renderOrder - b.object.renderOrder || a.material.programId - b.material.programId;
 }
 
 function sortByRenderOrderAndZ(a: Drawcall, b: Drawcall): number {
@@ -367,7 +382,13 @@ function sortByOverlayLayersAndRenderOrder(a: Drawcall, b: Drawcall): number {
 }
 
 // helper functions to update pop level
-function updateLOD(object: Drawable, viewHeight: number, pixelsOfDistOne: number, updateId: number, lodEnabled: boolean) {
+function updateLOD(
+    object: Drawable,
+    viewHeight: number,
+    pixelsOfDistOne: number,
+    updateId: number,
+    lodEnabled: boolean,
+) {
     if ((object as any).LODUpdateId === undefined) {
         return;
     }
@@ -379,7 +400,12 @@ function updateLOD(object: Drawable, viewHeight: number, pixelsOfDistOne: number
         targetObject = object;
         geometry = targetObject.renderGeometry as PopBufferGeometry;
         maxScaleOnAxis = targetObject.matrixWorld.getMaxScaleOnAxis();
-    } else if (TypeAssert.isInstanceMesh(object) && object.firstProxyedMesh && TypeAssert.isPopMesh(object.firstProxyedMesh) && TypeAssert.isPopBufferGeometry(object.instancedGeometry)) {
+    } else if (
+        TypeAssert.isInstanceMesh(object) &&
+        object.firstProxyedMesh &&
+        TypeAssert.isPopMesh(object.firstProxyedMesh) &&
+        TypeAssert.isPopBufferGeometry(object.instancedGeometry)
+    ) {
         targetObject = object.firstProxyedMesh;
         geometry = object.instancedGeometry;
         maxScaleOnAxis = object.maxScaleOnAxis; // which one should use? max value?
@@ -396,13 +422,7 @@ function updateLOD(object: Drawable, viewHeight: number, pixelsOfDistOne: number
 
     let newLevel = MAX_LEVEL_MAGIC_NUMBER;
     if (lodEnabled) {
-        newLevel = calculateLevelFactor(
-            viewHeight,
-            pixelsOfDistOne,
-            geometry,
-            maxScaleOnAxis,
-            object.z,
-        );
+        newLevel = calculateLevelFactor(viewHeight, pixelsOfDistOne, geometry, maxScaleOnAxis, object.z);
     }
 
     if (object.oldLevelFactor !== newLevel) {
@@ -423,8 +443,16 @@ function getLevel(levelPrecisions: number[], precision: number): number {
     return index;
 }
 
-function calculateLevelFactor(viewHeight: number, pixelsOfDistOne: number, geometry: PopBufferGeometry, maxScaleOnAxis: number, distance: number): number {
-    const { metadata: { boxSizeMagnitude } } = geometry;
+function calculateLevelFactor(
+    viewHeight: number,
+    pixelsOfDistOne: number,
+    geometry: PopBufferGeometry,
+    maxScaleOnAxis: number,
+    distance: number,
+): number {
+    const {
+        metadata: { boxSizeMagnitude },
+    } = geometry;
     const pixels = distance * (pixelsOfDistOne / viewHeight);
     const bixSizeMagnitudeWorld = boxSizeMagnitude * maxScaleOnAxis;
     const arg = bixSizeMagnitudeWorld / pixels;
@@ -433,10 +461,15 @@ function calculateLevelFactor(viewHeight: number, pixelsOfDistOne: number, geome
     return levelFactor;
 }
 
-export function updateLODbyLevel(object: PopMesh | InstanceMesh, geometry: PopBufferGeometry, levelFactor: number, isLODEnabled = true): void {
+export function updateLODbyLevel(
+    object: PopMesh | InstanceMesh,
+    geometry: PopBufferGeometry,
+    levelFactor: number,
+    isLODEnabled = true,
+): void {
     const {
         model: { levelPrecisions, maxPrecision, blocks },
-        metadata: { vertexConstant, vertexGridSize }
+        metadata: { vertexConstant, vertexGridSize },
     } = geometry;
     const precision = maxPrecision - levelFactor;
     const levelIndex = getLevel(levelPrecisions, precision);

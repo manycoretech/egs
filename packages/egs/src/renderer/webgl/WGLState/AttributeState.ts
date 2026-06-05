@@ -40,8 +40,13 @@ export class AttributeState {
         }
 
         if (WGLCapabilities.IS_SUPPORT_INSTANCE && meshPerAttribute > 0) {
-            const extension = WGLCapabilities.IS_WEBGL2 ? this.gl : this.extensions.get(WebGLExtEnums.ANGLE_instanced_arrays);
-            extension[WGLCapabilities.IS_WEBGL2 ? 'vertexAttribDivisor' : 'vertexAttribDivisorANGLE'](attributeLocation, meshPerAttribute);
+            const extension = WGLCapabilities.IS_WEBGL2
+                ? this.gl
+                : this.extensions.get(WebGLExtEnums.ANGLE_instanced_arrays);
+            extension[WGLCapabilities.IS_WEBGL2 ? 'vertexAttribDivisor' : 'vertexAttribDivisorANGLE'](
+                attributeLocation,
+                meshPerAttribute,
+            );
             this.attributeDivisors[attributeLocation] = meshPerAttribute;
         }
     }

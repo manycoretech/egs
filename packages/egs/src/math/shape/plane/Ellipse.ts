@@ -16,8 +16,8 @@ export class Ellipse extends Shape {
      */
     y: number;
     /**
-    * The half width of this ellipse.
-    */
+     * The half width of this ellipse.
+     */
     halfWidth: number;
     /**
      * The half height of this ellipse.
@@ -78,7 +78,17 @@ export class Ellipse extends Shape {
      * Add this ellipse to drawing.
      */
     draw() {
-        this.absEllipse(this.x, this.y, this.halfWidth, this.halfHeight, undefined, undefined, undefined, undefined, this.divisions);
+        this.absEllipse(
+            this.x,
+            this.y,
+            this.halfWidth,
+            this.halfHeight,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            this.divisions,
+        );
         this.autoClose = true;
     }
     /**
@@ -93,13 +103,13 @@ export class Ellipse extends Shape {
         }
 
         // normalize the coords to an ellipse with center 0,0
-        let normX = ((x - this.x) / this.halfWidth);
-        let normY = ((y - this.y) / this.halfHeight);
+        let normX = (x - this.x) / this.halfWidth;
+        let normY = (y - this.y) / this.halfHeight;
 
         normX *= normX;
         normY *= normY;
 
-        return (normX + normY <= 1);
+        return normX + normY <= 1;
     }
     /**
      * Returns the framing rectangle of the ellipse as a Rectangle object.

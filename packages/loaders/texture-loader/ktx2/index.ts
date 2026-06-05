@@ -7,12 +7,18 @@ import type { LoaderOptions, LoadResult } from '../type';
 import { toGPUTextureFormat } from './basis/constants';
 
 interface FormatMeta {
-    format: TextureFormat,
-    TypedArray: Int8ArrayConstructor | Uint8ArrayConstructor | Int16ArrayConstructor | Uint16ArrayConstructor | Int32ArrayConstructor | Uint32ArrayConstructor;
+    format: TextureFormat;
+    TypedArray:
+        | Int8ArrayConstructor
+        | Uint8ArrayConstructor
+        | Int16ArrayConstructor
+        | Uint16ArrayConstructor
+        | Int32ArrayConstructor
+        | Uint32ArrayConstructor;
 }
 
 const FORMAT_MAP: {
-    [key in VK_FORMATS]?: FormatMeta | undefined
+    [key in VK_FORMATS]?: FormatMeta | undefined;
 } = {
     // normal
     [VK_FORMATS.VK_FORMAT_R8G8B8A8_UNORM]: { format: TextureFormat.Rgba8Unorm, TypedArray: Uint8Array },
@@ -98,7 +104,9 @@ export default async function (url: URL, options?: LoaderOptions): Promise<LoadR
     const vkFormat = KTX2Header[0];
     if (vkFormat === VK_FORMATS.VK_FORMAT_UNDEFINED) {
         if (!options?.context && !options?.supportedTypes) {
-            logger.unsupported('EGS.KTX2Loader.parse: KTX2 Universal format transcode needs viewer or specify support types.');
+            logger.unsupported(
+                'EGS.KTX2Loader.parse: KTX2 Universal format transcode needs viewer or specify support types.',
+            );
             return INVALID_LOAD_RESULT;
         }
         return transcode(new Uint8Array(buffer), options?.supportedTypes)
@@ -107,7 +115,7 @@ export default async function (url: URL, options?: LoaderOptions): Promise<LoadR
                 format: toGPUTextureFormat(result.format) as TextureFormat,
                 depthOrArrayLayers: 1,
                 mipmaps: result.data.length > 1,
-                autoGenerateMipmap: false
+                autoGenerateMipmap: false,
             }))
             .catch(error => {
                 logger.error(error);
@@ -141,20 +149,23 @@ export default async function (url: URL, options?: LoaderOptions): Promise<LoadR
 
     const ktx2: LoadResult = {
         data: [],
-        width: pixelWidth, height: pixelHeight, depthOrArrayLayers: 1,
+        width: pixelWidth,
+        height: pixelHeight,
+        depthOrArrayLayers: 1,
         format: infoMeta.format,
         mipmaps: levelCount > 1,
-        autoGenerateMipmap: false
+        autoGenerateMipmap: false,
     };
 
     const levelByteLength = levelCount * 3 * 8;
-    const levelData = new Uint32Array(buffer, KTX2_ID.length
-        + KTX2HeaderLengthU32 * 4, levelByteLength / 4);
+    const levelData = new Uint32Array(buffer, KTX2_ID.length + KTX2HeaderLengthU32 * 4, levelByteLength / 4);
 
     for (let i = 0; i < levelCount; i++) {
         const start = toU64(levelData[6 * i], levelData[6 * i + 1]);
         const count = toU64(levelData[6 * i + 2], levelData[6 * i + 3]);
-        ktx2.data.push([new infoMeta.TypedArray(buffer, Number(start), Number(count) / infoMeta.TypedArray.BYTES_PER_ELEMENT)]);
+        ktx2.data.push([
+            new infoMeta.TypedArray(buffer, Number(start), Number(count) / infoMeta.TypedArray.BYTES_PER_ELEMENT),
+        ]);
     }
 
     if (superCompressionScheme !== SuperCompression.KHR_SUPERCOMPRESSION_NONE) {

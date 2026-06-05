@@ -1,6 +1,14 @@
 import { PipelinePlugin } from './PipelinePlugin';
 import { Ground } from '../../scene/renderables/Ground';
-import { BackgroundMode, BasicBackground, SolidColorBackground, EnvMapBackground, GradientBackground, type Background, SkyBackground } from '../../scene/renderables/Background';
+import {
+    BackgroundMode,
+    BasicBackground,
+    SolidColorBackground,
+    EnvMapBackground,
+    GradientBackground,
+    type Background,
+    SkyBackground,
+} from '../../scene/renderables/Background';
 import { PreSkyMapMaterial } from '../../elements/materials/mesh/SkyMaterial';
 import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
 import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
@@ -61,8 +69,11 @@ export class BackgroundPlugin extends PipelinePlugin {
     private up = new Vector3(0, 0, 1);
 
     private get needRecreateSkyMap() {
-        return this.activeBackground === BackgroundMode.SkyBackground &&
-            (this.skyBackground.enableSkyMap && !this.skyBackground.material.tEquirect);
+        return (
+            this.activeBackground === BackgroundMode.SkyBackground &&
+            this.skyBackground.enableSkyMap &&
+            !this.skyBackground.material.tEquirect
+        );
     }
 
     protected _enabled = true;
@@ -90,7 +101,7 @@ export class BackgroundPlugin extends PipelinePlugin {
         this.skyBackground.setSkyMap(null);
     }
 
-    updateEffect() { }
+    updateEffect() {}
 
     updateGraphHash(hasher: HashKeyBuilder) {
         hasher.bool(this.needRecreateSkyMap);
@@ -125,7 +136,7 @@ export class BackgroundPlugin extends PipelinePlugin {
                         renderer.renderRenderable(background);
                     }
                     renderer.renderRenderable(this.ground);
-                }
+                },
             });
 
         if (this.needRecreateSkyMap) {
@@ -174,89 +185,123 @@ export class BackgroundPlugin extends PipelinePlugin {
             ground: {
                 enabled: {
                     get: () => this.ground.enabled,
-                    set: (v: boolean) => { this.ground.enabled = v; },
+                    set: (v: boolean) => {
+                        this.ground.enabled = v;
+                    },
                 },
                 gridSize: {
                     get: () => this.ground.size,
-                    set: (v: number) => { this.ground.size = v; },
+                    set: (v: number) => {
+                        this.ground.size = v;
+                    },
                 },
                 offsetA: {
                     get: () => this.ground.material.offsetA.clone(),
-                    set: (v: Vector2) => { this.ground.material.offsetA = v.cloneReadonly(); },
+                    set: (v: Vector2) => {
+                        this.ground.material.offsetA = v.cloneReadonly();
+                    },
                 },
                 gridGapSizeA: {
                     get: () => this.ground.material.gridGapSizeA,
-                    set: (v: number) => { this.ground.material.gridGapSizeA = v; },
+                    set: (v: number) => {
+                        this.ground.material.gridGapSizeA = v;
+                    },
                 },
                 colorA: {
                     get: () => this.ground.material.colorA.clone(),
-                    set: (v: Color) => { this.ground.material.colorA = v.cloneReadonly(); },
+                    set: (v: Color) => {
+                        this.ground.material.colorA = v.cloneReadonly();
+                    },
                 },
                 lineWidthA: {
                     get: () => this.ground.material.lineWidthA,
-                    set: (v: number) => { this.ground.material.lineWidthA = v; },
+                    set: (v: number) => {
+                        this.ground.material.lineWidthA = v;
+                    },
                 },
                 offsetB: {
                     get: () => this.ground.material.offsetB.clone(),
-                    set: (v: Vector2) => { this.ground.material.offsetB = v.cloneReadonly(); },
+                    set: (v: Vector2) => {
+                        this.ground.material.offsetB = v.cloneReadonly();
+                    },
                 },
                 gridGapSizeB: {
                     get: () => this.ground.material.gridGapSizeB,
-                    set: (v: number) => { this.ground.material.gridGapSizeB = v; },
+                    set: (v: number) => {
+                        this.ground.material.gridGapSizeB = v;
+                    },
                 },
                 colorB: {
                     get: () => this.ground.material.colorB.clone(),
-                    set: (v: Color) => { this.ground.material.colorB = v.cloneReadonly(); },
+                    set: (v: Color) => {
+                        this.ground.material.colorB = v.cloneReadonly();
+                    },
                 },
                 lineWidthB: {
                     get: () => this.ground.material.lineWidthB,
-                    set: (v: number) => { this.ground.material.lineWidthB = v; },
+                    set: (v: number) => {
+                        this.ground.material.lineWidthB = v;
+                    },
                 },
                 isGroundColorEnabled: {
                     get: () => this.ground.material.isGroundColorEnabled,
-                    set: (v: boolean) => { this.ground.material.isGroundColorEnabled = v; },
+                    set: (v: boolean) => {
+                        this.ground.material.isGroundColorEnabled = v;
+                    },
                 },
                 groundColor: {
                     get: () => this.ground.material.groundColor.clone(),
-                    set: (v: Color) => { this.ground.material.groundColor = v.cloneReadonly(); },
+                    set: (v: Color) => {
+                        this.ground.material.groundColor = v.cloneReadonly();
+                    },
                 },
             },
             background: {
                 active: {
                     get: () => this.activeBackground,
-                    set: (v: BackgroundMode) => { this.activeBackground = v; },
+                    set: (v: BackgroundMode) => {
+                        this.activeBackground = v;
+                    },
                 },
                 solid: {
                     color: {
                         get: () => this.solidBackground.color.clone(),
-                        set: (v: Color) => { this.solidBackground.color = v.clone(); },
+                        set: (v: Color) => {
+                            this.solidBackground.color = v.clone();
+                        },
                     },
                     alpha: {
                         get: () => this.solidBackground.alpha,
-                        set: (v: number) => { this.solidBackground.alpha = v; },
-                    }
+                        set: (v: number) => {
+                            this.solidBackground.alpha = v;
+                        },
+                    },
                 },
                 envmap: {
                     texture: {
                         get: () => this.envBackground.material.tEquirect,
                         set: (v: Texture) => {
-                            v.configSamplerRepeat()
-                                .disableAutoMipmap()
-                                .configDoubleLinear();
+                            v.configSamplerRepeat().disableAutoMipmap().configDoubleLinear();
                             this.envBackground.material.tEquirect = v;
                         },
                     },
                     luma: {
                         get: () => this.envBackground.material.luma,
-                        set: (v: number) => { this.envBackground.material.luma = v; },
+                        set: (v: number) => {
+                            this.envBackground.material.luma = v;
+                        },
                     },
                     verticalRotation: {
                         get: () => this.envBackground.material.verticalRotation,
-                        set: (v: number) => { this.envBackground.material.verticalRotation = v; },
+                        set: (v: number) => {
+                            this.envBackground.material.verticalRotation = v;
+                        },
                     },
                     horizonRotation: {
                         get: () => this.envBackground.material.horizonRotation,
-                        set: (v: number) => { this.envBackground.material.horizonRotation = v; },
+                        set: (v: number) => {
+                            this.envBackground.material.horizonRotation = v;
+                        },
                     },
                     reverseVertical: {
                         get: () => this.envBackground.material.reverseVertical,
@@ -271,22 +316,28 @@ export class BackgroundPlugin extends PipelinePlugin {
                             this.envBackground.material.reverseHorizon = v;
                             this.envBackground.material.notifyRecompileShader();
                         },
-                    }
+                    },
                 },
                 gradient: {
                     skyColor: {
                         get: () => this.gradientBackground.material.skyColor.clone(),
-                        set: (v: Color) => { this.gradientBackground.material.skyColor = v.cloneReadonly(); },
+                        set: (v: Color) => {
+                            this.gradientBackground.material.skyColor = v.cloneReadonly();
+                        },
                     },
                     groundColor: {
                         get: () => this.gradientBackground.material.groundColor.clone(),
-                        set: (v: Color) => { this.gradientBackground.material.groundColor = v.cloneReadonly(); },
-                    }
+                        set: (v: Color) => {
+                            this.gradientBackground.material.groundColor = v.cloneReadonly();
+                        },
+                    },
                 },
                 sky: {
                     enablePreSkyMap: {
                         get: () => this.skyBackground.enableSkyMap,
-                        set: (v: boolean) => { this.skyBackground.setSkyMapEnable(v); },
+                        set: (v: boolean) => {
+                            this.skyBackground.setSkyMapEnable(v);
+                        },
                     },
                     luminance: {
                         get: () => this.skyBackground.material.luminance,
@@ -322,11 +373,15 @@ export class BackgroundPlugin extends PipelinePlugin {
                 basic: {
                     color: {
                         get: () => this.basicBackground.color.clone(),
-                        set: (v: Color) => { this.basicBackground.color = v.clone(); },
+                        set: (v: Color) => {
+                            this.basicBackground.color = v.clone();
+                        },
                     },
                     alpha: {
                         get: () => this.basicBackground.alpha,
-                        set: (v: number) => { this.basicBackground.alpha = v; },
+                        set: (v: number) => {
+                            this.basicBackground.alpha = v;
+                        },
                     },
                     texture: {
                         get: () => this.basicBackground.texture,

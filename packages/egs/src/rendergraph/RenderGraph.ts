@@ -84,9 +84,7 @@ export class RenderGraph {
         }
 
         // create topological sort
-        this.nodes = this.root
-            .from(this.passList)
-            .getTopologicalSortedList();
+        this.nodes = this.root.from(this.passList).getTopologicalSortedList();
 
         // compute dropList
         const passNodes = this.passNodes;
@@ -94,14 +92,11 @@ export class RenderGraph {
         for (let i = passNodes.length - 1; i >= 0; i--) {
             const passNode = passNodes[i];
             const targetNode = passNode.target;
-            const resources: ResourceNode[] = [
-                ...targetNode.colorAttachments,
-                ...Array.from(passNode.dependResources),
-            ];
+            const resources: ResourceNode[] = [...targetNode.colorAttachments, ...Array.from(passNode.dependResources)];
             if (targetNode.depthAttachment) {
                 resources.push(targetNode.depthAttachment);
             }
-            const dropResources = this.dropResources[i] = new Set<ResourceNode>();
+            const dropResources = (this.dropResources[i] = new Set<ResourceNode>());
             for (let j = 0; j < resources.length; j++) {
                 const resource = resources[j];
                 if (resource.isKeepContent) {

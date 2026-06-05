@@ -7,19 +7,23 @@ import * as geomOperatorImport from './elements/geometries/operators/Index';
 import { egsInitFinished } from './ContentAPI';
 export { Utils } from './utils/Utils';
 
-export { ContextLostEvent,ContextLostRestoreFailedEvent,RendererBackend } from './renderer/IRenderer';
+export { ContextLostEvent, ContextLostRestoreFailedEvent, RendererBackend } from './renderer/IRenderer';
 export type { MemoryInfo } from './renderer/IRenderer';
 export { EventDispatcher, EventType } from './utils/EventDispatcher';
 export {
-    Viewer,ViewerResizeEvent,ViewerUnInitializeEvent,RenderOverEvent,
-    RenderStatistics,RuntimeFatalErrorEvent
+    Viewer,
+    ViewerResizeEvent,
+    ViewerUnInitializeEvent,
+    RenderOverEvent,
+    RenderStatistics,
+    RuntimeFatalErrorEvent,
 } from './Viewer';
-export type { HighLightItem,HighlightGroup } from './Viewer';
+export type { HighLightItem, HighlightGroup } from './Viewer';
 export type { Viewport } from './Viewport';
 export { createViewerContext } from './ViewerContext';
 export type { IViewerContext } from './ViewerContext';
 export { ResetRendererEvent } from './engine/RenderEngine';
-export { RenderMode,setViewerConfig } from './engine/EngineConfig';
+export { RenderMode, setViewerConfig } from './engine/EngineConfig';
 export type { EngineInitializeConfig } from './engine/EngineConfig';
 /**
  * @deprecated
@@ -32,9 +36,14 @@ export { Texture2DCompressed, CompressTexture2DLayer } from './elements/textures
 export { logger } from './utils/Logger';
 export * from './snapshot/SnapshotRenderer';
 export { PresetRenderConfig } from './snapshot/SnapshotRendererV2';
-export { SnapshotResultResultType,SnapshotResult } from './snapshot/SnapshotResult';
+export { SnapshotResultResultType, SnapshotResult } from './snapshot/SnapshotResult';
 export type { SnapshotCameraInfo } from './snapshot/SnapshotResult';
-export { SnapshotBoxPrecision, SnapshotAxisDirection, computeCameraPosition, computeProjectionSize } from './snapshot/util';
+export {
+    SnapshotBoxPrecision,
+    SnapshotAxisDirection,
+    computeCameraPosition,
+    computeProjectionSize,
+} from './snapshot/util';
 export { Application, projectName } from './Application';
 
 export { Box2 } from './math/Box2';
@@ -81,7 +90,7 @@ export { TextureCube } from './elements/textures/TextureCube';
 export type { TextureCubeSide } from './elements/textures/TextureCube';
 
 export { SourceTexture } from './elements/textures/SourceTexture';
-export type { MipLevelSource,LayerSource } from './elements/textures/SourceTexture';
+export type { MipLevelSource, LayerSource } from './elements/textures/SourceTexture';
 export { TextureDimension, TextureViewDimension, TextureFormat } from './elements/textures/types';
 
 export { FatLineMaterial } from './elements/materials/mesh/FatLineMaterial';
@@ -106,7 +115,15 @@ export * from './renderer/webgl/WGLConstants';
 export * from './scene/renderables/Background';
 export * from './scene/renderables/Ground';
 
-import { DrawMode, SamplerWrap, SamplerFilter, BlendingEquation, BlendingFactor, StencilFunc, StencilOp } from './utils/Constants';
+import {
+    DrawMode,
+    SamplerWrap,
+    SamplerFilter,
+    BlendingEquation,
+    BlendingFactor,
+    StencilFunc,
+    StencilOp,
+} from './utils/Constants';
 
 export {
     /**
@@ -136,7 +153,7 @@ export {
     /**
      * @deprecated use StencilOp instead
      */
-    StencilOp as WebGLStencilOp
+    StencilOp as WebGLStencilOp,
 };
 
 export { createDataTexture } from './scene/tools/mesh-merge/DataTextureCreator';
@@ -149,7 +166,7 @@ export { TypeAssert } from './scene/tools/TypeAssert';
 export { Scene3D } from './scene/Scene3D';
 /**
  * @internal
-*/
+ */
 export { Scene3D as Scene } from './scene/Scene3D';
 export { Layers } from './scene/tools/Layers';
 export * from './scene/tools/Raycaster';
@@ -161,7 +178,7 @@ export { Points } from './scene/drawables/Points';
 export { PopMesh } from './scene/drawables/PopMesh';
 export { Sprite } from './scene/drawables/Sprite';
 export { SkinnedMesh } from './scene/drawables/SkinnedMesh';
-export { Splat,SplatState,SplatRenderingStabilityChangedEvent,SplatSortedEvent } from './scene/splat/Splat';
+export { Splat, SplatState, SplatRenderingStabilityChangedEvent, SplatSortedEvent } from './scene/splat/Splat';
 export type { SplatEffectConfig } from './scene/splat/Splat';
 
 export { InstanceMesh } from './scene/drawables/InstanceMesh';
@@ -230,8 +247,8 @@ export { serializeObject3D, parseObjects, deepCloneObject3D, downloadStringAsFil
 export * as __INNER__ from './Internal';
 
 /**
-* DO NOT USE THIS!!!!
-*/
+ * DO NOT USE THIS!!!!
+ */
 export * as __INTERNAL__ from './Internal';
 
 egsInitFinished();

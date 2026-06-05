@@ -34,7 +34,7 @@ export class Ground implements Renderable {
         width: this.size,
         height: this.size,
         widthSegments: 50,
-        heightSegments: 50
+        heightSegments: 50,
     });
 
     constructor() {
@@ -50,7 +50,12 @@ export class Ground implements Renderable {
     set up(up: Vector3) {
         if (!this.groundMesh.up.equals(up)) {
             this.groundMesh.quaternion.setFromUnitVectors(GROUND_DEFAULT_UP, up);
-            this.material.quat = readonlyMath.vec4(this.groundMesh.quaternion.x, this.groundMesh.quaternion.y, this.groundMesh.quaternion.z, this.groundMesh.quaternion.w);
+            this.material.quat = readonlyMath.vec4(
+                this.groundMesh.quaternion.x,
+                this.groundMesh.quaternion.y,
+                this.groundMesh.quaternion.z,
+                this.groundMesh.quaternion.w,
+            );
             this.groundMesh.updateMatrix();
             this.groundMesh.updateMatrixWorld();
             this.groundMesh.up.copy(up);
@@ -66,7 +71,7 @@ export class Ground implements Renderable {
             width: this.size,
             height: this.size,
             widthSegments: 50,
-            heightSegments: 50
+            heightSegments: 50,
         });
         this.groundMesh.geometry = this.geometry;
     }

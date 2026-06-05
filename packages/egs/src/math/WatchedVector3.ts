@@ -16,7 +16,7 @@ export class WatchedVector3 extends Vector3 {
         this._z = z || 0;
     }
 
-    onChange = () => { };
+    onChange = () => {};
 
     set(x: number, y: number, z: number): WatchedVector3 {
         this._x = x;
@@ -51,7 +51,7 @@ Object.defineProperties(WatchedVector3.prototype, {
             this.onChange?.();
         },
         enumerable: true,
-        configurable: true
+        configurable: true,
     },
     y: {
         get() {
@@ -65,7 +65,7 @@ Object.defineProperties(WatchedVector3.prototype, {
             this.onChange?.();
         },
         enumerable: true,
-        configurable: true
+        configurable: true,
     },
     z: {
         get() {
@@ -79,6 +79,6 @@ Object.defineProperties(WatchedVector3.prototype, {
             this.onChange?.();
         },
         enumerable: true,
-        configurable: true
-    }
+        configurable: true,
+    },
 });

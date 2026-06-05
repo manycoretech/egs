@@ -15,7 +15,7 @@ import { Scene3D } from '../scene/Scene3D';
 import { DrawableList } from '../scene/tools/DrawcallList';
 import type { Layers } from '../scene/tools/Layers';
 import { TypeAssert } from '../scene/tools/TypeAssert';
-import type { Size,IRange } from '../utils/Utils';
+import type { Size, IRange } from '../utils/Utils';
 import { RenderMode } from '../engine/EngineConfig';
 import type { Drawable } from '../scene/drawables/Drawable';
 import { Geometry } from '../elements/geometries/containers/Geometry';
@@ -30,8 +30,8 @@ import { type RenderingConfig, type DrivenCullingConfig, TextureCompression } fr
 import { logger } from '../utils/Logger';
 
 export interface SnapshotRenderConfig {
-    worldBox?: Box3,
-    boxPrecision?: SnapshotBoxPrecision,
+    worldBox?: Box3;
+    boxPrecision?: SnapshotBoxPrecision;
 }
 
 const snapshotRenderConfigDefault: SnapshotRenderConfig = {
@@ -46,7 +46,6 @@ export class SnapshotRenderer {
     defaultScene = new Scene3D();
 
     constructor(private renderer: IRenderer) {
-        this.renderer = renderer;
         this.onRendererChanged(renderer);
     }
     destroy() {
@@ -118,7 +117,7 @@ export class SnapshotRenderer {
         isAOEnabled: boolean = false,
         isDeferredEnabled: boolean = false,
         isHighQuality: boolean = false,
-        taaSampleCount: number = 8
+        taaSampleCount: number = 8,
     ) {
         this.effectConfig.mode = mode;
         this.effectConfig.isAOEnabled = isAOEnabled;
@@ -178,8 +177,14 @@ export class SnapshotRenderer {
     private renderImpl<T extends SnapshotResult | Promise<SnapshotResult>>(
         object: Object3D,
         direction: SnapshotAxisDirection,
-        generate: (resolution: { width: number; height: number; }, objectsToRender: DrawableList, box: Box3, camera: Camera3D) => T,
-        extraPadding: number, config?: SnapshotRenderConfig,
+        generate: (
+            resolution: { width: number; height: number },
+            objectsToRender: DrawableList,
+            box: Box3,
+            camera: Camera3D,
+        ) => T,
+        extraPadding: number,
+        config?: SnapshotRenderConfig,
     ): T {
         config = Object.assign({}, snapshotRenderConfigDefault, config);
 
@@ -191,7 +196,6 @@ export class SnapshotRenderer {
 
         if (config.worldBox) {
             worldBox.copy(config.worldBox);
-
         } else if (config.boxPrecision === SnapshotBoxPrecision.Vertex) {
             const v = new Vector3();
             unionDrawable = (box, node) => {
@@ -219,7 +223,6 @@ export class SnapshotRenderer {
                     }
                 }
             };
-
         } else if (config.boxPrecision === SnapshotBoxPrecision.BoundingBox) {
             unionDrawable = (box, drawable) => {
                 // drawable.updateBoundings(); //updated before calling union Drawable
@@ -245,7 +248,8 @@ export class SnapshotRenderer {
                     } else {
                         o.updateBoundings();
                     }
-                    if (!worldBox.containsBox(o.worldBoundingBox)) { // test bounding box early to save vertex calc
+                    if (!worldBox.containsBox(o.worldBoundingBox)) {
+                        // test bounding box early to save vertex calc
                         unionDrawable(worldBox, o);
                     }
                 }
@@ -294,101 +298,181 @@ export class SnapshotRenderer {
         }
     }
 
-    private renderInner<T extends SnapshotResult | Promise<SnapshotResult>>(createResult: (renderer: IRenderer, target: RenderTarget, range: IRange, box: Box3, camera: Camera3D) => T, object: Object3D, direction: SnapshotAxisDirection, scene?: Scene3D, config?: SnapshotRenderConfig) {
+    private renderInner<T extends SnapshotResult | Promise<SnapshotResult>>(
+        createResult: (renderer: IRenderer, target: RenderTarget, range: IRange, box: Box3, camera: Camera3D) => T,
+        object: Object3D,
+        direction: SnapshotAxisDirection,
+        scene?: Scene3D,
+        config?: SnapshotRenderConfig,
+    ) {
         const needExtraPadding = this.effectConfig.mode !== RenderMode.SHADING;
-        return this.renderImpl(object, direction, (resolution, objectsToRender, box, camera) => {
-            const renderer = this.renderer;
+        return this.renderImpl(
+            object,
+            direction,
+            (resolution, objectsToRender, box, camera) => {
+                const renderer = this.renderer;
 
-            let activeScene: Scene3D;
-            if (scene) {
-                activeScene = scene;
-            } else if (object.scene) {
-                activeScene = object.scene;
-            } else {
-                activeScene = this.defaultScene;
-            }
-            activeScene.update();
-            activeScene.updateRegistryAndActive(renderer, this.camera);
+                let activeScene: Scene3D;
+                if (scene) {
+                    activeScene = scene;
+                } else if (object.scene) {
+                    activeScene = object.scene;
+                } else {
+                    activeScene = this.defaultScene;
+                }
+                activeScene.update();
+                activeScene.updateRegistryAndActive(renderer, this.camera);
 
-            if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
-                PipelineContentBridge.drawableListUpdateSceneAndUse(objectsToRender, activeScene);
-            }
+                if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
+                    PipelineContentBridge.drawableListUpdateSceneAndUse(objectsToRender, activeScene);
+                }
 
-            const target = createRenderTarget(resolution.width, resolution.height, this.renderer);
-            const adaptor = new SnapShotAdaptor(this.camera, objectsToRender, activeScene);
-            this.updatePipelineParam(adaptor);
-            this.postPipeline.setFrameSize(resolution.width, resolution.height);
+                const target = createRenderTarget(resolution.width, resolution.height, this.renderer);
+                const adaptor = new SnapShotAdaptor(this.camera, objectsToRender, activeScene);
+                this.updatePipelineParam(adaptor);
+                this.postPipeline.setFrameSize(resolution.width, resolution.height);
 
-            renderer.setRenderTarget(target);
-            renderer.setClearColor(this.backgroundColor, this.backgroundAlpha);
-            renderer.clear();
+                renderer.setRenderTarget(target);
+                renderer.setClearColor(this.backgroundColor, this.backgroundAlpha);
+                renderer.clear();
 
-            const snapshotCounts = this.effectConfig.isTaaEnabled ? this.effectConfig.taaSampleCount : 1;
-            for (let i = 0; i < snapshotCounts; i++) {
-                this.postPipeline.renderSnapshot(adaptor, { target }, this.renderingConfig, this.drivenCullingConfig);
-            }
+                const snapshotCounts = this.effectConfig.isTaaEnabled ? this.effectConfig.taaSampleCount : 1;
+                for (let i = 0; i < snapshotCounts; i++) {
+                    this.postPipeline.renderSnapshot(
+                        adaptor,
+                        { target },
+                        this.renderingConfig,
+                        this.drivenCullingConfig,
+                    );
+                }
 
-            return createResult(this.renderer, target, { x: 0, y: 0, width: resolution.width, height: resolution.height }, box, camera);
-        }, needExtraPadding ? this.extraPaddingForEffect : 0, config);
+                return createResult(
+                    this.renderer,
+                    target,
+                    { x: 0, y: 0, width: resolution.width, height: resolution.height },
+                    box,
+                    camera,
+                );
+            },
+            needExtraPadding ? this.extraPaddingForEffect : 0,
+            config,
+        );
     }
 
-    private renderWithOverrideMaterialImpl<T extends SnapshotResult | Promise<SnapshotResult>>(createResult: (renderer: IRenderer, target: RenderTarget, range: IRange, box: Box3, camera: Camera3D) => T, object: Object3D, direction: SnapshotAxisDirection, material: Material, config?: SnapshotRenderConfig): T {
-        return this.renderImpl(object, direction, (resolution, objectsToRender, box, camera) => {
-            const target = createRenderTarget(resolution.width, resolution.height, this.renderer);
+    private renderWithOverrideMaterialImpl<T extends SnapshotResult | Promise<SnapshotResult>>(
+        createResult: (renderer: IRenderer, target: RenderTarget, range: IRange, box: Box3, camera: Camera3D) => T,
+        object: Object3D,
+        direction: SnapshotAxisDirection,
+        material: Material,
+        config?: SnapshotRenderConfig,
+    ): T {
+        return this.renderImpl(
+            object,
+            direction,
+            (resolution, objectsToRender, box, camera) => {
+                const target = createRenderTarget(resolution.width, resolution.height, this.renderer);
 
-            this.renderer.setRenderTarget(target);
-            this.renderer.setClearColor(this.backgroundColor, this.backgroundAlpha);
-            this.renderer.clear();
-            this.renderer.overrideDispatcher = new MaterialShadingWithDynamicShapeDispatcher(material);
-            this.renderer.overrideDispatcher.update();
-            this.renderer.beginPass(true, true, false, false);
-            this.renderer.renderRenderable(objectsToRender.project(this.camera));
-            this.renderer.endPass();
-            this.renderer.flushCommands?.();
-            this.renderer.overrideDispatcher = null;
+                this.renderer.setRenderTarget(target);
+                this.renderer.setClearColor(this.backgroundColor, this.backgroundAlpha);
+                this.renderer.clear();
+                this.renderer.overrideDispatcher = new MaterialShadingWithDynamicShapeDispatcher(material);
+                this.renderer.overrideDispatcher.update();
+                this.renderer.beginPass(true, true, false, false);
+                this.renderer.renderRenderable(objectsToRender.project(this.camera));
+                this.renderer.endPass();
+                this.renderer.flushCommands?.();
+                this.renderer.overrideDispatcher = null;
 
-            return createResult(this.renderer, target, { x: 0, y: 0, width: resolution.width, height: resolution.height }, box, camera);
-        }, 0, config);
+                return createResult(
+                    this.renderer,
+                    target,
+                    { x: 0, y: 0, width: resolution.width, height: resolution.height },
+                    box,
+                    camera,
+                );
+            },
+            0,
+            config,
+        );
     }
 
     /**
      * @deprecated use `renderWithOverrideMaterialAsync` instead, sync function will unavailable in webgpu version
      */
-    renderWithOverrideMaterial(object: Object3D, direction: SnapshotAxisDirection, material: Material, config?: SnapshotRenderConfig): SnapshotResult {
-        logger.error('SnapshotRenderer.renderWithOverrideMaterial is deprecated, use renderWithOverrideMaterialAsync instead.');
-        return this.renderWithOverrideMaterialImpl((renderer, target, range, box, camera) => {
-            const resultBuffer = this.readPixels(renderer, target, range);
-            return new SnapshotResult(resultBuffer, {
-                height: range.height,
-                width: range.width
-            }, {
-                projectionMatrix: camera.projectionMatrix.clone(),
-                worldMatrix: camera.matrixWorld.clone(),
-            }, box);
-        }, object, direction, material, config);
+    renderWithOverrideMaterial(
+        object: Object3D,
+        direction: SnapshotAxisDirection,
+        material: Material,
+        config?: SnapshotRenderConfig,
+    ): SnapshotResult {
+        logger.error(
+            'SnapshotRenderer.renderWithOverrideMaterial is deprecated, use renderWithOverrideMaterialAsync instead.',
+        );
+        return this.renderWithOverrideMaterialImpl(
+            (renderer, target, range, box, camera) => {
+                const resultBuffer = this.readPixels(renderer, target, range);
+                return new SnapshotResult(
+                    resultBuffer,
+                    {
+                        height: range.height,
+                        width: range.width,
+                    },
+                    {
+                        projectionMatrix: camera.projectionMatrix.clone(),
+                        worldMatrix: camera.matrixWorld.clone(),
+                    },
+                    box,
+                );
+            },
+            object,
+            direction,
+            material,
+            config,
+        );
     }
 
-    async renderWithOverrideMaterialAsync(object: Object3D, direction: SnapshotAxisDirection, material: Material, config?: SnapshotRenderConfig): Promise<SnapshotResult> {
+    async renderWithOverrideMaterialAsync(
+        object: Object3D,
+        direction: SnapshotAxisDirection,
+        material: Material,
+        config?: SnapshotRenderConfig,
+    ): Promise<SnapshotResult> {
         if (this.renderer.rendererStatus.state === RendererState.Initializing) {
             await this.renderer.rendererStatus.initialized;
         }
 
-        return this.renderWithOverrideMaterialImpl(async (renderer, target, range, box, camera) => {
-            const resultBuffer = await this.readPixelsAsync(renderer, target, range);
-            return new SnapshotResult(resultBuffer, {
-                height: range.height,
-                width: range.width
-            }, {
-                projectionMatrix: camera.projectionMatrix.clone(),
-                worldMatrix: camera.matrixWorld.clone(),
-            }, box);
-        }, object, direction, material, config);
+        return this.renderWithOverrideMaterialImpl(
+            async (renderer, target, range, box, camera) => {
+                const resultBuffer = await this.readPixelsAsync(renderer, target, range);
+                return new SnapshotResult(
+                    resultBuffer,
+                    {
+                        height: range.height,
+                        width: range.width,
+                    },
+                    {
+                        projectionMatrix: camera.projectionMatrix.clone(),
+                        worldMatrix: camera.matrixWorld.clone(),
+                    },
+                    box,
+                );
+            },
+            object,
+            direction,
+            material,
+            config,
+        );
     }
 
     /**
      * @deprecated use `renderAsync` instead, sync function will unavailable in webgpu version
      */
-    render(object: Object3D, direction: SnapshotAxisDirection, scene?: Scene3D, config?: SnapshotRenderConfig): SnapshotResult {
+    render(
+        object: Object3D,
+        direction: SnapshotAxisDirection,
+        scene?: Scene3D,
+        config?: SnapshotRenderConfig,
+    ): SnapshotResult {
         logger.error('SnapshotRenderer.render is deprecated, use renderAsync instead.');
         let userScene: Scene3D | undefined = scene;
         const enableBackup = new Map();
@@ -411,16 +495,27 @@ export class SnapshotRenderer {
             });
         }
 
-        const result = this.renderInner((renderer: IRenderer, target: RenderTarget, range: IRange, box: Box3, camera) => {
-            const resultBuffer = this.readPixels(renderer, target, range);
-            return new SnapshotResult(resultBuffer, {
-                height: range.height,
-                width: range.width
-            }, {
-                projectionMatrix: camera.projectionMatrix.clone(),
-                worldMatrix: camera.matrixWorld.clone(),
-            }, box);
-        }, object, direction, scene, config);
+        const result = this.renderInner(
+            (renderer: IRenderer, target: RenderTarget, range: IRange, box: Box3, camera) => {
+                const resultBuffer = this.readPixels(renderer, target, range);
+                return new SnapshotResult(
+                    resultBuffer,
+                    {
+                        height: range.height,
+                        width: range.width,
+                    },
+                    {
+                        projectionMatrix: camera.projectionMatrix.clone(),
+                        worldMatrix: camera.matrixWorld.clone(),
+                    },
+                    box,
+                );
+            },
+            object,
+            direction,
+            scene,
+            config,
+        );
 
         if (userScene) {
             userScene.lights.forEach(l => {
@@ -436,7 +531,12 @@ export class SnapshotRenderer {
         return result;
     }
 
-    async renderAsync(object: Object3D, direction: SnapshotAxisDirection, scene?: Scene3D, config?: SnapshotRenderConfig): Promise<SnapshotResult> {
+    async renderAsync(
+        object: Object3D,
+        direction: SnapshotAxisDirection,
+        scene?: Scene3D,
+        config?: SnapshotRenderConfig,
+    ): Promise<SnapshotResult> {
         if (this.renderer.rendererStatus.state === RendererState.Initializing) {
             await this.renderer.rendererStatus.initialized;
         }
@@ -462,16 +562,27 @@ export class SnapshotRenderer {
             });
         }
         // render is sync, we don't need to wait it.
-        const result = this.renderInner(async (renderer: IRenderer, target: RenderTarget, range: IRange, box: Box3, camera) => {
-            const resultBuffer = await this.readPixelsAsync(renderer, target, range);
-            return new SnapshotResult(resultBuffer, {
-                height: range.height,
-                width: range.width
-            }, {
-                projectionMatrix: camera.projectionMatrix.clone(),
-                worldMatrix: camera.matrixWorld.clone(),
-            }, box);
-        }, object, direction, scene, config);
+        const result = this.renderInner(
+            async (renderer: IRenderer, target: RenderTarget, range: IRange, box: Box3, camera) => {
+                const resultBuffer = await this.readPixelsAsync(renderer, target, range);
+                return new SnapshotResult(
+                    resultBuffer,
+                    {
+                        height: range.height,
+                        width: range.width,
+                    },
+                    {
+                        projectionMatrix: camera.projectionMatrix.clone(),
+                        worldMatrix: camera.matrixWorld.clone(),
+                    },
+                    box,
+                );
+            },
+            object,
+            direction,
+            scene,
+            config,
+        );
 
         if (userScene) {
             userScene.lights.forEach(l => {
@@ -487,7 +598,12 @@ export class SnapshotRenderer {
         return result;
     }
 
-    private renderCustomViewImpl<T extends SnapshotResult | Promise<SnapshotResult>>(createResult: (target: RenderTarget) => T, object: Object3D | Object3D[], camera: Camera3D, resolution: Size): T {
+    private renderCustomViewImpl<T extends SnapshotResult | Promise<SnapshotResult>>(
+        createResult: (target: RenderTarget) => T,
+        object: Object3D | Object3D[],
+        camera: Camera3D,
+        resolution: Size,
+    ): T {
         const objects = Array.isArray(object) ? object : [object];
         let scene: Scene3D;
         if (objects[0]?.scene) {
@@ -558,27 +674,51 @@ export class SnapshotRenderer {
      */
     renderCustomView(object: Object3D | Object3D[], camera: Camera3D, resolution: Size): SnapshotResult {
         logger.error('SnapshotRenderer.renderCustomView is deprecated, use renderCustomViewAsync instead.');
-        return this.renderCustomViewImpl(target => {
-            const resultBuffer = this.readPixels(this.renderer, target, { x: 0, y: 0, width: resolution.width, height: resolution.height });
-            return new SnapshotResult(resultBuffer, resolution, {
-                projectionMatrix: camera.projectionMatrix.clone(),
-                worldMatrix: camera.matrixWorld.clone(),
-            });
-        }, object, camera, resolution);
+        return this.renderCustomViewImpl(
+            target => {
+                const resultBuffer = this.readPixels(this.renderer, target, {
+                    x: 0,
+                    y: 0,
+                    width: resolution.width,
+                    height: resolution.height,
+                });
+                return new SnapshotResult(resultBuffer, resolution, {
+                    projectionMatrix: camera.projectionMatrix.clone(),
+                    worldMatrix: camera.matrixWorld.clone(),
+                });
+            },
+            object,
+            camera,
+            resolution,
+        );
     }
 
-    async renderCustomViewAsync(object: Object3D | Object3D[], camera: Camera3D, resolution: Size): Promise<SnapshotResult> {
+    async renderCustomViewAsync(
+        object: Object3D | Object3D[],
+        camera: Camera3D,
+        resolution: Size,
+    ): Promise<SnapshotResult> {
         if (this.renderer.rendererStatus.state === RendererState.Initializing) {
             await this.renderer.rendererStatus.initialized;
         }
 
-        return this.renderCustomViewImpl(async target => {
-            const resultBuffer = await this.readPixelsAsync(this.renderer, target, { x: 0, y: 0, width: resolution.width, height: resolution.height });
-            return new SnapshotResult(resultBuffer, resolution, {
-                projectionMatrix: camera.projectionMatrix.clone(),
-                worldMatrix: camera.matrixWorld.clone(),
-            });
-        }, object, camera, resolution);
+        return this.renderCustomViewImpl(
+            async target => {
+                const resultBuffer = await this.readPixelsAsync(this.renderer, target, {
+                    x: 0,
+                    y: 0,
+                    width: resolution.width,
+                    height: resolution.height,
+                });
+                return new SnapshotResult(resultBuffer, resolution, {
+                    projectionMatrix: camera.projectionMatrix.clone(),
+                    worldMatrix: camera.matrixWorld.clone(),
+                });
+            },
+            object,
+            camera,
+            resolution,
+        );
     }
 
     private readPixels(renderer: IRenderer, target: RenderTarget, range: IRange): Uint8Array {

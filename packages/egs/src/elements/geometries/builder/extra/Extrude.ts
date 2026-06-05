@@ -1,4 +1,3 @@
-
 import { BufferAttribute } from '../../../../elements/attributes/BufferAttribute';
 import type { Geometry } from '../../../../elements/geometries/containers/Geometry';
 import { Vector2 } from '../../../../math/Vector2';
@@ -18,14 +17,17 @@ const WorldUVGenerator = {
         const b_y = vertices[indexB * 3 + 1];
         const c_x = vertices[indexC * 3];
         const c_y = vertices[indexC * 3 + 1];
-        return [
-            new Vector2(a_x, a_y),
-            new Vector2(b_x, b_y),
-            new Vector2(c_x, c_y)
-        ];
+        return [new Vector2(a_x, a_y), new Vector2(b_x, b_y), new Vector2(c_x, c_y)];
     },
 
-    generateSideWallUV(_geometry: Geometry, vertices: number[], indexA: number, indexB: number, indexC: number, indexD: number) {
+    generateSideWallUV(
+        _geometry: Geometry,
+        vertices: number[],
+        indexA: number,
+        indexB: number,
+        indexC: number,
+        indexD: number,
+    ) {
         const a_x = vertices[indexA * 3];
         const a_y = vertices[indexA * 3 + 1];
         const a_z = vertices[indexA * 3 + 2];
@@ -44,28 +46,28 @@ const WorldUVGenerator = {
                 new Vector2(a_x, 1 - a_z),
                 new Vector2(b_x, 1 - b_z),
                 new Vector2(c_x, 1 - c_z),
-                new Vector2(d_x, 1 - d_z)
+                new Vector2(d_x, 1 - d_z),
             ];
         } else {
             return [
                 new Vector2(a_y, 1 - a_z),
                 new Vector2(b_y, 1 - b_z),
                 new Vector2(c_y, 1 - c_z),
-                new Vector2(d_y, 1 - d_z)
+                new Vector2(d_y, 1 - d_z),
             ];
         }
-    }
+    },
 };
 export interface ExtrudeOptions {
-    steps: number,
-    depth: number,
-    bevelEnabled: boolean,
-    bevelThickness: number,
-    bevelSize: number,
-    bevelSegments: number,
-    curveSegments: number,
-    UVGenerator: typeof WorldUVGenerator
-    extrudePath: Curve<Vector3>,
+    steps: number;
+    depth: number;
+    bevelEnabled: boolean;
+    bevelThickness: number;
+    bevelSize: number;
+    bevelSegments: number;
+    curveSegments: number;
+    UVGenerator: typeof WorldUVGenerator;
+    extrudePath: Curve<Vector3>;
 }
 export interface TextShapeParameter {
     font?: Font;
@@ -106,8 +108,8 @@ export function text(text: string, params: Partial<TextShapeParameter>): BufferG
 
 export class ExtrudeBufferGeometry extends BufferGeometry {
     parameters: {
-        shapes: Shape | Shape[],
-        options: Partial<ExtrudeOptions>
+        shapes: Shape | Shape[];
+        options: Partial<ExtrudeOptions>;
     };
     /**
      * @param { number } shapes Shape or an array of shapes.
@@ -131,7 +133,7 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
 
         this.parameters = {
             shapes,
-            options
+            options,
         };
         shapes = Array.isArray(shapes) ? shapes : [shapes];
         const verticesArray: number[] = [];
@@ -151,15 +153,23 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
         const placeholder: number[] = [];
         const scope = this;
         // options
-        const curveSegments = scope.parameters.options.curveSegments !== undefined ? scope.parameters.options.curveSegments : 12;
+        const curveSegments =
+            scope.parameters.options.curveSegments !== undefined ? scope.parameters.options.curveSegments : 12;
         const steps = scope.parameters.options.steps !== undefined ? scope.parameters.options.steps : 1;
         const depth = scope.parameters.options.depth !== undefined ? scope.parameters.options.depth : 100;
-        let bevelEnabled = scope.parameters.options.bevelEnabled !== undefined ? scope.parameters.options.bevelEnabled : true;
-        let bevelThickness = scope.parameters.options.bevelThickness !== undefined ? scope.parameters.options.bevelThickness : 6;
-        let bevelSize = scope.parameters.options.bevelSize !== undefined ? scope.parameters.options.bevelSize : bevelThickness - 2;
-        let bevelSegments = scope.parameters.options.bevelSegments !== undefined ? scope.parameters.options.bevelSegments : 3;
+        let bevelEnabled =
+            scope.parameters.options.bevelEnabled !== undefined ? scope.parameters.options.bevelEnabled : true;
+        let bevelThickness =
+            scope.parameters.options.bevelThickness !== undefined ? scope.parameters.options.bevelThickness : 6;
+        let bevelSize =
+            scope.parameters.options.bevelSize !== undefined ? scope.parameters.options.bevelSize : bevelThickness - 2;
+        let bevelSegments =
+            scope.parameters.options.bevelSegments !== undefined ? scope.parameters.options.bevelSegments : 3;
         const extrudePath = scope.parameters.options.extrudePath;
-        const uvgen = scope.parameters.options.UVGenerator !== undefined ? scope.parameters.options.UVGenerator : WorldUVGenerator;
+        const uvgen =
+            scope.parameters.options.UVGenerator !== undefined
+                ? scope.parameters.options.UVGenerator
+                : WorldUVGenerator;
 
         let extrudeByPath = false;
         let extrudePts: Vector3[], splineTube, biNormal: Vector3, normal: Vector3, position2: Vector3;
@@ -227,9 +237,9 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
             const v_prev_y = inPt.y - inPrev.y;
             const v_next_x = inNext.x - inPt.x;
             const v_next_y = inNext.y - inPt.y;
-            const v_prev_lensq = (v_prev_x * v_prev_x + v_prev_y * v_prev_y);
+            const v_prev_lensq = v_prev_x * v_prev_x + v_prev_y * v_prev_y;
             // check for collinear edges
-            const collinear0 = (v_prev_x * v_next_y - v_prev_y * v_next_x);
+            const collinear0 = v_prev_x * v_next_y - v_prev_y * v_next_x;
 
             if (Math.abs(collinear0) > Number.EPSILON) {
                 // not collinear, length of vectors for normalizing
@@ -237,21 +247,23 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
                 const v_next_len = Math.sqrt(v_next_x * v_next_x + v_next_y * v_next_y);
 
                 // shift adjacent points by unit vectors to the left
-                const ptPrevShift_x = (inPrev.x - v_prev_y / v_prev_len);
-                const ptPrevShift_y = (inPrev.y + v_prev_x / v_prev_len);
-                const ptNextShift_x = (inNext.x - v_next_y / v_next_len);
-                const ptNextShift_y = (inNext.y + v_next_x / v_next_len);
+                const ptPrevShift_x = inPrev.x - v_prev_y / v_prev_len;
+                const ptPrevShift_y = inPrev.y + v_prev_x / v_prev_len;
+                const ptNextShift_x = inNext.x - v_next_y / v_next_len;
+                const ptNextShift_y = inNext.y + v_next_x / v_next_len;
 
                 // scaling factor for v_prev to intersection point
-                const sf = ((ptNextShift_x - ptPrevShift_x) * v_next_y - (ptNextShift_y - ptPrevShift_y) * v_next_x) / (v_prev_x * v_next_y - v_prev_y * v_next_x);
+                const sf =
+                    ((ptNextShift_x - ptPrevShift_x) * v_next_y - (ptNextShift_y - ptPrevShift_y) * v_next_x) /
+                    (v_prev_x * v_next_y - v_prev_y * v_next_x);
 
                 // vector from inPt to intersection point
-                v_trans_x = (ptPrevShift_x + v_prev_x * sf - inPt.x);
-                v_trans_y = (ptPrevShift_y + v_prev_y * sf - inPt.y);
+                v_trans_x = ptPrevShift_x + v_prev_x * sf - inPt.x;
+                v_trans_y = ptPrevShift_y + v_prev_y * sf - inPt.y;
 
                 // Don't normalize!, otherwise sharp corners become ugly
                 //  but prevent crazy spikes
-                const v_trans_lensq = (v_trans_x * v_trans_x + v_trans_y * v_trans_y);
+                const v_trans_lensq = v_trans_x * v_trans_x + v_trans_y * v_trans_y;
                 if (v_trans_lensq <= 2) {
                     return new Vector2(v_trans_x, v_trans_y);
                 } else {
@@ -265,8 +277,8 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
                         direction_eq = true;
                     }
                 } else {
-                    if (v_prev_x < - Number.EPSILON) {
-                        if (v_next_x < - Number.EPSILON) {
+                    if (v_prev_x < -Number.EPSILON) {
+                        if (v_next_x < -Number.EPSILON) {
                             direction_eq = true;
                         }
                     } else {
@@ -277,7 +289,7 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
                 }
 
                 if (direction_eq) {
-                    v_trans_x = - v_prev_y;
+                    v_trans_x = -v_prev_y;
                     v_trans_y = v_prev_x;
                     shrink_by = Math.sqrt(v_prev_lensq);
                 } else {
@@ -290,7 +302,7 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
         }
 
         const contourMovements = [];
-        for (i = 0, il = contour.length, j = il - 1, k = i + 1; i < il; i++ , j++ , k++) {
+        for (i = 0, il = contour.length, j = il - 1, k = i + 1; i < il; i++, j++, k++) {
             if (j === il) {
                 j = 0;
             }
@@ -306,7 +318,7 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
         for (h = 0, hl = holes.length; h < hl; h++) {
             ahole = holes[h];
             oneHoleMovements = [];
-            for (i = 0, il = ahole.length, j = il - 1, k = i + 1; i < il; i++ , j++ , k++) {
+            for (i = 0, il = ahole.length, j = il - 1, k = i + 1; i < il; i++, j++, k++) {
                 if (j === il) {
                     j = 0;
                 }
@@ -323,13 +335,13 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
         // Loop bevelSegments, 1 for the front, 1 for the back
         for (b = 0; b < bevelSegments; b++) {
             t = b / bevelSegments;
-            z = bevelThickness * Math.cos(t * Math.PI / 2);
-            bs = bevelSize * Math.sin(t * Math.PI / 2);
+            z = bevelThickness * Math.cos((t * Math.PI) / 2);
+            bs = bevelSize * Math.sin((t * Math.PI) / 2);
 
             // contract shape
             for (i = 0, il = contour.length; i < il; i++) {
                 vert = scalePt2(contour[i], contourMovements[i], bs);
-                v(vert.x, vert.y, - z);
+                v(vert.x, vert.y, -z);
             }
 
             // expand holes
@@ -338,7 +350,7 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
                 oneHoleMovements = holesMovements[h];
                 for (i = 0, il = ahole.length; i < il; i++) {
                     vert = scalePt2(ahole[i], oneHoleMovements[i], bs);
-                    v(vert.x, vert.y, - z);
+                    v(vert.x, vert.y, -z);
                 }
             }
         }
@@ -363,7 +375,7 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
             for (i = 0; i < vlen; i++) {
                 vert = bevelEnabled ? scalePt2(vertices[i], verticesMovements[i], bs) : vertices[i];
                 if (!extrudeByPath) {
-                    v(vert.x, vert.y, depth / steps * s);
+                    v(vert.x, vert.y, (depth / steps) * s);
                 } else {
                     // v( vert.x, vert.y + extrudePts[ s - 1 ].y, extrudePts[ s - 1 ].x );
                     normal!.copy(splineTube.normals[s]).multiplyScalar(vert.x);
@@ -377,8 +389,8 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
         // Add bevel segments planes
         for (b = bevelSegments - 1; b >= 0; b--) {
             t = b / bevelSegments;
-            z = bevelThickness * Math.cos(t * Math.PI / 2);
-            bs = bevelSize * Math.sin(t * Math.PI / 2);
+            z = bevelThickness * Math.cos((t * Math.PI) / 2);
+            bs = bevelSize * Math.sin((t * Math.PI) / 2);
 
             // contract shape
             for (i = 0, il = contour.length; i < il; i++) {
@@ -503,7 +515,14 @@ export class ExtrudeBufferGeometry extends BufferGeometry {
             addVertex(_d);
 
             const nextIndex = verticesArray.length / 3;
-            const uvs = uvgen.generateSideWallUV(scope as any, verticesArray, nextIndex - 6, nextIndex - 3, nextIndex - 2, nextIndex - 1);
+            const uvs = uvgen.generateSideWallUV(
+                scope as any,
+                verticesArray,
+                nextIndex - 6,
+                nextIndex - 3,
+                nextIndex - 2,
+                nextIndex - 1,
+            );
             addUV(uvs[0]);
             addUV(uvs[1]);
             addUV(uvs[3]);

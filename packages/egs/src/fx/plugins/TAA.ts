@@ -42,12 +42,11 @@ export class TAAPlugin extends PipelinePlugin {
     private waitingTime = 160;
     private lastResetTimestamp = 0;
     private get isTAAReady() {
-        return !(this.taaMaterial.sampleCount === 0 && (performance.now() - this.lastResetTimestamp < this.waitingTime));
+        return !(this.taaMaterial.sampleCount === 0 && performance.now() - this.lastResetTimestamp < this.waitingTime);
     }
 
     get shouldRender(): boolean {
-        return (this._enabled && !this.enabled) ||
-            (this.enabled && this.taaMaterial.sampleCount < this.maxSampleCount);
+        return (this._enabled && !this.enabled) || (this.enabled && this.taaMaterial.sampleCount < this.maxSampleCount);
     }
 
     resetSample() {
@@ -71,8 +70,7 @@ export class TAAPlugin extends PipelinePlugin {
              * 1. make user we wait for TAA extra some time to start it
              * 2. if planar shadow is on, we have to wait for shadow finished
              */
-            this.active = this.isTAAReady &&
-                (!effectConfig.planarShadowEnabled || effectConfig.planarShadowReady);
+            this.active = this.isTAAReady && (!effectConfig.planarShadowEnabled || effectConfig.planarShadowReady);
         } else {
             this.active = false;
             this.lastResetTimestamp = performance.now();
@@ -82,38 +80,36 @@ export class TAAPlugin extends PipelinePlugin {
             this.taaMaterial.sampleCount = 0;
         }
         effectConfig.taaEnabled = this.enabled;
-        effectConfig.taaStable = (this.enabled && this.taaMaterial.sampleCount >= this.maxSampleCount);
+        effectConfig.taaStable = this.enabled && this.taaMaterial.sampleCount >= this.maxSampleCount;
     }
 
     updateGraphHash(hasher: HashKeyBuilder) {
-        hasher
-            .bool(this.taaPingPong.evenTick)
-            .bool(this.outputScreen);
+        hasher.bool(this.taaPingPong.evenTick).bool(this.outputScreen);
     }
 
     updateRenderGraph(graph: RenderGraph) {
         const allPasses = graph.removeAllPasses();
 
-        const currentRenderTarget = target('taa_current_render_target')
-            .keepContent()
-            .from(allPasses);
+        const currentRenderTarget = target('taa_current_render_target').keepContent().from(allPasses);
 
         if (!graph.depthTarget) {
             graph.depthTarget = currentRenderTarget;
         }
 
-        const taaHistoryTarget = this.taaPingPong.ping()
-            .from(pass('pre_create_history_target_pass').disableClear().use(() => { }));
+        const taaHistoryTarget = this.taaPingPong.ping().from(
+            pass('pre_create_history_target_pass')
+                .disableClear()
+                .use(() => {}),
+        );
 
-        const taaTarget = this.taaPingPong.pong()
-            .from([
-                pass('taa_pass')
-                    .disableClear()
-                    .input('current', currentRenderTarget)
-                    .input('history', taaHistoryTarget)
-                    .use(drawQuad(this.taaMaterial))
-                    .after(() => this.taaMaterial.sampleCount++),
-            ]);
+        const taaTarget = this.taaPingPong.pong().from([
+            pass('taa_pass')
+                .disableClear()
+                .input('current', currentRenderTarget)
+                .input('history', taaHistoryTarget)
+                .use(drawQuad(this.taaMaterial))
+                .after(() => this.taaMaterial.sampleCount++),
+        ]);
 
         let copyPass: PassNode;
         if (this.outputScreen) {
@@ -125,7 +121,7 @@ export class TAAPlugin extends PipelinePlugin {
             copyPass = pass('no_copy_taa_pass')
                 .depend(taaTarget)
                 .disableClear()
-                .use(() => { });
+                .use(() => {});
         }
 
         graph.addPass(copyPass);
@@ -161,7 +157,7 @@ export class TAAPlugin extends PipelinePlugin {
     }
 
     private get outputScreen() {
-        return this.taaMaterial.sampleCount >= (Math.min(this.outSampleCount, this.maxSampleCount) - 1);
+        return this.taaMaterial.sampleCount >= Math.min(this.outSampleCount, this.maxSampleCount) - 1;
     }
 
     tick() {

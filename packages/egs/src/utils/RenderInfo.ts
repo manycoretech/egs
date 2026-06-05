@@ -3,8 +3,8 @@ import { ValueCounter } from './ValueCounter';
 import type { Object3D } from '../scene/Object3D';
 
 export class RenderInfo {
-    objectInfo: ObjectStatsInfo = new ObjectStatsInfo();     // render info for last frame
-    refreshProgramCount: number = 0;                         // shader program switch time (Renderer.refreshProgram)
+    objectInfo: ObjectStatsInfo = new ObjectStatsInfo(); // render info for last frame
+    refreshProgramCount: number = 0; // shader program switch time (Renderer.refreshProgram)
     refreshMaterialCount: number = 0;
     refreshLightsCount: number = 0;
 
@@ -18,10 +18,10 @@ export class RenderInfo {
 
 export class FrameInfo {
     fpsCollector: FPSTimer;
-    timeStart: number = 0;                       // current frame starts time
-    timeEnd: number = 0;                         // current frame ends time
-    lastFrameTimeStart: number = 0;              // last frame starts time
-    lastFrameRenderCPUTime: number = 0;          // CPU time for last frame(raf)
+    timeStart: number = 0; // current frame starts time
+    timeEnd: number = 0; // current frame ends time
+    lastFrameTimeStart: number = 0; // last frame starts time
+    lastFrameRenderCPUTime: number = 0; // CPU time for last frame(raf)
     frameCPUCounter = new ValueCounter();
 
     constructor() {
@@ -46,7 +46,10 @@ export class FrameInfo {
         this.fpsCollector.reset();
     }
 
-    setupAnimationFunction(requestAnimationFrame: typeof globalThis.requestAnimationFrame, cancelAnimationFrame: typeof globalThis.cancelAnimationFrame) {
+    setupAnimationFunction(
+        requestAnimationFrame: typeof globalThis.requestAnimationFrame,
+        cancelAnimationFrame: typeof globalThis.cancelAnimationFrame,
+    ) {
         this.fpsCollector.setupAnimationFunction(requestAnimationFrame, cancelAnimationFrame);
     }
 
@@ -85,10 +88,10 @@ function increaseMapCount(map: Map<string, number>, key: string) {
 // render objects info
 export class ObjectStatsInfo {
     geometries: number = 0; // geometries number
-    textures: number = 0;   // textures number
-    calls: number = 0;      // drawcall number
-    vertices: number = 0;   // vertex number
-    faces: number = 0;      // face number
+    textures: number = 0; // textures number
+    calls: number = 0; // drawcall number
+    vertices: number = 0; // vertex number
+    faces: number = 0; // face number
     programs: number = 0;
     callsByObjectCategoryId: Map<string, number> = new Map();
     callsBySourceType: Map<string, number> = new Map();

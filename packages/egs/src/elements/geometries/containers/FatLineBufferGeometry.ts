@@ -41,8 +41,8 @@ export class FatLineBufferGeometry extends InstancedBufferGeometry {
      */
     constructor(geometry: BufferGeometry<LineList>) {
         super();
-        const positions = [- 1, 2, 0, 1, 2, 0, - 1, 1, 0, 1, 1, 0, - 1, 0, 0, 1, 0, 0, - 1, - 1, 0, 1, - 1, 0];
-        const uvs = [- 1, 2, 1, 2, - 1, 1, 1, 1, - 1, - 1, 1, - 1, - 1, - 2, 1, - 2];
+        const positions = [-1, 2, 0, 1, 2, 0, -1, 1, 0, 1, 1, 0, -1, 0, 0, 1, 0, 0, -1, -1, 0, 1, -1, 0];
+        const uvs = [-1, 2, 1, 2, -1, 1, 1, 1, -1, -1, 1, -1, -1, -2, 1, -2];
         const index = [0, 2, 1, 2, 3, 1, 2, 4, 3, 4, 5, 3, 4, 6, 5, 6, 7, 5];
         this._fallback_geometry = geometry;
         this.setIndex(index);
@@ -146,7 +146,10 @@ export class FatLineBufferGeometry extends InstancedBufferGeometry {
 
             this.boundingSphere.radius = Math.sqrt(maxRadiusSq);
             if (isNaN(this.boundingSphere.radius)) {
-                logger.warn('EGS.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values.', this);
+                logger.warn(
+                    'EGS.LineSegmentsGeometry.computeBoundingSphere(): Computed radius is NaN. The instanced position data is likely to have NaN values.',
+                    this,
+                );
             }
         }
     }

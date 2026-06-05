@@ -1,7 +1,11 @@
 import { Material } from '../Material';
 import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderVaryingTypes,
+    ShaderInjectionTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import type { Texture } from '../../textures/Texture';
 import { Vector4 } from '../../../math/Vector4';
@@ -14,20 +18,24 @@ import type { TextureV2 } from '../../textures/TextureV2';
 
 abstract class PanoBackGroundMaterial extends Material {
     extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {
-        builder.addGlobalUniform(BuiltInUniformTypes.projectionMatrix)
+        builder
+            .addGlobalUniform(BuiltInUniformTypes.projectionMatrix)
             .addGlobalUniform(BuiltInUniformTypes.modelViewMatrix)
-            .inject(ShaderInjectionTypes.gl_Position, `
+            .inject(
+                ShaderInjectionTypes.gl_Position,
+                `
             mvPosition = modelViewMatrix * vec4(position.x, position.z, position.y, 1.0 );
             gl_Position = projectionMatrix * mvPosition;
             gl_Position.z = gl_Position.w; // set z to camera.far
-            `);
+            `,
+            );
     }
     computeShapeKey(_: ShaderComponentRegistry) {
         // PanoBackGroundMaterial
         return 'cpb';
     }
 
-    updateShapeUniforms(_1: WGLProgram, _: ShaderComponentRegistry) { }
+    updateShapeUniforms(_1: WGLProgram, _: ShaderComponentRegistry) {}
 }
 
 /**
@@ -92,11 +100,14 @@ export class PanoSelectionMaterial<T extends TextureCube | TextureV2 = TextureCu
     extendShaderShading(b: ShaderBuilder, _: ShaderComponentRegistry) {
         b.addUniform('indexBackground', WebGLShaderDataType.SamplerCube)
             .addVarying(ShaderVaryingTypes.worldPosition)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 vec3 direction = normalize( vWorldPosition );
                 vec4 color = textureCube(indexBackground, direction);
                 gl_FragColor = color;
-            `);
+            `,
+            );
     }
 
     traverseTexture(visitor: (tex: Texture) => void) {
@@ -214,7 +225,9 @@ export class PanoEnvMapMaterial<T extends TextureCube | TextureV2 = TextureCube>
                 uniform GlobalParams globalParams;
             `)
             .addFragmentCustom(includes)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
             vec3 direction = normalize( vWorldPosition );
             vec4 indexColor = textureCube( indexBackground, direction );
             float result = getColorId(indexColor);
@@ -240,8 +253,8 @@ export class PanoEnvMapMaterial<T extends TextureCube | TextureV2 = TextureCube>
             }
 
             gl_FragColor = vec4(hoverColor, 1.0) * color;
-            `);
-
+            `,
+            );
     }
 
     clone() {

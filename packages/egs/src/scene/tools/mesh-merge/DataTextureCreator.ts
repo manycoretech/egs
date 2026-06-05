@@ -1,4 +1,3 @@
-
 import { WebGLPixelFormat, WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { TextureDataType } from '../../../utils/Constants';
 import { _Math } from '../../../math/Math';
@@ -15,13 +14,13 @@ import type { TextureV2 } from '../../../elements/textures/TextureV2';
 type DataTextureStorageAble = number | Color | Vector3 | Vector2 | ReadonlyColor;
 
 export interface DataTextureSchema<M extends Material> {
-    schema: Array<DataTextureSchemaOne<M>>,
-    dataTextureShaderUniformName: string,
-    materialIndexShaderAttributeName: string
+    schema: Array<DataTextureSchemaOne<M>>;
+    dataTextureShaderUniformName: string;
+    materialIndexShaderAttributeName: string;
 }
 
-export class DataTextureSchemaInstance<M extends Material>{
-    constructor(public info: DataTextureSchema<M>) { }
+export class DataTextureSchemaInstance<M extends Material> {
+    constructor(public info: DataTextureSchema<M>) {}
 
     updateUniform(dataTexture: TextureV2 | Texture2D, p: WGLProgram) {
         p.setUniform('dataTexture_width', dataTexture.width);
@@ -29,25 +28,32 @@ export class DataTextureSchemaInstance<M extends Material>{
 }
 
 export interface DataTextureSchemaOne<M extends Material> {
-    shaderVaryName: string,
-    shaderVaryingField?: string,
+    shaderVaryName: string;
+    shaderVaryingField?: string;
     materialPropertyGetter: (material: M) => DataTextureStorageAble;
 }
 
 const varyingCountMap = new Map<string, number>();
 
-export function createShaderInjectionsForDataTextureSchema<M extends Material>(schema: DataTextureSchema<M>, b: ShaderBuilder) {
+export function createShaderInjectionsForDataTextureSchema<M extends Material>(
+    schema: DataTextureSchema<M>,
+    b: ShaderBuilder,
+) {
     const mapIndexAttributeName = schema.materialIndexShaderAttributeName;
     const textureWidthName = schema.dataTextureShaderUniformName + '_width';
 
-    b.addUniform(schema.dataTextureShaderUniformName, WebGLShaderDataType.Sampler2D)
-        .addUniform(textureWidthName, WebGLShaderDataType.Float);
+    b.addUniform(schema.dataTextureShaderUniformName, WebGLShaderDataType.Sampler2D).addUniform(
+        textureWidthName,
+        WebGLShaderDataType.Float,
+    );
 
     schema.schema.forEach((s, row) => {
         varyingCountMap.set(s.shaderVaryName, (varyingCountMap.get(s.shaderVaryName) ?? 0) + 1);
         const y = (row * 2 + 1) / (_Math.ceilPowerOfTwo(schema.schema.length) * 2);
-        b
-            .inject(ShaderInjectionTypes.vary_any, `${s.shaderVaryingField ? `${s.shaderVaryName}.${s.shaderVaryingField}` : s.shaderVaryName} = vec2( (${mapIndexAttributeName} + 0.5) / ${textureWidthName}, ${y} );`);
+        b.inject(
+            ShaderInjectionTypes.vary_any,
+            `${s.shaderVaryingField ? `${s.shaderVaryName}.${s.shaderVaryingField}` : s.shaderVaryName} = vec2( (${mapIndexAttributeName} + 0.5) / ${textureWidthName}, ${y} );`,
+        );
     });
 
     varyingCountMap.forEach((v, k) => {
@@ -78,18 +84,18 @@ export function createDataTexture<M extends Material>(schema: DataTextureSchema<
                 data[index + 2] = convertUint8(property.b);
             } else if (typeof property === 'number') {
                 data[index] = convertUint8(property);
-            } else { // todo vec2 vec3
+            } else {
+                // todo vec2 vec3
                 logger.unsupported('unknown property in mesh merge');
             }
         });
     });
 
-    return Texture2D
-        .createByMainLayer(
-            Texture2DCommonLayer.create(data, imageWidth, imageHeight)
-                .setFormat(WebGLPixelFormat.RGBA)
-                .setType(TextureDataType.UnsignedByteType)
-        ).configAsDataTexture();
+    return Texture2D.createByMainLayer(
+        Texture2DCommonLayer.create(data, imageWidth, imageHeight)
+            .setFormat(WebGLPixelFormat.RGBA)
+            .setType(TextureDataType.UnsignedByteType),
+    ).configAsDataTexture();
 }
 
 function convertUint8(value: number): number {

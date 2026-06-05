@@ -43,17 +43,21 @@ export class Face3 {
     materialIndex: number;
 
     constructor(
-        a: number = 0, b: number = 0, c: number = 0,
-        vertexNormals?: Vector3[] | Vector3, vertexColors?: Color[] | Color,
-        materialIndex?: number) {
+        a: number = 0,
+        b: number = 0,
+        c: number = 0,
+        vertexNormals?: Vector3[] | Vector3,
+        vertexColors?: Color[] | Color,
+        materialIndex?: number,
+    ) {
         this.a = a;
         this.b = b;
         this.c = c;
 
-        this.normal = (vertexNormals && (vertexNormals as any).isVector3) ? vertexNormals as Vector3 : new Vector3();
+        this.normal = vertexNormals && (vertexNormals as any).isVector3 ? (vertexNormals as Vector3) : new Vector3();
         this.vertexNormals = Array.isArray(vertexNormals) ? vertexNormals : [];
 
-        this.color = (vertexColors && (vertexColors as any).isColor) ? vertexColors as Color : new Color();
+        this.color = vertexColors && (vertexColors as any).isColor ? (vertexColors as Color) : new Color();
         this.vertexColors = Array.isArray(vertexColors) ? vertexColors : [];
 
         this.materialIndex = materialIndex !== undefined ? materialIndex : 0;

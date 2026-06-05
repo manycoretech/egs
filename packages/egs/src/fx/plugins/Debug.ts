@@ -36,11 +36,16 @@ export class DebugPlugin extends PipelinePlugin {
         this.dispatcher.destroy();
     }
 
-    updateFrameSize(_width: number, _height: number) { }
+    updateFrameSize(_width: number, _height: number) {}
 
-    updateEffect(_scene: SceneAdaptor, _isFrameStable: boolean, _isCameraStable: boolean, _effectConfig: IEffectConfig) { }
+    updateEffect(
+        _scene: SceneAdaptor,
+        _isFrameStable: boolean,
+        _isCameraStable: boolean,
+        _effectConfig: IEffectConfig,
+    ) {}
 
-    updateGraphHash(_hasher: HashKeyBuilder) { }
+    updateGraphHash(_hasher: HashKeyBuilder) {}
 
     updateRenderGraph(graph: RenderGraph, context: PipelineContext, depthPyramid: RenderTargetNode) {
         const scene = this.scene;
@@ -57,10 +62,7 @@ export class DebugPlugin extends PipelinePlugin {
             .draw(scene.default);
         graph.sceneCullingPass = drivenPass;
 
-        const debugPass = pass('debug_shading_pass')
-            .disableClear()
-            .useDispatcher(this.dispatcher)
-            .draw(scene.default);
+        const debugPass = pass('debug_shading_pass').disableClear().useDispatcher(this.dispatcher).draw(scene.default);
 
         if (drivenEnabled) {
             debugPass
@@ -112,7 +114,7 @@ export class DebugPlugin extends PipelinePlugin {
                         }
                     }
                     PipelineContentBridge.materialDispatcherCreate(this.dispatcher);
-                }
+                },
             },
             depthPacking: {
                 get: () => this.depthMaterial.depthPacking,
@@ -121,7 +123,7 @@ export class DebugPlugin extends PipelinePlugin {
                     this.depthMaterial.notifyRecompileShader();
                     PipelineContentBridge.materialDispatcherCreate(this.dispatcher);
                 },
-            }
+            },
         };
     }
 }

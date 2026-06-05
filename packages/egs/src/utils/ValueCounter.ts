@@ -1,5 +1,5 @@
 const BUFFER_CAPACITY = 300;
-export class ValueCounter{
+export class ValueCounter {
     private sum: number = 0;
     private buffer: number[];
     private cursor: number = 0;
@@ -7,7 +7,7 @@ export class ValueCounter{
 
     constructor() {
         this.capacity = BUFFER_CAPACITY;
-        this.buffer = (new Array(BUFFER_CAPACITY)).fill(0);
+        this.buffer = new Array(BUFFER_CAPACITY).fill(0);
     }
 
     toJSON() {
@@ -16,8 +16,8 @@ export class ValueCounter{
 
     set(value: number) {
         this.cursor++;
-        this.sum -= this.buffer[(this.cursor) % this.capacity];
-        this.buffer[(this.cursor) % this.capacity] = value;
+        this.sum -= this.buffer[this.cursor % this.capacity];
+        this.buffer[this.cursor % this.capacity] = value;
         this.sum += value;
     }
 
@@ -27,8 +27,8 @@ export class ValueCounter{
         this.buffer.fill(0);
     }
 
-    getLast(): number{
-        return this.buffer[(this.cursor) % this.capacity];
+    getLast(): number {
+        return this.buffer[this.cursor % this.capacity];
     }
 
     getAverage(): number {

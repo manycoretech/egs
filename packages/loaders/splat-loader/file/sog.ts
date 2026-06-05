@@ -1,5 +1,15 @@
 import { unzipSync } from 'fflate';
-import { type IFile, type IData, type ISingleSplat, SH_C0, SH_MAPS, isUrl, decodeImage, extractFromRootDir, NUM_F_REST_TO_SH_DEGREE } from './utils';
+import {
+    type IFile,
+    type IData,
+    type ISingleSplat,
+    SH_C0,
+    SH_MAPS,
+    isUrl,
+    decodeImage,
+    extractFromRootDir,
+    NUM_F_REST_TO_SH_DEGREE,
+} from './utils';
 
 export interface SogMetadataV1 {
     version: undefined;
@@ -63,7 +73,8 @@ export interface SogMetadataV2 {
 export type SogMetadata = SogMetadataV1 | SogMetadataV2;
 
 const ZIP_MAGIC = 0x04034b50;
-const PERM_TABLE = [  // original quat idx ---> actual storage idx
+const PERM_TABLE = [
+    // original quat idx ---> actual storage idx
     [0, 1, 2, 3],
     [3, 1, 2, 0],
     [1, 3, 2, 0],
@@ -87,7 +98,7 @@ export class SogFile implements IFile {
      */
     refs: Record<string, Uint8Array> = {};
 
-    private cached: Array<{ width: number, height: number, data: Uint8Array }>;
+    private cached: Array<{ width: number; height: number; data: Uint8Array }>;
 
     async load(stream: ReadableStream<Uint8Array>, contentLength: number) {
         const buffer = new Uint8Array(contentLength);
@@ -139,9 +150,18 @@ export class SogFile implements IFile {
         const { meta, counts, shDegree, cached } = this;
         const [mean0, mean1, scale0, quat0, color0, centroids, labels] = cached.map(v => v.data);
         const {
-            means: { mins: [centerMinX, centerMinY, centerMinZ], maxs: [centerMaxX, centerMaxY, centerMaxZ] },
-            scales: { mins: [scaleMinX, scaleMinY, scaleMinZ], maxs: [scaleMaxX, scaleMaxY, scaleMaxZ] },
-            sh0: { mins: [colorMinR, colorMinG, colorMinB, colorMinA], maxs: [colorMaxR, colorMaxG, colorMaxB, colorMaxA], },
+            means: {
+                mins: [centerMinX, centerMinY, centerMinZ],
+                maxs: [centerMaxX, centerMaxY, centerMaxZ],
+            },
+            scales: {
+                mins: [scaleMinX, scaleMinY, scaleMinZ],
+                maxs: [scaleMaxX, scaleMaxY, scaleMaxZ],
+            },
+            sh0: {
+                mins: [colorMinR, colorMinG, colorMinB, colorMinA],
+                maxs: [colorMaxR, colorMaxG, colorMaxB, colorMaxA],
+            },
             shN,
         } = meta as SogMetadataV1;
 
@@ -171,10 +191,20 @@ export class SogFile implements IFile {
         }
 
         const single: ISingleSplat = {
-            x: 0, y: 0, z: 0,
-            sx: 0, sy: 0, sz: 0,
-            qx: 0, qy: 0, qz: 0, qw: 0,
-            r: 0, g: 0, b: 0, a: 0,
+            x: 0,
+            y: 0,
+            z: 0,
+            sx: 0,
+            sy: 0,
+            sz: 0,
+            qx: 0,
+            qy: 0,
+            qz: 0,
+            qw: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
             shN: [],
         };
         for (let i = 0; i < counts; i++) {
@@ -194,7 +224,9 @@ export class SogFile implements IFile {
             TEMP_ROT[0] = (quat0[i4 + 0] / 255 - 0.5) * Math.SQRT2;
             TEMP_ROT[1] = (quat0[i4 + 1] / 255 - 0.5) * Math.SQRT2;
             TEMP_ROT[2] = (quat0[i4 + 2] / 255 - 0.5) * Math.SQRT2;
-            TEMP_ROT[3] = Math.sqrt(Math.max(0, 1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2]));
+            TEMP_ROT[3] = Math.sqrt(
+                Math.max(0, 1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2]),
+            );
             const PERM = PERM_TABLE[quat0[i4 + 3] - 252];
             single.qx = TEMP_ROT[PERM[0]];
             single.qy = TEMP_ROT[PERM[1]];
@@ -250,10 +282,20 @@ export class SogFile implements IFile {
         const SCALE_LUT = scaleCodebook.map(v => Math.exp(v));
 
         const single: ISingleSplat = {
-            x: 0, y: 0, z: 0,
-            sx: 0, sy: 0, sz: 0,
-            qx: 0, qy: 0, qz: 0, qw: 0,
-            r: 0, g: 0, b: 0, a: 0,
+            x: 0,
+            y: 0,
+            z: 0,
+            sx: 0,
+            sy: 0,
+            sz: 0,
+            qx: 0,
+            qy: 0,
+            qz: 0,
+            qw: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
             shN: [],
         };
         for (let i = 0; i < counts; i++) {
@@ -273,7 +315,9 @@ export class SogFile implements IFile {
             TEMP_ROT[0] = (quat0[i4 + 0] / 255 - 0.5) * Math.SQRT2;
             TEMP_ROT[1] = (quat0[i4 + 1] / 255 - 0.5) * Math.SQRT2;
             TEMP_ROT[2] = (quat0[i4 + 2] / 255 - 0.5) * Math.SQRT2;
-            TEMP_ROT[3] = Math.sqrt(Math.max(0, 1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2]));
+            TEMP_ROT[3] = Math.sqrt(
+                Math.max(0, 1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2]),
+            );
             const PERM = PERM_TABLE[quat0[i4 + 3] - 252];
             single.qx = TEMP_ROT[PERM[0]];
             single.qy = TEMP_ROT[PERM[1]];
@@ -310,7 +354,9 @@ export class SogFile implements IFile {
     private async loadTexture(path: string) {
         let buffer: Uint8Array | undefined = this.refs[path];
         if (!buffer && isUrl(path)) {
-            buffer = await fetch(path).then(res => res.arrayBuffer()).then(buf => new Uint8Array(buf));
+            buffer = await fetch(path)
+                .then(res => res.arrayBuffer())
+                .then(buf => new Uint8Array(buf));
         }
         if (!buffer) {
             throw new Error(`Cannot load texture: ${path}`);
@@ -323,11 +369,19 @@ export class SogFile implements IFile {
         const BlockOffset = await data.initBlock(this.counts, this.shDegree);
 
         const { means, scales, quats, sh0, shN } = this.meta;
-        this.cached = await Promise.all([
-            means.files[0], means.files[1],
-            scales.files[0], quats.files[0],
-            sh0.files[0], shN?.files[0], shN?.files[1],
-        ].filter(path => !!path).map(path => this.loadTexture(path!)));
+        this.cached = await Promise.all(
+            [
+                means.files[0],
+                means.files[1],
+                scales.files[0],
+                quats.files[0],
+                sh0.files[0],
+                shN?.files[0],
+                shN?.files[1],
+            ]
+                .filter(path => !!path)
+                .map(path => this.loadTexture(path!)),
+        );
 
         if (this.version === 1) {
             this.parse_v1(data, BlockOffset);

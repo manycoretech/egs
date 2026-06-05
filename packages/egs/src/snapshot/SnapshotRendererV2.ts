@@ -38,15 +38,14 @@ import { type RenderingConfig, type DrivenCullingConfig, TextureCompression } fr
 import { FilterTarget } from '../elements/materials/quad/FilterMaterial';
 import { SplatSortedEvent, type Splat } from '../scene/splat/Splat';
 
-type IPipelineConfig = ConfigCellImpl<Omit<PipelineConfig, 'SceneClip' | 'ShadowMap' | 'Composite' | 'Debug'>>
-    & {
-        Stylize?: {
-            /**
-             * @deprecated use target instead
-             */
-            applyToBackgroundAndGround?: boolean
-        }
+type IPipelineConfig = ConfigCellImpl<Omit<PipelineConfig, 'SceneClip' | 'ShadowMap' | 'Composite' | 'Debug'>> & {
+    Stylize?: {
+        /**
+         * @deprecated use target instead
+         */
+        applyToBackgroundAndGround?: boolean;
     };
+};
 
 function getPipelineConfigObject(config: PipelineConfig, result: IPipelineConfig = {}): IPipelineConfig {
     for (const k in config) {
@@ -54,7 +53,7 @@ function getPipelineConfigObject(config: PipelineConfig, result: IPipelineConfig
         if (typeof c.get === 'function') {
             (result as any)[k] = c.get();
         } else if (typeof c === 'object') {
-            getPipelineConfigObject(c, (result as any)[k] = {});
+            getPipelineConfigObject(c, ((result as any)[k] = {}));
         } else {
             throw new Error('value type invalid');
         }
@@ -70,7 +69,7 @@ function setPipelineConfig(pipeline: PipelineConfig, configs: IPipelineConfig[])
             if (typeof config.get === 'function') {
                 const current = config.get();
                 const value = configs.find((v: any) => v[k] !== undefined)?.[k];
-                const isEqual = (current?.equals ? current.equals(value) : (current === value));
+                const isEqual = current?.equals ? current.equals(value) : current === value;
                 if (!isEqual) {
                     isChanged = true;
                     config.set(value);
@@ -90,45 +89,45 @@ function setPipelineConfig(pipeline: PipelineConfig, configs: IPipelineConfig[])
 }
 
 interface RenderConfig {
-    mode: RenderMode,
-    deferred: boolean,
-    ao: boolean,
-    antialias: 'ssaa' | 'msaa' | 'taa' | 'disable',
-    outline: 'default',
-    resolutionRatio: number,
-    physicalSizeRatio: number,
+    mode: RenderMode;
+    deferred: boolean;
+    ao: boolean;
+    antialias: 'ssaa' | 'msaa' | 'taa' | 'disable';
+    outline: 'default';
+    resolutionRatio: number;
+    physicalSizeRatio: number;
 
-    background: [number, number],
-    light: 'default' | 'scene' | Light[],
-    overrideMaterial: Material | undefined,
-    ignoreVisible: boolean,
+    background: [number, number];
+    light: 'default' | 'scene' | Light[];
+    overrideMaterial: Material | undefined;
+    ignoreVisible: boolean;
     maxRenderSize: number;
-    calcRenderSizeType: 'default' | 'pixel',
+    calcRenderSizeType: 'default' | 'pixel';
     autoPOT: boolean;
 
     combineDepthAlpha: boolean;
-    overrideOutputSize: Size | undefined,
+    overrideOutputSize: Size | undefined;
 
-    pipelineConfig: IPipelineConfig,
+    pipelineConfig: IPipelineConfig;
 }
 
 interface DirectionCameraCustom {
-    type: SnapshotAxisDirection,
-    layer?: number,
-    worldBox?: Box3,
-    boxPrecision?: SnapshotBoxPrecision,
+    type: SnapshotAxisDirection;
+    layer?: number;
+    worldBox?: Box3;
+    boxPrecision?: SnapshotBoxPrecision;
 }
 
 interface CustomCamera {
-    type: Camera3D,
-    size: Size,
+    type: Camera3D;
+    size: Size;
 }
 
 interface SnapshotCtx {
-    drawableList: DrawableList,
-    scene: Scene3D,
-    camera: Camera3D,
-    size: Size,
+    drawableList: DrawableList;
+    scene: Scene3D;
+    camera: Camera3D;
+    size: Size;
     freeables: RenderTarget[];
 }
 
@@ -168,7 +167,14 @@ function getPresetRenderConfig(preset: PresetRenderConfig): Partial<RenderConfig
         case PresetRenderConfig.Tool_2D:
             return { physicalSizeRatio: 0.15, antialias: 'ssaa', resolutionRatio: 2, maxRenderSize: 256 };
         case PresetRenderConfig.Tool_2D_Depth:
-            return { background: [0, 0], combineDepthAlpha: true, physicalSizeRatio: 0.15, antialias: 'ssaa', resolutionRatio: 2, maxRenderSize: 256 };
+            return {
+                background: [0, 0],
+                combineDepthAlpha: true,
+                physicalSizeRatio: 0.15,
+                antialias: 'ssaa',
+                resolutionRatio: 2,
+                maxRenderSize: 256,
+            };
     }
 }
 
@@ -236,9 +242,7 @@ export class SnapshotRenderer {
             return 1;
         }
         const pipelineConfig = this.pipelineConfig;
-        if (pipelineConfig.Forward.solid.enabled.get() ||
-            pipelineConfig.TransparentLine.enabled.get()
-        ) {
+        if (pipelineConfig.Forward.solid.enabled.get() || pipelineConfig.TransparentLine.enabled.get()) {
             return 1;
         }
         return this.renderConfig.resolutionRatio;
@@ -261,7 +265,10 @@ export class SnapshotRenderer {
         pipelineConfig.Background = {
             enabled: true,
             ground: { enabled: false },
-            background: { active: BackgroundMode.BasicBackground, basic: { color: new Color(config.background[0]), alpha: config.background[1] } },
+            background: {
+                active: BackgroundMode.BasicBackground,
+                basic: { color: new Color(config.background[0]), alpha: config.background[1] },
+            },
         };
 
         if (config.ao) {
@@ -311,7 +318,7 @@ export class SnapshotRenderer {
                 config.pipelineConfig.Stylize.target = FilterTarget.All;
             } else {
                 config.pipelineConfig.Stylize = {
-                    target: FilterTarget.All
+                    target: FilterTarget.All,
                 };
             }
         }
@@ -334,8 +341,10 @@ export class SnapshotRenderer {
      * @internal
      */
     onRendererChanged(renderer: IRenderer) {
-        this.isAdvancedBackend = renderer.backend === RendererBackend.WEBGL2_JS ||
-            renderer.backend === RendererBackend.WEBGL2_WASM || renderer.backend === RendererBackend.WEBGPU_WASM;
+        this.isAdvancedBackend =
+            renderer.backend === RendererBackend.WEBGL2_JS ||
+            renderer.backend === RendererBackend.WEBGL2_WASM ||
+            renderer.backend === RendererBackend.WEBGPU_WASM;
         this.renderer = renderer;
         if (this.pipeline) {
             this.pipeline.updateRenderer(renderer);
@@ -350,10 +359,14 @@ export class SnapshotRenderer {
         }
     }
 
-    private getAxisCamera(camera: SnapshotAxisDirection | DirectionCameraCustom | CustomCamera, drawableList: DrawableList, overrideOutputSize?: Size): {
-        camera: Camera3D,
-        size: Size, // render size
-        worldBox: Box3,
+    private getAxisCamera(
+        camera: SnapshotAxisDirection | DirectionCameraCustom | CustomCamera,
+        drawableList: DrawableList,
+        overrideOutputSize?: Size,
+    ): {
+        camera: Camera3D;
+        size: Size; // render size
+        worldBox: Box3;
     } {
         const { calcRenderSizeType, physicalSizeRatio, maxRenderSize, autoPOT } = this.renderConfig;
         let renderCamera: Camera3D | undefined;
@@ -385,7 +398,10 @@ export class SnapshotRenderer {
             let union: ((worldBox: Box3, drawable: Drawable) => void) | undefined;
             if (axisDirectionConfig.worldBox) {
                 worldBox.copy(axisDirectionConfig.worldBox);
-            } else if (axisDirectionConfig.boxPrecision === undefined || axisDirectionConfig.boxPrecision === SnapshotBoxPrecision.BoundingBox) {
+            } else if (
+                axisDirectionConfig.boxPrecision === undefined ||
+                axisDirectionConfig.boxPrecision === SnapshotBoxPrecision.BoundingBox
+            ) {
                 union = (box, drawable) => {
                     box.unionSafe(drawable.worldBoundingBox);
                 };
@@ -444,7 +460,9 @@ export class SnapshotRenderer {
             return { camera: renderCamera, size: renderSize, worldBox };
         }
 
-        const size: Size = overrideOutputSize ? overrideOutputSize : { width: renderSize.width * physicalSizeRatio, height: renderSize.height * physicalSizeRatio };
+        const size: Size = overrideOutputSize
+            ? overrideOutputSize
+            : { width: renderSize.width * physicalSizeRatio, height: renderSize.height * physicalSizeRatio };
         if (calcRenderSizeType === 'pixel') {
             const MaxRenderSize = maxRenderSize * 4; // if object very thin and long, max size will limit maxRenderSize * 4
             size.width = Math.min(size.width, MaxRenderSize);
@@ -486,7 +504,9 @@ export class SnapshotRenderer {
     }
 
     private baseShading(
-        width: number, height: number, multiSample: boolean,
+        width: number,
+        height: number,
+        multiSample: boolean,
         adaptor: SnapShotAdaptor,
         renderSize: Size,
         ctx: SnapshotCtx,
@@ -516,7 +536,12 @@ export class SnapshotRenderer {
             if (!!overrideMaterial) {
                 this.renderer.renderRenderable(drawableList.project(camera));
             } else {
-                this.pipeline.renderSnapshot(adaptor, { target, resolveTarget }, this.renderingConfig, this.drivenCullingConfig);
+                this.pipeline.renderSnapshot(
+                    adaptor,
+                    { target, resolveTarget },
+                    this.renderingConfig,
+                    this.drivenCullingConfig,
+                );
             }
         }
         this.renderer.overrideDispatcher = null;
@@ -528,7 +553,9 @@ export class SnapshotRenderer {
     }
 
     generateDepthTexture(
-        width: number, height: number, multiSample: boolean,
+        width: number,
+        height: number,
+        multiSample: boolean,
         adaptor: SnapShotAdaptor,
         ctx: SnapshotCtx,
     ): RenderAttachment {
@@ -548,7 +575,13 @@ export class SnapshotRenderer {
         return target.colors[0];
     }
 
-    private downsampleShading(target: RenderTarget, renderSize: Size, downsample: DownsampleMaterial, correctRGBOnly: boolean, ctx: SnapshotCtx) {
+    private downsampleShading(
+        target: RenderTarget,
+        renderSize: Size,
+        downsample: DownsampleMaterial,
+        correctRGBOnly: boolean,
+        ctx: SnapshotCtx,
+    ) {
         const { size, freeables } = ctx;
         downsample.tDiffuse = target.colors[0]; // safe
         correctRGBOnly ? downsample.setTexelZero() : downsample.setTexelSize(renderSize.width, renderSize.height);
@@ -591,9 +624,8 @@ export class SnapshotRenderer {
         const ratio = this.realRatio;
         const { Outline, Forward } = this.pipelineConfig;
         const downsampleShading = ratio > 1;
-        const extraOutlineShading = downsampleShading &&
-            (antialias !== 'taa') &&
-            (Outline.enabled.get() && !Forward.solid.enabled.get());
+        const extraOutlineShading =
+            downsampleShading && antialias !== 'taa' && Outline.enabled.get() && !Forward.solid.enabled.get();
         const renderSize: Size = {
             width: Math.floor(size.width * ratio),
             height: Math.floor(size.height * ratio),
@@ -604,7 +636,14 @@ export class SnapshotRenderer {
             this.pipelineConfig.Outline.enabled.set(false);
         }
 
-        let target = this.baseShading(renderSize.width, renderSize.height, antialias === 'msaa', adaptor, renderSize, ctx);
+        let target = this.baseShading(
+            renderSize.width,
+            renderSize.height,
+            antialias === 'msaa',
+            adaptor,
+            renderSize,
+            ctx,
+        );
         let depthTexture = target.depth!;
 
         // always correct rgb when bg is 0x0 0
@@ -628,8 +667,15 @@ export class SnapshotRenderer {
         }
 
         if (combineDepthAlpha) {
-            if (!this.isAdvancedBackend) { // create depth
-                depthTexture = this.generateDepthTexture(renderSize.width, renderSize.height, antialias === 'msaa', adaptor, ctx);
+            if (!this.isAdvancedBackend) {
+                // create depth
+                depthTexture = this.generateDepthTexture(
+                    renderSize.width,
+                    renderSize.height,
+                    antialias === 'msaa',
+                    adaptor,
+                    ctx,
+                );
             }
             target = this.mixDepthShading(target, depthTexture, ctx);
         }
@@ -660,7 +706,9 @@ export class SnapshotRenderer {
     async render(
         object: Object3D | Object3D[],
         camera: SnapshotAxisDirection | DirectionCameraCustom | CustomCamera,
-        config: PresetRenderConfig | Partial<RenderConfig & { extends: PresetRenderConfig }> = PresetRenderConfig.Default,
+        config:
+            | PresetRenderConfig
+            | Partial<RenderConfig & { extends: PresetRenderConfig }> = PresetRenderConfig.Default,
     ): Promise<SnapshotResult> {
         // the implement should only allow read back and pre check to be async.
         // no async action in render body!!!
@@ -669,17 +717,19 @@ export class SnapshotRenderer {
         }
 
         if (this.isDestroy) {
-            return Promise.resolve(SnapshotResult.exception(SnapshotResultResultType.Error, new Error('SnapshotRenderer is destroy.')));
+            return Promise.resolve(
+                SnapshotResult.exception(SnapshotResultResultType.Error, new Error('SnapshotRenderer is destroy.')),
+            );
         }
         {
             const renderConfig: RenderConfig = Object.assign(
                 {},
                 DEFAULT_RENDER_CONFIG,
-                typeof config === 'string' ?
-                    getPresetRenderConfig(config) :
-                    config.extends ?
-                        Object.assign({}, getPresetRenderConfig(config.extends), config) :
-                        config,
+                typeof config === 'string'
+                    ? getPresetRenderConfig(config)
+                    : config.extends
+                      ? Object.assign({}, getPresetRenderConfig(config.extends), config)
+                      : config,
             );
             this.updateRenderConfig(renderConfig);
         }
@@ -779,12 +829,19 @@ export class SnapshotRenderer {
             const projectionMatrix = renderCamera.projectionMatrix.clone();
             const cameraWorldMatrix = renderCamera.matrixWorld.clone();
 
-            return this.renderer.readPixelsAsync(target, { x: 0, y: 0, width: size.width, height: size.height }, resultBuffer)
+            return this.renderer
+                .readPixelsAsync(target, { x: 0, y: 0, width: size.width, height: size.height }, resultBuffer)
                 .then(
-                    () => new SnapshotResult(resultBuffer, size, {
-                        projectionMatrix,
-                        worldMatrix: cameraWorldMatrix
-                    }, worldBox),
+                    () =>
+                        new SnapshotResult(
+                            resultBuffer,
+                            size,
+                            {
+                                projectionMatrix,
+                                worldMatrix: cameraWorldMatrix,
+                            },
+                            worldBox,
+                        ),
                     e => SnapshotResult.exception(SnapshotResultResultType.Error, e),
                 );
         } catch (error) {

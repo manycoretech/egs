@@ -35,8 +35,16 @@ const uvC = new Vector2();
 const intersectionPoint = new Vector3();
 const intersectionPointWorld = new Vector3();
 
-function checkIntersection(object: Mesh, material: Material, raycaster: Raycaster, _ray: Ray,
-    pA: Vector3, pB: Vector3, pC: Vector3, point: Vector3): Nullable<Intersection> {
+function checkIntersection(
+    object: Mesh,
+    material: Material,
+    raycaster: Raycaster,
+    _ray: Ray,
+    pA: Vector3,
+    pB: Vector3,
+    pC: Vector3,
+    point: Vector3,
+): Nullable<Intersection> {
     let intersect: Nullable<Vector3> = null;
 
     if (material.side === Side.BackSide) {
@@ -62,13 +70,21 @@ function checkIntersection(object: Mesh, material: Material, raycaster: Raycaste
         distance,
         point: intersectionPointWorld.clone(),
         primitiveIndex: 0,
-        object
+        object,
     };
 }
 
-function checkBufferGeometryIntersection(object: Mesh, material: Material, raycaster: Raycaster,
-    _ray: Ray, position: BufferAttribute, uv: BufferAttribute,
-    primitiveIndex: number, a: number, b: number, c: number
+function checkBufferGeometryIntersection(
+    object: Mesh,
+    material: Material,
+    raycaster: Raycaster,
+    _ray: Ray,
+    position: BufferAttribute,
+    uv: BufferAttribute,
+    primitiveIndex: number,
+    a: number,
+    b: number,
+    c: number,
 ): Nullable<Intersection> {
     vA.fromBufferAttribute(position, a);
     vB.fromBufferAttribute(position, b);
@@ -95,15 +111,18 @@ function checkBufferGeometryIntersection(object: Mesh, material: Material, rayca
 /**
  * This class is used to connect every three points into a triangle and draws every meshes as corresponding material in the scene.
  */
-export class Mesh<M extends Material = Material, G extends BufferGeometry<TriangleList> = BufferGeometry<TriangleList>> extends Drawable<M, G> {
+export class Mesh<
+    M extends Material = Material,
+    G extends BufferGeometry<TriangleList> = BufferGeometry<TriangleList>,
+> extends Drawable<M, G> {
     /**
      * Check the type whether it belongs to Mesh.
      * This value should not be changed by user.
      */
     isMesh = true;
     /**
-    * Mark this mesh use origin material in transparent mode
-    */
+     * Mark this mesh use origin material in transparent mode
+     */
     @drawableState()
     useOriginMaterialInTransparentMode = false;
     /**
@@ -119,9 +138,9 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
 
     private _instanceKey: Nullable<string> = null;
     /**
-    * This key is used to identify the different instances with same data.
-    * @remarks See {@link InstanceMesh| InstanceMesh} for more details
-    */
+     * This key is used to identify the different instances with same data.
+     * @remarks See {@link InstanceMesh| InstanceMesh} for more details
+     */
     set instanceKey(value: Nullable<string>) {
         if (this._instanceKey === value) {
             return;
@@ -290,14 +309,25 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
             // indexed buffer geometry
             if (material.length === 1 && !this.shouldUseGeometryGroupsWhenOnlyHasOneMaterial) {
                 start = Math.max(0, drawRange.start);
-                end = Math.min(index.count, (drawRange.start + drawRange.count));
+                end = Math.min(index.count, drawRange.start + drawRange.count);
 
                 for (i = start, il = end; i < il; i += 3) {
                     a = index.getX(i);
                     b = index.getX(i + 1);
                     c = index.getX(i + 2);
 
-                    intersection = checkBufferGeometryIntersection(this, material[0], raycaster, ray, position as BufferAttribute, uv as BufferAttribute, Math.floor(i / 3), a, b, c);
+                    intersection = checkBufferGeometryIntersection(
+                        this,
+                        material[0],
+                        raycaster,
+                        ray,
+                        position as BufferAttribute,
+                        uv as BufferAttribute,
+                        Math.floor(i / 3),
+                        a,
+                        b,
+                        c,
+                    );
 
                     if (intersection) {
                         intersects.push(intersection);
@@ -309,13 +339,24 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
                     groupMaterial = material[group.materialIndex];
 
                     start = Math.max(group.start, drawRange.start);
-                    end = Math.min((group.start + group.count), (drawRange.start + drawRange.count));
+                    end = Math.min(group.start + group.count, drawRange.start + drawRange.count);
 
                     for (j = start, jl = end; j < jl; j += 3) {
                         a = index.getX(j);
                         b = index.getX(j + 1);
                         c = index.getX(j + 2);
-                        intersection = checkBufferGeometryIntersection(this, groupMaterial, raycaster, ray, position as BufferAttribute, uv as BufferAttribute, Math.floor(j / 3), a, b, c);
+                        intersection = checkBufferGeometryIntersection(
+                            this,
+                            groupMaterial,
+                            raycaster,
+                            ray,
+                            position as BufferAttribute,
+                            uv as BufferAttribute,
+                            Math.floor(j / 3),
+                            a,
+                            b,
+                            c,
+                        );
 
                         // triTestCount++;
 
@@ -325,17 +366,29 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
                     }
                 }
             }
-        } else if (position !== undefined) {  // non-indexed buffer geometry
+        } else if (position !== undefined) {
+            // non-indexed buffer geometry
             if (material.length === 1 && !this.shouldUseGeometryGroupsWhenOnlyHasOneMaterial) {
                 start = Math.max(0, drawRange.start);
-                end = Math.min(position.count, (drawRange.start + drawRange.count));
+                end = Math.min(position.count, drawRange.start + drawRange.count);
 
                 for (i = start, il = end; i < il; i += 3) {
                     a = i;
                     b = i + 1;
                     c = i + 2;
 
-                    intersection = checkBufferGeometryIntersection(this, material[0], raycaster, ray, position as BufferAttribute, uv as BufferAttribute, Math.floor(i / 3), a, b, c);
+                    intersection = checkBufferGeometryIntersection(
+                        this,
+                        material[0],
+                        raycaster,
+                        ray,
+                        position as BufferAttribute,
+                        uv as BufferAttribute,
+                        Math.floor(i / 3),
+                        a,
+                        b,
+                        c,
+                    );
 
                     if (intersection) {
                         intersects.push(intersection);
@@ -346,20 +399,30 @@ export class Mesh<M extends Material = Material, G extends BufferGeometry<Triang
                     group = groups[i];
                     groupMaterial = material[group.materialIndex];
                     start = Math.max(group.start, drawRange.start);
-                    end = Math.min((group.start + group.count), (drawRange.start + drawRange.count));
+                    end = Math.min(group.start + group.count, drawRange.start + drawRange.count);
 
                     for (j = start, jl = end; j < jl; j += 3) {
                         a = j;
                         b = j + 1;
                         c = j + 2;
-                        intersection = checkBufferGeometryIntersection(this, groupMaterial, raycaster, ray, position as BufferAttribute, uv as BufferAttribute, Math.floor(j / 3), a, b, c);
+                        intersection = checkBufferGeometryIntersection(
+                            this,
+                            groupMaterial,
+                            raycaster,
+                            ray,
+                            position as BufferAttribute,
+                            uv as BufferAttribute,
+                            Math.floor(j / 3),
+                            a,
+                            b,
+                            c,
+                        );
 
                         if (intersection) {
                             intersects.push(intersection);
                         }
                     }
                 }
-
             }
         }
     }

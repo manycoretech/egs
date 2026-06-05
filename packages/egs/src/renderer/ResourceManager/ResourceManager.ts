@@ -9,16 +9,19 @@ import type { WGLBufferData } from '../webgl/WGLBuffer';
 import { Capabilities } from '../Capabilities';
 import type { WGLProgram } from '../webgl/WGLProgram';
 import type { BufferGeometryBase, BufferAttribute, Material } from '../../..';
-import { GeometryAttributeChangedEvent, GeometryDisposeEvent } from '../../elements/geometries/containers/BufferGeometry';
+import {
+    GeometryAttributeChangedEvent,
+    GeometryDisposeEvent,
+} from '../../elements/geometries/containers/BufferGeometry';
 import type { Nullable } from '../../utils/Utils';
 import { IterableWeakSet } from '../../utils/WeakCollections';
 import type { Renderer } from '../Renderer';
 
 export interface ResourceStatistics {
-    geometryBufferByteSize: number,
-    textureByteSize: number,
-    fboByteSize: number,
-    uboByteSize: number,
+    geometryBufferByteSize: number;
+    textureByteSize: number;
+    fboByteSize: number;
+    uboByteSize: number;
 }
 // ResourceManager can provide unified management with related resources,
 // which include buffer, frame buffer, texture and WebGL program. All of the resources are GPU related.
@@ -93,7 +96,18 @@ export class ResourceManager {
         return this.vaoManager!.create(bufferGeometry, attributeKey);
     }
 
-    private onGeometryAttributeChanged = ({ geometry, newValue, oldValue, update }: { geometry: BufferGeometryBase; attributeName: string; newValue: Nullable<BufferAttribute>, oldValue: Nullable<BufferAttribute>, update: boolean }) => {
+    private onGeometryAttributeChanged = ({
+        geometry,
+        newValue,
+        oldValue,
+        update,
+    }: {
+        geometry: BufferGeometryBase;
+        attributeName: string;
+        newValue: Nullable<BufferAttribute>;
+        oldValue: Nullable<BufferAttribute>;
+        update: boolean;
+    }) => {
         if (oldValue) {
             this.bufferManager.delete(oldValue, geometry);
         }
@@ -139,7 +153,7 @@ export class ResourceManager {
 
     freeGPU(): void {
         // clear geometry resources
-        this.geometries.forEach((geometry) => {
+        this.geometries.forEach(geometry => {
             geometry.freeGPU();
         });
         this.geometries.clear();

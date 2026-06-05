@@ -55,15 +55,15 @@ export class PavingShaderComponent<T extends TextureV2 | Texture2D = Texture2D> 
     @materialProperty()
     private randomSize = readonlyMath.vec2();
 
-    private __hashId: String = '';
+    private __hashId: string = '';
     @materialProperty()
     // for sync...
     // @ts-ignore
     private _hashId: number = 0;
-    get hashId(): String {
+    get hashId(): string {
         return this.__hashId;
     }
-    set hashId(value: String) {
+    set hashId(value: string) {
         this.__hashId = value;
         this._hashId = this.hashCode(value);
     }
@@ -129,9 +129,7 @@ export class PavingShaderComponent<T extends TextureV2 | Texture2D = Texture2D> 
             .addUniform('randomTexture', WebGLShaderDataType.Sampler2D)
             .addUniform('randomSize', WebGLShaderDataType.Vec2)
             .addUniform('instanceIdHash', WebGLShaderDataType.Int)
-            .when(this.gapTexture !== null, b =>
-                b.addUniform('gapTexture', WebGLShaderDataType.Sampler2D)
-            )
+            .when(this.gapTexture !== null, b => b.addUniform('gapTexture', WebGLShaderDataType.Sampler2D))
             .addUniform('gapSize', WebGLShaderDataType.Float)
             .addUniform('gapColor', WebGLShaderDataType.Vec3)
             .addUniform('isRealGap', WebGLShaderDataType.Float)
@@ -139,12 +137,15 @@ export class PavingShaderComponent<T extends TextureV2 | Texture2D = Texture2D> 
             .addUniform('offset', WebGLShaderDataType.Vec2)
             .addUniform('rotateAngle', WebGLShaderDataType.Float)
             .when(this.pavingMethod === PavingMethod.Fishbone, b =>
-                b.addUniform('fishboneAngle', WebGLShaderDataType.Float)
+                b.addUniform('fishboneAngle', WebGLShaderDataType.Float),
             )
             .addVaryingCustom('v_position', WebGLShaderDataType.Vec3)
             .addFragment(PavingFrag)
             .inject(ShaderInjectionTypes.vary_any, 'v_position = position;')
-            .inject(ShaderInjectionTypes.channel_color, buildFragment(this.gapTexture, this.pavingMethod, this.tileCount));
+            .inject(
+                ShaderInjectionTypes.channel_color,
+                buildFragment(this.gapTexture, this.pavingMethod, this.tileCount),
+            );
     }
 
     generateShaderKey() {
@@ -182,14 +183,38 @@ export class PavingShaderComponent<T extends TextureV2 | Texture2D = Texture2D> 
     }
 
     serialize(ctx: Serializer) {
-        ctx.puts<PavingShaderComponent>(['tileTexture', 'tileSize', 'outlineSize', 'tileCount', 'randomTexture', 'gapSize', 'gapColor', 'isRealGap', 'alignPos', 'offset', 'pavingMethod']);
+        ctx.puts<PavingShaderComponent>([
+            'tileTexture',
+            'tileSize',
+            'outlineSize',
+            'tileCount',
+            'randomTexture',
+            'gapSize',
+            'gapColor',
+            'isRealGap',
+            'alignPos',
+            'offset',
+            'pavingMethod',
+        ]);
     }
 
     deserialize(ctx: Deserializer) {
-        return ctx.reads<PavingShaderComponent>(['tileTexture', 'tileSize', 'outlineSize', 'tileCount', 'randomTexture', 'gapSize', 'gapColor', 'isRealGap', 'alignPos', 'offset', 'pavingMethod']);
+        return ctx.reads<PavingShaderComponent>([
+            'tileTexture',
+            'tileSize',
+            'outlineSize',
+            'tileCount',
+            'randomTexture',
+            'gapSize',
+            'gapColor',
+            'isRealGap',
+            'alignPos',
+            'offset',
+            'pavingMethod',
+        ]);
     }
 
-    private hashCode(value: String) {
+    private hashCode(value: string) {
         let h = 0;
         for (let index = 0; index < value.length; index++) {
             h = h * 31 + value.charCodeAt(index);

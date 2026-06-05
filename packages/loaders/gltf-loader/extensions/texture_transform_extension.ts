@@ -17,7 +17,9 @@ export class TextureTransformExtension {
 
     update(material: Material, transform: TransformExtensionData) {
         if (!TypeAssert.isMeshBasicMaterial(material) && !TypeAssert.isMeshPhongMaterial(material)) {
-            console.warn('EGS.GLTFLoader: TextureTransformExtension is only supported for MeshBasicMaterial and MeshPhongMaterial.');
+            console.warn(
+                'EGS.GLTFLoader: TextureTransformExtension is only supported for MeshBasicMaterial and MeshPhongMaterial.',
+            );
             return;
         }
 

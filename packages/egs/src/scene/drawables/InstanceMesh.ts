@@ -44,17 +44,17 @@ export class InstanceMesh extends Mesh<Material, InstancedBufferGeometry> {
      * A key mark let engine know this object need be rendered as instance,
      * which should not be changed by the users.
      * @internal
-    */
+     */
     readonly isInstance = true;
     /**
      * Record the LOD level of last update.
      * @internal
-    */
+     */
     oldLevelFactor = -1;
     /**
      * Record the frame id of last updating LOD level.
      * @internal
-    */
+     */
     LODUpdateId = -1;
     /**
      * @internal
@@ -89,7 +89,10 @@ export class InstanceMesh extends Mesh<Material, InstancedBufferGeometry> {
             }
         }
         if (needUpdate) {
-            this.instanceMatrixBuffer.set(o.matrixWorld._elements.map(v => v * visible), i * 16);
+            this.instanceMatrixBuffer.set(
+                o.matrixWorld._elements.map(v => v * visible),
+                i * 16,
+            );
             ContentBridge.sceneNodeSyncMatrix(this);
             ContentBridge.sceneNodeUpdate(this);
         }
@@ -128,7 +131,7 @@ export class InstanceMesh extends Mesh<Material, InstancedBufferGeometry> {
         if (contentAPI) {
             this.proxyedMeshes.forEach(item => item.off(Object3DChangeEvent, this.updateInstanceMatrix));
         }
-        const proxyedMeshes = this.proxyedMeshes = Array.from(new Set(meshes));
+        const proxyedMeshes = (this.proxyedMeshes = Array.from(new Set(meshes)));
         if (contentAPI) {
             this.instanceMatrixBuffer = new Float32Array(proxyedMeshes.length * 16);
             for (let i = 0; i < proxyedMeshes.length; i++) {
@@ -136,7 +139,10 @@ export class InstanceMesh extends Mesh<Material, InstancedBufferGeometry> {
                 item.updateMatrixWorld();
                 item.updateVisibility();
                 const visible = item.netVisibility ? 1 : 0;
-                this.instanceMatrixBuffer.set(item.matrixWorld._elements.map(v => v * visible), i * 16);
+                this.instanceMatrixBuffer.set(
+                    item.matrixWorld._elements.map(v => v * visible),
+                    i * 16,
+                );
                 item.on(Object3DChangeEvent, this.updateInstanceMatrix);
             }
         }
@@ -173,8 +179,9 @@ export class InstanceMesh extends Mesh<Material, InstancedBufferGeometry> {
         if (attributes.map_index) {
             instanceGeometry.addAttribute('map_index', attributes.map_index);
         }
-        instanceGeometry.setGroups(geometry.getGroups()
-            .map(v => ({ count: v.count, materialIndex: v.materialIndex, start: v.start })));
+        instanceGeometry.setGroups(
+            geometry.getGroups().map(v => ({ count: v.count, materialIndex: v.materialIndex, start: v.start })),
+        );
         this.geometry = instanceGeometry;
         this.instancedGeometry = geometry;
         this.updateRenderEntity();
@@ -251,7 +258,7 @@ export class InstanceMesh extends Mesh<Material, InstancedBufferGeometry> {
 
     /**
      * Update the rendering date from this instance.
-    */
+     */
     updateRenderEntity() {
         this.oldLevelFactor = -1;
         this.updateTransforms();
@@ -260,7 +267,7 @@ export class InstanceMesh extends Mesh<Material, InstancedBufferGeometry> {
 
     /**
      * Clear the rendering data of engine.
-    */
+     */
     updateInstance() {
         this.resetRenderEntity();
         this.updateRenderEntity();

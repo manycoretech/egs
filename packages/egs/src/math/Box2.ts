@@ -19,8 +19,8 @@ export class Box2 {
     max: Vector2;
 
     constructor(min?: Vector2, max?: Vector2) {
-        this.min = (min !== undefined) ? min : new Vector2(+ Infinity, + Infinity);
-        this.max = (max !== undefined) ? max : new Vector2(- Infinity, - Infinity);
+        this.min = min !== undefined ? min : new Vector2(+Infinity, +Infinity);
+        this.max = max !== undefined ? max : new Vector2(-Infinity, -Infinity);
     }
     /**
      * Sets the lower and upper (x, y) boundaries of this box.<br>
@@ -76,8 +76,8 @@ export class Box2 {
      * Makes this box empty.
      */
     makeEmpty(): Box2 {
-        this.min.x = this.min.y = + Infinity;
-        this.max.x = this.max.y = - Infinity;
+        this.min.x = this.min.y = +Infinity;
+        this.max.x = this.max.y = -Infinity;
         return this;
     }
     /**
@@ -86,7 +86,7 @@ export class Box2 {
      */
     isEmpty(): boolean {
         // this is a more robust check for empty than ( volume <= 0 ) because volume can get positive with two negative axes
-        return (this.max.x < this.min.x) || (this.max.y < this.min.y);
+        return this.max.x < this.min.x || this.max.y < this.min.y;
     }
     /**
      * Return the center point of the box as a {@link Vector2| Vector2}.
@@ -136,7 +136,9 @@ export class Box2 {
      * @param point {@link Vector2| Vector2} to check for inclusion.
      */
     containsPoint(point: Vector2): boolean {
-        return point.x < this.min.x || point.x > this.max.x || point.y < this.min.y || point.y > this.max.y ? false : true;
+        return point.x < this.min.x || point.x > this.max.x || point.y < this.min.y || point.y > this.max.y
+            ? false
+            : true;
     }
     /**
      * Return true if this box includes the entirety of {@link Box2| box}.
@@ -151,7 +153,10 @@ export class Box2 {
      * @param target the result will be copied into this Vector2.
      */
     getParameter(point: Vector2, target: Vector2): Vector2 {
-        return target.set((point.x - this.min.x) / (this.max.x - this.min.x), (point.y - this.min.y) / (this.max.y - this.min.y));
+        return target.set(
+            (point.x - this.min.x) / (this.max.x - this.min.x),
+            (point.y - this.min.y) / (this.max.y - this.min.y),
+        );
     }
     /**
      * Determines whether or not this box intersects {@link Box2| box}.
@@ -159,8 +164,9 @@ export class Box2 {
      */
     intersectsBox(box: Box2): boolean {
         // using 4 splitting planes to rule out intersections
-        return box.max.x < this.min.x || box.min.x > this.max.x ||
-            box.max.y < this.min.y || box.min.y > this.max.y ? false : true;
+        return box.max.x < this.min.x || box.min.x > this.max.x || box.max.y < this.min.y || box.min.y > this.max.y
+            ? false
+            : true;
     }
     /**
      * {@link https://en.wikipedia.org/wiki/Clamping_(graphics)| Clamps} the {@link Vector2| point} within the bounds of this box.<br />
@@ -238,7 +244,6 @@ export class Box2 {
      * Apply the four left-top elements of matrix on four vertexes.
      */
     applyMatrix4(matrix: Matrix4) {
-
         // transform of empty box is an empty box.
         if (this.isEmpty()) {
             return this;
@@ -256,7 +261,6 @@ export class Box2 {
      * Get max box based on resolution which is small than this box.
      */
     ceil(resolution = 1, eps = 0.001): this {
-
         this.min.x = Math.floor((this.min.x + eps) * resolution) / resolution;
         this.min.y = Math.floor((this.min.y + eps) * resolution) / resolution;
 

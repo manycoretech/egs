@@ -28,10 +28,7 @@ class BVHBuilderImpl {
     private _build?: (source: BVHBuilderData) => Promise<BVH>;
     private _buildRaw?: (source: BVHBuilderData) => Promise<BVHRaw>;
 
-    init(
-        build: (source: BVHBuilderData) => Promise<BVH>,
-        buildRaw: (source: BVHBuilderData) => Promise<BVHRaw>,
-    ) {
+    init(build: (source: BVHBuilderData) => Promise<BVH>, buildRaw: (source: BVHBuilderData) => Promise<BVHRaw>) {
         this._build = build;
         this._buildRaw = buildRaw;
         this.isInitd = true;

@@ -13,7 +13,7 @@ export function bindRenderSize(xRatio: number, yRatio: number = xRatio): ResizeF
         return {
             width: Math.min(Math.max(5, w), 4096),
             height: Math.min(Math.max(5, h), 4096),
-            depthOrArrayLayers
+            depthOrArrayLayers,
         };
     };
 }

@@ -51,6 +51,11 @@ export class Culler {
     }
 
     private queryDetailCulling(item: Drawable): boolean {
-        return !item.enableViewIndependentScale && (item.worldBoundingSphere.radius * 1000 / (this.cameraWorldPosition.distanceTo(item.worldBoundingSphere.center) * this.pixelsOfDistOne)) < 4;
+        return (
+            !item.enableViewIndependentScale &&
+            (item.worldBoundingSphere.radius * 1000) /
+                (this.cameraWorldPosition.distanceTo(item.worldBoundingSphere.center) * this.pixelsOfDistOne) <
+                4
+        );
     }
 }

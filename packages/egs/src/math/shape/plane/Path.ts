@@ -177,7 +177,10 @@ export class Path extends Curve2D {
         }
 
         if (this.autoClose && points.length > 1 && !points[points.length - 1].equals(points[0])) {
-            if (Math.abs(points[points.length - 1].x - points[0].x) < 1e-4 && Math.abs(points[points.length - 1].y - points[0].y) < 1e-4) {
+            if (
+                Math.abs(points[points.length - 1].x - points[0].x) < 1e-4 &&
+                Math.abs(points[points.length - 1].y - points[0].y) < 1e-4
+            ) {
                 points[points.length - 1].copy(points[0]);
             } else {
                 points.push(points[0]);
@@ -209,7 +212,7 @@ export class Path extends Curve2D {
         const curve = new QuadraticBezierCurve2D(
             this.currentPoint.clone(),
             new Vector2(aCPx, aCPy),
-            new Vector2(aX, aY)
+            new Vector2(aX, aY),
         );
         this.curves.push(curve);
         this.currentPoint.set(aX, aY);
@@ -220,7 +223,7 @@ export class Path extends Curve2D {
             this.currentPoint.clone(),
             new Vector2(aCP1x, aCP1y),
             new Vector2(aCP2x, aCP2y),
-            new Vector2(aX, aY)
+            new Vector2(aX, aY),
         );
         this.curves.push(curve);
         this.currentPoint.set(aX, aY);
@@ -233,26 +236,86 @@ export class Path extends Curve2D {
         this.currentPoint.copy(pts[pts.length - 1]);
     }
 
-    arc(aX: number, aY: number, aRadius?: number, aStartAngle?: number, aEndAngle?: number, aClockwise?: boolean, divisions?: number, isFill?: boolean): void {
+    arc(
+        aX: number,
+        aY: number,
+        aRadius?: number,
+        aStartAngle?: number,
+        aEndAngle?: number,
+        aClockwise?: boolean,
+        divisions?: number,
+        isFill?: boolean,
+    ): void {
         const x0 = this.currentPoint.x;
         const y0 = this.currentPoint.y;
 
         this.absArc(aX + x0, aY + y0, aRadius, aStartAngle, aEndAngle, aClockwise, divisions, isFill);
     }
 
-    absArc(aX: number, aY: number, aRadius?: number, aStartAngle?: number, aEndAngle?: number, aClockwise?: boolean, divisions?: number, isFill?: boolean): void {
+    absArc(
+        aX: number,
+        aY: number,
+        aRadius?: number,
+        aStartAngle?: number,
+        aEndAngle?: number,
+        aClockwise?: boolean,
+        divisions?: number,
+        isFill?: boolean,
+    ): void {
         this.absEllipse(aX, aY, aRadius, aRadius, aStartAngle, aEndAngle, aClockwise, undefined, divisions, isFill);
     }
 
-    ellipse(aX: number, aY: number, xRadius: number, yRadius: number, aStartAngle: number, aEndAngle: number, aClockwise: boolean, aRotation: number, isFill?: boolean): void {
+    ellipse(
+        aX: number,
+        aY: number,
+        xRadius: number,
+        yRadius: number,
+        aStartAngle: number,
+        aEndAngle: number,
+        aClockwise: boolean,
+        aRotation: number,
+        isFill?: boolean,
+    ): void {
         const x0 = this.currentPoint.x;
         const y0 = this.currentPoint.y;
 
-        this.absEllipse(aX + x0, aY + y0, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation, undefined, isFill);
+        this.absEllipse(
+            aX + x0,
+            aY + y0,
+            xRadius,
+            yRadius,
+            aStartAngle,
+            aEndAngle,
+            aClockwise,
+            aRotation,
+            undefined,
+            isFill,
+        );
     }
 
-    absEllipse(aX?: number, aY?: number, xRadius?: number, yRadius?: number, aStartAngle?: number, aEndAngle?: number, aClockwise?: boolean, aRotation?: number, divisions?: number, isFill = false): void {
-        const curve = new EllipseCurve2D(aX, aY, xRadius, yRadius, aStartAngle, aEndAngle, aClockwise, aRotation, divisions);
+    absEllipse(
+        aX?: number,
+        aY?: number,
+        xRadius?: number,
+        yRadius?: number,
+        aStartAngle?: number,
+        aEndAngle?: number,
+        aClockwise?: boolean,
+        aRotation?: number,
+        divisions?: number,
+        isFill = false,
+    ): void {
+        const curve = new EllipseCurve2D(
+            aX,
+            aY,
+            xRadius,
+            yRadius,
+            aStartAngle,
+            aEndAngle,
+            aClockwise,
+            aRotation,
+            divisions,
+        );
         isFill = isFill || this.curves.length > 0;
         if (isFill) {
             // if a previous curve is present, attempt to join

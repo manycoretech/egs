@@ -167,7 +167,7 @@ export class Geometry extends EventDispatcher {
             this.faceVertexUvs[1] = [];
         }
 
-        for (let i = 0, j = 0; i < positions.length; i += 3, j += 2) {
+        for (let i = 0; i < positions.length; i += 3) {
             scope.vertices.push(new Vector3().fromArray(positions, i));
             if (colors !== undefined) {
                 scope.colors.push(new Color().fromArray(colors, i));
@@ -175,16 +175,17 @@ export class Geometry extends EventDispatcher {
         }
 
         function addFace(a: number, b: number, c: number, materialIndex?: number) {
-            const vertexColors = (colors === undefined) ? [] : [
-                scope.colors[a].clone(),
-                scope.colors[b].clone(),
-                scope.colors[c].clone()];
+            const vertexColors =
+                colors === undefined ? [] : [scope.colors[a].clone(), scope.colors[b].clone(), scope.colors[c].clone()];
 
-            const vertexNormals = (normals === undefined) ? [] : [
-                new Vector3().fromArray(normals, a * 3),
-                new Vector3().fromArray(normals, b * 3),
-                new Vector3().fromArray(normals, c * 3)
-            ];
+            const vertexNormals =
+                normals === undefined
+                    ? []
+                    : [
+                          new Vector3().fromArray(normals, a * 3),
+                          new Vector3().fromArray(normals, b * 3),
+                          new Vector3().fromArray(normals, c * 3),
+                      ];
 
             const face = new Face3(a, b, c, vertexNormals, vertexColors, materialIndex);
             scope.faces.push(face);
@@ -193,7 +194,7 @@ export class Geometry extends EventDispatcher {
                 scope.faceVertexUvs[0].push([
                     new Vector2().fromArray(uvs, a * 2),
                     new Vector2().fromArray(uvs, b * 2),
-                    new Vector2().fromArray(uvs, c * 2)
+                    new Vector2().fromArray(uvs, c * 2),
                 ]);
             }
 
@@ -201,7 +202,7 @@ export class Geometry extends EventDispatcher {
                 scope.faceVertexUvs[1].push([
                     new Vector2().fromArray(uvs2, a * 2),
                     new Vector2().fromArray(uvs2, b * 2),
-                    new Vector2().fromArray(uvs2, c * 2)
+                    new Vector2().fromArray(uvs2, c * 2),
                 ]);
             }
         }
@@ -244,12 +245,7 @@ export class Geometry extends EventDispatcher {
         const radius = sphere.radius;
         const s = radius === 0 ? 1 : 1.0 / radius;
         const matrix = new Matrix4();
-        matrix.set(
-            s, 0, 0, - s * center.x,
-            0, s, 0, - s * center.y,
-            0, 0, s, - s * center.z,
-            0, 0, 0, 1
-        );
+        matrix.set(s, 0, 0, -s * center.x, 0, s, 0, -s * center.y, 0, 0, s, -s * center.z, 0, 0, 0, 1);
         this.applyMatrix(matrix);
         return this;
     }
@@ -313,7 +309,6 @@ export class Geometry extends EventDispatcher {
                 vertices[face.b].add(cb);
                 vertices[face.c].add(cb);
             }
-
         } else {
             this.computeFaceNormals();
             for (f = 0, fl = this.faces.length; f < fl; f++) {
@@ -341,7 +336,6 @@ export class Geometry extends EventDispatcher {
                 vertexNormals[2] = vertices[face.c].clone();
             }
         }
-
     }
     /**
      * Compute vertex normals, but duplicating face normals.
@@ -449,7 +443,6 @@ export class Geometry extends EventDispatcher {
                 uvCopy.push(uv[j].clone());
             }
             uvs1.push(uvCopy);
-
         }
     }
     /**
@@ -628,11 +621,7 @@ export class Geometry extends EventDispatcher {
 
             if (hasFaceVertexUv) {
                 const faceVertexUvs = this.faceVertexUvs[0][i];
-                faces.push(
-                    getUvIndex(faceVertexUvs[0]),
-                    getUvIndex(faceVertexUvs[1]),
-                    getUvIndex(faceVertexUvs[2])
-                );
+                faces.push(getUvIndex(faceVertexUvs[0]), getUvIndex(faceVertexUvs[1]), getUvIndex(faceVertexUvs[2]));
             }
 
             if (hasFaceNormal) {
@@ -644,7 +633,7 @@ export class Geometry extends EventDispatcher {
                 faces.push(
                     getNormalIndex(vertexNormals[0]),
                     getNormalIndex(vertexNormals[1]),
-                    getNormalIndex(vertexNormals[2])
+                    getNormalIndex(vertexNormals[2]),
                 );
             }
 
@@ -657,13 +646,13 @@ export class Geometry extends EventDispatcher {
                 faces.push(
                     getColorIndex(vertexColors[0]),
                     getColorIndex(vertexColors[1]),
-                    getColorIndex(vertexColors[2])
+                    getColorIndex(vertexColors[2]),
                 );
             }
         }
 
         function setBit(value: number, position: number, enabled: boolean) {
-            return enabled ? value | (1 << position) : value & (~(1 << position));
+            return enabled ? value | (1 << position) : value & ~(1 << position);
         }
 
         function getNormalIndex(normal: Vector3) {
@@ -788,17 +777,33 @@ export class Geometry extends EventDispatcher {
 }
 
 function parseModel(json: any, geometry: Geometry) {
-    let i, j, fi,
-        offset, zLength,
-        colorIndex, normalIndex, uvIndex, materialIndex,
+    let i,
+        j,
+        fi,
+        offset,
+        zLength,
+        colorIndex,
+        normalIndex,
+        uvIndex,
+        materialIndex,
         type,
         isQuad,
         hasMaterial,
         hasFaceVertexUv,
-        hasFaceNormal, hasFaceVertexNormal,
-        hasFaceColor, hasFaceVertexColor,
-        vertex, face, faceA, faceB, hex, normal,
-        uvLayer, uv, u, v,
+        hasFaceNormal,
+        hasFaceVertexNormal,
+        hasFaceColor,
+        hasFaceVertexColor,
+        vertex,
+        face,
+        faceA,
+        faceB,
+        hex,
+        normal,
+        uvLayer,
+        uv,
+        u,
+        v,
         nUvLayers = 0;
 
     const faces = json.faces,
@@ -891,22 +896,14 @@ function parseModel(json: any, geometry: Geometry) {
 
             if (hasFaceNormal) {
                 normalIndex = faces[offset++] * 3;
-                faceA.normal.set(
-                    normals[normalIndex++],
-                    normals[normalIndex++],
-                    normals[normalIndex]
-                );
+                faceA.normal.set(normals[normalIndex++], normals[normalIndex++], normals[normalIndex]);
                 faceB.normal.copy(faceA.normal);
             }
 
             if (hasFaceVertexNormal) {
                 for (i = 0; i < 4; i++) {
                     normalIndex = faces[offset++] * 3;
-                    normal = new Vector3(
-                        normals[normalIndex++],
-                        normals[normalIndex++],
-                        normals[normalIndex]
-                    );
+                    normal = new Vector3(normals[normalIndex++], normals[normalIndex++], normals[normalIndex]);
 
                     if (i !== 2) {
                         faceA.vertexNormals.push(normal);
@@ -967,21 +964,13 @@ function parseModel(json: any, geometry: Geometry) {
 
             if (hasFaceNormal) {
                 normalIndex = faces[offset++] * 3;
-                face.normal.set(
-                    normals[normalIndex++],
-                    normals[normalIndex++],
-                    normals[normalIndex]
-                );
+                face.normal.set(normals[normalIndex++], normals[normalIndex++], normals[normalIndex]);
             }
 
             if (hasFaceVertexNormal) {
                 for (i = 0; i < 3; i++) {
                     normalIndex = faces[offset++] * 3;
-                    normal = new Vector3(
-                        normals[normalIndex++],
-                        normals[normalIndex++],
-                        normals[normalIndex]
-                    );
+                    normal = new Vector3(normals[normalIndex++], normals[normalIndex++], normals[normalIndex]);
 
                     face.vertexNormals.push(normal);
                 }
@@ -990,7 +979,6 @@ function parseModel(json: any, geometry: Geometry) {
             if (hasFaceColor) {
                 colorIndex = faces[offset++];
                 face.color.setHex(colors[colorIndex]);
-
             }
 
             if (hasFaceVertexColor) {

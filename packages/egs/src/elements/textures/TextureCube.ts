@@ -6,7 +6,11 @@ import py from '../../assets/env/py.jpg';
 import pz from '../../assets/env/pz.jpg';
 
 import {
-    LegacySourceTexture, type SourceTextureWebGLUploadResult, TextureMipmapGroup, type WebGLTextureUploadCtx, createImgByUrl
+    LegacySourceTexture,
+    type SourceTextureWebGLUploadResult,
+    TextureMipmapGroup,
+    type WebGLTextureUploadCtx,
+    createImgByUrl,
 } from './Texture';
 import { TextureDimension, TextureViewDimension } from './types';
 import { Texture2DCommonLayer } from './Texture2D';
@@ -22,14 +26,14 @@ export type TextureCubeSide = TextureMipmapGroup<Texture2DCommonLayer>;
 const urls = [px, nx, py, ny, pz, nz];
 const defaultTextureCube = singleton(createDefaultTextureCube);
 export function createDefaultTextureCube() {
-    return TextureCube.fromFirstLayerArray(
-        [Texture2DCommonLayer.create(new Uint8Array([233, 233, 233, 255]), 1, 1),
+    return TextureCube.fromFirstLayerArray([
         Texture2DCommonLayer.create(new Uint8Array([233, 233, 233, 255]), 1, 1),
         Texture2DCommonLayer.create(new Uint8Array([233, 233, 233, 255]), 1, 1),
         Texture2DCommonLayer.create(new Uint8Array([233, 233, 233, 255]), 1, 1),
         Texture2DCommonLayer.create(new Uint8Array([233, 233, 233, 255]), 1, 1),
-        Texture2DCommonLayer.create(new Uint8Array([233, 233, 233, 255]), 1, 1)]
-    );
+        Texture2DCommonLayer.create(new Uint8Array([233, 233, 233, 255]), 1, 1),
+        Texture2DCommonLayer.create(new Uint8Array([233, 233, 233, 255]), 1, 1),
+    ]);
 }
 
 let defaultEnvMap: Promise<TextureCube> | undefined;
@@ -49,10 +53,8 @@ export class TextureCube extends LegacySourceTexture {
     static async fromImageArrayAsync(arr: HTMLImageElement[]) {
         return TextureCube.fromArray(
             await Promise.all(
-                arr.map(async image =>
-                    TextureMipmapGroup.create(await Texture2DCommonLayer.createAsync(image))
-                )
-            )
+                arr.map(async image => TextureMipmapGroup.create(await Texture2DCommonLayer.createAsync(image))),
+            ),
         );
     }
 
@@ -61,16 +63,15 @@ export class TextureCube extends LegacySourceTexture {
     }
 
     static fromArray(arr: Array<TextureMipmapGroup<Texture2DCommonLayer>>) {
-        return new TextureCube(
-            arr[0], arr[1], arr[2], arr[3], arr[4], arr[5],
-        );
+        return new TextureCube(arr[0], arr[1], arr[2], arr[3], arr[4], arr[5]);
     }
 
     static defaultEnvMap: TextureCube;
     static getDefaultEnvMap(): Promise<TextureCube> {
         if (defaultEnvMap === undefined) {
-            defaultEnvMap = TextureCube.fromImageArrayAsync(urls.map(url => createImgByUrl(url)))
-                .then(t => TextureCube.defaultEnvMap = t);
+            defaultEnvMap = TextureCube.fromImageArrayAsync(urls.map(url => createImgByUrl(url))).then(
+                t => (TextureCube.defaultEnvMap = t),
+            );
         }
         return defaultEnvMap;
     }
@@ -102,17 +103,21 @@ export class TextureCube extends LegacySourceTexture {
     /**
      * @internal
      */
-    uploadWebGLImpl(ctx: WebGLTextureUploadCtx, disableCustomMipmap: boolean, needPOT: boolean): SourceTextureWebGLUploadResult {
+    uploadWebGLImpl(
+        ctx: WebGLTextureUploadCtx,
+        disableCustomMipmap: boolean,
+        needPOT: boolean,
+    ): SourceTextureWebGLUploadResult {
         const result = [
             this.nx.uploadWebGL(ctx, ctx.gl.TEXTURE_CUBE_MAP_NEGATIVE_X, disableCustomMipmap, needPOT),
             this.px.uploadWebGL(ctx, ctx.gl.TEXTURE_CUBE_MAP_POSITIVE_X, disableCustomMipmap, needPOT),
             this.ny.uploadWebGL(ctx, ctx.gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, disableCustomMipmap, needPOT),
             this.py.uploadWebGL(ctx, ctx.gl.TEXTURE_CUBE_MAP_POSITIVE_Y, disableCustomMipmap, needPOT),
             this.nz.uploadWebGL(ctx, ctx.gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, disableCustomMipmap, needPOT),
-            this.pz.uploadWebGL(ctx, ctx.gl.TEXTURE_CUBE_MAP_POSITIVE_Z, disableCustomMipmap, needPOT)
+            this.pz.uploadWebGL(ctx, ctx.gl.TEXTURE_CUBE_MAP_POSITIVE_Z, disableCustomMipmap, needPOT),
         ];
         let byteSize = 0;
-        result.forEach(r => byteSize += r.byteSize);
+        result.forEach(r => (byteSize += r.byteSize));
         return {
             byteSize,
             is_pot: result[0].is_pot,

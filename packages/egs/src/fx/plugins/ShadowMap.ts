@@ -48,12 +48,11 @@ export class ShadowMapPlugin extends PipelinePlugin {
         this.depthDispatcher.destroy();
     }
 
-    updateFrameSize() { }
-    updateEffect() { }
+    updateFrameSize() {}
+    updateEffect() {}
 
     updateGraphHash(hasher: HashKeyBuilder) {
-        hasher.raw(this.scene.scene.shaderComponentRegistry.light.shadowHashKey())
-            .bool(this.useProxy);
+        hasher.raw(this.scene.scene.shaderComponentRegistry.light.shadowHashKey()).bool(this.useProxy);
     }
 
     /**
@@ -71,7 +70,9 @@ export class ShadowMapPlugin extends PipelinePlugin {
      * and the scene dispatcher must responsible for updating/access same light when given same i;
      */
     updateRenderGraph(graph: RenderGraph, context: PipelineContext) {
-        const basePass = pass('shadowmap').disableClear().use(() => { });
+        const basePass = pass('shadowmap')
+            .disableClear()
+            .use(() => {});
         const useGpuDriven = context.renderingConfig.gpuDriven.enabled && this.useProxy;
         // only use proxy when gpu driven is disabled. otherwise will lost something.
         const shouldUseProxy = !context.renderingConfig.gpuDriven.enabled && this.useProxy;
@@ -89,7 +90,7 @@ export class ShadowMapPlugin extends PipelinePlugin {
         const scene = this.scene;
         const info = scene.scene.shaderComponentRegistry.light.createShadowMetaInfo();
 
-        iter(info.directionalShadowCount, (i) => {
+        iter(info.directionalShadowCount, i => {
             const shadowTarget = target(`dir_${i}_shadowmap`)
                 .keepContent()
                 .resize(scene.getDirectionalShadowMapSize(i))
@@ -99,13 +100,14 @@ export class ShadowMapPlugin extends PipelinePlugin {
                         .before(scene.syncDirectionalShadowLayers(i))
                         .useIfAndDisableClear(
                             scene.isDirectionalShadowRequireUpdate(i),
-                            scene.renderDirectionalShadow(i, shouldUseProxy))
-                        .after(scene.returnDirectionalShadowResult(i))
+                            scene.renderDirectionalShadow(i, shouldUseProxy),
+                        )
+                        .after(scene.returnDirectionalShadowResult(i)),
                 ]);
             basePass.depend(shadowTarget);
         });
 
-        iter(info.spotShadowCount, (i) => {
+        iter(info.spotShadowCount, i => {
             const shadowTarget = target(`spot_${i}_shadowmap`)
                 .keepContent()
                 .resize(scene.getSpotShadowMapSize(i))
@@ -115,13 +117,14 @@ export class ShadowMapPlugin extends PipelinePlugin {
                         .before(scene.syncSpotShadowLayers(i))
                         .useIfAndDisableClear(
                             scene.isSpotShadowRequireUpdate(i),
-                            scene.renderSpotShadow(i, shouldUseProxy))
-                        .after(scene.returnSpotShadowResult(i))
+                            scene.renderSpotShadow(i, shouldUseProxy),
+                        )
+                        .after(scene.returnSpotShadowResult(i)),
                 ]);
             basePass.depend(shadowTarget);
         });
 
-        iter(info.pointShadowCount, (i) => {
+        iter(info.pointShadowCount, i => {
             const shadowTarget = cubeTarget(`point_${i}_shadow_target`)
                 .keepContent()
                 .resize(scene.getPointShadowMapSize(i))
@@ -179,13 +182,11 @@ export class ShadowMapPlugin extends PipelinePlugin {
             const shadingPass = pass(`dir_${i}_shadowmap_shading_pass`)
                 .useDriven(this.drivenShadingMaterial)
                 .useDispatcher(this.depthDispatcher)
-                .useIfAndDisableClear(
-                    scene.isDirectionalShadowRequireUpdate(i),
-                    r => {
-                        drawcallList?.render(r.renderer, undefined, PipelineFilters.isDrawCallShadowMapCaster());
-                        drawcallList?.destroy();
-                        drawcallList = undefined;
-                    })
+                .useIfAndDisableClear(scene.isDirectionalShadowRequireUpdate(i), r => {
+                    drawcallList?.render(r.renderer, undefined, PipelineFilters.isDrawCallShadowMapCaster());
+                    drawcallList?.destroy();
+                    drawcallList = undefined;
+                })
                 .after(scene.returnDirectionalShadowResult(i));
             shadingPass.depend(cullingPass);
             shadowTarget.from([cullingPass, shadingPass]);
@@ -196,9 +197,7 @@ export class ShadowMapPlugin extends PipelinePlugin {
         iter(info.spotShadowCount, i => {
             let drawcallList: ProjectedDrawcallList | undefined;
 
-            const shadowTarget = target(`spot_${i}_shadowmap`)
-                .keepContent()
-                .resize(scene.getSpotShadowMapSize(i));
+            const shadowTarget = target(`spot_${i}_shadowmap`).keepContent().resize(scene.getSpotShadowMapSize(i));
 
             const cullingPass = pass(`spot_${i}_shadowmap_cull_pass`)
                 .before(() => {
@@ -215,13 +214,11 @@ export class ShadowMapPlugin extends PipelinePlugin {
             const shadingPass = pass(`spot_${i}_shadowmap_shading_pass`)
                 .useDriven(this.drivenShadingMaterial)
                 .useDispatcher(this.depthDispatcher)
-                .useIfAndDisableClear(
-                    scene.isSpotShadowRequireUpdate(i),
-                    r => {
-                        drawcallList!.render(r.renderer, undefined, PipelineFilters.isDrawCallShadowMapCaster());
-                        drawcallList!.destroy();
-                        drawcallList = undefined;
-                    })
+                .useIfAndDisableClear(scene.isSpotShadowRequireUpdate(i), r => {
+                    drawcallList!.render(r.renderer, undefined, PipelineFilters.isDrawCallShadowMapCaster());
+                    drawcallList!.destroy();
+                    drawcallList = undefined;
+                })
                 .after(scene.returnSpotShadowResult(i));
             shadingPass.depend(cullingPass);
             shadowTarget.from([cullingPass, shadingPass]);
@@ -240,7 +237,7 @@ export class ShadowMapPlugin extends PipelinePlugin {
             for (let j = 0; j < 6; j++) {
                 let drawcallList: ProjectedDrawcallList | undefined;
                 const cullingPass = pass(`point_${i}_shadowmap_cull_pass_${j}`)
-                    .before(ctx => (ctx.target as RenderTarget).layer = j)
+                    .before(ctx => ((ctx.target as RenderTarget).layer = j))
                     .useDriven(this.drivenCullingMaterial)
                     .useIfAndDisableClear(shouldRender, r => {
                         drawcallList = content().project(camera().cameras[j], undefined, undefined, undefined, false);
@@ -250,13 +247,11 @@ export class ShadowMapPlugin extends PipelinePlugin {
                 const shadingPass = pass(`point_${i}_shadowmap_shading_pass_${j}`)
                     .useDriven(this.drivenShadingMaterial)
                     .useDispatcher(this.depthDispatcher)
-                    .useIfAndDisableClear(
-                        shouldRender,
-                        r => {
-                            drawcallList!.render(r.renderer, undefined, PipelineFilters.isDrawCallShadowMapCaster());
-                            drawcallList!.destroy();
-                            drawcallList = undefined;
-                        });
+                    .useIfAndDisableClear(shouldRender, r => {
+                        drawcallList!.render(r.renderer, undefined, PipelineFilters.isDrawCallShadowMapCaster());
+                        drawcallList!.destroy();
+                        drawcallList = undefined;
+                    });
                 passes.push(cullingPass, shadingPass);
             }
             passes[0].before(() => {

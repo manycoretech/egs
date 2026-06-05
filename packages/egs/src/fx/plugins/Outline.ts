@@ -29,7 +29,9 @@ import { Texture2D } from '../../elements/textures/Texture2D';
 import { TextureFormat } from '../../elements/textures/types';
 import type { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry';
 
-export class EncodeDispatcher<T extends OutlineEncodeMaterial = OutlineEncodeMaterial> extends MaterialShadingWithDynamicShapeDispatcher<T> {
+export class EncodeDispatcher<
+    T extends OutlineEncodeMaterial = OutlineEncodeMaterial,
+> extends MaterialShadingWithDynamicShapeDispatcher<T> {
     private encodeId = 1;
     fixMergedPhongEncode: boolean = true;
 
@@ -45,7 +47,12 @@ export class EncodeDispatcher<T extends OutlineEncodeMaterial = OutlineEncodeMat
         return super.dispatchKey(r) + (this.material.mergedCounts > 0 ? '1' : '0');
     }
 
-    dispatch(renderer: Renderer, geometry: BufferGeometry, material: Material, drawable: Drawable): Nullable<WGLProgram> {
+    dispatch(
+        renderer: Renderer,
+        geometry: BufferGeometry,
+        material: Material,
+        drawable: Drawable,
+    ): Nullable<WGLProgram> {
         this.material.encodeId = this.encodeId;
         this.material.mergedCounts = 0;
         let offset: number = 1;
@@ -95,12 +102,10 @@ export class OutlinePlugin extends PipelinePlugin {
         this.computeMaterial.setTexelSize(width * ratio, height * ratio);
         this.composeMaterial.setTexelSize(width * ratio, height * ratio);
     }
-    updateEffect() { }
+    updateEffect() {}
 
     updateGraphHash(hasher: HashKeyBuilder) {
-        hasher
-            .bool(this.highQuality)
-            .bool(this.computeMaterial.enableDepth);
+        hasher.bool(this.highQuality).bool(this.computeMaterial.enableDepth);
     }
 
     notifyChanged() {
@@ -120,15 +125,15 @@ export class OutlinePlugin extends PipelinePlugin {
             .modify(node => node.attach(encodeTargetDepthAttachment))
             .resize(resizeRender)
             .from([
-                pass('clear').use(() => { }),
-                context.renderingConfig.gpuDriven.enabled ?
-                    pass('outline_encode_culling_pass')
-                        .disableClear()
-                        .before(() => this.drivenCullingMaterial.update(context.drivenCullingConfig))
-                        .useDriven(this.drivenCullingMaterial)
-                        .input('depthPyramid', depthPyramid)
-                        .draw(filterBy(scene.default, PipelineFilters.isOutlineEncode)) :
-                    undefined,
+                pass('clear').use(() => {}),
+                context.renderingConfig.gpuDriven.enabled
+                    ? pass('outline_encode_culling_pass')
+                          .disableClear()
+                          .before(() => this.drivenCullingMaterial.update(context.drivenCullingConfig))
+                          .useDriven(this.drivenCullingMaterial)
+                          .input('depthPyramid', depthPyramid)
+                          .draw(filterBy(scene.default, PipelineFilters.isOutlineEncode))
+                    : undefined,
                 pass('outline_encode_pass')
                     .disableClear()
                     .useDispatcher(this.encoder)
@@ -165,14 +170,14 @@ export class OutlinePlugin extends PipelinePlugin {
                     node.attach(encodeTargetDepthAttachment);
                 })
                 .from([
-                    context.renderingConfig.gpuDriven.enabled ?
-                        pass('outline_mask_culling_pass')
-                            .depend(outlineComputeTarget)
-                            .disableClear()
-                            .before(() => this.drivenCullingMaterial.update(context.drivenCullingConfig))
-                            .useDriven(this.drivenCullingMaterial)
-                            .draw(filterBy(scene.default, PipelineFilters.isOutlineDisable)) :
-                        undefined,
+                    context.renderingConfig.gpuDriven.enabled
+                        ? pass('outline_mask_culling_pass')
+                              .depend(outlineComputeTarget)
+                              .disableClear()
+                              .before(() => this.drivenCullingMaterial.update(context.drivenCullingConfig))
+                              .useDriven(this.drivenCullingMaterial)
+                              .draw(filterBy(scene.default, PipelineFilters.isOutlineDisable))
+                        : undefined,
                     pass('outline_mask_pass')
                         .depend(outlineComputeTarget)
                         .disableClear()
@@ -202,7 +207,7 @@ export class OutlinePlugin extends PipelinePlugin {
             },
             useMrt: {
                 get: () => false,
-                set: (_: boolean) => { },
+                set: (_: boolean) => {},
             },
             fixMergedPhongEncode: {
                 get: () => this.encoder.fixMergedPhongEncode,

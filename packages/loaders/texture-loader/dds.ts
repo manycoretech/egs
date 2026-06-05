@@ -8,7 +8,7 @@ enum DXGI_FORMAT {
     DXGI_FORMAT_BC2_UNORM = 74,
     DXGI_FORMAT_BC3_UNORM = 77,
     DXGI_FORMAT_BC7_UNORM = 98,
-};
+}
 
 export default async function (url: URL, _options?: LoaderOptions): Promise<LoadResult> {
     const buffer = await (await fetch(url)).arrayBuffer();
@@ -16,8 +16,11 @@ export default async function (url: URL, _options?: LoaderOptions): Promise<Load
     const dds: LoadResult = {
         data: [],
         format: TextureFormat.Rgba8Unorm,
-        width: 0, height: 0, depthOrArrayLayers: 1,
-        mipmaps: false, autoGenerateMipmap: false
+        width: 0,
+        height: 0,
+        depthOrArrayLayers: 1,
+        mipmaps: false,
+        autoGenerateMipmap: false,
     };
     // Adapted from @toji's DDS utils
     // https://github.com/toji/webgl-texture-utils/blob/master/texture-util/dds.js
@@ -54,19 +57,13 @@ export default async function (url: URL, _options?: LoaderOptions): Promise<Load
     // const DDPF_LUMINANCE = 0x20000;
 
     function fourCCToInt32(value: any) {
-        return value.charCodeAt(0) +
-            (value.charCodeAt(1) << 8) +
-            (value.charCodeAt(2) << 16) +
-            (value.charCodeAt(3) << 24);
+        return (
+            value.charCodeAt(0) + (value.charCodeAt(1) << 8) + (value.charCodeAt(2) << 16) + (value.charCodeAt(3) << 24)
+        );
     }
 
     function int32ToFourCC(value: any) {
-        return String.fromCharCode(
-            value & 0xff,
-            (value >> 8) & 0xff,
-            (value >> 16) & 0xff,
-            (value >> 24) & 0xff
-        );
+        return String.fromCharCode(value & 0xff, (value >> 8) & 0xff, (value >> 16) & 0xff, (value >> 24) & 0xff);
     }
 
     function loadARGBMip(_buffer: ArrayBuffer, _dataOffset: number, width: number, height: number) {
@@ -77,14 +74,22 @@ export default async function (url: URL, _options?: LoaderOptions): Promise<Load
         let src = 0;
         for (let y = 0; y < height; y++) {
             for (let x = 0; x < width; x++) {
-                const b = srcBuffer[src]; src++;
-                const g = srcBuffer[src]; src++;
-                const r = srcBuffer[src]; src++;
-                const a = srcBuffer[src]; src++;
-                byteArray[dst] = r; dst++;  // r
-                byteArray[dst] = g; dst++;  // g
-                byteArray[dst] = b; dst++;  // b
-                byteArray[dst] = a; dst++;  // a
+                const b = srcBuffer[src];
+                src++;
+                const g = srcBuffer[src];
+                src++;
+                const r = srcBuffer[src];
+                src++;
+                const a = srcBuffer[src];
+                src++;
+                byteArray[dst] = r;
+                dst++; // r
+                byteArray[dst] = g;
+                dst++; // g
+                byteArray[dst] = b;
+                dst++; // b
+                byteArray[dst] = a;
+                dst++; // a
             }
         }
         return byteArray;
@@ -188,11 +193,13 @@ export default async function (url: URL, _options?: LoaderOptions): Promise<Load
             // ETC1 unsupported.
             return INVALID_LOAD_RESULT;
         default:
-            if (header[off_RGBBitCount] === 32
-                && header[off_RBitMask] & 0xff0000
-                && header[off_GBitMask] & 0xff00
-                && header[off_BBitMask] & 0xff
-                && header[off_ABitMask] & 0xff000000) {
+            if (
+                header[off_RGBBitCount] === 32 &&
+                header[off_RBitMask] & 0xff0000 &&
+                header[off_GBitMask] & 0xff00 &&
+                header[off_BBitMask] & 0xff &&
+                header[off_ABitMask] & 0xff000000
+            ) {
                 isRGBAUncompressed = true;
                 blockBytes = 4;
                 dds.format = TextureFormat.Rgba8Unorm;
@@ -210,14 +217,15 @@ export default async function (url: URL, _options?: LoaderOptions): Promise<Load
 
     const caps2 = header[off_caps2];
     (dds as any).isCubemap = caps2 & DDSCAPS2_CUBEMAP ? true : false;
-    if ((dds as any).isCubemap && (
-        !(caps2 & DDSCAPS2_CUBEMAP_POSITIVEX) ||
-        !(caps2 & DDSCAPS2_CUBEMAP_NEGATIVEX) ||
-        !(caps2 & DDSCAPS2_CUBEMAP_POSITIVEY) ||
-        !(caps2 & DDSCAPS2_CUBEMAP_NEGATIVEY) ||
-        !(caps2 & DDSCAPS2_CUBEMAP_POSITIVEZ) ||
-        !(caps2 & DDSCAPS2_CUBEMAP_NEGATIVEZ)
-    )) {
+    if (
+        (dds as any).isCubemap &&
+        (!(caps2 & DDSCAPS2_CUBEMAP_POSITIVEX) ||
+            !(caps2 & DDSCAPS2_CUBEMAP_NEGATIVEX) ||
+            !(caps2 & DDSCAPS2_CUBEMAP_POSITIVEY) ||
+            !(caps2 & DDSCAPS2_CUBEMAP_NEGATIVEY) ||
+            !(caps2 & DDSCAPS2_CUBEMAP_POSITIVEZ) ||
+            !(caps2 & DDSCAPS2_CUBEMAP_NEGATIVEZ))
+    ) {
         logger.invalidInput('EGS.DDSLoader.parse: Incomplete cubemap faces');
         return dds;
     }
@@ -237,7 +245,7 @@ export default async function (url: URL, _options?: LoaderOptions): Promise<Load
                 byteArray = loadARGBMip(buffer, dataOffset, width, height);
                 dataLength = byteArray.length;
             } else {
-                dataLength = Math.max(4, width) / 4 * Math.max(4, height) / 4 * blockBytes;
+                dataLength = (((Math.max(4, width) / 4) * Math.max(4, height)) / 4) * blockBytes;
                 byteArray = new Uint8Array(buffer, dataOffset, dataLength);
             }
             dds.data.push([byteArray]);

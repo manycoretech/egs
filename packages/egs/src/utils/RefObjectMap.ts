@@ -1,4 +1,4 @@
-export class RefObjectMap<K, V>{
+export class RefObjectMap<K, V> {
     map: Map<K, Set<V>> = new Map();
 
     clear() {
@@ -34,5 +34,4 @@ export class RefObjectMap<K, V>{
             set.forEach(visitor);
         }
     }
-
 }

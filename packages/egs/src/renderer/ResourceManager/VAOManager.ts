@@ -9,7 +9,10 @@ import { IterableWeakMap } from '../../utils/WeakCollections';
 // will not work if the platform does not support this.
 export class VAOManager {
     private gl: WebGLRenderingContext | WebGL2RenderingContext;
-    private webglVAOMap: IterableWeakMap<BufferGeometryBase, Map<string, WebGLVertexArrayObjectOES | WebGLVertexArrayObject>>;
+    private webglVAOMap: IterableWeakMap<
+        BufferGeometryBase,
+        Map<string, WebGLVertexArrayObjectOES | WebGLVertexArrayObject>
+    >;
     private VAOExtension: Nullable<OES_vertex_array_object> = null;
 
     constructor(gl: WebGLRenderingContext | WebGL2RenderingContext, extensions: WGLExtensions) {

@@ -1,35 +1,34 @@
-
 /**
  * All supported type of data in shader.
  */
 export enum WebGLShaderDataType {
-    Bool = 0x8B56,
-    BoolVec2 = 0x8B57,
-    BoolVec3 = 0x8B58,
-    BoolVec4 = 0x8B59,
+    Bool = 0x8b56,
+    BoolVec2 = 0x8b57,
+    BoolVec3 = 0x8b58,
+    BoolVec4 = 0x8b59,
     Int = 0x1404,
-    IntVec2 = 0x8B53,
-    IntVec3 = 0x8B54,
-    IntVec4 = 0x8B55,
+    IntVec2 = 0x8b53,
+    IntVec3 = 0x8b54,
+    IntVec4 = 0x8b55,
     UInt = 0x1405,
-    UIntVec2 = 0x8DC6,
-    UIntVec3 = 0x8DC7,
-    UIntVec4 = 0x8DC8,
+    UIntVec2 = 0x8dc6,
+    UIntVec3 = 0x8dc7,
+    UIntVec4 = 0x8dc8,
     Float = 0x1406,
-    Vec2 = 0x8B50,
-    Vec3 = 0x8B51,
-    Vec4 = 0x8B52,
-    Mat2 = 0x8B5A,
-    Mat3 = 0x8B5B,
-    Mat4 = 0x8B5C,
-    Sampler2D = 0x8B5E,
-    Sampler2DArray = 0x8DC1,
-    Sampler3D = 0x8B5F,
-    SamplerCube = 0x8B60,
+    Vec2 = 0x8b50,
+    Vec3 = 0x8b51,
+    Vec4 = 0x8b52,
+    Mat2 = 0x8b5a,
+    Mat3 = 0x8b5b,
+    Mat4 = 0x8b5c,
+    Sampler2D = 0x8b5e,
+    Sampler2DArray = 0x8dc1,
+    Sampler3D = 0x8b5f,
+    SamplerCube = 0x8b60,
 
-    USampler2D = 0x8DD2,
-    USampler2DArray = 0x8DD7,
-    USampler3D = 0x8DD3,
+    USampler2D = 0x8dd2,
+    USampler2DArray = 0x8dd7,
+    USampler3D = 0x8dd3,
 
     // this is hole
     FloatV = 9999999,
@@ -55,7 +54,7 @@ export enum WebGLTextureEncoding {
  * Supported type of texture by webGL.
  */
 export enum WebGLTextureType {
-    Texture2D = 0x0DE1,
+    Texture2D = 0x0de1,
     TextureCubeMap = 0x8513,
 }
 
@@ -66,7 +65,7 @@ export enum WebGLCullFace {
     None = 1000000, // it's not a gl const, let make a hole
     Back = 0x0404,
     Front = 0x0405,
-    FrontBack = 0x0408
+    FrontBack = 0x0408,
 }
 /**
  * Decide the color format in each pixel.
@@ -80,16 +79,16 @@ export enum WebGLPixelFormat {
     RGB = 0x1907,
     RGBA = 0x1908,
 
-    RedInteger = 0x8D94,
+    RedInteger = 0x8d94,
     RGInteger = 0x8228,
-    RGBInteger = 0x8D98,
-    RGBAInteger = 0x8D99,
+    RGBInteger = 0x8d98,
+    RGBAInteger = 0x8d99,
 
     Alpha = 0x1906,
     Luminance = 0x1909,
-    LuminanceAlpha = 0x190A,
+    LuminanceAlpha = 0x190a,
     Depth = 0x1902,
-    DepthStencil = 0x84F9,
+    DepthStencil = 0x84f9,
 }
 
 /**
@@ -101,23 +100,27 @@ export function getWebGLPixelFormatChannelSize(t: WebGLPixelFormat): number {
         case WebGLPixelFormat.RedInteger:
         case WebGLPixelFormat.Alpha:
         case WebGLPixelFormat.Luminance:
-        case WebGLPixelFormat.Depth: return 1;
+        case WebGLPixelFormat.Depth:
+            return 1;
 
         case WebGLPixelFormat.RG:
         case WebGLPixelFormat.RGInteger:
         case WebGLPixelFormat.LuminanceAlpha:
-        case WebGLPixelFormat.DepthStencil: return 2;
+        case WebGLPixelFormat.DepthStencil:
+            return 2;
 
         case WebGLPixelFormat.RGB:
-        case WebGLPixelFormat.RGBInteger: return 3;
+        case WebGLPixelFormat.RGBInteger:
+            return 3;
 
         case WebGLPixelFormat.RGBA:
-        case WebGLPixelFormat.RGBAInteger: return 4;
+        case WebGLPixelFormat.RGBAInteger:
+            return 4;
 
         default: {
             const v: never = t;
             return v;
-        };
+        }
     }
 }
 

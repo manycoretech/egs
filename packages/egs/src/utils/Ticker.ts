@@ -28,7 +28,7 @@ export class Ticker {
      * The first listener.
      * All new listeners added are chained on this.
      */
-    private _head = new TickerListener(() => { }, null, Infinity);
+    private _head = new TickerListener(() => {}, null, Infinity);
     /**
      * Internal current frame request ID.
      */
@@ -231,7 +231,10 @@ export class Ticker {
     /**
      * @internal
      */
-    setupAnimationFunction(requestAnimationFrame: typeof globalThis.requestAnimationFrame, cancelAnimationFrame: typeof globalThis.cancelAnimationFrame) {
+    setupAnimationFunction(
+        requestAnimationFrame: typeof globalThis.requestAnimationFrame,
+        cancelAnimationFrame: typeof globalThis.cancelAnimationFrame,
+    ) {
         const started = this._started;
         this.stop();
         this.requestAnimationFrame = requestAnimationFrame;
@@ -245,7 +248,10 @@ export class Ticker {
      * @internal
      */
     resetDefaultAnimationFunction() {
-        this.setupAnimationFunction(DEFAULT_RAF_FUNCTION.requestAnimationFrame, DEFAULT_RAF_FUNCTION.cancelAnimationFrame);
+        this.setupAnimationFunction(
+            DEFAULT_RAF_FUNCTION.requestAnimationFrame,
+            DEFAULT_RAF_FUNCTION.cancelAnimationFrame,
+        );
     }
 
     private static _default: Ticker;

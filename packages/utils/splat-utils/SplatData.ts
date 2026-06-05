@@ -1,6 +1,32 @@
 import { deferred } from '@qunhe/egs-lib';
-import { type Splat, Vector3, Quaternion, Matrix3, Matrix4, SplatState, TextureFormat, TextureDimension, SourceTexture, TextureViewDimension, __INTERNAL__ } from '@qunhe/egs';
-import { SplatFileType, PlyFile, SpzFile, SplatFile, type SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData, type ISampler, ISamplerFormat, SH_MAPS, type IFile } from '@qunhe/egs-splat-loader';
+import {
+    type Splat,
+    Vector3,
+    Quaternion,
+    Matrix3,
+    Matrix4,
+    SplatState,
+    TextureFormat,
+    TextureDimension,
+    SourceTexture,
+    TextureViewDimension,
+    __INTERNAL__,
+} from '@qunhe/egs';
+import {
+    SplatFileType,
+    PlyFile,
+    SpzFile,
+    SplatFile,
+    type SplatData,
+    RawSplatData,
+    CompressedSplatData,
+    SuperCompressedSplatData,
+    SogSplatData,
+    type ISampler,
+    ISamplerFormat,
+    SH_MAPS,
+    type IFile,
+} from '@qunhe/egs-splat-loader';
 import { createSHRotateFn } from './utils';
 
 type ISingleSplat = Parameters<SplatData['get']>[1];
@@ -18,7 +44,9 @@ export function createSplatModifyData(splat: Splat): ISplatModifyData {
     const { counts, stateTex, groupTex, groupTransformTex } = splat;
     const stateBuffer = stateTex ? (stateTex.getLevelLayerSource(0) as Uint8Array) : undefined;
     const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
-    const groupTransformBuffer = groupTransformTex ? (groupTransformTex.getLevelLayerSource(0) as Float32Array) : undefined;
+    const groupTransformBuffer = groupTransformTex
+        ? (groupTransformTex.getLevelLayerSource(0) as Float32Array)
+        : undefined;
 
     const transform = splat.matrixWorld.clone();
     const deletedIndices: number[] = [];
@@ -67,8 +95,15 @@ export function createSourceTextureFromSampler(sampler: ISampler): SourceTexture
         }
     }
     return new SourceTexture(
-        TextureDimension.D2, TextureViewDimension.D2, format,
-        sampler.width, sampler.height, 1, false, false)
+        TextureDimension.D2,
+        TextureViewDimension.D2,
+        format,
+        sampler.width,
+        sampler.height,
+        1,
+        false,
+        false,
+    )
         .configAsDataTexture()
         .setLevelData(new Uint32Array(sampler.source.buffer), 0);
 }
@@ -81,11 +116,19 @@ export function createSourceTextureFromImageSource(buffer: Uint8Array, type: str
     img.src = url;
     img.onload = () => {
         URL.revokeObjectURL(url);
-        resolve(new SourceTexture(
-            TextureDimension.D2, TextureViewDimension.D2, TextureFormat.Rgba8Unorm,
-            img.width, img.height, 1, false, false)
-            .configAsDataTexture()
-            .setLevelLayerData(img, 0, 0)
+        resolve(
+            new SourceTexture(
+                TextureDimension.D2,
+                TextureViewDimension.D2,
+                TextureFormat.Rgba8Unorm,
+                img.width,
+                img.height,
+                1,
+                false,
+                false,
+            )
+                .configAsDataTexture()
+                .setLevelLayerData(img, 0, 0),
         );
     };
 
@@ -102,7 +145,8 @@ export async function createSplat(data: SplatData): Promise<Splat> {
         splat = new __INTERNAL__.CompressedSplat(
             counts,
             shDegree,
-            textures[0], textures[1],
+            textures[0],
+            textures[1],
             shDegree >= 1 ? textures[2] : undefined,
             shDegree >= 2 ? textures[3] : undefined,
             shDegree >= 3 ? textures[4] : undefined,
@@ -120,15 +164,10 @@ export async function createSplat(data: SplatData): Promise<Splat> {
         );
     } else if (data instanceof SogSplatData) {
         const { samplers, extras = [] } = data.serialize();
-        const [
-            meansL, meansU, scales, quats,
-            sh0, shNLabels, shNCentroids,
-        ] = await Promise.all(samplers.map(v => createSourceTextureFromImageSource(v.source)));
-        splat = new __INTERNAL__.SogSplat(
-            extras[0],
-            meansL, meansU, quats, scales,
-            sh0, shNLabels, shNCentroids,
+        const [meansL, meansU, scales, quats, sh0, shNLabels, shNCentroids] = await Promise.all(
+            samplers.map(v => createSourceTextureFromImageSource(v.source)),
         );
+        splat = new __INTERNAL__.SogSplat(extras[0], meansL, meansU, quats, scales, sh0, shNLabels, shNCentroids);
     } else {
         throw new Error('Unsupported splat data type.');
     }
@@ -220,10 +259,7 @@ export function modifySplatData(source: SplatData, modifyData: ISplatModifyData)
         quat: Quaternion;
         shRotateFn: (shN: number[]) => void;
     }> = [];
-    const transforms = [
-        new Matrix4(),
-        ...indicesTransforms.map(v => v.transform.clone()),
-    ];
+    const transforms = [new Matrix4(), ...indicesTransforms.map(v => v.transform.clone())];
     for (let i = 0; i < transforms.length; i++) {
         const matrix = transforms[i].multiply(modelMatrix);
         const scale = new Vector3(1, 1, 1);
@@ -237,7 +273,9 @@ export function modifySplatData(source: SplatData, modifyData: ISplatModifyData)
             matrix,
             scale,
             quat,
-            shRotateFn: createSHRotateFn(new Matrix3().setFromMatrix4(new Matrix4().compose(new Vector3(0, 0, 0), quat, new Vector3(1, 1, 1)))),
+            shRotateFn: createSHRotateFn(
+                new Matrix3().setFromMatrix4(new Matrix4().compose(new Vector3(0, 0, 0), quat, new Vector3(1, 1, 1))),
+            ),
         });
     }
     for (let i = 0; i < indicesTransforms.length; i++) {
@@ -251,10 +289,20 @@ export function modifySplatData(source: SplatData, modifyData: ISplatModifyData)
     const tempVec = new Vector3(0, 0, 0);
     const tempQuat = new Quaternion(0, 0, 0, 1);
     const single: ISingleSplat = {
-        x: 0, y: 0, z: 0,
-        sx: 0, sy: 0, sz: 0,
-        qx: 0, qy: 0, qz: 0, qw: 0,
-        r: 0, g: 0, b: 0, a: 0,
+        x: 0,
+        y: 0,
+        z: 0,
+        sx: 0,
+        sy: 0,
+        sz: 0,
+        qx: 0,
+        qy: 0,
+        qz: 0,
+        qw: 0,
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 0,
     };
     const shN = new Array(shCounts);
     const shCoeffs: number[] = new Array(shCounts / 3).fill(0);
@@ -305,10 +353,20 @@ export function combineSplatData(source: SplatData[]): SplatData {
         Math.max(...source.map(v => v.shDegree)),
     );
     const single: ISingleSplat = {
-        x: 0, y: 0, z: 0,
-        sx: 0, sy: 0, sz: 0,
-        qx: 0, qy: 0, qz: 0, qw: 0,
-        r: 0, g: 0, b: 0, a: 0,
+        x: 0,
+        y: 0,
+        z: 0,
+        sx: 0,
+        sy: 0,
+        sz: 0,
+        qx: 0,
+        qy: 0,
+        qz: 0,
+        qw: 0,
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 0,
     };
     const shN = new Array(SH_MAPS[target.shDegree]);
 

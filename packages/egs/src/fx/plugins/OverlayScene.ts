@@ -29,19 +29,14 @@ export class OverlayScenePlugin extends PipelinePlugin {
         this.dispatcher.destroy();
     }
 
-    updateFrameSize() { }
-    updateEffect() { }
+    updateFrameSize() {}
+    updateEffect() {}
 
-    updateGraphHash(_hasher: HashKeyBuilder) { }
+    updateGraphHash(_hasher: HashKeyBuilder) {}
 
     updateRenderGraph(graph: RenderGraph) {
         const scene = this.scene;
-        graph.addPass([
-            pass('overlay_scene_pass')
-                .disableClear()
-                .useDispatcher(this.dispatcher)
-                .draw(scene.overlay),
-        ]);
+        graph.addPass([pass('overlay_scene_pass').disableClear().useDispatcher(this.dispatcher).draw(scene.overlay)]);
     }
 
     createConfig() {

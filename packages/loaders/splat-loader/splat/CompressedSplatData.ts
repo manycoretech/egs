@@ -1,19 +1,29 @@
 import { SplatData } from './SplatData';
 import {
-    type ISampler, type ISplatData, type ISingleSplat, ISamplerFormat, computeTextureSize,
-    clamp, toHalf, fromHalf, encodeQuatOct, decodeQuatOct
+    type ISampler,
+    type ISplatData,
+    type ISingleSplat,
+    ISamplerFormat,
+    computeTextureSize,
+    clamp,
+    toHalf,
+    fromHalf,
+    encodeQuatOct,
+    decodeQuatOct,
 } from './utils';
 
 function encode111011s(a: number, b: number, c: number) {
-    return (clamp(((a * 0.5 + 0.5) * 2047) | 0, 0, 2047) << 21) |
+    return (
+        (clamp(((a * 0.5 + 0.5) * 2047) | 0, 0, 2047) << 21) |
         (clamp(((b * 0.5 + 0.5) * 1023) | 0, 0, 1023) << 11) |
-        clamp(((c * 0.5 + 0.5) * 2047) | 0, 0, 2047);
+        clamp(((c * 0.5 + 0.5) * 2047) | 0, 0, 2047)
+    );
 }
 
 function decode111011s(decode: number, out: number[], offset: number) {
-    out[offset + 0] = ((decode >>> 21) & 2047) / 2047 * 2 -1;
-    out[offset + 1] = ((decode >>> 11) & 1023) / 1023 * 2 - 1;
-    out[offset + 2] = (decode & 2047) / 2047 * 2 - 1;
+    out[offset + 0] = (((decode >>> 21) & 2047) / 2047) * 2 - 1;
+    out[offset + 1] = (((decode >>> 11) & 1023) / 1023) * 2 - 1;
+    out[offset + 2] = ((decode & 2047) / 2047) * 2 - 1;
 }
 
 export class CompressedSplatData extends SplatData {
@@ -43,44 +53,56 @@ export class CompressedSplatData extends SplatData {
         const { w: width, h: height, d: depth } = computeTextureSize(counts, this.maxTextureSize);
         const pixelCounts = width * height * depth;
 
-        const splat1Sampler = this.splat1Sampler = {
-            width, height, depth,
+        const splat1Sampler = (this.splat1Sampler = {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array(16 * pixelCounts),
-        };
+        });
         this.splat1Float32Buffer = new Float32Array(splat1Sampler.source.buffer);
         this.splat1Uint16Buffer = new Uint16Array(splat1Sampler.source.buffer);
-        const splat2Sampler = this.splat2Sampler = {
-            width, height, depth,
+        const splat2Sampler = (this.splat2Sampler = {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array(16 * pixelCounts),
-        };
+        });
         this.splat2Uint16Buffer = new Uint16Array(splat2Sampler.source.buffer);
         this.splat2Uint32Buffer = new Uint32Array(splat2Sampler.source.buffer);
 
-        const sh1Sampler = this.sh1Sampler = {
-            width, height, depth,
+        const sh1Sampler = (this.sh1Sampler = {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 1 ? 16 : 0) * pixelCounts),
-        };
+        });
         this.sh1Uint32Buffer = new Uint32Array(sh1Sampler.source.buffer);
-        const sh2Sampler = this.sh2Sampler = {
-            width, height, depth,
+        const sh2Sampler = (this.sh2Sampler = {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 2 ? 16 : 0) * pixelCounts),
-        };
+        });
         this.sh2Uint32Buffer = new Uint32Array(sh2Sampler.source.buffer);
-        const sh3Sampler = this.sh3Sampler = {
-            width, height, depth,
+        const sh3Sampler = (this.sh3Sampler = {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 3 ? 16 : 0) * pixelCounts),
-        };
+        });
         this.sh3Uint32Buffer = new Uint32Array(sh3Sampler.source.buffer);
-        const sh4Sampler = this.sh4Sampler = {
-            width, height, depth,
+        const sh4Sampler = (this.sh4Sampler = {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 3 ? 16 : 0) * pixelCounts),
-        };
+        });
         this.sh4Uint32Buffer = new Uint32Array(sh4Sampler.source.buffer);
     }
 
@@ -193,9 +215,9 @@ export class CompressedSplatData extends SplatData {
         single.sz = Math.exp(fromHalf(splat2Uint16Buffer[i8 + 5]));
 
         const quatEncode = splat2Uint32Buffer[i4 + 3];
-        const u = (quatEncode & 0x3ff / 1023) * 2 - 1;
-        const v = ((quatEncode >>> 10) & 0x3ff / 1023) * 2 - 1;
-        const angle = (quatEncode >>> 20) & 0xfff / 4095;
+        const u = (quatEncode & (0x3ff / 1023)) * 2 - 1;
+        const v = ((quatEncode >>> 10) & (0x3ff / 1023)) * 2 - 1;
+        const angle = (quatEncode >>> 20) & (0xfff / 4095);
         const quat = decodeQuatOct(u, v, angle);
         single.qx = quat[0];
         single.qy = quat[1];
@@ -223,9 +245,9 @@ export class CompressedSplatData extends SplatData {
         const { splat2Uint32Buffer } = this;
         const i4 = i * 4;
         const quatEncode = splat2Uint32Buffer[i4 + 3];
-        const u = (quatEncode & 0x3ff / 1023) * 2 - 1;
-        const v = ((quatEncode >>> 10) & 0x3ff / 1023) * 2 - 1;
-        const angle = (quatEncode >>> 20) & 0xfff / 4095;
+        const u = (quatEncode & (0x3ff / 1023)) * 2 - 1;
+        const v = ((quatEncode >>> 10) & (0x3ff / 1023)) * 2 - 1;
+        const angle = (quatEncode >>> 20) & (0xfff / 4095);
         const quat = decodeQuatOct(u, v, angle);
         single.qx = quat[0];
         single.qy = quat[1];
@@ -290,8 +312,12 @@ export class CompressedSplatData extends SplatData {
             counts: this.counts,
             shDegree: this.shDegree,
             samplers: [
-                this.splat1Sampler, this.splat2Sampler,
-                this.sh1Sampler, this.sh2Sampler, this.sh3Sampler, this.sh4Sampler,
+                this.splat1Sampler,
+                this.splat2Sampler,
+                this.sh1Sampler,
+                this.sh2Sampler,
+                this.sh3Sampler,
+                this.sh4Sampler,
             ],
         };
     }
@@ -304,44 +330,56 @@ export class CompressedSplatData extends SplatData {
         const { w: width, h: height, d: depth } = computeTextureSize(counts, this.maxTextureSize);
         const pixelCounts = width * height * depth;
 
-        const splat1Sampler = this.splat1Sampler = samplers[0] ?? {
-            width, height, depth,
+        const splat1Sampler = (this.splat1Sampler = samplers[0] ?? {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array(16 * pixelCounts),
-        };
+        });
         this.splat1Float32Buffer = new Float32Array(splat1Sampler.source.buffer);
         this.splat1Uint16Buffer = new Uint16Array(splat1Sampler.source.buffer);
-        const splat2Sampler = this.splat2Sampler = samplers[1] ?? {
-            width, height, depth,
+        const splat2Sampler = (this.splat2Sampler = samplers[1] ?? {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array(16 * pixelCounts),
-        };
+        });
         this.splat2Uint16Buffer = new Uint16Array(splat2Sampler.source.buffer);
         this.splat2Uint32Buffer = new Uint32Array(splat2Sampler.source.buffer);
 
-        const sh1Sampler = this.sh1Sampler = samplers[2] ?? {
-            width, height, depth,
+        const sh1Sampler = (this.sh1Sampler = samplers[2] ?? {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 1 ? 16 : 0) * pixelCounts),
-        };
+        });
         this.sh1Uint32Buffer = new Uint32Array(sh1Sampler.source.buffer);
-        const sh2Sampler = this.sh2Sampler = samplers[3] ?? {
-            width, height, depth,
+        const sh2Sampler = (this.sh2Sampler = samplers[3] ?? {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 2 ? 16 : 0) * pixelCounts),
-        };
+        });
         this.sh2Uint32Buffer = new Uint32Array(sh2Sampler.source.buffer);
-        const sh3Sampler = this.sh3Sampler = samplers[4] ?? {
-            width, height, depth,
+        const sh3Sampler = (this.sh3Sampler = samplers[4] ?? {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 3 ? 16 : 0) * pixelCounts),
-        };
+        });
         this.sh3Uint32Buffer = new Uint32Array(sh3Sampler.source.buffer);
-        const sh4Sampler = this.sh4Sampler = samplers[5] ?? {
-            width, height, depth,
+        const sh4Sampler = (this.sh4Sampler = samplers[5] ?? {
+            width,
+            height,
+            depth,
             format: ISamplerFormat.RGBA_UINT,
             source: new Uint8Array((shDegree >= 3 ? 16 : 0) * pixelCounts),
-        };
+        });
         this.sh4Uint32Buffer = new Uint32Array(sh4Sampler.source.buffer);
     }
 }

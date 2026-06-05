@@ -34,9 +34,7 @@ export class BaseElement {
         return this._businessTag;
     }
 
-    constructor() {
-
-    }
+    constructor() {}
 
     isDestroyed() {
         return this.isFreed;
@@ -51,7 +49,9 @@ export class BaseElement {
 
     validate() {
         if (this.isFreed) {
-            logger.warn(`Element has been freed but still in use, ObjectID: ${this.__guid}, tag: ${this._businessTag}, ClassName: ${this.constructor.name}`);
+            logger.warn(
+                `Element has been freed but still in use, ObjectID: ${this.__guid}, tag: ${this._businessTag}, ClassName: ${this.constructor.name}`,
+            );
         }
     }
 

@@ -1,5 +1,17 @@
 import { deferred, sleep, type Deferred } from '@qunhe/egs-lib';
-import { type __INTERNAL__, Box3, Vector3, type Camera, Object3D, Frustum, Matrix4, SplatSortedEvent, type Splat, Vector4, type IViewerContext } from '@qunhe/egs';
+import {
+    type __INTERNAL__,
+    Box3,
+    Vector3,
+    type Camera,
+    Object3D,
+    Frustum,
+    Matrix4,
+    SplatSortedEvent,
+    type Splat,
+    Vector4,
+    type IViewerContext,
+} from '@qunhe/egs';
 import { parseSplatData, detectSplatFileType } from '@qunhe/egs-splat-loader';
 import { ResourceManager } from './ResourceManager';
 
@@ -9,8 +21,8 @@ interface IBox {
 }
 
 export interface LodMeta {
-    magicCode: 2500660,
-    type: 'lod-splat',
+    magicCode: 2500660;
+    type: 'lod-splat';
     version: number;
     counts: number;
     shDegree: number;
@@ -32,15 +44,18 @@ interface DistanceStep {
     // <=
     distance: number;
     step: number;
-};
+}
 
-const DEFAULT_DISTANCE_STEP: DistanceStep[] = [{
-    distance: 5,
-    step: 3,
-}, {
-    distance: 10,
-    step: 2
-}];
+const DEFAULT_DISTANCE_STEP: DistanceStep[] = [
+    {
+        distance: 5,
+        step: 3,
+    },
+    {
+        distance: 10,
+        step: 2,
+    },
+];
 
 export interface LodConfig {
     minLevel: number;
@@ -50,7 +65,7 @@ export interface LodConfig {
     behindPenalty: number;
     behindTolerance: number;
     behindDistanceTolerance: number;
-    distanceStep: DistanceStep[],
+    distanceStep: DistanceStep[];
     hysteresisTicks: number;
     schedulerParallelCounts: number;
     schedulerExistingTaskLimit: number;
@@ -77,8 +92,8 @@ function getLodLevelDebuggerColor(level: number) {
 }
 
 function getChunkIdxDebuggerColor(idx: number) {
-    const r = (idx >> 16 & 255) / 255;
-    const g = (idx >> 8 & 255) / 255;
+    const r = ((idx >> 16) & 255) / 255;
+    const g = ((idx >> 8) & 255) / 255;
     const b = (idx & 255) / 255;
     return new Vector4(r, g, b, 1);
 }
@@ -126,8 +141,10 @@ export class LodSplat {
     readonly container = new Object3D();
 
     constructor(
-        meta: LodMeta, config: Partial<LodConfig> = {},
-        viewerCtx?: IViewerContext, loadResource: typeof DefaultLoadResource = DefaultLoadResource,
+        meta: LodMeta,
+        config: Partial<LodConfig> = {},
+        viewerCtx?: IViewerContext,
+        loadResource: typeof DefaultLoadResource = DefaultLoadResource,
     ) {
         this.minLevel = config?.minLevel ?? 0;
         this.maxLevel = meta.levels - 1;
@@ -196,19 +213,23 @@ export class LodSplat {
 
     private flush = async () => {
         const {
-            container, resourceManager, nodes, viewerCtx,
-            hysteresisTicks, schedulerParallelCounts, schedulerExistingTaskLimit, debuggerEnabled, debuggerType,
+            container,
+            resourceManager,
+            nodes,
+            viewerCtx,
+            hysteresisTicks,
+            schedulerParallelCounts,
+            schedulerExistingTaskLimit,
+            debuggerEnabled,
+            debuggerType,
         } = this;
 
-        const existResourceTasks: Array<{ idx: number, node: LodNode }> = [];
-        const loadResourceTasks: Array<{ idx: number, node: LodNode }> = [];
+        const existResourceTasks: Array<{ idx: number; node: LodNode }> = [];
+        const loadResourceTasks: Array<{ idx: number; node: LodNode }> = [];
         for (let i = 0; i < nodes.length; i++) {
             const node = nodes[i];
             const { lods, currentLevel, targetLevel, unstableTicks } = node;
-            if (
-                (node.currentLevel >= 0) &&
-                (currentLevel === targetLevel || unstableTicks < hysteresisTicks)
-            ) {
+            if (node.currentLevel >= 0 && (currentLevel === targetLevel || unstableTicks < hysteresisTicks)) {
                 continue;
             }
             const currentLod = lods[currentLevel];
@@ -223,12 +244,15 @@ export class LodSplat {
                 node.unstableTicks = 0;
                 continue;
             }
-            (resourceManager.has(targetLod.resourceIdx) ? existResourceTasks : loadResourceTasks).push({ idx: i, node });
+            (resourceManager.has(targetLod.resourceIdx) ? existResourceTasks : loadResourceTasks).push({
+                idx: i,
+                node,
+            });
         }
         existResourceTasks.sort((a, b) => b.node.targetWeight - a.node.targetWeight);
         loadResourceTasks.sort((a, b) => b.node.targetWeight - a.node.targetWeight);
 
-        const tasks: Array<{ idx: number, node: LodNode }> = [];
+        const tasks: Array<{ idx: number; node: LodNode }> = [];
         for (let i = 0; i < existResourceTasks.length; i++) {
             if (tasks.length >= schedulerExistingTaskLimit) {
                 break;
@@ -253,18 +277,20 @@ export class LodSplat {
         }
 
         const renderer = viewerCtx?.viewer._getEngine().renderer;
-        const resources = await Promise.all(tasks.map(async ({ node }) => {
-            const { targetLevel, lods } = node;
-            const { resourceIdx, offset, counts } = lods[targetLevel];
-            const splat = await resourceManager.loadSplat(resourceIdx, offset, counts);
-            if (renderer) {
-                for (let i = 0; i < splat.extrasTex.length; i++) {
-                    renderer.queueFlushTexture(splat.extrasTex[i]);
+        const resources = await Promise.all(
+            tasks.map(async ({ node }) => {
+                const { targetLevel, lods } = node;
+                const { resourceIdx, offset, counts } = lods[targetLevel];
+                const splat = await resourceManager.loadSplat(resourceIdx, offset, counts);
+                if (renderer) {
+                    for (let i = 0; i < splat.extrasTex.length; i++) {
+                        renderer.queueFlushTexture(splat.extrasTex[i]);
+                    }
+                    renderer.flushCommands();
                 }
-                renderer.flushCommands();
-            }
-            return { level: targetLevel, splat };
-        }));
+                return { level: targetLevel, splat };
+            }),
+        );
 
         const promises: Array<Promise<void>> = [];
         for (let i = 0; i < tasks.length; i++) {
@@ -275,7 +301,8 @@ export class LodSplat {
                 splat.setEffectConfig({
                     enabled: true,
                     overrideEnabled: true,
-                    overrideColor: debuggerType === 0 ? getLodLevelDebuggerColor(level) : getChunkIdxDebuggerColor(idx * 16),
+                    overrideColor:
+                        debuggerType === 0 ? getLodLevelDebuggerColor(level) : getChunkIdxDebuggerColor(idx * 16),
                 });
             }
             splat.once(SplatSortedEvent, () => {
@@ -298,36 +325,51 @@ export class LodSplat {
 
     tick(camera: Camera) {
         const {
-            nodes, minLevel, maxLevel, maxBudget, lessUsedBudget,
-            outsidePenalty, behindPenalty, behindTolerance, behindDistanceTolerance, distanceStep
+            nodes,
+            minLevel,
+            maxLevel,
+            maxBudget,
+            lessUsedBudget,
+            outsidePenalty,
+            behindPenalty,
+            behindTolerance,
+            behindDistanceTolerance,
+            distanceStep,
         } = this;
         camera.updateMatrixWorld();
 
         const { position: cameraPos, quaternion: cameraQuat } = camera;
-        const frustum = new Frustum().setFromMatrix(new Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
+        const frustum = new Frustum().setFromMatrix(
+            new Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse),
+        );
         const cameraDir = new Vector3(0, 0, -1).applyQuaternion(cameraQuat);
-        const nodeWeights = nodes.map((node, idx) => {
-            const closestPoint = node.box.clampPoint(cameraPos, tempVec3);
-            const insideBox = node.box.containsPoint(cameraPos);
-            const dist = insideBox ? 0 : cameraPos.distanceTo(closestPoint);
-            const dirDot = cameraDir.dot(closestPoint.sub(cameraPos).normalize());
-            const isInside = frustum.intersectsBox(node.box);
-            const isBehind = !insideBox && dirDot < behindTolerance && dist > behindDistanceTolerance;
-            const weight = (node.weight / (1 + 0.1 * dist * dist)) *
-                (isInside ? 1 : outsidePenalty * (isBehind ? behindPenalty : 1));
-            return { idx, node, weight, isInside, isBehind, dist };
-        }).sort((a, b) => b.weight - a.weight);
-        const steppedNodes: Array<DistanceStep & {
-            nodes: typeof nodeWeights
-        }> = distanceStep.map(e => ({
+        const nodeWeights = nodes
+            .map((node, idx) => {
+                const closestPoint = node.box.clampPoint(cameraPos, tempVec3);
+                const insideBox = node.box.containsPoint(cameraPos);
+                const dist = insideBox ? 0 : cameraPos.distanceTo(closestPoint);
+                const dirDot = cameraDir.dot(closestPoint.sub(cameraPos).normalize());
+                const isInside = frustum.intersectsBox(node.box);
+                const isBehind = !insideBox && dirDot < behindTolerance && dist > behindDistanceTolerance;
+                const weight =
+                    (node.weight / (1 + 0.1 * dist * dist)) *
+                    (isInside ? 1 : outsidePenalty * (isBehind ? behindPenalty : 1));
+                return { idx, node, weight, isInside, isBehind, dist };
+            })
+            .sort((a, b) => b.weight - a.weight);
+        const steppedNodes: Array<
+            DistanceStep & {
+                nodes: typeof nodeWeights;
+            }
+        > = distanceStep.map(e => ({
             ...e,
-            nodes: []
+            nodes: [],
         }));
         // step 1 fallback slice.
         steppedNodes.push({
             distance: Infinity,
             step: 1,
-            nodes: []
+            nodes: [],
         });
         let stepIndex = 0;
         // split inside nodes by distance according to the weight order.
@@ -353,13 +395,17 @@ export class LodSplat {
             for (const stepped of steppedNodes) {
                 for (let step = 0; step < stepped.step; step++) {
                     for (const node of stepped.nodes) {
-                        const { idx, node: { lods }, isInside } = node;
+                        const {
+                            idx,
+                            node: { lods },
+                            isInside,
+                        } = node;
                         if (insideOnly && !isInside) {
                             continue;
                         }
                         const level = levels[idx];
                         if (level > minLevel) {
-                            restBudget -= (lods[level - 1].counts - lods[level].counts);
+                            restBudget -= lods[level - 1].counts - lods[level].counts;
                             levels[idx] = level - 1;
                         }
                         if (restBudget <= 0) {
@@ -386,8 +432,8 @@ export class LodSplat {
             const { idx, node, weight } = nodeWeights[i];
             const level = levels[idx];
             if (
-                ((node.targetLevel >= node.currentLevel) && (level > node.currentLevel)) ||
-                ((node.targetLevel <= node.currentLevel) && (level < node.currentLevel))
+                (node.targetLevel >= node.currentLevel && level > node.currentLevel) ||
+                (node.targetLevel <= node.currentLevel && level < node.currentLevel)
             ) {
                 node.unstableTicks++;
             } else {

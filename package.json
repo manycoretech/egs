@@ -8,15 +8,16 @@
   "engines": {
     "node": ">=22.13.0"
   },
+  "type": "module",
   "author": "egs",
   "license": "MIT",
   "packageManager": "pnpm@11.5.1",
   "description": "the wrapper repo which contains the egs-main repo and egs-website together to help test and develop",
   "devDependencies": {
-    "@types/node": "^22.19.19",
     "@internal/cli": "workspace:*",
     "@internal/utils": "workspace:*",
-    "prettier": "^3.7.4",
+    "@types/node": "^22.19.19",
+    "oxfmt": "^0.53.0",
     "typescript": "^6.0.3"
   },
   "scripts": {

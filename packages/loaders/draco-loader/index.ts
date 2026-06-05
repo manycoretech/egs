@@ -1,5 +1,12 @@
 import { deferred } from '@qunhe/egs-lib';
-import DracoDecoderModule, { type DecoderModule, type Decoder, type PointCloud, type Mesh, type Attribute, type TypedArray } from './draco_decoder_wrapper';
+import DracoDecoderModule, {
+    type DecoderModule,
+    type Decoder,
+    type PointCloud,
+    type Mesh,
+    type Attribute,
+    type TypedArray,
+} from './draco_decoder_wrapper';
 import DracoDecoderWasm from './draco_decoder.wasm';
 
 let DecoderModule: Promise<DecoderModule> | undefined;
@@ -12,6 +19,7 @@ function getDracoDecoderModule(): Promise<DecoderModule> {
                 resolve(decoder);
             },
         });
+        // oxlint-disable-next-line no-import-assign
         DecoderModule = promise;
     }
 
@@ -34,19 +42,19 @@ enum AttributeType {
 }
 
 interface IGroup {
-    start: number,
-    count: number,
-    materialIndex: number,
-    block: { name: string, index: number };
+    start: number;
+    count: number;
+    materialIndex: number;
+    block: { name: string; index: number };
 }
 
 interface IDracoGeometry {
-    isPointCloud: boolean,
-    index?: IAttribute<Uint32Array>,
-    position: IAttribute,
-    normal?: IAttribute,
-    uv?: IAttribute,
-    color?: IAttribute,
+    isPointCloud: boolean;
+    index?: IAttribute<Uint32Array>;
+    position: IAttribute;
+    normal?: IAttribute;
+    uv?: IAttribute;
+    color?: IAttribute;
     groups: IGroup[];
 }
 
@@ -167,7 +175,7 @@ function parseMesh(draco: DecoderModule, decoder: Decoder, dracoGeometry: Mesh):
     }
 
     // material index
-    const blockMap: Record<number, { name: string, index: number }> = {};
+    const blockMap: Record<number, { name: string; index: number }> = {};
     let materialAttr: IAttribute | undefined;
     attributeID = decoder.GetAttributeIdByName(dracoGeometry, 'material');
     if (attributeID !== -1) {
@@ -233,7 +241,7 @@ function parseMesh(draco: DecoderModule, decoder: Decoder, dracoGeometry: Mesh):
             indexGroups[materialIndex].push(index, indexArr[i + 1], indexArr[i + 2]);
         }
 
-        const newIndexArr = indexAttr.array = new Uint32Array(indexAttr.array.length);
+        const newIndexArr = (indexAttr.array = new Uint32Array(indexAttr.array.length));
         const materialGroups = Array.from(new Set(materialRangeIndex));
         let start: number = 0;
         for (let i = 0; i < materialGroups.length; i++) {
@@ -295,12 +303,14 @@ function parsePointCloud(draco: DecoderModule, decoder: Decoder, dracoGeometry: 
         isPointCloud: true,
         position: positionAttr,
         color: colorAttr,
-        groups: [{
-            start: 0,
-            count: dracoGeometry.num_points(),
-            materialIndex: 0,
-            block: { name: '', index: 0 },
-        }],
+        groups: [
+            {
+                start: 0,
+                count: dracoGeometry.num_points(),
+                materialIndex: 0,
+                block: { name: '', index: 0 },
+            },
+        ],
     };
 }
 
@@ -309,7 +319,10 @@ export interface ParseConfig {
     enableParsePointCloud: boolean;
 }
 
-export async function parseDracoBuffer(buffer: ArrayBuffer, config: Partial<ParseConfig> = {}): Promise<IDracoGeometry> {
+export async function parseDracoBuffer(
+    buffer: ArrayBuffer,
+    config: Partial<ParseConfig> = {},
+): Promise<IDracoGeometry> {
     const { enableParseMesh = true, enableParsePointCloud = false } = config;
 
     const draco = await getDracoDecoderModule();

@@ -66,7 +66,7 @@ export class Interpolant {
                     // - slower code:
                     // - if ( t >= t1 || t1 === undefined ) {
                     forward_scan: if (!(t < t1)) {
-                        for (const giveUpAt = i1 + 2; ;) {
+                        for (const giveUpAt = i1 + 2; ; ) {
                             if (t1 === undefined) {
                                 if (t < t0) {
                                     break forward_scan;
@@ -104,7 +104,7 @@ export class Interpolant {
                         }
 
                         // linear reverse scan
-                        for (const giveUpAt = i1 - 2; ;) {
+                        for (const giveUpAt = i1 - 2; ; ) {
                             if (t0 === undefined) {
                                 // before start
                                 this._cacheIndex = 0;

@@ -1,4 +1,16 @@
-import { type Splat, SplatState, Vector3, WGLCapabilities, Quaternion, Matrix4, type __INTERNAL__, SourceTexture, TextureViewDimension, TextureDimension, TextureFormat } from '@qunhe/egs';
+import {
+    type Splat,
+    SplatState,
+    Vector3,
+    WGLCapabilities,
+    Quaternion,
+    Matrix4,
+    type __INTERNAL__,
+    SourceTexture,
+    TextureViewDimension,
+    TextureDimension,
+    TextureFormat,
+} from '@qunhe/egs';
 import type { SplatData, ISingleSplat } from '@qunhe/egs-splat-loader';
 
 interface IVector3 {
@@ -26,7 +38,10 @@ export class SplatOperator {
     }
 
     getActiveCounts(): number {
-        const { counts, splat: { stateTex } } = this;
+        const {
+            counts,
+            splat: { stateTex },
+        } = this;
         if (!stateTex) {
             return counts;
         }
@@ -42,9 +57,14 @@ export class SplatOperator {
     }
 
     readSplatCenter<T extends IVector3>(index: number, result: T): T {
-        const { centers, splat: { groupTex, groupTransformTex } } = this;
+        const {
+            centers,
+            splat: { groupTex, groupTransformTex },
+        } = this;
         const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
-        const groupTransformBuffer = groupTransformTex ? (groupTransformTex.getLevelLayerSource(0) as Float32Array) : undefined;
+        const groupTransformBuffer = groupTransformTex
+            ? (groupTransformTex.getLevelLayerSource(0) as Float32Array)
+            : undefined;
 
         const i3 = index * 3;
         tempVec.set(centers[i3], centers[i3 + 1], centers[i3 + 2]);
@@ -62,10 +82,16 @@ export class SplatOperator {
     }
 
     foreachSplatCenter(callback: (i: number, x: number, y: number, z: number) => void) {
-        const { counts, centers, splat: { stateTex, groupTex, groupTransformTex } } = this;
+        const {
+            counts,
+            centers,
+            splat: { stateTex, groupTex, groupTransformTex },
+        } = this;
         const stateBuffer = stateTex ? (stateTex.getLevelLayerSource(0) as Uint8Array) : undefined;
         const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
-        const groupTransformBuffer = groupTransformTex ? (groupTransformTex.getLevelLayerSource(0) as Float32Array) : undefined;
+        const groupTransformBuffer = groupTransformTex
+            ? (groupTransformTex.getLevelLayerSource(0) as Float32Array)
+            : undefined;
         const transforms: Matrix4[] = [];
 
         for (let i = 0; i < counts; i++) {
@@ -93,15 +119,30 @@ export class SplatOperator {
     readSplat(
         index: number,
         single: ISingleSplat = {
-            x: 0, y: 0, z: 0,
-            sx: 0, sy: 0, sz: 0,
-            qx: 0, qy: 0, qz: 0, qw: 0,
-            r: 0, g: 0, b: 0, a: 0,
+            x: 0,
+            y: 0,
+            z: 0,
+            sx: 0,
+            sy: 0,
+            sz: 0,
+            qx: 0,
+            qy: 0,
+            qz: 0,
+            qw: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
         },
     ): ISingleSplat {
-        const { splat: { groupTex, groupTransformTex }, data } = this;
+        const {
+            splat: { groupTex, groupTransformTex },
+            data,
+        } = this;
         const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
-        const groupTransformBuffer = groupTransformTex ? (groupTransformTex.getLevelLayerSource(0) as Float32Array) : undefined;
+        const groupTransformBuffer = groupTransformTex
+            ? (groupTransformTex.getLevelLayerSource(0) as Float32Array)
+            : undefined;
 
         data.get(index, single);
         if (groupBuffer && groupTransformBuffer) {
@@ -136,16 +177,32 @@ export class SplatOperator {
     foreachSplat(
         callback: (i: number, single: ISingleSplat) => void,
         single: ISingleSplat = {
-            x: 0, y: 0, z: 0,
-            sx: 0, sy: 0, sz: 0,
-            qx: 0, qy: 0, qz: 0, qw: 0,
-            r: 0, g: 0, b: 0, a: 0,
+            x: 0,
+            y: 0,
+            z: 0,
+            sx: 0,
+            sy: 0,
+            sz: 0,
+            qx: 0,
+            qy: 0,
+            qz: 0,
+            qw: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
         },
     ) {
-        const { counts, splat: { stateTex, groupTex, groupTransformTex }, data } = this;
+        const {
+            counts,
+            splat: { stateTex, groupTex, groupTransformTex },
+            data,
+        } = this;
         const stateBuffer = stateTex ? (stateTex.getLevelLayerSource(0) as Uint8Array) : undefined;
         const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
-        const groupTransformBuffer = groupTransformTex ? (groupTransformTex.getLevelLayerSource(0) as Float32Array) : undefined;
+        const groupTransformBuffer = groupTransformTex
+            ? (groupTransformTex.getLevelLayerSource(0) as Float32Array)
+            : undefined;
 
         const transforms: Array<{
             mat: Matrix4;
@@ -201,8 +258,14 @@ export class SplatOperator {
         const width = Math.min(Math.ceil(Math.sqrt(pixels) / 2) * 2, MAX_TEXTURE_SIZE);
         const height = Math.ceil(pixels / width);
         splat.stateTex = new SourceTexture(
-            TextureDimension.D2, TextureViewDimension.D2, TextureFormat.R8Uint,
-            width, height, 1, false, false
+            TextureDimension.D2,
+            TextureViewDimension.D2,
+            TextureFormat.R8Uint,
+            width,
+            height,
+            1,
+            false,
+            false,
         )
             .configAsDataTexture()
             .setLevelData(new Uint8Array(width * height), 0);
@@ -218,7 +281,7 @@ export class SplatOperator {
         for (let i = 0; i < indices.length; i++) {
             const idx = indices[i];
             const v = stateBuffer[idx];
-            stateBuffer[idx] = invert ? (v & ~state) : (v | state);
+            stateBuffer[idx] = invert ? v & ~state : v | state;
         }
         splat.stateTex!.setLevelData(new Uint8Array(stateBuffer.buffer, stateBuffer.byteOffset, stateBuffer.length), 0);
         splat.notifySceneChange();

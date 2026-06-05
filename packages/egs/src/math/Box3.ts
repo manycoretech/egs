@@ -37,8 +37,8 @@ export class Box3 {
     isBox3 = true;
 
     constructor(min?: Vector3, max?: Vector3) {
-        this.min = min ?? new Vector3(+ Infinity, + Infinity, + Infinity);
-        this.max = max ?? new Vector3(- Infinity, - Infinity, - Infinity);
+        this.min = min ?? new Vector3(+Infinity, +Infinity, +Infinity);
+        this.max = max ?? new Vector3(-Infinity, -Infinity, -Infinity);
         this.planes = [
             new Plane(new Vector3(-1, 0, 0), this.min.x),
             new Plane(new Vector3(0, -1, 0), this.min.y),
@@ -205,7 +205,12 @@ export class Box3 {
      * @param start The start indexes of range.
      * @param count The count of indexes in range.
      */
-    setFromIndexBufferAttributeRange(positionAttribute: BufferAttribute, indexAttribute: BufferAttribute, start: number, count: number): Box3 {
+    setFromIndexBufferAttributeRange(
+        positionAttribute: BufferAttribute,
+        indexAttribute: BufferAttribute,
+        start: number,
+        count: number,
+    ): Box3 {
         let minX = +Infinity;
         let minY = +Infinity;
         let minZ = +Infinity;
@@ -294,8 +299,8 @@ export class Box3 {
      * Makes this box empty.
      */
     makeEmpty(): Box3 {
-        this.min.x = this.min.y = this.min.z = + Infinity;
-        this.max.x = this.max.y = this.max.z = - Infinity;
+        this.min.x = this.min.y = this.min.z = +Infinity;
+        this.max.x = this.max.y = this.max.z = -Infinity;
         return this;
     }
     /**
@@ -304,7 +309,7 @@ export class Box3 {
      */
     isEmpty(): boolean {
         // this is a more robust check for empty than ( volume <= 0 ) because volume can get positive with two negative axes
-        return (this.max.x < this.min.x) || (this.max.y < this.min.y) || (this.max.z < this.min.z);
+        return this.max.x < this.min.x || this.max.y < this.min.y || this.max.z < this.min.z;
     }
     /**
      * Returns the center point of the box as a {@link Vector3| Vector3}.
@@ -443,13 +448,14 @@ export class Box3 {
         for (i = 0, j = axes.length - 3; i <= j; i += 3) {
             testAxis.fromArray(axes, i);
             // project the aabb onto the separating axis
-            const r = extents.x * Math.abs(testAxis.x) + extents.y * Math.abs(testAxis.y) + extents.z * Math.abs(testAxis.z);
+            const r =
+                extents.x * Math.abs(testAxis.x) + extents.y * Math.abs(testAxis.y) + extents.z * Math.abs(testAxis.z);
             // project all 3 vertices of the triangle onto the separating axis
             const p0 = v0.dot(testAxis);
             const p1 = v1.dot(testAxis);
             const p2 = v2.dot(testAxis);
             // actual test, basically see if either of the most extreme of the triangle points intersects r
-            if (Math.max(- Math.max(p0, p1, p2), Math.min(p0, p1, p2)) > r) {
+            if (Math.max(-Math.max(p0, p1, p2), Math.min(p0, p1, p2)) > r) {
                 // points of the projected triangle are outside the projected half-length of the aabb
                 // the axis is separating and we can exit
                 return false;
@@ -484,9 +490,33 @@ export class Box3 {
         // make an axis testing of each of the 3 sides of the aabb against each of the 3 sides of the triangle = 9 axis of separation
         // axis_ij = u_i x f_j (u0, u1, u2 = face normals of aabb = x,y,z axes vectors since aabb is axis aligned)
         let axes = [
-            0, - f0.z, f0.y, 0, - f1.z, f1.y, 0, - f2.z, f2.y,
-            f0.z, 0, - f0.x, f1.z, 0, - f1.x, f2.z, 0, - f2.x,
-            - f0.y, f0.x, 0, - f1.y, f1.x, 0, - f2.y, f2.x, 0
+            0,
+            -f0.z,
+            f0.y,
+            0,
+            -f1.z,
+            f1.y,
+            0,
+            -f2.z,
+            f2.y,
+            f0.z,
+            0,
+            -f0.x,
+            f1.z,
+            0,
+            -f1.x,
+            f2.z,
+            0,
+            -f2.x,
+            -f0.y,
+            f0.x,
+            0,
+            -f1.y,
+            f1.x,
+            0,
+            -f2.y,
+            f2.x,
+            0,
         ];
         if (!this._satForAxes(axes)) {
             return false;
@@ -509,18 +539,28 @@ export class Box3 {
      * @param point {@link Vector3| Vector3} to check for inclusion.
      */
     containsPoint(point: Vector3): boolean {
-        return point.x < this.min.x || point.x > this.max.x ||
-            point.y < this.min.y || point.y > this.max.y ||
-            point.z < this.min.z || point.z > this.max.z ? false : true;
+        return point.x < this.min.x ||
+            point.x > this.max.x ||
+            point.y < this.min.y ||
+            point.y > this.max.y ||
+            point.z < this.min.z ||
+            point.z > this.max.z
+            ? false
+            : true;
     }
     /**
      * Return true if this box includes the entirety of {@link Box3| box}. If this and {@link Box3| box} are identical, this function also returns true.
      * @param box {@link Box3| Box3} to test for inclusion.
      */
     containsBox(box: Box3): boolean {
-        return this.min.x <= box.min.x && box.max.x <= this.max.x &&
-            this.min.y <= box.min.y && box.max.y <= this.max.y &&
-            this.min.z <= box.min.z && box.max.z <= this.max.z;
+        return (
+            this.min.x <= box.min.x &&
+            box.max.x <= this.max.x &&
+            this.min.y <= box.min.y &&
+            box.max.y <= this.max.y &&
+            this.min.z <= box.min.z &&
+            box.max.z <= this.max.z
+        );
     }
     /**
      * Return a point as a proportion of this box's width and height.
@@ -531,7 +571,7 @@ export class Box3 {
         return target.set(
             (point.x - this.min.x) / (this.max.x - this.min.x),
             (point.y - this.min.y) / (this.max.y - this.min.y),
-            (point.z - this.min.z) / (this.max.z - this.min.z)
+            (point.z - this.min.z) / (this.max.z - this.min.z),
         );
     }
     /**
@@ -540,9 +580,14 @@ export class Box3 {
      */
     intersectsBox(box: Box3): boolean {
         // using 6 splitting planes to rule out intersections.
-        return box.max.x < this.min.x || box.min.x > this.max.x ||
-            box.max.y < this.min.y || box.min.y > this.max.y ||
-            box.max.z < this.min.z || box.min.z > this.max.z ? false : true;
+        return box.max.x < this.min.x ||
+            box.min.x > this.max.x ||
+            box.max.y < this.min.y ||
+            box.min.y > this.max.y ||
+            box.max.z < this.min.z ||
+            box.min.z > this.max.z
+            ? false
+            : true;
     }
     /**
      * Determines whether or not this box intersects {@link Sphere| sphere}.
@@ -553,7 +598,7 @@ export class Box3 {
         this.clampPoint(sphere.center, tmpVec3);
 
         // If that point is inside the sphere, the AABB and sphere intersect.
-        return tmpVec3.distanceToSquared(sphere.center) <= (sphere.radius * sphere.radius);
+        return tmpVec3.distanceToSquared(sphere.center) <= sphere.radius * sphere.radius;
     }
     /**
      * Determines whether or not this box intersects {@link Plane| plane}.
@@ -586,7 +631,7 @@ export class Box3 {
             min += plane.normal.z * this.max.z;
             max += plane.normal.z * this.min.z;
         }
-        return (min <= - plane.constant && max >= - plane.constant);
+        return min <= -plane.constant && max >= -plane.constant;
     }
     /**
      * {@link https://en.wikipedia.org/wiki/Clamping_(graphics)| Clamps} the {@link Vector3| point} within the bounds of this box.
@@ -705,8 +750,14 @@ export class Box3 {
 }
 const tmpVec3 = new Vector3();
 const points = [
-    new Vector3(), new Vector3(), new Vector3(), new Vector3(),
-    new Vector3(), new Vector3(), new Vector3(), new Vector3()
+    new Vector3(),
+    new Vector3(),
+    new Vector3(),
+    new Vector3(),
+    new Vector3(),
+    new Vector3(),
+    new Vector3(),
+    new Vector3(),
 ];
 const v0 = new Vector3();
 const v1 = new Vector3();

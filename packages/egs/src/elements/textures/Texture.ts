@@ -44,7 +44,11 @@ export abstract class Texture extends ElementEventDispatcher implements Elements
      * @internal
      */
     constructor(dimension: TextureDimension, viewDimension: TextureViewDimension, isInternal: boolean);
-    constructor(dimension: TextureDimension = TextureDimension.D2, viewDimension: TextureViewDimension = TextureViewDimension.D2, isInternal: boolean = false) {
+    constructor(
+        dimension: TextureDimension = TextureDimension.D2,
+        viewDimension: TextureViewDimension = TextureViewDimension.D2,
+        isInternal: boolean = false,
+    ) {
         super();
         this.dimension = dimension;
         this.viewDimension = viewDimension;
@@ -177,32 +181,35 @@ export class WebGLTextureUploadCtx {
         public isWebGL1: boolean,
         public maxTextureSize: number,
         public newCreated: boolean,
-    ) { }
-
+    ) {}
 }
 
 export enum TextureTarget {
-    Texture2D = 0x0DE1,
-    Texture3D = 0x806F,
+    Texture2D = 0x0de1,
+    Texture3D = 0x806f,
     TextureCubeMap = 0x8513,
 }
 
 export interface SourceTextureWebGLUploadResult {
-    is_pot: boolean,
-    has_uploaded_custom_mipmap: boolean,
-    byteSize: number,
+    is_pot: boolean;
+    has_uploaded_custom_mipmap: boolean;
+    byteSize: number;
 }
 
 export interface SourceTextureLayerWebGLUploadResult {
-    is_pot: boolean,
-    byteSize: number,
+    is_pot: boolean;
+    byteSize: number;
 }
 
-export function getInternalFormat(gl: WebGLRenderingContext | WebGL2RenderingContext, glFormat: number, glType: number): number {
+export function getInternalFormat(
+    gl: WebGLRenderingContext | WebGL2RenderingContext,
+    glFormat: number,
+    glType: number,
+): number {
     if (!WGLCapabilities.IS_WEBGL2) {
         return glFormat;
     }
-    const _gl = (gl as WebGL2RenderingContext);
+    const _gl = gl as WebGL2RenderingContext;
     if (glFormat === _gl.RED) {
         if (glType === _gl.FLOAT) {
             return _gl.R32F;
@@ -306,7 +313,11 @@ export abstract class LegacySourceTexture extends Texture {
     /**
      * @internal
      */
-    abstract uploadWebGLImpl(ctx: WebGLTextureUploadCtx, disableCustomMipmap: boolean, needPot: boolean): SourceTextureWebGLUploadResult;
+    abstract uploadWebGLImpl(
+        ctx: WebGLTextureUploadCtx,
+        disableCustomMipmap: boolean,
+        needPot: boolean,
+    ): SourceTextureWebGLUploadResult;
     /**
      * @internal
      */
@@ -343,16 +354,10 @@ export abstract class LegacySourceTexture extends Texture {
         const mipmap_enabled = result.has_uploaded_custom_mipmap || shouldAutoGenerateMipmap;
         // webgl1 && npot => force clamp_to_edge
         const force_clamp_to_edge = webgl1_npot;
-        this.samplerDescriptor.sync_webgl(
-            gl,
-            this.bindableTarget,
-            mipmap_enabled,
-            force_clamp_to_edge,
-        );
+        this.samplerDescriptor.sync_webgl(gl, this.bindableTarget, mipmap_enabled, force_clamp_to_edge);
 
         return result.byteSize;
     }
-
 }
 
 export interface WebGLUploadable {
@@ -360,13 +365,18 @@ export interface WebGLUploadable {
     /**
      * @internal
      */
-    uploadWebGL(ctx: WebGLTextureUploadCtx, target: number, level: number, needPOT: boolean): SourceTextureLayerWebGLUploadResult;
+    uploadWebGL(
+        ctx: WebGLTextureUploadCtx,
+        target: number,
+        level: number,
+        needPOT: boolean,
+    ): SourceTextureLayerWebGLUploadResult;
 }
 
 /**
  * Container for texture data and their mipmap
  */
-export class TextureMipmapGroup<T extends WebGLUploadable>{
+export class TextureMipmapGroup<T extends WebGLUploadable> {
     texture?: Texture;
     /**
      * Main layer
@@ -428,7 +438,12 @@ export class TextureMipmapGroup<T extends WebGLUploadable>{
     /**
      * @internal
      */
-    uploadWebGL(ctx: WebGLTextureUploadCtx, target: number, disableCustomMipmap: boolean, needPOT: boolean): SourceTextureWebGLUploadResult {
+    uploadWebGL(
+        ctx: WebGLTextureUploadCtx,
+        target: number,
+        disableCustomMipmap: boolean,
+        needPOT: boolean,
+    ): SourceTextureWebGLUploadResult {
         const result = {
             is_pot: true,
             byteSize: 0,
@@ -571,13 +586,7 @@ export class SamplerDescriptor {
     /**
      * @internal
      */
-    sync_webgl(
-        gl: WebGLRenderingContext,
-        target: number,
-        mipmapEnabled: boolean,
-        forceClampToEdge: boolean
-    ) {
-
+    sync_webgl(gl: WebGLRenderingContext, target: number, mipmapEnabled: boolean, forceClampToEdge: boolean) {
         const wrapS = forceClampToEdge ? gl.CLAMP_TO_EDGE : this.wrapS;
         const wrapT = forceClampToEdge ? gl.CLAMP_TO_EDGE : this.wrapT;
         const magFilter = this.magFilter;
@@ -589,10 +598,16 @@ export class SamplerDescriptor {
     }
 
     min_filter_fallback(): SamplerFilter {
-        if (this.minFilter === SamplerFilter.NearestMipmapNearest || this.minFilter === SamplerFilter.NearestMipmapLinear) {
+        if (
+            this.minFilter === SamplerFilter.NearestMipmapNearest ||
+            this.minFilter === SamplerFilter.NearestMipmapLinear
+        ) {
             return SamplerFilter.Nearest;
         }
-        if (this.minFilter === SamplerFilter.LinearMipmapNearest || this.minFilter === SamplerFilter.LinearMipmapLinear) {
+        if (
+            this.minFilter === SamplerFilter.LinearMipmapNearest ||
+            this.minFilter === SamplerFilter.LinearMipmapLinear
+        ) {
             return SamplerFilter.Linear;
         }
         return this.minFilter;
@@ -600,9 +615,11 @@ export class SamplerDescriptor {
 
     needMipmap(): boolean {
         function needMip(f: SamplerFilter) {
-            return f === SamplerFilter.LinearMipmapLinear ||
+            return (
+                f === SamplerFilter.LinearMipmapLinear ||
                 f === SamplerFilter.LinearMipmapNearest ||
-                f === SamplerFilter.NearestMipmapLinear;
+                f === SamplerFilter.NearestMipmapLinear
+            );
         }
         return needMip(this.minFilter);
     }
@@ -616,4 +633,3 @@ export function createImgByUrl(url: string, { crossOrigin = '' } = {}): HTMLImag
     image.src = url;
     return image;
 }
-

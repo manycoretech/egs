@@ -75,15 +75,23 @@ export class PostPipeline {
     private get plugins(): PipelinePlugin[] {
         if (!this._cachedPlugins) {
             this._cachedPlugins = [
-                this.sceneClipPlugin, this.shadowMapPlugin,
+                this.sceneClipPlugin,
+                this.shadowMapPlugin,
 
                 this.backgroundPlugin,
-                this.deferredPlugin, this.transparentLinePlugin, this.forwardPlugin,
+                this.deferredPlugin,
+                this.transparentLinePlugin,
+                this.forwardPlugin,
                 this.debugPlugin,
                 this.splattingPlugin,
 
-                this.stylizePlugin, this.aoPlugin, this.outlinePlugin, this.overlayScene,
-                this.highlightPlugin, this.taaPlugin, this.compositePlugin,
+                this.stylizePlugin,
+                this.aoPlugin,
+                this.outlinePlugin,
+                this.overlayScene,
+                this.highlightPlugin,
+                this.taaPlugin,
+                this.compositePlugin,
             ].filter(v => v.envSupported);
         }
 
@@ -121,7 +129,11 @@ export class PostPipeline {
                 node.attach(color);
             })
             .keepContent()
-            .from(pass('pre_create_depth_pyramid_pass').disableClear().use(() => { }));
+            .from(
+                pass('pre_create_depth_pyramid_pass')
+                    .disableClear()
+                    .use(() => {}),
+            );
         this.setFrameSize(rendererAdaptor.width, rendererAdaptor.height);
     }
 
@@ -159,7 +171,13 @@ export class PostPipeline {
         this.mapPlugins(plugin => plugin.updateFrameSize(w, h));
     }
 
-    updateEffect(scene: SceneAdaptor, isFrameStable: boolean, isCameraStable: boolean, renderingConfig: RenderingConfig, drivenCullingConfig: DrivenCullingConfig) {
+    updateEffect(
+        scene: SceneAdaptor,
+        isFrameStable: boolean,
+        isCameraStable: boolean,
+        renderingConfig: RenderingConfig,
+        drivenCullingConfig: DrivenCullingConfig,
+    ) {
         this.adaptor.setAdaptor(scene);
 
         const effectConfig: IEffectConfig = {
@@ -180,16 +198,16 @@ export class PostPipeline {
             (this.forwardPlugin as any).staticFrameCacheActive = false;
         }
 
-        if (this.shouldRenderNextFrameByHZB
-            && renderingConfig.gpuDriven.enabled
-            && drivenCullingConfig.occlusionCullingEnabled) {
+        if (
+            this.shouldRenderNextFrameByHZB &&
+            renderingConfig.gpuDriven.enabled &&
+            drivenCullingConfig.occlusionCullingEnabled
+        ) {
             this.shouldRenderNextFrameByHZB = false;
             this.shouldRenderCurrentFrameByHZB = true;
         }
 
-        if (!isFrameStable
-            && renderingConfig.gpuDriven.enabled
-            && drivenCullingConfig.occlusionCullingEnabled) {
+        if (!isFrameStable && renderingConfig.gpuDriven.enabled && drivenCullingConfig.occlusionCullingEnabled) {
             this.shouldRenderNextFrameByHZB = true;
         }
     }
@@ -206,9 +224,13 @@ export class PostPipeline {
         return this.shouldRenderNextFrameByHZB || this.plugins.some(p => p.shouldRender);
     }
 
-    render(sceneAdaptor: SceneAdaptor, renderingConfig: RenderingConfig, drivenCullingConfig: DrivenCullingConfig): void {
+    render(
+        sceneAdaptor: SceneAdaptor,
+        renderingConfig: RenderingConfig,
+        drivenCullingConfig: DrivenCullingConfig,
+    ): void {
         this.adaptor.setAdaptor(sceneAdaptor);
-        const isTaaEnabled = Shadow._IN_TEMPORAL = this.taaPlugin.enabled;
+        const isTaaEnabled = (Shadow._IN_TEMPORAL = this.taaPlugin.enabled);
         if (isTaaEnabled) {
             this.taaPlugin.tick();
             this.taaPlugin.jitterCamera(sceneAdaptor.camera, this.rendererAdaptor.width, this.rendererAdaptor.height);
@@ -222,7 +244,12 @@ export class PostPipeline {
         this.effectComposer.render(graph.build());
     }
 
-    renderSnapshot(scene: SceneAdaptor, target: OverrideScreenOutputTarget, renderingConfig: RenderingConfig, drivenCullingConfig: DrivenCullingConfig): void {
+    renderSnapshot(
+        scene: SceneAdaptor,
+        target: OverrideScreenOutputTarget,
+        renderingConfig: RenderingConfig,
+        drivenCullingConfig: DrivenCullingConfig,
+    ): void {
         this.effectComposer.overrideScreenOutputTarget = target;
         this.render(scene, renderingConfig, drivenCullingConfig);
         this.effectComposer.overrideScreenOutputTarget = undefined;
@@ -235,9 +262,12 @@ export class PostPipeline {
         const plugins = this.plugins.filter(plugin => plugin.enabled);
         const configMSAA = renderingConfig.MSAA;
         const backend = this.rendererAdaptor.renderer.backend;
-        renderingConfig.MSAA = configMSAA && (backend !== RendererBackend.WEBGL_JS);
+        renderingConfig.MSAA = configMSAA && backend !== RendererBackend.WEBGL_JS;
 
-        const { MSAA, gpuDriven: { enabled: drivenEnabled } } = renderingConfig;
+        const {
+            MSAA,
+            gpuDriven: { enabled: drivenEnabled },
+        } = renderingConfig;
         const { occlusionCullingEnabled } = drivenCullingConfig;
         const hasher = HashKeyBuilder.getInstance()
             .raw(backend)
@@ -257,7 +287,7 @@ export class PostPipeline {
         const graph = new RenderGraph(screen());
         const graphContext = {
             renderingConfig,
-            drivenCullingConfig
+            drivenCullingConfig,
         };
         plugins.forEach(plugin => plugin.updateRenderGraph(graph, graphContext, this.depthPyramid));
         renderingConfig.MSAA = configMSAA;

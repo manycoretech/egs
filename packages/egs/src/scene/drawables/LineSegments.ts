@@ -30,8 +30,8 @@ export class LineSegments<M extends Material = Material> extends Drawable<M, Buf
 
     constructor(geometry?: BufferGeometry<LineList>, material?: M | M[]) {
         super(
-            geometry !== undefined ? geometry : new BufferGeometry() as any,
-            material !== undefined ? material : new LineBasicMaterial() as any
+            geometry !== undefined ? geometry : (new BufferGeometry() as any),
+            material !== undefined ? material : (new LineBasicMaterial() as any),
         );
     }
 

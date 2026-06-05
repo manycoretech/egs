@@ -25,8 +25,8 @@ const def = {
 };
 
 export function torus(parameters: Partial<TorusShapeParameter>): BufferGeometry {
-    // eslint-disable-next-line prefer-const
-    let { radius, tube, radialSegments, tubularSegments, arc } = {  ...def,...parameters };
+    // oxlint-disable-next-line prefer-const
+    let { radius, tube, radialSegments, tubularSegments, arc } = { ...def, ...parameters };
 
     radialSegments = Math.floor(radialSegments);
     tubularSegments = Math.floor(tubularSegments);
@@ -46,8 +46,8 @@ export function torus(parameters: Partial<TorusShapeParameter>): BufferGeometry 
     // generate vertices, normals and uvs
     for (j = 0; j <= radialSegments; j++) {
         for (i = 0; i <= tubularSegments; i++) {
-            const u = i / tubularSegments * arc;
-            const v = j / radialSegments * Math.PI * 2;
+            const u = (i / tubularSegments) * arc;
+            const v = (j / radialSegments) * Math.PI * 2;
 
             // vertex
             vertex.x = (radius + tube * Math.cos(v)) * Math.cos(u);

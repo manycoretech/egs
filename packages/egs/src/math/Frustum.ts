@@ -22,12 +22,12 @@ export class Frustum {
 
     constructor(p0?: Plane, p1?: Plane, p2?: Plane, p3?: Plane, p4?: Plane, p5?: Plane) {
         this.planes = [
-            (p0 !== undefined) ? p0 : new Plane(),
-            (p1 !== undefined) ? p1 : new Plane(),
-            (p2 !== undefined) ? p2 : new Plane(),
-            (p3 !== undefined) ? p3 : new Plane(),
-            (p4 !== undefined) ? p4 : new Plane(),
-            (p5 !== undefined) ? p5 : new Plane()
+            p0 !== undefined ? p0 : new Plane(),
+            p1 !== undefined ? p1 : new Plane(),
+            p2 !== undefined ? p2 : new Plane(),
+            p3 !== undefined ? p3 : new Plane(),
+            p4 !== undefined ? p4 : new Plane(),
+            p5 !== undefined ? p5 : new Plane(),
         ];
         this.corners = [
             new Vector3(),
@@ -84,10 +84,22 @@ export class Frustum {
     setFromMatrix(m: Matrix4): Frustum {
         const planes = this.planes;
         const me = m._elements;
-        const me0 = me[0], me1 = me[1], me2 = me[2], me3 = me[3],
-            me4 = me[4], me5 = me[5], me6 = me[6], me7 = me[7],
-            me8 = me[8], me9 = me[9], me10 = me[10], me11 = me[11],
-            me12 = me[12], me13 = me[13], me14 = me[14], me15 = me[15];
+        const me0 = me[0],
+            me1 = me[1],
+            me2 = me[2],
+            me3 = me[3],
+            me4 = me[4],
+            me5 = me[5],
+            me6 = me[6],
+            me7 = me[7],
+            me8 = me[8],
+            me9 = me[9],
+            me10 = me[10],
+            me11 = me[11],
+            me12 = me[12],
+            me13 = me[13],
+            me14 = me[14],
+            me15 = me[15];
         planes[0].setComponents(me3 - me0, me7 - me4, me11 - me8, me15 - me12).normalize();
         planes[1].setComponents(me3 + me0, me7 + me4, me11 + me8, me15 + me12).normalize();
         planes[2].setComponents(me3 + me1, me7 + me5, me11 + me9, me15 + me13).normalize();
@@ -135,7 +147,7 @@ export class Frustum {
     intersectsSphere(sphere: Sphere): boolean {
         const planes = this.planes;
         const center = sphere.center;
-        const negRadius = - sphere.radius;
+        const negRadius = -sphere.radius;
         for (let i = 0; i < 6; i++) {
             const distance = planes[i].distanceToPoint(center);
             if (distance < negRadius) {
@@ -150,10 +162,10 @@ export class Frustum {
      */
     intersectsBox(box: Box3): boolean {
         const planes = this.planes;
-        const boxMaxX =  box.max.x;
+        const boxMaxX = box.max.x;
         const boxMaxY = box.max.y;
         const boxMaxZ = box.max.z;
-        const boxMinX =  box.min.x;
+        const boxMinX = box.min.x;
         const boxMinY = box.min.y;
         const boxMinZ = box.min.z;
 
@@ -190,7 +202,11 @@ export class Frustum {
         const points = [];
         this.setFromMatrix(tmpMat4.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse));
         cameraPos.setFromMatrixPosition(camera.matrixWorld);
-        cameraDirection.set(camera.matrixWorld._elements[8], camera.matrixWorld._elements[9], camera.matrixWorld._elements[10]);
+        cameraDirection.set(
+            camera.matrixWorld._elements[8],
+            camera.matrixWorld._elements[9],
+            camera.matrixWorld._elements[10],
+        );
 
         const frustumCorners = this.corners;
         const frustumPlanes = this.planes;
@@ -210,7 +226,7 @@ export class Frustum {
         }
 
         let near = points.length === 0 ? 1 : Infinity;
-        points.forEach((point) => {
+        points.forEach(point => {
             const distance = pointTmp.copy(cameraPos).sub(point).dot(cameraDirection);
             near = Math.min(near, distance);
         });
@@ -259,17 +275,51 @@ class Line {
 const lineFace2Face = new Line();
 const lineLine2Line = new Line();
 
-const BOX_EDGE_PAIRS = [[[3, 7], [7, 4], [4, 0], [0, 3]],
-                        [[0, 4], [4, 5], [5, 1], [1, 0]],
-                        [[0, 1], [1, 2], [2, 3], [3, 0]],
-                        [[6, 2], [2, 1], [1, 5], [5, 6]],
-                        [[2, 6], [6, 7], [7, 3], [3, 2]],
-                        [[7, 6], [6, 5], [5, 4], [4, 7]]];
+const BOX_EDGE_PAIRS = [
+    [
+        [3, 7],
+        [7, 4],
+        [4, 0],
+        [0, 3],
+    ],
+    [
+        [0, 4],
+        [4, 5],
+        [5, 1],
+        [1, 0],
+    ],
+    [
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [3, 0],
+    ],
+    [
+        [6, 2],
+        [2, 1],
+        [1, 5],
+        [5, 6],
+    ],
+    [
+        [2, 6],
+        [6, 7],
+        [7, 3],
+        [3, 2],
+    ],
+    [
+        [7, 6],
+        [6, 5],
+        [5, 4],
+        [4, 7],
+    ],
+];
 
-const FRUSTUM_EDGE_PAIRS = [[6, 2],
-                            [7, 3],
-                            [7, 6],
-                            [3, 2]];
+const FRUSTUM_EDGE_PAIRS = [
+    [6, 2],
+    [7, 3],
+    [7, 6],
+    [3, 2],
+];
 
 function isPointInsideFrustum(point: Vector3, frustum: Frustum) {
     let isInside = true;
@@ -285,9 +335,16 @@ function isPointInsideFrustum(point: Vector3, frustum: Frustum) {
     return isInside;
 }
 
-function boxFrustumIntersect(frustumCorners: Vector3[], frustumPlanes: Plane[],
-    boxCorners: Vector3[], boxPlanes: Plane[],
-    box: Box3, frustum: Frustum, cameraPos: Vector3, points: Vector3[]) {
+function boxFrustumIntersect(
+    frustumCorners: Vector3[],
+    frustumPlanes: Plane[],
+    boxCorners: Vector3[],
+    boxPlanes: Plane[],
+    box: Box3,
+    frustum: Frustum,
+    cameraPos: Vector3,
+    points: Vector3[],
+) {
     const pointsTmp: Vector3[] = [];
     for (let i = 0; i < boxPlanes.length; i++) {
         const boxPlane = boxPlanes[i];
@@ -311,40 +368,50 @@ function boxFrustumIntersect(frustumCorners: Vector3[], frustumPlanes: Plane[],
 }
 
 function setupLine(i: number, boxPlane: Plane, frustumPlane: Plane, box: Box3) {
-    lineFace2Face.direction.set(boxPlane.normal.y * frustumPlane.normal.z - boxPlane.normal.z * frustumPlane.normal.y,
-                                boxPlane.normal.z * frustumPlane.normal.x - boxPlane.normal.x * frustumPlane.normal.z,
-                                boxPlane.normal.x * frustumPlane.normal.y - boxPlane.normal.y * frustumPlane.normal.x).normalize();
+    lineFace2Face.direction
+        .set(
+            boxPlane.normal.y * frustumPlane.normal.z - boxPlane.normal.z * frustumPlane.normal.y,
+            boxPlane.normal.z * frustumPlane.normal.x - boxPlane.normal.x * frustumPlane.normal.z,
+            boxPlane.normal.x * frustumPlane.normal.y - boxPlane.normal.y * frustumPlane.normal.x,
+        )
+        .normalize();
 
     switch (i) {
         case 0:
             lineFace2Face.constant.x = box.min.x;
             lineFace2Face.constant.y = 0;
-            lineFace2Face.constant.z = -(frustumPlane.normal.x * lineFace2Face.constant.x + frustumPlane.constant) / frustumPlane.normal.z;
+            lineFace2Face.constant.z =
+                -(frustumPlane.normal.x * lineFace2Face.constant.x + frustumPlane.constant) / frustumPlane.normal.z;
             break;
         case 1:
             lineFace2Face.constant.y = box.min.y;
             lineFace2Face.constant.x = 0;
-            lineFace2Face.constant.z = -(frustumPlane.normal.y * lineFace2Face.constant.y + frustumPlane.constant) / frustumPlane.normal.z;
+            lineFace2Face.constant.z =
+                -(frustumPlane.normal.y * lineFace2Face.constant.y + frustumPlane.constant) / frustumPlane.normal.z;
             break;
         case 2:
             lineFace2Face.constant.z = box.min.z;
             lineFace2Face.constant.x = 0;
-            lineFace2Face.constant.y = -(frustumPlane.normal.z * lineFace2Face.constant.z + frustumPlane.constant) / frustumPlane.normal.y;
+            lineFace2Face.constant.y =
+                -(frustumPlane.normal.z * lineFace2Face.constant.z + frustumPlane.constant) / frustumPlane.normal.y;
             break;
         case 3:
             lineFace2Face.constant.x = box.max.x;
             lineFace2Face.constant.y = 0;
-            lineFace2Face.constant.z = -(frustumPlane.normal.x * lineFace2Face.constant.x + frustumPlane.constant) / frustumPlane.normal.z;
+            lineFace2Face.constant.z =
+                -(frustumPlane.normal.x * lineFace2Face.constant.x + frustumPlane.constant) / frustumPlane.normal.z;
             break;
         case 4:
             lineFace2Face.constant.y = box.max.y;
             lineFace2Face.constant.x = 0;
-            lineFace2Face.constant.z = -(frustumPlane.normal.y * lineFace2Face.constant.y + frustumPlane.constant) / frustumPlane.normal.z;
+            lineFace2Face.constant.z =
+                -(frustumPlane.normal.y * lineFace2Face.constant.y + frustumPlane.constant) / frustumPlane.normal.z;
             break;
         case 5:
             lineFace2Face.constant.z = box.max.z;
             lineFace2Face.constant.x = 0;
-            lineFace2Face.constant.y = -(frustumPlane.normal.z * lineFace2Face.constant.z + frustumPlane.constant) / frustumPlane.normal.y;
+            lineFace2Face.constant.y =
+                -(frustumPlane.normal.z * lineFace2Face.constant.z + frustumPlane.constant) / frustumPlane.normal.y;
             break;
     }
 }
@@ -355,7 +422,10 @@ function lineInterestBoxPlane(i: number, boxCorners: Vector3[], points: Vector3[
         const pt1 = boxCorners[edgePairs[j][0]];
         const pt2 = boxCorners[edgePairs[j][1]];
         // line too short or parallel, skip
-        if (lineLine2Line.update(pt1, pt2) && Math.abs(dotVec.copy(lineFace2Face.direction).dot(lineLine2Line.direction)) < 0.99999) {
+        if (
+            lineLine2Line.update(pt1, pt2) &&
+            Math.abs(dotVec.copy(lineFace2Face.direction).dot(lineLine2Line.direction)) < 0.99999
+        ) {
             Line.lineIntersect(lineFace2Face, lineLine2Line, intersectPt);
             points.push(intersectPt.clone());
         }
@@ -369,7 +439,10 @@ function lineInterestFrustumPlane(i: number, frustumCorners: Vector3[], cameraPo
         const pt2 = frustumCorners[edgePairs[j]];
 
         // line too short or parallel, skip
-        if (lineLine2Line.update(pt1, pt2) && Math.abs(dotVec.copy(lineFace2Face.direction).dot(lineLine2Line.direction)) < 0.99999) {
+        if (
+            lineLine2Line.update(pt1, pt2) &&
+            Math.abs(dotVec.copy(lineFace2Face.direction).dot(lineLine2Line.direction)) < 0.99999
+        ) {
             Line.lineIntersect(lineFace2Face, lineLine2Line, intersectPt);
             pointsTmp.push(intersectPt.clone());
         }

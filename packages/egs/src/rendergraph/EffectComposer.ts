@@ -83,7 +83,12 @@ export class EffectComposer {
                 return resource as Texture;
             });
 
-            const ctx = { renderer: this.renderer, target, resolveTarget, overrideScreenOutputTarget: this.overrideScreenOutputTarget };
+            const ctx = {
+                renderer: this.renderer,
+                target,
+                resolveTarget,
+                overrideScreenOutputTarget: this.overrideScreenOutputTarget,
+            };
             pass.emit(ExecuteBeforeEvent, ctx);
 
             if (pass.isCustomPass) {
@@ -91,7 +96,13 @@ export class EffectComposer {
             } else {
                 pass.bindTarget(ctx);
                 pass.configRenderPass(ctx);
-                ctx.renderer.renderer.beginPass(pass.needStoreOutput, pass.needResolveContent, pass.needResolveDepth, pass.needGenerateMipmap, pass.drivenMaterial);
+                ctx.renderer.renderer.beginPass(
+                    pass.needStoreOutput,
+                    pass.needResolveContent,
+                    pass.needResolveDepth,
+                    pass.needGenerateMipmap,
+                    pass.drivenMaterial,
+                );
                 pass.execute(ctx);
                 ctx.renderer.renderer.endPass();
             }

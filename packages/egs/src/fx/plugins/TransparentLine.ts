@@ -8,7 +8,11 @@ import { logger } from '../../utils/Logger';
 import { createEdge, needRebuild, updateEdgesVisibility } from '../../elements/geometries/operators/Edges';
 import { readonlyMath } from '../../math/Readonly';
 import type { Color } from '../../math/Color';
-import { PipelineFilters, PipelineContentBridge, PipelineContentAPIForRenderingAndFilteringEnabled } from '../PipelineAPI';
+import {
+    PipelineFilters,
+    PipelineContentBridge,
+    PipelineContentAPIForRenderingAndFilteringEnabled,
+} from '../PipelineAPI';
 import { TypeAssert } from '../../scene/tools/TypeAssert';
 import { type Drawable, DrawableRenderMode } from '../../scene/drawables/Drawable';
 import { PipelinePlugin } from './PipelinePlugin';
@@ -43,8 +47,8 @@ export class TransparentLinePlugin extends PipelinePlugin {
         this.basicD.destroy();
     }
 
-    updateFrameSize() { }
-    updateEffect() { }
+    updateFrameSize() {}
+    updateEffect() {}
 
     updateGraphHash(hasher: HashKeyBuilder) {
         hasher
@@ -55,48 +59,63 @@ export class TransparentLinePlugin extends PipelinePlugin {
 
     updateRenderGraph(graph: RenderGraph) {
         const scene = this.scene;
-        graph.addPass(disableClear([
-            this.basicMat.alpha.opacity !== 0 ? pass('tl_transparent_pass')
-                .useDispatcher(this.enabledOriginShading ? undefined : this.basicD)
-                .draw(filterBy(scene.default, PipelineFilters.transparentLineNotNormal)) : undefined,
-            pass('tl_normal_pass')
-                .draw(filterBy(scene.default, PipelineFilters.transparentLineNormal)),
-            pass('tl_pass')
-                .useDispatcher(this.lineD)
-                .use(r => {
-                    const drawableList = new DrawableList();
-                    // rust need create drawableList from scene3D
-                    if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
-                        const filter = PipelineFilters.transparentLineNotNormalDrawable();
-                        scene.scene.traverseVisible(o => {
-                            o.updateMatrixWorld();
-                            if (TypeAssert.isDrawable(o) && o.renderMode === DrawableRenderMode.Default && filter(o)) {
-                                const l = this.transform(o);
-                                if (l) {
-                                    drawableList.list.push(l);
+        graph.addPass(
+            disableClear([
+                this.basicMat.alpha.opacity !== 0
+                    ? pass('tl_transparent_pass')
+                          .useDispatcher(this.enabledOriginShading ? undefined : this.basicD)
+                          .draw(filterBy(scene.default, PipelineFilters.transparentLineNotNormal))
+                    : undefined,
+                pass('tl_normal_pass').draw(filterBy(scene.default, PipelineFilters.transparentLineNormal)),
+                pass('tl_pass')
+                    .useDispatcher(this.lineD)
+                    .use(r => {
+                        const drawableList = new DrawableList();
+                        // rust need create drawableList from scene3D
+                        if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
+                            const filter = PipelineFilters.transparentLineNotNormalDrawable();
+                            scene.scene.traverseVisible(o => {
+                                o.updateMatrixWorld();
+                                if (
+                                    TypeAssert.isDrawable(o) &&
+                                    o.renderMode === DrawableRenderMode.Default &&
+                                    filter(o)
+                                ) {
+                                    const l = this.transform(o);
+                                    if (l) {
+                                        drawableList.list.push(l);
+                                    }
                                 }
-                            }
-                        });
-                    }
-                    // rust, object maybe not in scene3D
-                    scene.origin
-                        .filter(PipelineFilters.transparentLineNotNormalDrawable, true)
-                        .filterMap(this.transform)
-                        .forEach(drawable => drawableList.list.push(drawable));
+                            });
+                        }
+                        // rust, object maybe not in scene3D
+                        scene.origin
+                            .filter(PipelineFilters.transparentLineNotNormalDrawable, true)
+                            .filterMap(this.transform)
+                            .forEach(drawable => drawableList.list.push(drawable));
 
-                    const drawcallList = drawableList.project(scene.camera);
-                    if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
-                        PipelineContentBridge.prepareTempRenderList(drawableList.list);
-                        PipelineContentBridge.drawcallListCreateFromDrawableList(drawcallList, drawableList, scene.camera, true, true, true);
-                    }
-                    r.render(drawcallList);
-                    PipelineContentBridge.cleanupTempRenderList(drawableList.list);
-                }),
-            this.enableDrawAdditional ?
-                pass('tl_additional_pass')
-                    .draw(filterBy(scene.default, PipelineFilters.transparentLineAdditional)) :
-                undefined,
-        ]));
+                        const drawcallList = drawableList.project(scene.camera);
+                        if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
+                            PipelineContentBridge.prepareTempRenderList(drawableList.list);
+                            PipelineContentBridge.drawcallListCreateFromDrawableList(
+                                drawcallList,
+                                drawableList,
+                                scene.camera,
+                                true,
+                                true,
+                                true,
+                            );
+                        }
+                        r.render(drawcallList);
+                        PipelineContentBridge.cleanupTempRenderList(drawableList.list);
+                    }),
+                this.enableDrawAdditional
+                    ? pass('tl_additional_pass').draw(
+                          filterBy(scene.default, PipelineFilters.transparentLineAdditional),
+                      )
+                    : undefined,
+            ]),
+        );
     }
 
     // filter, update and sort the stuff to the right list
@@ -166,15 +185,21 @@ export class TransparentLinePlugin extends PipelinePlugin {
             },
             edgeThreshold: {
                 get: () => this.edgeThreshold,
-                set: (v: number) => { this.edgeThreshold = v; },
+                set: (v: number) => {
+                    this.edgeThreshold = v;
+                },
             },
             drawWithOriginalMaterial: {
                 get: () => this.enabledOriginShading,
-                set: (v: boolean) => { this.enabledOriginShading = v; },
+                set: (v: boolean) => {
+                    this.enabledOriginShading = v;
+                },
             },
             drawAdditionalLines: {
                 get: () => this.enableDrawAdditional,
-                set: (v: boolean) => { this.enableDrawAdditional = v; },
+                set: (v: boolean) => {
+                    this.enableDrawAdditional = v;
+                },
             },
         };
     }

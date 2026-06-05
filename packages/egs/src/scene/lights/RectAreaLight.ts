@@ -42,7 +42,13 @@ export class RectAreaLight extends AreaLight {
      * @param width (optional) width of the light. Default is 10.<br/>
      * @param height (optional) height of the light. Default is 10.<br/>
      */
-    constructor(color: number | string = 0xffffff, intensity: number = 1, width?: number, height?: number, specularStrength?: number) {
+    constructor(
+        color: number | string = 0xffffff,
+        intensity: number = 1,
+        width?: number,
+        height?: number,
+        specularStrength?: number,
+    ) {
         super(color, intensity);
         this.width = width ? width : 100;
         this.height = height ? height : 100;

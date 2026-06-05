@@ -1,6 +1,9 @@
 import { ShaderComponent } from '../Shader';
 import {
-    type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes, ShaderExtensionTypes,
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+    ShaderVaryingTypes,
+    ShaderExtensionTypes,
 } from '../builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
 import type { WGLProgram } from '../../webgl/WGLProgram';
@@ -29,14 +32,16 @@ export enum CombineOperation {
 export enum EnvTextureType {
     Cube,
     Equirec,
-    Sphere
+    Sphere,
 }
 /**
  * EnvMapIBLShaderComponent controls the use of environment map includes cubic texture and 2D texture.
  * This class has a series of local functions for defining different samplers and choosing different blending methods.
  * The function getLightProbeIndirectRadiance can return a GLSL code component for indirect light shader.
  */
-export class EnvMapIBLShaderComponent<T extends TextureCube | Texture2D | TextureV2 = Texture2D | TextureCube> extends ShaderComponent {
+export class EnvMapIBLShaderComponent<
+    T extends TextureCube | Texture2D | TextureV2 = Texture2D | TextureCube,
+> extends ShaderComponent {
     /**
      * The environment map accept Texture and CubeTexture.
      */
@@ -107,7 +112,9 @@ export class EnvMapIBLShaderComponent<T extends TextureCube | Texture2D | Textur
         const supportTextureLOD = Capabilities.IS_SUPPORT_SHADER_TEXTURE_LOD;
         builder
             .addUniform('reflectivity', WebGLShaderDataType.Float)
-            .when(!Capabilities.IS_WEBGL2 && supportTextureLOD, b => b.addExtension(ShaderExtensionTypes.GL_EXT_shader_texture_lod))
+            .when(!Capabilities.IS_WEBGL2 && supportTextureLOD, b =>
+                b.addExtension(ShaderExtensionTypes.GL_EXT_shader_texture_lod),
+            )
             .when(this.useFrac, b => b.addUniform('refractionRatio', WebGLShaderDataType.Float))
             .addUniform('envMapIntensity', WebGLShaderDataType.Float)
             .addGlobalUniform(BuiltInUniformTypes.cameraPosition)
@@ -145,11 +152,27 @@ export class EnvMapIBLShaderComponent<T extends TextureCube | Texture2D | Textur
     }
 
     serialize(ctx: Serializer<any>): void {
-        ctx.puts<EnvMapIBLShaderComponent>(['envMap', 'useFrac', 'envType', 'combine', 'reflectivity', 'refractionRatio', 'envMapIntensity']);
+        ctx.puts<EnvMapIBLShaderComponent>([
+            'envMap',
+            'useFrac',
+            'envType',
+            'combine',
+            'reflectivity',
+            'refractionRatio',
+            'envMapIntensity',
+        ]);
     }
 
     deserialize(ctx: Deserializer): void | Promise<void> {
-        ctx.reads<EnvMapIBLShaderComponent>(['envMap', 'useFrac', 'envType', 'combine', 'reflectivity', 'refractionRatio', 'envMapIntensity']);
+        ctx.reads<EnvMapIBLShaderComponent>([
+            'envMap',
+            'useFrac',
+            'envType',
+            'combine',
+            'reflectivity',
+            'refractionRatio',
+            'envMapIntensity',
+        ]);
     }
 }
 
@@ -160,10 +183,11 @@ function buildEnvFrag(useFrac: boolean, mapping: EnvTextureType, combine: Combin
     // Transforming Normal Vectors with the Inverse Transformation
     vec3 worldNormal = inverseTransformDirection( normal, viewMatrix );
 
-    ${useFrac ?
-            'vec3 reflectVec = refract( cameraToVertex, worldNormal, refractionRatio );' :
-            'vec3 reflectVec = reflect( cameraToVertex, worldNormal );'
-        }
+    ${
+        useFrac
+            ? 'vec3 reflectVec = refract( cameraToVertex, worldNormal, refractionRatio );'
+            : 'vec3 reflectVec = reflect( cameraToVertex, worldNormal );'
+    }
     `;
 
     return `
@@ -239,9 +263,10 @@ function getLightProbeIndirectRadiance(useFrac: boolean, mapping: EnvTextureType
     return `
     /*const in SpecularLightProbe specularLightProbe,*/
     vec3 getLightProbeIndirectRadiance( const in GeometricContext geometry, const in float blinnShininessExponent, const in int maxMIPLevel ) {
-        ${useFrac ?
-            'vec3 reflectVec = refract( -geometry.viewDir, geometry.normal, refractionRatio );' :
-            'vec3 reflectVec = reflect( -geometry.viewDir, geometry.normal );'
+        ${
+            useFrac
+                ? 'vec3 reflectVec = refract( -geometry.viewDir, geometry.normal, refractionRatio );'
+                : 'vec3 reflectVec = reflect( -geometry.viewDir, geometry.normal );'
         }
 
         reflectVec = inverseTransformDirection( reflectVec, viewMatrix );

@@ -60,7 +60,7 @@ export class BufferManager {
     }
 
     freeGPU(): void {
-        this.webglBufferMap.forEach((value) => {
+        this.webglBufferMap.forEach(value => {
             this.gl.deleteBuffer(value.buffer);
         });
         this.webglBufferMap.clear();

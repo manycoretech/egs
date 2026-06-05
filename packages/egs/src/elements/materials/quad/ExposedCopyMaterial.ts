@@ -36,7 +36,9 @@ export class DialuxLuminanceMaterial extends PassPointsMaterialBase {
             .addVertex(DialuxLuminanceShader)
             .addVaryingCustom('vR', WebGLShaderDataType.Float)
             .addVaryingCustom('vG', WebGLShaderDataType.Float)
-            .inject(ShaderInjectionTypes.gl_Position, `
+            .inject(
+                ShaderInjectionTypes.gl_Position,
+                `
                 gl_PointSize = .5;
                 float y = floor(position.x / textureResolutionX);
                 float x = position.x - y * textureResolutionX;
@@ -49,10 +51,14 @@ export class DialuxLuminanceMaterial extends PassPointsMaterialBase {
                     vG = 1.0;
                 }
                 gl_Position = vec4(0., 0., 0., 1.);
-            `)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            `,
+            )
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 gl_FragColor = vec4(vR, vG, 0., vG);
-            `);
+            `,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {
@@ -202,10 +208,13 @@ export class DialuxWhiteBalanceExposureMaterial extends PassQuadMaterialBase {
         b.addUniform('hdr', WebGLShaderDataType.Sampler2D)
             .addUniform('dialuxWhiteBalance_uMatrix', WebGLShaderDataType.Mat3)
             .addFragment(DialuxWhiteBalanceExposureShader)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 vec4 base = texture2D(hdr, vUv).rgba;
                 gl_FragColor = vec4(linearTosRGB(IlluminateWithWhiteBalance(base.rgb)), base.a);
-            `);
+            `,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {
@@ -227,10 +236,13 @@ export class ExposedCopyMaterial extends PassQuadMaterialBase {
         b.addUniform('tDiffuse', WebGLShaderDataType.Sampler2D)
             .addFragment(ShaderBlockPool.Encode24)
             .addFragment(Luminance)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 vec4 diffuseResult = texture2D(tDiffuse, vUv);
                 gl_FragColor = vec4(encode24(Luminance( diffuseResult.rgb, 0.)), 1.);
-            `);
+            `,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {
@@ -260,7 +272,9 @@ export class HistogramComputeMaterial extends PassPointsMaterialBase {
             .addVertex(ShaderBlockPool.Decode24)
             .addVaryingCustom('vCountG', WebGLShaderDataType.Float)
             .addVaryingCustom('vCountR', WebGLShaderDataType.Float)
-            .inject(ShaderInjectionTypes.gl_Position, `
+            .inject(
+                ShaderInjectionTypes.gl_Position,
+                `
                 gl_PointSize = 0.5;
                 vec2 uvCoord;
                 uvCoord.x = floor(position.x / textureResolutionX);
@@ -281,10 +295,14 @@ export class HistogramComputeMaterial extends PassPointsMaterialBase {
                 index = floor(index) / sampleResolution;
                 // luminance will be clamped when > 65025.0, which can almost be impossible
                 gl_Position = vec4(index * 2.0 - 1.0 + 1.0 / sampleResolution, 0.0, 0.0, 1.0);
-            `)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            `,
+            )
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 gl_FragColor = vec4(vCountR, vCountG, 0.0, 0.0);
-            `);
+            `,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {
@@ -319,7 +337,9 @@ export class AvgLuminanceMaterial extends PassQuadMaterialBase {
     extendShaderShading(b: ShaderBuilder) {
         b.addUniform('tDiffuse', WebGLShaderDataType.Sampler2D)
             .addUniform('uClampedLuminanceThreshold', WebGLShaderDataType.Float)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 float maxIndex = floor(log2(uClampedLuminanceThreshold));
                 float averageLuma = 0.0;
                 vec2 sampleUV;
@@ -341,7 +361,8 @@ export class AvgLuminanceMaterial extends PassQuadMaterialBase {
                 }
                 gl_FragColor.rgb = vec3(averageLuma / uClampedLuminanceThreshold / samplers, 0., 0.);
                 gl_FragColor.a = 1.0;
-            `);
+            `,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {

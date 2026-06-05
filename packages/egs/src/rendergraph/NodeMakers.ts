@@ -26,7 +26,11 @@ export function depthAttachment(name: string) {
     return new RenderDepthAttachmentNode(name);
 }
 
-export function target(name: string, enableDefaultColorAttach: boolean = true, enableDefaultDepthAttach: boolean = true) {
+export function target(
+    name: string,
+    enableDefaultColorAttach: boolean = true,
+    enableDefaultDepthAttach: boolean = true,
+) {
     const target = new RenderTargetNode(name);
     if (enableDefaultColorAttach) {
         const color = colorAttachment(`${name}_color`);
@@ -52,7 +56,11 @@ export function cubePass(name: string): CubePassNode {
     return new CubePassNode(name);
 }
 
-export function cubeTarget(name: string, enableDefaultColorAttach: boolean = true, enableDefaultDepthAttach: boolean = true): CubeRenderTargetNode {
+export function cubeTarget(
+    name: string,
+    enableDefaultColorAttach: boolean = true,
+    enableDefaultDepthAttach: boolean = true,
+): CubeRenderTargetNode {
     const target = new CubeRenderTargetNode(name);
     if (enableDefaultColorAttach) {
         const color = colorAttachment(`${name}_color`);

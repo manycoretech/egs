@@ -1,8 +1,15 @@
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderVaryingTypes, ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    ShaderVaryingTypes,
+    ShaderInjectionTypes,
+    type ShaderBuilder,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import { MeshPhongMaterial } from './MeshPhongMaterial';
-import { createShaderInjectionsForDataTextureSchema, DataTextureSchemaInstance } from '../../../scene/tools/mesh-merge/DataTextureCreator';
+import {
+    createShaderInjectionsForDataTextureSchema,
+    DataTextureSchemaInstance,
+} from '../../../scene/tools/mesh-merge/DataTextureCreator';
 import { Utils } from '../../../utils/Utils';
 import { materialProperty } from '../../../ContentAPI';
 import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
@@ -10,37 +17,37 @@ import { Texture2D } from '../../textures/Texture2D';
 import type { TextureV2 } from '../../textures/TextureV2';
 import type { Texture } from '../../textures/Texture';
 
-const textureNames = (new Array(32)).fill(0).map((_, i) => `map${i}`); // this to avoid runtime string build
+const textureNames = new Array(32).fill(0).map((_, i) => `map${i}`); // this to avoid runtime string build
 
 export const MergedMeshPhongMaterialDataTextureSchema = new DataTextureSchemaInstance<MeshPhongMaterial>({
     schema: [
         {
             shaderVaryName: 'vColorAlphaCoord',
             shaderVaryingField: 'xy',
-            materialPropertyGetter: m => m.color
+            materialPropertyGetter: m => m.color,
         },
         {
             shaderVaryName: 'vColorAlphaCoord',
             shaderVaryingField: 'zw',
-            materialPropertyGetter: m => m.opacity
+            materialPropertyGetter: m => m.opacity,
         },
         {
             shaderVaryName: 'vSpecularCoord',
-            materialPropertyGetter: m => m.specular
+            materialPropertyGetter: m => m.specular,
         },
         {
             shaderVaryName: 'vSpecularParametersCoord',
             shaderVaryingField: 'xy',
-            materialPropertyGetter: m => m.shininess / 128.0
+            materialPropertyGetter: m => m.shininess / 128.0,
         },
         {
             shaderVaryName: 'vSpecularParametersCoord',
             shaderVaryingField: 'zw',
-            materialPropertyGetter: m => m.specularStrength
-        }
+            materialPropertyGetter: m => m.specularStrength,
+        },
     ],
     dataTextureShaderUniformName: 'dataTexture',
-    materialIndexShaderAttributeName: 'map_index.y'
+    materialIndexShaderAttributeName: 'map_index.y',
 });
 
 /**
@@ -101,28 +108,43 @@ export class MergedMeshPhongMaterial<T extends Texture2D | TextureV2 = Texture2D
             .addVaryingCustom('vMapIndex', WebGLShaderDataType.Vec2)
             .inject(ShaderInjectionTypes.vary_any, 'vMapIndex = map_index;')
 
-            .inject(ShaderInjectionTypes.channel_alpha, `
+            .inject(
+                ShaderInjectionTypes.channel_alpha,
+                `
             vec4 texture_result =  fetch_indexed_map(-vMapIndex.x - 1.0);
             opacity = texture2D( dataTexture, vColorAlphaCoord.zw ).r;
             if(vMapIndex.x < 0.0) {
                 opacity *= texture_result.a;
             }
-        `)
-            .inject(ShaderInjectionTypes.channel_color, `
+        `,
+            )
+            .inject(
+                ShaderInjectionTypes.channel_color,
+                `
             color = texture2D( dataTexture, vColorAlphaCoord.xy ).rgb;
             if(vMapIndex.x < 0.0) {
                 color *= texture_result.rgb;
             }
-        `)
-            .inject(ShaderInjectionTypes.channel_specular, `
+        `,
+            )
+            .inject(
+                ShaderInjectionTypes.channel_specular,
+                `
             specular = texture2D( dataTexture, vSpecularCoord.xy ).rgb;
-        `)
-            .inject(ShaderInjectionTypes.channel_shininess, `
+        `,
+            )
+            .inject(
+                ShaderInjectionTypes.channel_shininess,
+                `
                 shininess = texture2D( dataTexture, vSpecularParametersCoord.xy ).r * 128.0;
-            `)
-            .inject(ShaderInjectionTypes.channel_specularStrength, `
+            `,
+            )
+            .inject(
+                ShaderInjectionTypes.channel_specularStrength,
+                `
             specularStrength = texture2D( dataTexture, vSpecularParametersCoord.zw ).r;
-        `);
+        `,
+            );
     }
     extendShaderShading(b: ShaderBuilder, r: ShaderComponentRegistry) {
         super.extendShaderShading(b, r);

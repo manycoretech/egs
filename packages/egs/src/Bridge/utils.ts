@@ -1,9 +1,9 @@
 import { EventType } from '../utils/EventDispatcher';
 
 export interface ToggleWebWebGpuPayload {
-    enabled: boolean,
-    offscreen: boolean,
-    canvas: HTMLCanvasElement
+    enabled: boolean;
+    offscreen: boolean;
+    canvas: HTMLCanvasElement;
 }
 
 export const ToggleWebGPUEvent = new EventType<ToggleWebWebGpuPayload>('TOGGLE_WEBGPU');

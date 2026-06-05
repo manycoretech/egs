@@ -103,11 +103,14 @@ export class Vector3 implements Vector {
      */
     setComponent(index: number, value: number): Vector3 {
         switch (index) {
-            case 0: this.x = value;
+            case 0:
+                this.x = value;
                 break;
-            case 1: this.y = value;
+            case 1:
+                this.y = value;
                 break;
-            case 2: this.z = value;
+            case 2:
+                this.z = value;
                 break;
             default:
                 throw new Error('index is out of range: ' + index);
@@ -122,10 +125,14 @@ export class Vector3 implements Vector {
      */
     getComponent(index: number): number {
         switch (index) {
-            case 0: return this.x;
-            case 1: return this.y;
-            case 2: return this.z;
-            default: throw new Error('index is out of range: ' + index);
+            case 0:
+                return this.x;
+            case 1:
+                return this.y;
+            case 2:
+                return this.z;
+            default:
+                throw new Error('index is out of range: ' + index);
         }
     }
     /**
@@ -276,12 +283,12 @@ export class Vector3 implements Vector {
         const ix = qw * x + qy * z - qz * y;
         const iy = qw * y + qz * x - qx * z;
         const iz = qw * z + qx * y - qy * x;
-        const iw = - qx * x - qy * y - qz * z;
+        const iw = -qx * x - qy * y - qz * z;
 
         // calculate result * inverse quat
-        this.x = ix * qw + iw * - qx + iy * - qz - iz * - qy;
-        this.y = iy * qw + iw * - qy + iz * - qx - ix * - qz;
-        this.z = iz * qw + iw * - qz + ix * - qy - iy * - qx;
+        this.x = ix * qw + iw * -qx + iy * -qz - iz * -qy;
+        this.y = iy * qw + iw * -qy + iz * -qx - ix * -qz;
+        this.z = iz * qw + iw * -qz + ix * -qy - iy * -qx;
         return this;
     }
     /**
@@ -422,18 +429,18 @@ export class Vector3 implements Vector {
      * The components of this vector are rounded towards zero (up if negative, down if positive) to an integer value.
      */
     roundToZero(): Vector3 {
-        this.x = (this.x < 0) ? Math.ceil(this.x) : Math.floor(this.x);
-        this.y = (this.y < 0) ? Math.ceil(this.y) : Math.floor(this.y);
-        this.z = (this.z < 0) ? Math.ceil(this.z) : Math.floor(this.z);
+        this.x = this.x < 0 ? Math.ceil(this.x) : Math.floor(this.x);
+        this.y = this.y < 0 ? Math.ceil(this.y) : Math.floor(this.y);
+        this.z = this.z < 0 ? Math.ceil(this.z) : Math.floor(this.z);
         return this;
     }
     /**
      * Inverts this vector - i.e. sets x = -x, y = -y and z = -z.
      */
     negate(): Vector3 {
-        this.x = - this.x;
-        this.y = - this.y;
-        this.z = - this.z;
+        this.x = -this.x;
+        this.y = -this.y;
+        this.z = -this.z;
         return this;
     }
     /**
@@ -549,9 +556,9 @@ export class Vector3 implements Vector {
      * Returns the angle between this vector and vector {@link Vector3| v} in radians.
      */
     angleTo(v: Vector3): number {
-        const theta = this.dot(v) / (Math.sqrt(this.lengthSq() * v.lengthSq()));
+        const theta = this.dot(v) / Math.sqrt(this.lengthSq() * v.lengthSq());
         // clamp, to handle numerical problems
-        return Math.acos(_Math.clamp(theta, - 1, 1));
+        return Math.acos(_Math.clamp(theta, -1, 1));
     }
     /**
      * Computes the distance from this vector to {@link Vector3| v}.
@@ -639,7 +646,7 @@ export class Vector3 implements Vector {
      * Checks for strict equality of this vector and {@link Vector3| v}.
      */
     equals(v: Vector3): boolean {
-        return ((v.x === this.x) && (v.y === this.y) && (v.z === this.z));
+        return v.x === this.x && v.y === this.y && v.z === this.z;
     }
     /**
      * Sets this vector's {@link x| x} value to be array[ offset + 0 ], {@link y| y} value to be array[ offset + 1 ] and {@link z| z} value to be array[ offset + 2 ].
@@ -659,7 +666,9 @@ export class Vector3 implements Vector {
     /**
      * There are 3 elements in this vector.
      */
-    getNumberCount() { return 3; }
+    getNumberCount() {
+        return 3;
+    }
     /**
      * Returns an array [x, y, z], or copies x, y and z into the provided array.
      * @param array (optional) array to store this vector to.
@@ -694,9 +703,23 @@ export class Vector3 implements Vector {
 /**
  * Readonly view of the public Vector3 API.
  */
-export type ReadonlyVector3 = PickReadonly<Vector3,
-    'x' | 'y' | 'z' | 'dot' | 'angleTo' | 'lengthSq' | 'length' | 'distanceTo' |
-    'manhattanLength' | 'distanceToSquared' | 'manhattanDistanceTo' | 'getNumberCount' | 'equals' | 'toArray'>;
+export type ReadonlyVector3 = PickReadonly<
+    Vector3,
+    | 'x'
+    | 'y'
+    | 'z'
+    | 'dot'
+    | 'angleTo'
+    | 'lengthSq'
+    | 'length'
+    | 'distanceTo'
+    | 'manhattanLength'
+    | 'distanceToSquared'
+    | 'manhattanDistanceTo'
+    | 'getNumberCount'
+    | 'equals'
+    | 'toArray'
+>;
 
 const tmp1Vec3 = new Vector3();
 const tmp2Vec3 = new Vector3();

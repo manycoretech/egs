@@ -42,7 +42,9 @@ export class Scene3D extends Object3D {
      */
     enableSceneClipping: boolean = false;
     notifyClippingChanged() {
-        this.shaderComponentRegistry.clipping.clippingPlanes = this.enableSceneClipping ? this.clippingPlanes.slice() : [];
+        this.shaderComponentRegistry.clipping.clippingPlanes = this.enableSceneClipping
+            ? this.clippingPlanes.slice()
+            : [];
         if (hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             ManagedContentBridge.sceneSyncData(this);
         }
@@ -323,7 +325,7 @@ export class Scene3D extends Object3D {
             this.popParentChanges();
             // emit all hierarchy change
             this.traverseWithChildrenSkip(o => {
-                if (o.updateDirtyId < (this.updateId - 1)) {
+                if (o.updateDirtyId < this.updateId - 1) {
                     return false;
                 }
                 let changed = false;
@@ -332,7 +334,7 @@ export class Scene3D extends Object3D {
                 // dispatch change to children
                 if (changed) {
                     this.newChangedSceneNodes.add(o);
-                    o.children.forEach(c => c.updateDirtyId = this.updateId - 1);
+                    o.children.forEach(c => (c.updateDirtyId = this.updateId - 1));
                 }
                 return true;
             });

@@ -1,6 +1,12 @@
 import type { LightMaterialComponent } from '../components/LightShaderComponent';
 import type { Nullable } from '../../../utils/Utils';
-import type { ShaderComponent, ShaderInputDescriptor, UniformArrayDescriptor, ShaderInfo, VaryArrayDescriptor } from '../Shader';
+import type {
+    ShaderComponent,
+    ShaderInputDescriptor,
+    UniformArrayDescriptor,
+    ShaderInfo,
+    VaryArrayDescriptor,
+} from '../Shader';
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
 import {
     mapAttributeType,
@@ -43,8 +49,8 @@ export enum FragOutType {
     UVec4 = 'uvec4',
 }
 interface FragOut {
-    name: string,
-    type: FragOutType
+    name: string;
+    type: FragOutType;
 }
 
 export class ShaderBuilder {
@@ -160,7 +166,10 @@ export class ShaderBuilder {
     }
 
     private getVertexesString() {
-        return Array.from(this.vertexes).map(i => i.source).concat(this.vertexesCustom).join('\n');
+        return Array.from(this.vertexes)
+            .map(i => i.source)
+            .concat(this.vertexesCustom)
+            .join('\n');
     }
 
     addVertex(lib: ShaderBlock) {
@@ -174,7 +183,10 @@ export class ShaderBuilder {
     }
 
     private getFragmentsString() {
-        return Array.from(this.fragments).map(i => i.source).concat(this.fragmentsCustom).join('\n');
+        return Array.from(this.fragments)
+            .map(i => i.source)
+            .concat(this.fragmentsCustom)
+            .join('\n');
     }
 
     addFragmentCustom(s: string) {
@@ -248,11 +260,13 @@ export class ShaderBuilder {
                 this.addDefaultAttribute(ShaderAttributeTypes.normal);
 
                 if (this.isInstanceMeshEnabled) {
-                    this.inject(ShaderInjectionTypes.vary_normal, ShaderBlockPool.NormalInstance)
-                        .addGlobalUniform(BuiltInUniformTypes.viewMatrix);
+                    this.inject(ShaderInjectionTypes.vary_normal, ShaderBlockPool.NormalInstance).addGlobalUniform(
+                        BuiltInUniformTypes.viewMatrix,
+                    );
                 } else {
-                    this.inject(ShaderInjectionTypes.vary_normal, ShaderBlockPool.Normal)
-                        .addGlobalUniform(BuiltInUniformTypes.normalMatrix);
+                    this.inject(ShaderInjectionTypes.vary_normal, ShaderBlockPool.Normal).addGlobalUniform(
+                        BuiltInUniformTypes.normalMatrix,
+                    );
                 }
 
                 break;
@@ -265,10 +279,15 @@ export class ShaderBuilder {
                 break;
             case ShaderVaryingTypes.worldPosition:
                 if (this.isInstanceMeshEnabled) {
-                    this.inject(ShaderInjectionTypes.vary_worldPosition, 'vWorldPosition = (instanceMatrix*vec4( position, 1.0 )).xyz;');
+                    this.inject(
+                        ShaderInjectionTypes.vary_worldPosition,
+                        'vWorldPosition = (instanceMatrix*vec4( position, 1.0 )).xyz;',
+                    );
                 } else {
-                    this.inject(ShaderInjectionTypes.vary_worldPosition, 'vWorldPosition = (modelMatrix*vec4( position, 1.0 )).xyz;')
-                        .addGlobalUniform(BuiltInUniformTypes.modelMatrix);
+                    this.inject(
+                        ShaderInjectionTypes.vary_worldPosition,
+                        'vWorldPosition = (modelMatrix*vec4( position, 1.0 )).xyz;',
+                    ).addGlobalUniform(BuiltInUniformTypes.modelMatrix);
                 }
                 break;
             case ShaderVaryingTypes.vertexColor:
@@ -281,20 +300,22 @@ export class ShaderBuilder {
     }
 
     private generateVaryings() {
-        return this.varyingsCustom.slice().concat(Array.from(this.varyings).map(varying => {
-            switch (varying) {
-                case ShaderVaryingTypes.fragNormal:
-                    return { name: 'vNormal', type: WebGLShaderDataType.Vec3 };
-                case ShaderVaryingTypes.fragUV:
-                    return { name: 'vUv', type: WebGLShaderDataType.Vec2 };
-                case ShaderVaryingTypes.viewPosition:
-                    return { name: 'vViewPosition', type: WebGLShaderDataType.Vec3 };
-                case ShaderVaryingTypes.worldPosition:
-                    return { name: 'vWorldPosition', type: WebGLShaderDataType.Vec3 };
-                case ShaderVaryingTypes.vertexColor:
-                    return { name: 'vColor', type: WebGLShaderDataType.Vec3 };
-            }
-        }));
+        return this.varyingsCustom.slice().concat(
+            Array.from(this.varyings).map(varying => {
+                switch (varying) {
+                    case ShaderVaryingTypes.fragNormal:
+                        return { name: 'vNormal', type: WebGLShaderDataType.Vec3 };
+                    case ShaderVaryingTypes.fragUV:
+                        return { name: 'vUv', type: WebGLShaderDataType.Vec2 };
+                    case ShaderVaryingTypes.viewPosition:
+                        return { name: 'vViewPosition', type: WebGLShaderDataType.Vec3 };
+                    case ShaderVaryingTypes.worldPosition:
+                        return { name: 'vWorldPosition', type: WebGLShaderDataType.Vec3 };
+                    case ShaderVaryingTypes.vertexColor:
+                        return { name: 'vColor', type: WebGLShaderDataType.Vec3 };
+                }
+            }),
+        );
     }
 
     addFragDefine(de: string) {
@@ -335,8 +356,7 @@ export class ShaderBuilder {
         }
 
         if (useInstance === true) {
-            this
-                .addInstanceAttribute('mcol0', WebGLShaderDataType.Vec3)
+            this.addInstanceAttribute('mcol0', WebGLShaderDataType.Vec3)
                 .addInstanceAttribute('mcol1', WebGLShaderDataType.Vec3)
                 .addInstanceAttribute('mcol2', WebGLShaderDataType.Vec3)
                 .addInstanceAttribute('mcol3', WebGLShaderDataType.Vec3)
@@ -344,8 +364,7 @@ export class ShaderBuilder {
                 .addGlobalUniform(BuiltInUniformTypes.viewMatrix)
                 .inject(ShaderInjectionTypes.gl_Position, ShaderBlockPool.ProjectionInstance);
         } else {
-            this
-                .addGlobalUniform(BuiltInUniformTypes.projectionMatrix)
+            this.addGlobalUniform(BuiltInUniformTypes.projectionMatrix)
                 .addGlobalUniform(BuiltInUniformTypes.modelViewMatrix)
                 .inject(ShaderInjectionTypes.gl_Position, ShaderBlockPool.Projection);
         }
@@ -372,7 +391,6 @@ export class ShaderBuilder {
     private getFragOutShaderHeader() {
         let result = '';
         if (Capabilities.IS_WEBGL2) {
-
             this.fragOut.forEach((f, i) => {
                 result += `layout(location=${i}) out ${f.type} ${f.name};\n`;
             });
@@ -407,7 +425,8 @@ export class ShaderBuilder {
         const globalUniforms = this.generateGlobalUniforms();
         const uniforms = [...this.uniforms, ...globalUniforms.uniforms];
         const uniformArrays = [...this.uniformArrays, ...globalUniforms.uniformArrays];
-        const uniformStr = createUniforms(uniforms) +
+        const uniformStr =
+            createUniforms(uniforms) +
             createUniformArrays(uniformArrays) +
             createUBOs(this.uniformBlocks, Capabilities.IS_WEBGL2);
         const varyings = this.generateVaryings();
@@ -436,63 +455,85 @@ void main() {
     ${injectVaryingsStr}
 }
 `;
-        const normal = !this.varyings.has(ShaderVaryingTypes.fragNormal) ? '' : `
+        const normal = !this.varyings.has(ShaderVaryingTypes.fragNormal)
+            ? ''
+            : `
             vec3 normal = normalize(vNormal);
 
-            ${this.flatShadingNormal ? `
+            ${
+                this.flatShadingNormal
+                    ? `
                 vec3 fdx = vec3( dFdx( vViewPosition.x ), dFdx( vViewPosition.y ), dFdx( vViewPosition.z ) );
                 vec3 fdy = vec3( dFdy( vViewPosition.x ), dFdy( vViewPosition.y ), dFdy( vViewPosition.z ) );
                 normal = normalize( cross( fdx, fdy ) );
-                `: ``
+                `
+                    : ``
             }
             ${`
                 #ifdef DOUBLE_SIDE
                   float faceDirection = gl_FrontFacing ? 1.0 : -1.0;
                   normal = normal * faceDirection;
                 #endif
-                `
-            }
+                `}
             ${this.getInjectionString(ShaderInjectionTypes.frag_normal)}
         `;
 
-        const opacity = !this.injections.has(ShaderInjectionTypes.channel_alpha) ? '' : `
+        const opacity = !this.injections.has(ShaderInjectionTypes.channel_alpha)
+            ? ''
+            : `
             float opacity = 1.0;
             ${this.getInjectionString(ShaderInjectionTypes.channel_alpha)}
         `;
 
-        const color = !this.injections.has(ShaderInjectionTypes.channel_color) ? '' : `
+        const color = !this.injections.has(ShaderInjectionTypes.channel_color)
+            ? ''
+            : `
             vec3 color = vec3(1.0);
             ${this.getInjectionString(ShaderInjectionTypes.channel_color)}
         `;
 
-        const ao = !this.injections.has(ShaderInjectionTypes.channel_ao) ? '' : `
+        const ao = !this.injections.has(ShaderInjectionTypes.channel_ao)
+            ? ''
+            : `
             float ao = 0.0;
             ${this.getInjectionString(ShaderInjectionTypes.channel_ao)}
         `;
 
-        const lightMap = !this.injections.has(ShaderInjectionTypes.channel_lightMap) ? '' : `
+        const lightMap = !this.injections.has(ShaderInjectionTypes.channel_lightMap)
+            ? ''
+            : `
             float lightMap = 0.0;
             ${this.getInjectionString(ShaderInjectionTypes.channel_lightMap)}
         `;
 
-        const specular = !this.injections.has(ShaderInjectionTypes.channel_specular) ? '' : `
+        const specular = !this.injections.has(ShaderInjectionTypes.channel_specular)
+            ? ''
+            : `
             vec3 specular = vec3(1.0);
             ${this.getInjectionString(ShaderInjectionTypes.channel_specular)}
         `;
 
-        const roughness = !this.injections.has(ShaderInjectionTypes.channel_roughness) ? '' : `
+        const roughness = !this.injections.has(ShaderInjectionTypes.channel_roughness)
+            ? ''
+            : `
         float roughness = 0.0;
         ${this.getInjectionString(ShaderInjectionTypes.channel_roughness)}`;
 
-        const metalness = !this.injections.has(ShaderInjectionTypes.channel_metalness) ? '' : `
+        const metalness = !this.injections.has(ShaderInjectionTypes.channel_metalness)
+            ? ''
+            : `
         float metalness = 0.0;
         ${this.getInjectionString(ShaderInjectionTypes.channel_metalness)}`;
 
-        const specularStrength = !this.injections.has(ShaderInjectionTypes.channel_specularStrength) ? '' : `
+        const specularStrength = !this.injections.has(ShaderInjectionTypes.channel_specularStrength)
+            ? ''
+            : `
         float specularStrength = 0.0;
         ${this.getInjectionString(ShaderInjectionTypes.channel_specularStrength)}`;
 
-        const shininess = !this.injections.has(ShaderInjectionTypes.channel_shininess) ? '' : `
+        const shininess = !this.injections.has(ShaderInjectionTypes.channel_shininess)
+            ? ''
+            : `
         float shininess = 0.0;
         ${this.getInjectionString(ShaderInjectionTypes.channel_shininess)}`;
 
@@ -544,5 +585,4 @@ void main() {
             frag: this.processPostShaderString(frag),
         };
     }
-
 }

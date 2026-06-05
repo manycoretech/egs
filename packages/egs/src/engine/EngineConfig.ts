@@ -1,4 +1,9 @@
-import { type PipelineConfig, createPipelineConfig, type DeprecatedPipelineConfig, createDeprecatedPipelineConfig } from '../fx/PipelineConfig';
+import {
+    type PipelineConfig,
+    createPipelineConfig,
+    type DeprecatedPipelineConfig,
+    createDeprecatedPipelineConfig,
+} from '../fx/PipelineConfig';
 import { Color } from '../math/Color';
 import { Vector2 } from '../math/Vector2';
 import { BackgroundMode } from '../scene/renderables/Background';
@@ -51,106 +56,108 @@ export interface EngineInitializeConfig {
 }
 
 export interface ViewerConfig {
-    forceFrameIsUnstable: ConfigCell<boolean>,
+    forceFrameIsUnstable: ConfigCell<boolean>;
     canvas: {
-        renderPixelRatio: ConfigCell<number>,
+        renderPixelRatio: ConfigCell<number>;
     };
     autoInstance: {
-        enabled: ConfigCell<boolean>,
-        autoInstanceKeyEnabled: ConfigCell<boolean>,
+        enabled: ConfigCell<boolean>;
+        autoInstanceKeyEnabled: ConfigCell<boolean>;
     };
     multiMeshMerge: {
-        enabled: ConfigCell<boolean>,
+        enabled: ConfigCell<boolean>;
     };
     popMeshMerge: {
-        enabled: ConfigCell<boolean>,
+        enabled: ConfigCell<boolean>;
     };
     gpuDriven: {
-        enabled: ConfigCell<boolean>,
-        textureCompression: ConfigCell<TextureCompression>,
-        frustumCullingEnabled: ConfigCell<boolean>,
-        occlusionCullingEnabled: ConfigCell<boolean>,
-        detailCullingEnabled: ConfigCell<boolean>,
-        layersCullingEnabled: ConfigCell<boolean>,
-        triCullingEnabled: ConfigCell<boolean>,
-        occlusionCullingBias: ConfigCell<number>,
+        enabled: ConfigCell<boolean>;
+        textureCompression: ConfigCell<TextureCompression>;
+        frustumCullingEnabled: ConfigCell<boolean>;
+        occlusionCullingEnabled: ConfigCell<boolean>;
+        detailCullingEnabled: ConfigCell<boolean>;
+        layersCullingEnabled: ConfigCell<boolean>;
+        triCullingEnabled: ConfigCell<boolean>;
+        occlusionCullingBias: ConfigCell<number>;
     };
     shadingMode: {
-        physical: ConfigCell<boolean>,
+        physical: ConfigCell<boolean>;
     };
     statistics: {
-        enableDrawcallClassify: ConfigCell<boolean>,
+        enableDrawcallClassify: ConfigCell<boolean>;
     };
     global: {
-        meshBVHEnabled: ConfigCell<boolean>,
+        meshBVHEnabled: ConfigCell<boolean>;
     };
     scene: {
-        onlyDirectLight: ConfigCell<boolean>,
-        layerLightEnabled: ConfigCell<boolean>,
-        sceneBVHEnabled: ConfigCell<boolean>,
+        onlyDirectLight: ConfigCell<boolean>;
+        layerLightEnabled: ConfigCell<boolean>;
+        sceneBVHEnabled: ConfigCell<boolean>;
     };
     /**
      * TODO: deprecated pipeline config. we need disable use and remove it.
      */
     renderMode: {
-        type: ConfigCell<RenderMode>,
+        type: ConfigCell<RenderMode>;
     };
     staticFrameCache: {
-        enabled: ConfigCell<boolean>,
+        enabled: ConfigCell<boolean>;
     };
-    isExtraCopyBeforeScreenEnabled: ConfigCell<boolean>,
+    isExtraCopyBeforeScreenEnabled: ConfigCell<boolean>;
     ground: {
-        enabled: ConfigCell<boolean>,
-        offsetA: ConfigCell<Vector2>,
-        gridGapSizeA: ConfigCell<number>,
-        colorA: ConfigCell<Color>,
-        offsetB: ConfigCell<Vector2>,
-        gridGapSizeB: ConfigCell<number>,
-        colorB: ConfigCell<Color>,
-        isGroundColorEnabled: ConfigCell<boolean>,
-        groundColor: ConfigCell<Color>,
+        enabled: ConfigCell<boolean>;
+        offsetA: ConfigCell<Vector2>;
+        gridGapSizeA: ConfigCell<number>;
+        colorA: ConfigCell<Color>;
+        offsetB: ConfigCell<Vector2>;
+        gridGapSizeB: ConfigCell<number>;
+        colorB: ConfigCell<Color>;
+        isGroundColorEnabled: ConfigCell<boolean>;
+        groundColor: ConfigCell<Color>;
     };
     background: {
-        active: ConfigCell<BackgroundMode>,
+        active: ConfigCell<BackgroundMode>;
         basic: {
-            color: ConfigCell<Color>,
-            alpha: ConfigCell<number>,
-            texture: ConfigCell<Nullable<Texture>>,
-        },
+            color: ConfigCell<Color>;
+            alpha: ConfigCell<number>;
+            texture: ConfigCell<Nullable<Texture>>;
+        };
         solid: {
-            color: ConfigCell<Color>,
-            alpha: ConfigCell<number>,
-        },
+            color: ConfigCell<Color>;
+            alpha: ConfigCell<number>;
+        };
         envmap: {
-            texture: ConfigCell<Texture>,
-            luma: ConfigCell<number>,
-            verticalRotation: ConfigCell<number>,
-            horizonRotation: ConfigCell<number>,
-            reverseHorizon: ConfigCell<boolean>,
-        },
+            texture: ConfigCell<Texture>;
+            luma: ConfigCell<number>;
+            verticalRotation: ConfigCell<number>;
+            horizonRotation: ConfigCell<number>;
+            reverseHorizon: ConfigCell<boolean>;
+        };
         gradient: {
-            skyColor: ConfigCell<Color>,
-            groundColor: ConfigCell<Color>,
-        },
+            skyColor: ConfigCell<Color>;
+            groundColor: ConfigCell<Color>;
+        };
         sky: {
-            enablePreSkyMap: ConfigCell<boolean>,
-            luminance: ConfigCell<number>,
-            turbidity: ConfigCell<number>,
-            rayleigh: ConfigCell<number>,
-            mieCoefficient: ConfigCell<number>,
-            mieDirectionalG: ConfigCell<number>,
-        },
+            enablePreSkyMap: ConfigCell<boolean>;
+            luminance: ConfigCell<number>;
+            turbidity: ConfigCell<number>;
+            rayleigh: ConfigCell<number>;
+            mieCoefficient: ConfigCell<number>;
+            mieDirectionalG: ConfigCell<number>;
+        };
     };
     coordinateSystem: {
-        enabled: ConfigCell<boolean>,
-        x: ConfigCell<number>,
-        y: ConfigCell<number>,
-        size: ConfigCell<number>,
+        enabled: ConfigCell<boolean>;
+        x: ConfigCell<number>;
+        y: ConfigCell<number>;
+        size: ConfigCell<number>;
     };
     effects: DeprecatedPipelineConfig;
 }
 
-export type ConfigCellImpl<T> = T extends object ? { [P in keyof T]?: T[P] extends ConfigCell<infer V> ? V : ConfigCellImpl<T[P]> } : T;
+export type ConfigCellImpl<T> = T extends object
+    ? { [P in keyof T]?: T[P] extends ConfigCell<infer V> ? V : ConfigCellImpl<T[P]> }
+    : T;
 type IViewerConfig = ConfigCellImpl<ViewerConfig>;
 
 const DEFAULT_VIEWER_CONFIG: IViewerConfig = {
@@ -172,7 +179,7 @@ const DEFAULT_VIEWER_CONFIG: IViewerConfig = {
             aoRadius: 0.5,
             aoIntensity: 1,
             blurKernelRadius: 2,
-            blurEdgeSharpness: 0.25
+            blurEdgeSharpness: 0.25,
         },
         planarShadow: {
             enabled: false,
@@ -227,48 +234,68 @@ const DEFAULT_VIEWER_CONFIG: IViewerConfig = {
             turbidity: 1,
             rayleigh: 1,
             mieCoefficient: 0.003,
-            mieDirectionalG: 0.8
-        }
+            mieDirectionalG: 0.8,
+        },
     },
 };
 
-export function createViewConfig(viewer: Viewer, engine: RenderEngine, pipeline: PostPipeline, drivenCullingConfig: DrivenCullingConfig, updateTlsFlag: (value: boolean) => void): ViewerConfig {
+export function createViewConfig(
+    viewer: Viewer,
+    engine: RenderEngine,
+    pipeline: PostPipeline,
+    drivenCullingConfig: DrivenCullingConfig,
+    updateTlsFlag: (value: boolean) => void,
+): ViewerConfig {
     const pipelineConfig: PipelineConfig = createPipelineConfig(pipeline, viewer.renderingConfig);
     const gpuDrivenConfig: ViewerConfig['gpuDriven'] = {
         enabled: {
             get: () => viewer.enableGpuDriven,
-            set: (v) => {
+            set: v => {
                 viewer.renderingConfig.gpuDriven.requested = v;
                 viewer.enableGpuDriven = v;
             },
         },
         textureCompression: {
             get: () => viewer.gpuDrivenTextureCompression,
-            set: (v) => { viewer.gpuDrivenTextureCompression = v; },
+            set: v => {
+                viewer.gpuDrivenTextureCompression = v;
+            },
         },
         frustumCullingEnabled: {
             get: () => drivenCullingConfig.frustumCullingEnabled,
-            set: (v) => { drivenCullingConfig.frustumCullingEnabled = v; },
+            set: v => {
+                drivenCullingConfig.frustumCullingEnabled = v;
+            },
         },
         occlusionCullingEnabled: {
             get: () => drivenCullingConfig.occlusionCullingEnabled,
-            set: (v) => { drivenCullingConfig.occlusionCullingEnabled = v; },
+            set: v => {
+                drivenCullingConfig.occlusionCullingEnabled = v;
+            },
         },
         detailCullingEnabled: {
             get: () => drivenCullingConfig.detailCullingEnabled,
-            set: (v) => { drivenCullingConfig.detailCullingEnabled = v; },
+            set: v => {
+                drivenCullingConfig.detailCullingEnabled = v;
+            },
         },
         layersCullingEnabled: {
             get: () => drivenCullingConfig.layersCullingEnabled,
-            set: (v) => { drivenCullingConfig.layersCullingEnabled = v; },
+            set: v => {
+                drivenCullingConfig.layersCullingEnabled = v;
+            },
         },
         triCullingEnabled: {
             get: () => drivenCullingConfig.triCullingEnabled,
-            set: (v) => { drivenCullingConfig.triCullingEnabled = v; },
+            set: v => {
+                drivenCullingConfig.triCullingEnabled = v;
+            },
         },
         occlusionCullingBias: {
             get: () => drivenCullingConfig.occlusionCullingBias,
-            set: (v) => { drivenCullingConfig.occlusionCullingBias = v; },
+            set: v => {
+                drivenCullingConfig.occlusionCullingBias = v;
+            },
         },
     };
     const deprecatedPipelineConfig: DeprecatedPipelineConfig = createDeprecatedPipelineConfig(
@@ -278,42 +305,53 @@ export function createViewConfig(viewer: Viewer, engine: RenderEngine, pipeline:
             viewer.enableGpuDriven = value;
         },
         updateTlsFlag,
-        pipelineConfig);
+        pipelineConfig,
+    );
 
     const viewerConfig: ViewerConfig = {
         forceFrameIsUnstable: {
             get: () => engine.forceFrameIsUnstable,
-            set: (v) => { engine.forceFrameIsUnstable = v; },
+            set: v => {
+                engine.forceFrameIsUnstable = v;
+            },
         },
         isExtraCopyBeforeScreenEnabled: pipelineConfig.Composite.enabled,
         canvas: {
             renderPixelRatio: {
                 get: () => viewer.renderPixelRatio,
-                set: (v) => {
+                set: v => {
                     viewer.renderPixelRatio = v;
                 },
-            }
+            },
         },
         autoInstance: {
             enabled: {
                 get: () => viewer.enableInstance,
-                set: (v) => { viewer.enableInstance = v; },
+                set: v => {
+                    viewer.enableInstance = v;
+                },
             },
             autoInstanceKeyEnabled: {
                 get: () => viewer.enableAutoInstanceKey,
-                set: (v) => { viewer.enableAutoInstanceKey = v; },
-            }
+                set: v => {
+                    viewer.enableAutoInstanceKey = v;
+                },
+            },
         },
         multiMeshMerge: {
             enabled: {
                 get: () => viewer.enableMultiMeshMerge,
-                set: (v) => { viewer.enableMultiMeshMerge = v; },
-            }
+                set: v => {
+                    viewer.enableMultiMeshMerge = v;
+                },
+            },
         },
         popMeshMerge: {
             enabled: {
                 get: () => viewer.enableMeshMerge,
-                set: (v) => { viewer.enableMeshMerge = v; },
+                set: v => {
+                    viewer.enableMeshMerge = v;
+                },
             },
         },
         gpuDriven: gpuDrivenConfig,
@@ -321,7 +359,7 @@ export function createViewConfig(viewer: Viewer, engine: RenderEngine, pipeline:
         shadingMode: {
             physical: {
                 get: () => engine.enablePhysicalShading,
-                set: (v) => {
+                set: v => {
                     engine.enablePhysicalShading = v;
                 },
             },
@@ -329,45 +367,63 @@ export function createViewConfig(viewer: Viewer, engine: RenderEngine, pipeline:
         coordinateSystem: {
             enabled: {
                 get: () => viewer.coordSysHelper.enabled,
-                set: (v) => { viewer.coordSysHelper.enabled = v; },
+                set: v => {
+                    viewer.coordSysHelper.enabled = v;
+                },
             },
             x: {
                 get: () => viewer.coordSysHelper.getLocation().x,
-                set: (v) => { viewer.coordSysHelper.setLocation(v); },
+                set: v => {
+                    viewer.coordSysHelper.setLocation(v);
+                },
             },
             y: {
                 get: () => viewer.coordSysHelper.getLocation().y,
-                set: (v) => { viewer.coordSysHelper.setLocation(undefined, v); },
+                set: v => {
+                    viewer.coordSysHelper.setLocation(undefined, v);
+                },
             },
             size: {
                 get: () => viewer.coordSysHelper.getLocation().z,
-                set: (v) => { viewer.coordSysHelper.setLocation(undefined, undefined, v); },
-            }
+                set: v => {
+                    viewer.coordSysHelper.setLocation(undefined, undefined, v);
+                },
+            },
         },
         statistics: {
             enableDrawcallClassify: {
                 get: () => engine.renderer.renderInfo.objectInfo.enableDrawcallClassify,
-                set: (v) => { engine.renderer.renderInfo.objectInfo.enableDrawcallClassify = v; },
-            }
+                set: v => {
+                    engine.renderer.renderInfo.objectInfo.enableDrawcallClassify = v;
+                },
+            },
         },
         global: {
             meshBVHEnabled: {
                 get: () => GLOBAL_CONFIG.meshBVHEnabled,
-                set: (v) => { GLOBAL_CONFIG.meshBVHEnabled = v; },
+                set: v => {
+                    GLOBAL_CONFIG.meshBVHEnabled = v;
+                },
             },
         },
         scene: {
             onlyDirectLight: {
                 get: () => viewer.getScene().onlyDirectLight,
-                set: (v) => { viewer.getScene().onlyDirectLight = v; },
+                set: v => {
+                    viewer.getScene().onlyDirectLight = v;
+                },
             },
             layerLightEnabled: {
                 get: () => viewer.getScene().layerLightEnabled,
-                set: (v) => { viewer.getScene().layerLightEnabled = v; },
+                set: v => {
+                    viewer.getScene().layerLightEnabled = v;
+                },
             },
             sceneBVHEnabled: {
                 get: () => viewer.getScene().bvhEnabled,
-                set: (v) => { viewer.getScene().bvhEnabled = v; },
+                set: v => {
+                    viewer.getScene().bvhEnabled = v;
+                },
             },
         },
         staticFrameCache: deprecatedPipelineConfig.staticFrameCache,
@@ -381,7 +437,7 @@ export function createViewConfig(viewer: Viewer, engine: RenderEngine, pipeline:
 
 export function listenViewerConfigChange(
     config: ViewerConfig,
-    isEquals: (o: any, c: any) => boolean = (o, c) => c.equals ? c.equals(o) : (o === c),
+    isEquals: (o: any, c: any) => boolean = (o, c) => (c.equals ? c.equals(o) : o === c),
     callback: (path: string, v: any) => void,
     prefix: string = '',
 ) {
@@ -394,7 +450,7 @@ export function listenViewerConfigChange(
                 let is_equals = false;
                 try {
                     is_equals = isEquals(origin, value);
-                } catch (error) { }
+                } catch {}
                 if (!is_equals) {
                     origin_set(value);
                     callback(`${prefix}_${key}`, value);

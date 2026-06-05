@@ -16,7 +16,7 @@ const { toU64, toI64 } = (function () {
             U32View[0] = low;
             U32View[1] = high;
             return I64View[0];
-        }
+        },
     };
 })();
 
@@ -28,9 +28,12 @@ export function detectContainerType(url: URL) {
     // check ext..
     const ext = url.pathname.split('.').pop();
     switch (ext) {
-        case 'dds': return TextureContainerType.DDS;
-        case 'ktx2': return TextureContainerType.KTX2;
-        default: return TextureContainerType.Image;
+        case 'dds':
+            return TextureContainerType.DDS;
+        case 'ktx2':
+            return TextureContainerType.KTX2;
+        default:
+            return TextureContainerType.Image;
     }
 }
 
@@ -45,7 +48,7 @@ export const INVALID_LOAD_RESULT: LoadResult = {
     height: 1,
     depthOrArrayLayers: 1,
     mipmaps: false,
-    autoGenerateMipmap: false
+    autoGenerateMipmap: false,
 };
 
 export function mergeLoadResults(results: LoadResult[]): LoadResult {
@@ -60,9 +63,14 @@ export function mergeLoadResults(results: LoadResult[]): LoadResult {
         return INVALID_LOAD_RESULT;
     }
     for (const result of results) {
-        if (pivot.format !== result.format || pivot.width !== result.width || pivot.height !== result.height ||
-            pivot.depthOrArrayLayers !== result.depthOrArrayLayers || pivot.data.length !== result.data.length ||
-            pivot.mipmaps !== result.mipmaps || pivot.autoGenerateMipmap !== result.autoGenerateMipmap
+        if (
+            pivot.format !== result.format ||
+            pivot.width !== result.width ||
+            pivot.height !== result.height ||
+            pivot.depthOrArrayLayers !== result.depthOrArrayLayers ||
+            pivot.data.length !== result.data.length ||
+            pivot.mipmaps !== result.mipmaps ||
+            pivot.autoGenerateMipmap !== result.autoGenerateMipmap
         ) {
             return INVALID_LOAD_RESULT;
         }

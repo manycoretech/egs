@@ -34,11 +34,12 @@ export class DownsampleMaterial extends PassQuadMaterialBase {
     extendShaderShading(b: ShaderBuilder) {
         if (this.correctColor) {
             b.addFragDefine('#define CORRECT_COLOR');
-        };
-        b
-            .addUniform('texelSize', WebGLShaderDataType.Vec2)
+        }
+        b.addUniform('texelSize', WebGLShaderDataType.Vec2)
             .addUniform('tDiffuse', WebGLShaderDataType.Sampler2D)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
             vec4 color = vec4(0.0);
 
             color += texture2D(tDiffuse, vUv + texelSize * vec2(0.0, 0.0)).rgba;
@@ -53,7 +54,8 @@ export class DownsampleMaterial extends PassQuadMaterialBase {
                 }
             #endif
             gl_FragColor = color;
-            `);
+            `,
+            );
     }
 
     updateShadingUniforms(p: WGLProgram) {

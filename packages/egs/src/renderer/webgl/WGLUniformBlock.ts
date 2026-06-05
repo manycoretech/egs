@@ -3,9 +3,9 @@ import type { UniformBlockDescriptor } from '../shader/Shader';
 import type { UBOManager } from '../ResourceManager/UBOManager';
 
 export interface WGLUniformBlockData {
-    buffer: WebGLBuffer,
-    byteSize: number,
-    version: number
+    buffer: WebGLBuffer;
+    byteSize: number;
+    version: number;
 }
 
 // WGLUniformBlock provides an instance, which is bound to active uniform blocks and
@@ -18,7 +18,12 @@ export class WGLUniformBlock {
     private UBOManager: UBOManager;
     readonly descriptor: UniformBlockDescriptor;
 
-    constructor(program: WGLProgram, descriptor: UniformBlockDescriptor, uniformBlockIndex: number, uboManager: UBOManager) {
+    constructor(
+        program: WGLProgram,
+        descriptor: UniformBlockDescriptor,
+        uniformBlockIndex: number,
+        uboManager: UBOManager,
+    ) {
         this.descriptor = descriptor;
         this.program = program;
         this.UBOManager = uboManager!;
@@ -34,16 +39,18 @@ export class WGLUniformBlock {
 
     queryLayout() {
         const bufferByteLength: number = this.gl.getActiveUniformBlockParameter(
-            this.program.program, this.bindPoint,
-            this.gl.UNIFORM_BLOCK_DATA_SIZE);
+            this.program.program,
+            this.bindPoint,
+            this.gl.UNIFORM_BLOCK_DATA_SIZE,
+        );
 
         const index = this.gl.getActiveUniformBlockParameter(
-            this.program.program, this.bindPoint,
-            this.gl.UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES);
+            this.program.program,
+            this.bindPoint,
+            this.gl.UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES,
+        );
 
-        const offsets: number[] = this.gl.getActiveUniforms(
-            this.program.program, index,
-            this.gl.UNIFORM_OFFSET);
+        const offsets: number[] = this.gl.getActiveUniforms(this.program.program, index, this.gl.UNIFORM_OFFSET);
 
         return { all: bufferByteLength, offsets };
     }

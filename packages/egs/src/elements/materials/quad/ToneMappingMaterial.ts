@@ -18,7 +18,7 @@ export enum ToneMapping {
     Reinhard,
     ACES,
     ACESFilmic,
-    Neutral
+    Neutral,
 }
 
 const toneMappingFunctions = createShaderBlock(`
@@ -169,10 +169,13 @@ export class ToneMappingMaterial extends PassQuadMaterialBase {
             .addFragment(toneMappingFunctions)
             .addUniform('tDiffuse', WebGLShaderDataType.Sampler2D)
             .addUniform('exposure', WebGLShaderDataType.Float)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 vec4 color = texture2D(tDiffuse, vUv);
                 gl_FragColor = ${outputTransfer}(${toneMapping}(${inputTransfer}(color)));
-            `);
+            `,
+            );
     }
     updateShadingUniforms(program: WGLProgram) {
         program.setTexture2D('tDiffuse', this.tDiffuse);
@@ -183,12 +186,10 @@ export class ToneMappingMaterial extends PassQuadMaterialBase {
         this.transparent = false;
     }
     generateShaderKey(r: ShaderComponentRegistry) {
-        return super.generateShaderKey(r) +
-            new HashKeyBuilder()
-                .raw(this.outputTransfer)
-                .raw(this.inputTransfer)
-                .raw(this.toneMapping)
-                .getKey();
+        return (
+            super.generateShaderKey(r) +
+            new HashKeyBuilder().raw(this.outputTransfer).raw(this.inputTransfer).raw(this.toneMapping).getKey()
+        );
     }
 
     className(): string {

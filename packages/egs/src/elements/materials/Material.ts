@@ -1,8 +1,21 @@
 import { EventType, ElementEventDispatcher } from '../../utils/EventDispatcher';
 import type { ShaderInfo, ShaderComponent } from '../../renderer/shader/Shader';
 import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import type { Serializer, Deserializer, SerializerablePartKeys, SerializerableDelegatedAsReference } from '../../utils/Serialization';
-import { Side, DepthModes, Blending, BlendingFactor, BlendingEquation, StencilOp, StencilFunc } from '../../utils/Constants';
+import type {
+    Serializer,
+    Deserializer,
+    SerializerablePartKeys,
+    SerializerableDelegatedAsReference,
+} from '../../utils/Serialization';
+import {
+    Side,
+    DepthModes,
+    Blending,
+    BlendingFactor,
+    BlendingEquation,
+    StencilOp,
+    StencilFunc,
+} from '../../utils/Constants';
 import { type Nullable, type PickSubTypeProperty, Utils } from '../../utils/Utils';
 import type { Renderer } from '../../renderer/Renderer';
 import type { Texture } from '../textures/Texture';
@@ -33,9 +46,15 @@ export const MaterialRecompileShaderEvent = new EventType<Material>();
  * Copies one nullable material property from another instance.
  */
 export function copyItem<T>(source: T, other: T, key: keyof T) {
-    if (source[key] !== null && other[key] !== null) { (source[key] as any).copy(other[key]); }
-    if (other[key] !== null && source[key] === null && (other[key] as any).clone) { source[key] = (other[key] as any).clone(); }
-    if (other[key] === null) { (source as any)[key] = null; }
+    if (source[key] !== null && other[key] !== null) {
+        (source[key] as any).copy(other[key]);
+    }
+    if (other[key] !== null && source[key] === null && (other[key] as any).clone) {
+        source[key] = (other[key] as any).clone();
+    }
+    if (other[key] === null) {
+        (source as any)[key] = null;
+    }
 }
 
 export type PickedBySubType<T, U> = Pick<T, PickSubTypeProperty<T, U>>;
@@ -48,28 +67,70 @@ export type ConvertMaterialParameters<T> = Partial<SubTypeMap<T, ReadonlyColor, 
 /**
  * Common parameter bag accepted by material constructors and setters.
  */
-export type MaterialParameters = ConvertMaterialParameters<Pick<Material,
-    'transparent' | 'visible' | 'side' | 'blending' | 'blendSrc' |
-    'blendDst' | 'blendEquation' | 'blendSrcAlpha' | 'blendDstAlpha' |
-    'blendEquationAlpha' | 'depthFunc' | 'depthTest' | 'depthWrite' |
-    'colorWrite' | 'polygonOffset' | 'polygonOffsetFactor' | 'polygonOffsetUnits' |
-    'stencilWriteMask' | 'stencilFunc' | 'stencilRef' |
-    'stencilFuncMask' | 'stencilFail' | 'stencilZFail' | 'stencilZPass' | 'stencilWrite'
->>;
+export type MaterialParameters = ConvertMaterialParameters<
+    Pick<
+        Material,
+        | 'transparent'
+        | 'visible'
+        | 'side'
+        | 'blending'
+        | 'blendSrc'
+        | 'blendDst'
+        | 'blendEquation'
+        | 'blendSrcAlpha'
+        | 'blendDstAlpha'
+        | 'blendEquationAlpha'
+        | 'depthFunc'
+        | 'depthTest'
+        | 'depthWrite'
+        | 'colorWrite'
+        | 'polygonOffset'
+        | 'polygonOffsetFactor'
+        | 'polygonOffsetUnits'
+        | 'stencilWriteMask'
+        | 'stencilFunc'
+        | 'stencilRef'
+        | 'stencilFuncMask'
+        | 'stencilFail'
+        | 'stencilZFail'
+        | 'stencilZPass'
+        | 'stencilWrite'
+    >
+>;
 
-const materialKeys = ['transparent', 'visible', 'side', 'blending', 'blendSrc',
-    'blendDst', 'blendEquation', 'blendSrcAlpha', 'blendDstAlpha',
-    'blendEquationAlpha', 'depthFunc', 'depthTest', 'depthWrite',
-    'colorWrite', 'polygonOffset', 'polygonOffsetFactor', 'polygonOffsetUnits',
-    'stencilWriteMask', 'stencilFunc', 'stencilRef',
-    'stencilFuncMask', 'stencilFail', 'stencilZFail', 'stencilZPass', 'stencilWrite'
+const materialKeys = [
+    'transparent',
+    'visible',
+    'side',
+    'blending',
+    'blendSrc',
+    'blendDst',
+    'blendEquation',
+    'blendSrcAlpha',
+    'blendDstAlpha',
+    'blendEquationAlpha',
+    'depthFunc',
+    'depthTest',
+    'depthWrite',
+    'colorWrite',
+    'polygonOffset',
+    'polygonOffsetFactor',
+    'polygonOffsetUnits',
+    'stencilWriteMask',
+    'stencilFunc',
+    'stencilRef',
+    'stencilFuncMask',
+    'stencilFail',
+    'stencilZFail',
+    'stencilZPass',
+    'stencilWrite',
 ];
 /**
  * Render-state values shared by all materials.
  */
 export interface MaterialState {
-    transparent: boolean,
-    visible: boolean,
+    transparent: boolean;
+    visible: boolean;
     side: Side;
 
     blending: Blending;
@@ -87,19 +148,19 @@ export interface MaterialState {
     stencilFail: StencilOp;
     stencilZFail: StencilOp;
     stencilZPass: StencilOp;
-    stencilWrite: boolean,
+    stencilWrite: boolean;
     depthFunc: DepthModes;
-    depthTest: boolean,
-    depthWrite: boolean,
+    depthTest: boolean;
+    depthWrite: boolean;
 
-    colorWrite: boolean,
-    colorWriteMasks: [boolean, boolean, boolean, boolean],
+    colorWrite: boolean;
+    colorWriteMasks: [boolean, boolean, boolean, boolean];
 
-    polygonOffset: boolean,
+    polygonOffset: boolean;
     polygonOffsetFactor: number;
     polygonOffsetUnits: number;
 
-    premultipliedAlpha: boolean,
+    premultipliedAlpha: boolean;
 }
 
 /**
@@ -119,8 +180,10 @@ export enum ColorTransfer {
  * They are defined in a (mostly) renderer-independent way, so you don't have to rewrite materials if you decide to use a different renderer.
  * The following properties and methods are inherited by all other material types (although they may have different defaults).
  */
-export abstract class Material extends ElementEventDispatcher
-    implements SerializerableDelegatedAsReference, MaterialState, ElementsWithGPUResource {
+export abstract class Material
+    extends ElementEventDispatcher
+    implements SerializerableDelegatedAsReference, MaterialState, ElementsWithGPUResource
+{
     /**
      * @internal
      */
@@ -488,10 +551,12 @@ export abstract class Material extends ElementEventDispatcher
      */
     getShapeKey(registry: ShaderComponentRegistry): string {
         if (this._shapeKey === undefined) {
-            this._shapeKey = this.computeShapeKey(registry) + this.components.map(c => {
-                // include className only if it has computeShapeKey
-                return c.computeShapeKey ? (c.className() + c.computeShapeKey()) : '';
-            });
+            this._shapeKey =
+                this.computeShapeKey(registry) +
+                this.components.map(c => {
+                    // include className only if it has computeShapeKey
+                    return c.computeShapeKey ? c.className() + c.computeShapeKey() : '';
+                });
         }
         return this._shapeKey;
     }
@@ -551,7 +616,7 @@ export abstract class Material extends ElementEventDispatcher
             const data = ctx.serialize(component);
             return {
                 typeName: component.className(),
-                data
+                data,
             };
         });
         ctx.putRaw('components', componentsData);
@@ -582,22 +647,25 @@ export abstract class Material extends ElementEventDispatcher
      * @param {function} _visitor a method to process {@link Texture| texture}.
      * @internal
      */
-    traverseTexture(_visitor: (tex: Texture) => void) { }
+    traverseTexture(_visitor: (tex: Texture) => void) {}
     /**
      * Execute the given method for every ubo.
      * @param {function} _visitor a method to process ubo.
      * @internal
      */
-    traverseUBO(_visitor: (ubo: UniformBlockObject) => void) { }
+    traverseUBO(_visitor: (ubo: UniformBlockObject) => void) {}
     /**
      * Generate a basic key for material, and engine will recompile shader if this key is changed.
      * This method may override in extended class.
      * @internal
      */
     generateShaderKey(_registry: ShaderComponentRegistry): string {
-        return this.className() + this.components.map(c => {
-            return c.className() + (c.generateShaderKey ? c.generateShaderKey() : '');
-        });
+        return (
+            this.className() +
+            this.components.map(c => {
+                return c.className() + (c.generateShaderKey ? c.generateShaderKey() : '');
+            })
+        );
     }
     /**
      * @internal
@@ -616,12 +684,32 @@ export abstract class Material extends ElementEventDispatcher
 }
 
 const keys: Array<SerializerablePartKeys<Material>> = [
-    'name', 'id', 'transparent', 'visible',
-    'side', 'blending', 'blendSrc', 'blendDst',
-    'blendEquation', 'blendSrcAlpha', 'blendDstAlpha',
-    'blendEquationAlpha', 'depthFunc', 'depthTest',
-    'depthWrite', 'colorWrite', 'polygonOffset',
-    'polygonOffsetFactor', 'polygonOffsetUnits', 'premultipliedAlpha',
-    'stencilWriteMask', 'stencilFunc', 'stencilRef',
-    'stencilFuncMask', 'stencilFail', 'stencilZFail', 'stencilZPass', 'stencilWrite'
+    'name',
+    'id',
+    'transparent',
+    'visible',
+    'side',
+    'blending',
+    'blendSrc',
+    'blendDst',
+    'blendEquation',
+    'blendSrcAlpha',
+    'blendDstAlpha',
+    'blendEquationAlpha',
+    'depthFunc',
+    'depthTest',
+    'depthWrite',
+    'colorWrite',
+    'polygonOffset',
+    'polygonOffsetFactor',
+    'polygonOffsetUnits',
+    'premultipliedAlpha',
+    'stencilWriteMask',
+    'stencilFunc',
+    'stencilRef',
+    'stencilFuncMask',
+    'stencilFail',
+    'stencilZFail',
+    'stencilZPass',
+    'stencilWrite',
 ];

@@ -52,8 +52,11 @@ export class RenderColorAttachmentNode extends RenderAttachmentNode {
     setFilter(linearFilter: boolean, mipmap: boolean = this.enableMipmap) {
         this.enableMipmap = mipmap;
         const magFilter = linearFilter ? SamplerFilter.Linear : SamplerFilter.Nearest;
-        const minFilter = !mipmap ? magFilter
-            : (linearFilter ? SamplerFilter.LinearMipmapLinear : SamplerFilter.NearestMipmapNearest);
+        const minFilter = !mipmap
+            ? magFilter
+            : linearFilter
+              ? SamplerFilter.LinearMipmapLinear
+              : SamplerFilter.NearestMipmapNearest;
         this.sampler.minFilter = minFilter;
         this.sampler.magFilter = magFilter;
         return this;

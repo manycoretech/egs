@@ -31,11 +31,13 @@ async function downloadSingleTexture(url: string | URL, options?: LoaderOptions)
                 depthOrArrayLayers: 1,
                 data: [[image]],
                 mipmaps: true,
-                autoGenerateMipmap: true
+                autoGenerateMipmap: true,
             };
-        };
-        case TextureContainerType.DDS: return loadDDS(url, options);
-        case TextureContainerType.KTX2: return loadKTX2(url, options);
+        }
+        case TextureContainerType.DDS:
+            return loadDDS(url, options);
+        case TextureContainerType.KTX2:
+            return loadKTX2(url, options);
     }
 }
 
@@ -44,7 +46,10 @@ async function downloadLayeredTexture(urls: string[] | URL[], options?: LoaderOp
     return mergeLoadResults(all);
 }
 
-export async function downloadTexture(url: string | string[] | URL | URL[], options?: LoaderOptions): Promise<SourceTexture> {
+export async function downloadTexture(
+    url: string | string[] | URL | URL[],
+    options?: LoaderOptions,
+): Promise<SourceTexture> {
     let result: LoadResult;
     if (Array.isArray(url)) {
         result = await downloadLayeredTexture(url, options);
@@ -52,11 +57,18 @@ export async function downloadTexture(url: string | string[] | URL | URL[], opti
         result = await downloadSingleTexture(url, options);
     }
     const enableMipmaps = result.mipmaps && (options?.mipmaps ?? true);
-    const texture = new SourceTexture(TextureDimension.D2,
+    const texture = new SourceTexture(
+        TextureDimension.D2,
         // cube like texture use cube view.
-        isCubeLike(result.width, result.height, result.depthOrArrayLayers) ? TextureViewDimension.Cube : TextureViewDimension.D2,
-        result.format, result.width, result.height, result.depthOrArrayLayers,
-        enableMipmaps, result.autoGenerateMipmap && enableMipmaps
+        isCubeLike(result.width, result.height, result.depthOrArrayLayers)
+            ? TextureViewDimension.Cube
+            : TextureViewDimension.D2,
+        result.format,
+        result.width,
+        result.height,
+        result.depthOrArrayLayers,
+        enableMipmaps,
+        result.autoGenerateMipmap && enableMipmaps,
     );
     const levelSize = enableMipmaps ? result.data.length : 1;
     for (let i = 0; i < levelSize; i++) {

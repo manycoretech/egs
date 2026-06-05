@@ -53,7 +53,11 @@ export class MultiMeshMerger extends DrawcallMerger<Mesh, Material, BufferGeomet
         const material = group[0].material as Material;
         const filtered = group.filter(g => g.drawable.netVisibility);
         if (filtered.length > 0) {
-            const geometry = mergeBufferGeometries(filtered.map(g => g.geometry), true, filtered.map(g => g.drawable.matrixWorld));
+            const geometry = mergeBufferGeometries(
+                filtered.map(g => g.geometry),
+                true,
+                filtered.map(g => g.drawable.matrixWorld),
+            );
             return new Mesh(geometry, material);
         } else {
             return null;

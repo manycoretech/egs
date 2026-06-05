@@ -27,11 +27,13 @@ export class ColorShaderComponent<T extends Texture2D | TextureV2 = Texture2D> e
     }
 
     extendShaderShading(builder: ShaderBuilder): void {
-        builder.addUniform('u_color', WebGLShaderDataType.Vec3)
+        builder
+            .addUniform('u_color', WebGLShaderDataType.Vec3)
             .inject(ShaderInjectionTypes.channel_color, 'color = u_color;');
 
         if (this.texture !== null) {
-            builder.addVarying(ShaderVaryingTypes.fragUV)
+            builder
+                .addVarying(ShaderVaryingTypes.fragUV)
                 .addUniform('map', WebGLShaderDataType.Sampler2D)
                 .inject(ShaderInjectionTypes.channel_color, 'color *= texture2D( map, vUv ).xyz;'); // TODO mapTexelToLinear
         }

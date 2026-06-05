@@ -1,7 +1,10 @@
 import type { TypedArray } from '../../utils/Utils';
 import {
-    LegacySourceTexture, type SourceTextureLayerWebGLUploadResult, type SourceTextureWebGLUploadResult,
-    type TextureMipmapGroup, type WebGLTextureUploadCtx
+    LegacySourceTexture,
+    type SourceTextureLayerWebGLUploadResult,
+    type SourceTextureWebGLUploadResult,
+    type TextureMipmapGroup,
+    type WebGLTextureUploadCtx,
 } from './Texture';
 import { Texture2DLayer } from './Texture2D';
 import { ContentBridge } from '../../ContentAPI';
@@ -10,7 +13,6 @@ import { _Math } from '../../math/Math';
 import { TextureDimension, TextureViewDimension } from './types';
 
 export class Texture2DCompressed extends LegacySourceTexture {
-
     className() {
         return 'Texture2DCompressed';
     }
@@ -22,7 +24,11 @@ export class Texture2DCompressed extends LegacySourceTexture {
         this.source.syncData(this);
     }
 
-    uploadWebGLImpl(ctx: WebGLTextureUploadCtx, disableCustomMipmap: boolean, needPOT: boolean): SourceTextureWebGLUploadResult {
+    uploadWebGLImpl(
+        ctx: WebGLTextureUploadCtx,
+        disableCustomMipmap: boolean,
+        needPOT: boolean,
+    ): SourceTextureWebGLUploadResult {
         return this.source.uploadWebGL(ctx, ctx.gl.TEXTURE_2D, disableCustomMipmap, needPOT);
     }
 
@@ -35,7 +41,6 @@ export class Texture2DCompressed extends LegacySourceTexture {
     }
 
     source: TextureMipmapGroup<CompressTexture2DLayer>;
-
 }
 
 type CompressTextureLayerSource = TypedArray;
@@ -64,12 +69,17 @@ export class CompressTexture2DLayer extends Texture2DLayer {
     /**
      * @internal
      */
-    uploadWebGL(ctx: WebGLTextureUploadCtx, target: number, level: number, _needPOT: boolean): SourceTextureLayerWebGLUploadResult {
+    uploadWebGL(
+        ctx: WebGLTextureUploadCtx,
+        target: number,
+        level: number,
+        _needPOT: boolean,
+    ): SourceTextureLayerWebGLUploadResult {
         ctx.gl.compressedTexImage2D(target, level, this.format, this.width, this.height, 0, this.source, 0);
 
         return {
             is_pot: _Math.isPowerOfTwo(this.width) && _Math.isPowerOfTwo(this.height),
-            byteSize: this.source.byteLength
+            byteSize: this.source.byteLength,
         };
     }
 }

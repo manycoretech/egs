@@ -3,7 +3,11 @@ import { WGLCapabilities } from './WGLCapabilities';
 import { TextureDataType } from '../../utils/Constants';
 
 export class WGLConstantsConvertor {
-    static convertTextureDataType(gl: WebGLRenderingContext | WebGL2RenderingContext, p: TextureDataType, extensions: WGLExtensions): number {
+    static convertTextureDataType(
+        gl: WebGLRenderingContext | WebGL2RenderingContext,
+        p: TextureDataType,
+        extensions: WGLExtensions,
+    ): number {
         let extension: any;
 
         if (p === TextureDataType.UnsignedByteType) {

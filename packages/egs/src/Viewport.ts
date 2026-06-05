@@ -2,14 +2,19 @@ import { type ViewerConfig, createViewConfig, listenViewerConfigChange } from '.
 import type { RenderEngine } from './engine/RenderEngine';
 import type { Scene3D } from './scene/Scene3D';
 import type { Camera3D } from './scene/cameras/Camera3D';
-import { CameraWatcher, CameraChangeEvent, CameraEndChangeEvent, CameraStartChangeEvent } from './scene/tools/CameraWatcher';
+import {
+    CameraWatcher,
+    CameraChangeEvent,
+    CameraEndChangeEvent,
+    CameraStartChangeEvent,
+} from './scene/tools/CameraWatcher';
 import type { RequestRenderHandler, Viewer } from './Viewer';
 import { TypeAssert } from './scene/tools/TypeAssert';
 import { logger, sendKtrackerEvent } from './utils/Logger';
 import type { HighlightGroup } from './fx/plugins/Highlight';
 import { PostPipeline } from './fx/Pipeline';
 import { RendererAdaptor } from './fx/RendererAdaptor';
-import type { Size,IRange } from './utils/Utils';
+import type { Size, IRange } from './utils/Utils';
 import { PerspectiveCamera } from './scene/cameras/PerspectiveCamera';
 import { Vector4 } from './math/Vector4';
 import { ContentBridge } from './ContentAPI';
@@ -94,17 +99,30 @@ export class Viewport {
         this.resize(this.size);
     }
 
-    constructor(name: string, viewer: Viewer, engine: RenderEngine, scene: Scene3D, viewIndex: number, bound?: Vector4) {
+    constructor(
+        name: string,
+        viewer: Viewer,
+        engine: RenderEngine,
+        scene: Scene3D,
+        viewIndex: number,
+        bound?: Vector4,
+    ) {
         this.name = name;
         this.scene = scene;
         this.engine = engine;
         this.viewer = viewer;
         this.viewIndex = viewIndex;
         this.pipeline = new PostPipeline(new RendererAdaptor(this.engine.renderer));
-        this._config = createViewConfig(this.viewer, this.engine, this.pipeline, this.drivenCullingConfig, this.updateTlsFlag);
+        this._config = createViewConfig(
+            this.viewer,
+            this.engine,
+            this.pipeline,
+            this.drivenCullingConfig,
+            this.updateTlsFlag,
+        );
         listenViewerConfigChange(
             this._config,
-            (o, c) => this.isDestroyed || (c?.equals ? c.equals(o) : (o === c)),
+            (o, c) => this.isDestroyed || (c?.equals ? c.equals(o) : o === c),
             (path, v) => {
                 this.engine.refreshRenderables();
                 this.requestRender();
@@ -143,8 +161,9 @@ export class Viewport {
 
     private updateTlsFlag = (value: boolean) => {
         const flag = 1 << this.viewIndex;
-        this.viewer.renderingConfig.tlsFlags = value ? this.viewer.renderingConfig.tlsFlags | flag :
-            this.viewer.renderingConfig.tlsFlags & ~flag;
+        this.viewer.renderingConfig.tlsFlags = value
+            ? this.viewer.renderingConfig.tlsFlags | flag
+            : this.viewer.renderingConfig.tlsFlags & ~flag;
     };
 
     /**
@@ -159,7 +178,7 @@ export class Viewport {
             this.bound.w * size.height,
         ).round();
         this.pipeline.setFrameSize(this.viewBound.z, this.viewBound.w);
-    };
+    }
 
     /**
      * @internal
@@ -180,11 +199,7 @@ export class Viewport {
     /**
      * @internal
      */
-    render(
-        frameId: number,
-        forceRender: boolean = false,
-        isPerformanceSlow: boolean = false,
-    ) {
+    render(frameId: number, forceRender: boolean = false, isPerformanceSlow: boolean = false) {
         const { camera, pipeline } = this;
         camera.updateMatrixWorld();
         camera.culler.update(camera);
@@ -261,14 +276,23 @@ export class Viewport {
                 x: 0,
                 y: 0,
                 width: target.width,
-                height: target.height
+                height: target.height,
             };
         }
 
         const buffer = new Uint8Array(range.width * range.height * 4);
         const projectionMatrix = this.camera.projectionMatrix.clone();
         const worldMatrix = this.camera.matrixWorld.clone();
-        return this.engine.renderer.readPixelsAsync(target, range, buffer).then(() => new SnapshotResult(buffer, { width: range!.width, height: range!.height }, { worldMatrix, projectionMatrix }));
+        return this.engine.renderer
+            .readPixelsAsync(target, range, buffer)
+            .then(
+                () =>
+                    new SnapshotResult(
+                        buffer,
+                        { width: range!.width, height: range!.height },
+                        { worldMatrix, projectionMatrix },
+                    ),
+            );
     }
 
     destroy() {

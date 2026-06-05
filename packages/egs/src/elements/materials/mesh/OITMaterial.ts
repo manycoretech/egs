@@ -27,19 +27,24 @@ export class OITMaterial extends SceneMaterial {
         builder
             .addFragDefine('#define accumColor gl_FragColor')
             .addNewFragOutputChannel('accumAlpha', FragOutType.Float)
-            .addFragment(createShaderBlock(`
+            .addFragment(
+                createShaderBlock(`
                 float weight(float z, float a) {
                     return clamp(pow(min(1.0, a * 10.0) + 0.01, 3.0) * 1e5 * pow(1.0 - z * 0.9, 3.0), 1e-2, 3e3);
                 }
-            `))
-            .inject(ShaderInjectionTypes.frag_any, `
+            `),
+            )
+            .inject(
+                ShaderInjectionTypes.frag_any,
+                `
                 float wCi = weight(gl_FragCoord.z, gl_FragColor.a);
                 accumColor = vec4(gl_FragColor.rgb * gl_FragColor.a * wCi, gl_FragColor.a);
-            `)
+            `,
+            )
             .inject(ShaderInjectionTypes.frag_any, 'accumAlpha = gl_FragColor.a * wCi;');
     }
 
-    updateShadingUniforms(_p: WGLProgram) { }
+    updateShadingUniforms(_p: WGLProgram) {}
 
     copy(other: OITMaterial) {
         super.copyBase(other);

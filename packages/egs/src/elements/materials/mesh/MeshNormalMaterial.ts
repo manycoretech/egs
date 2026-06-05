@@ -1,4 +1,8 @@
-import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+    ShaderVaryingTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
 import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
@@ -16,8 +20,10 @@ export class MeshNormalMaterial extends SceneMaterial {
     isUsingWorldSpace = true;
 
     extendShaderShading(b: ShaderBuilder) {
-        b.addVarying(ShaderVaryingTypes.fragNormal)
-            .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = vec4((vNormal + vec3(1.))/ 2., 1.0);');
+        b.addVarying(ShaderVaryingTypes.fragNormal).inject(
+            ShaderInjectionTypes.gl_FragColor,
+            'gl_FragColor = vec4((vNormal + vec3(1.))/ 2., 1.0);',
+        );
 
         if (this.isUsingWorldSpace) {
             b.inject(ShaderInjectionTypes.vary_normal, 'vNormal = inverseTransformDirection(vNormal, viewMatrix);')
@@ -26,7 +32,7 @@ export class MeshNormalMaterial extends SceneMaterial {
         }
     }
 
-    updateShadingUniforms(_: WGLProgram) { }
+    updateShadingUniforms(_: WGLProgram) {}
 
     clone() {
         return new MeshNormalMaterial().copy(this);

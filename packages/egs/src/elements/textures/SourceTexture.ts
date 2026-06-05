@@ -6,7 +6,14 @@ import type { TypedArray } from '../../utils/Utils';
 import { logger } from '../../utils/Logger';
 
 export type MipLevelSource = TypedArray;
-export type LayerSource = HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | OffscreenCanvas | ImageData | ImageBitmap | TypedArray;
+export type LayerSource =
+    | HTMLImageElement
+    | HTMLCanvasElement
+    | HTMLVideoElement
+    | OffscreenCanvas
+    | ImageData
+    | ImageBitmap
+    | TypedArray;
 
 function levelLayerIdentity(level: number, layer: number) {
     return (level << 16) | layer;
@@ -28,16 +35,16 @@ export class SourceTexture extends TextureV2 {
     private source: Array<MipLevelSource | Array<LayerSource | undefined> | undefined>;
 
     constructor(
-        dimension: TextureDimension, viewDimension: TextureViewDimension,
+        dimension: TextureDimension,
+        viewDimension: TextureViewDimension,
         format: TextureFormat,
-        width: number, height: number, depthOrArrayLayers: number,
-        mipmaps: boolean, autoGenerateMipmap: boolean,
+        width: number,
+        height: number,
+        depthOrArrayLayers: number,
+        mipmaps: boolean,
+        autoGenerateMipmap: boolean,
     ) {
-        super(
-            dimension, viewDimension,
-            format, width, height, depthOrArrayLayers, 1,
-            mipmaps, false
-        );
+        super(dimension, viewDimension, format, width, height, depthOrArrayLayers, 1, mipmaps, false);
         this.autoGenerateMipmap = autoGenerateMipmap;
         this.samplerNeedSync = true;
         this.modifiedLevels = 0;
@@ -55,7 +62,9 @@ export class SourceTexture extends TextureV2 {
             return levelData[layer || 0];
         } else {
             if (layer != null) {
-                logger.warn(`SourceTexture level[${level}] is not layered, but layer specified, use full level data instead, layer ignored.`);
+                logger.warn(
+                    `SourceTexture level[${level}] is not layered, but layer specified, use full level data instead, layer ignored.`,
+                );
             }
             return levelData;
         }
@@ -86,18 +95,31 @@ export class SourceTexture extends TextureV2 {
                         if (layerData && layerNeedUpload) {
                             if (this.isLayeredTexture) {
                                 if (!this.glFormat.compressed) {
-                                    gl.texSubImage3D(this.bindableTarget, i,
-                                        0, 0, 0,
-                                        mipmapSize.width, mipmapSize.height, 1,
-                                        this.glFormat.external(backend), this.glFormat.dataType(backend),
-                                        layerData as any
+                                    gl.texSubImage3D(
+                                        this.bindableTarget,
+                                        i,
+                                        0,
+                                        0,
+                                        0,
+                                        mipmapSize.width,
+                                        mipmapSize.height,
+                                        1,
+                                        this.glFormat.external(backend),
+                                        this.glFormat.dataType(backend),
+                                        layerData as any,
                                     );
                                 } else {
-                                    gl.compressedTexSubImage3D(this.bindableTarget, i,
-                                        0, 0, 0,
-                                        mipmapSize.width, mipmapSize.height, 1,
+                                    gl.compressedTexSubImage3D(
+                                        this.bindableTarget,
+                                        i,
+                                        0,
+                                        0,
+                                        0,
+                                        mipmapSize.width,
+                                        mipmapSize.height,
+                                        1,
                                         this.glFormat.internal(backend),
-                                        layerData as any
+                                        layerData as any,
                                     );
                                 }
                             } else {
@@ -105,25 +127,38 @@ export class SourceTexture extends TextureV2 {
                                 if (!this.glFormat.compressed) {
                                     if (isWebGL1 && !(layerData as any).buffer) {
                                         // texSubImage2D no override tasks width/height with external texture source
-                                        gl.texSubImage2D(target, i,
-                                            0, 0,
-                                            this.glFormat.external(backend), this.glFormat.dataType(backend),
-                                            layerData as any
+                                        gl.texSubImage2D(
+                                            target,
+                                            i,
+                                            0,
+                                            0,
+                                            this.glFormat.external(backend),
+                                            this.glFormat.dataType(backend),
+                                            layerData as any,
                                         );
                                     } else {
-                                        gl.texSubImage2D(target, i,
-                                            0, 0,
-                                            mipmapSize.width, mipmapSize.height,
-                                            this.glFormat.external(backend), this.glFormat.dataType(backend),
-                                            layerData as any
+                                        gl.texSubImage2D(
+                                            target,
+                                            i,
+                                            0,
+                                            0,
+                                            mipmapSize.width,
+                                            mipmapSize.height,
+                                            this.glFormat.external(backend),
+                                            this.glFormat.dataType(backend),
+                                            layerData as any,
                                         );
                                     }
                                 } else {
-                                    gl.compressedTexSubImage2D(target, i,
-                                        0, 0,
-                                        mipmapSize.width, mipmapSize.height,
+                                    gl.compressedTexSubImage2D(
+                                        target,
+                                        i,
+                                        0,
+                                        0,
+                                        mipmapSize.width,
+                                        mipmapSize.height,
                                         this.glFormat.internal(backend),
-                                        layerData as any
+                                        layerData as any,
                                     );
                                 }
                             }
@@ -132,30 +167,56 @@ export class SourceTexture extends TextureV2 {
                 } else if (levelData) {
                     if (this.isLayeredTexture) {
                         if (!this.glFormat.compressed) {
-                            gl.texSubImage3D(this.bindableTarget, i,
-                                0, 0, 0,
-                                mipmapSize.width, mipmapSize.height, mipmapSize.depthOrArrayLayers,
-                                this.glFormat.external(backend), this.glFormat.dataType(backend), levelData
+                            gl.texSubImage3D(
+                                this.bindableTarget,
+                                i,
+                                0,
+                                0,
+                                0,
+                                mipmapSize.width,
+                                mipmapSize.height,
+                                mipmapSize.depthOrArrayLayers,
+                                this.glFormat.external(backend),
+                                this.glFormat.dataType(backend),
+                                levelData,
                             );
                         } else {
-                            gl.compressedTexSubImage3D(this.bindableTarget, i,
-                                0, 0, 0,
-                                mipmapSize.width, mipmapSize.height, mipmapSize.depthOrArrayLayers,
-                                this.glFormat.internal(backend), levelData
+                            gl.compressedTexSubImage3D(
+                                this.bindableTarget,
+                                i,
+                                0,
+                                0,
+                                0,
+                                mipmapSize.width,
+                                mipmapSize.height,
+                                mipmapSize.depthOrArrayLayers,
+                                this.glFormat.internal(backend),
+                                levelData,
                             );
                         }
                     } else {
                         if (!this.glFormat.compressed) {
-                            gl.texSubImage2D(this.bindableTarget, i,
-                                0, 0,
-                                mipmapSize.width, mipmapSize.height,
-                                this.glFormat.external(backend), this.glFormat.dataType(backend), levelData
+                            gl.texSubImage2D(
+                                this.bindableTarget,
+                                i,
+                                0,
+                                0,
+                                mipmapSize.width,
+                                mipmapSize.height,
+                                this.glFormat.external(backend),
+                                this.glFormat.dataType(backend),
+                                levelData,
                             );
                         } else {
-                            gl.compressedTexSubImage2D(this.bindableTarget, i,
-                                0, 0,
-                                mipmapSize.width, mipmapSize.height,
-                                this.glFormat.internal(backend), levelData
+                            gl.compressedTexSubImage2D(
+                                this.bindableTarget,
+                                i,
+                                0,
+                                0,
+                                mipmapSize.width,
+                                mipmapSize.height,
+                                this.glFormat.internal(backend),
+                                levelData,
                             );
                         }
                     }
@@ -183,7 +244,7 @@ export class SourceTexture extends TextureV2 {
 
         if (this.source[level] !== data) {
             this.source[level] = data;
-            this.modifiedLevels |= (1 << level);
+            this.modifiedLevels |= 1 << level;
             ContentBridge.sourceTextureSetLevelData(this, data, level);
         }
         return this;
@@ -203,7 +264,7 @@ export class SourceTexture extends TextureV2 {
         const levelData = this.source[level]!;
         if (levelData[layer] !== data) {
             levelData[layer] = data;
-            this.modifiedLevels |= (1 << level);
+            this.modifiedLevels |= 1 << level;
             this.modifiedLayers.add(levelLayerIdentity(level, layer));
             ContentBridge.sourceTextureSetLevelLayerData(this, data, level, layer);
         }

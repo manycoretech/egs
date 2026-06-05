@@ -44,14 +44,17 @@ export function updateEdgesVisibility(object: Mesh) {
             objectMaterialIndex = 0;
         }
         const material = materials[objectMaterialIndex];
-        const materialIndex = (material && material.visible) ? 0 : 1;
+        const materialIndex = material && material.visible ? 0 : 1;
 
         if (edgeGroups[i].materialIndex !== materialIndex) {
-            edgeGeometry.setGroup({
-                start: edgeGroups[i].start,
-                count: edgeGroups[i].count,
-                materialIndex,  // materialIndex: 0 - visible, 1 - invisible
-            }, i);
+            edgeGeometry.setGroup(
+                {
+                    start: edgeGroups[i].start,
+                    count: edgeGroups[i].count,
+                    materialIndex, // materialIndex: 0 - visible, 1 - invisible
+                },
+                i,
+            );
         }
     }
 }
@@ -68,9 +71,9 @@ class EdgesBufferGeometry extends BufferGeometry {
         super();
         this.type = 'EdgesBufferGeometry';
         this.parameters = {
-            thresholdAngle
+            thresholdAngle,
         };
-        thresholdAngle = (thresholdAngle !== undefined) ? thresholdAngle : 1;
+        thresholdAngle = thresholdAngle !== undefined ? thresholdAngle : 1;
         const thresholdDot = Math.cos(_Math.DEG2RAD * thresholdAngle);
 
         // out position buffer
@@ -106,7 +109,7 @@ class EdgesBufferGeometry extends BufferGeometry {
         //   save group
         for (let i = 0; i < geometries.length; i++) {
             const edge = [0, 0];
-            const edges: Record<string, { index1: number, index2: number, face1: number, face2?: number }> = {};
+            const edges: Record<string, { index1: number; index2: number; face1: number; face2?: number }> = {};
             const keys = ['a', 'b', 'c'] as const;
 
             let edge1, edge2, key;
@@ -173,8 +176,8 @@ class EdgesBufferGeometry extends BufferGeometry {
             for (let i = 0; i < groups.length; i++) {
                 const group1 = groups[i];
                 const group2 = this.geometryGroups[i];
-                if (group1.start !== group2.start ||
-                    group1.count !== group2.count) { // materialIndex changes are supported
+                if (group1.start !== group2.start || group1.count !== group2.count) {
+                    // materialIndex changes are supported
                     return true;
                 }
             }

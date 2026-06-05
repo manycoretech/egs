@@ -33,7 +33,7 @@ export class Layers extends EventDispatcher {
      * @param channel an integer from 0 to 31.
      */
     set(channel: number) {
-        this.mask = 1 << channel | 0;
+        this.mask = (1 << channel) | 0;
         return this;
     }
     /**
@@ -41,7 +41,7 @@ export class Layers extends EventDispatcher {
      * @param channel an integer from 0 to 31.
      */
     enable(channel: number) {
-        this.mask |= 1 << channel | 0;
+        this.mask |= (1 << channel) | 0;
         return this;
     }
     /**
@@ -49,7 +49,7 @@ export class Layers extends EventDispatcher {
      * @param channel an integer from 0 to 31.
      */
     toggle(channel: number) {
-        this.mask ^= 1 << channel | 0;
+        this.mask ^= (1 << channel) | 0;
         return this;
     }
     /**
@@ -57,7 +57,7 @@ export class Layers extends EventDispatcher {
      * @param channel an integer from 0 to 31.
      */
     disable(channel: number) {
-        this.mask &= ~(1 << channel | 0);
+        this.mask &= ~((1 << channel) | 0);
         return this;
     }
     /**

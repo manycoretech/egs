@@ -64,7 +64,7 @@ export class PointLight<T extends TextureV2 | Texture2D = Texture2D> extends Lig
     }
     set textureIES(value: Nullable<T>) {
         this._textureIES_inner = value;
-        this._textureIES = value || Texture2D.default as any;
+        this._textureIES = value || (Texture2D.default as any);
     }
     /**
      * The intensity scale of IES file.
@@ -85,14 +85,22 @@ export class PointLight<T extends TextureV2 | Texture2D = Texture2D> extends Lig
         return 'PointLight';
     }
 
-    constructor(color?: number | string, intensity?: number, distance?: number, decay?: number, isIESEnabled?: boolean,
-        textureIES?: T, iesIntensityScale?: number, iesTextureResolution?: Vector2) {
+    constructor(
+        color?: number | string,
+        intensity?: number,
+        distance?: number,
+        decay?: number,
+        isIESEnabled?: boolean,
+        textureIES?: T,
+        iesIntensityScale?: number,
+        iesTextureResolution?: Vector2,
+    ) {
         super(color, intensity);
-        this.distance = (distance !== undefined) ? distance : 0;
-        this.decay = (decay !== undefined) ? decay : 1;	// for physically correct lights, should be 2.
-        this.isIESEnabled = (isIESEnabled !== undefined) ? isIESEnabled : false;
-        this.iesIntensityScale = (iesIntensityScale !== undefined) ? iesIntensityScale : 1;
-        this.iesTextureResolution = (iesTextureResolution !== undefined) ? iesTextureResolution : new Vector2(1, 1);
+        this.distance = distance !== undefined ? distance : 0;
+        this.decay = decay !== undefined ? decay : 1; // for physically correct lights, should be 2.
+        this.isIESEnabled = isIESEnabled !== undefined ? isIESEnabled : false;
+        this.iesIntensityScale = iesIntensityScale !== undefined ? iesIntensityScale : 1;
+        this.iesTextureResolution = iesTextureResolution !== undefined ? iesTextureResolution : new Vector2(1, 1);
         this.textureIES = textureIES ? textureIES : null;
     }
     /**
@@ -108,7 +116,9 @@ export class PointLight<T extends TextureV2 | Texture2D = Texture2D> extends Lig
     }
     getIntensity() {
         const scale = 3 / (this.color.r + this.color.g + this.color.b);
-        return this.isIESEnabled ? scale * 2.1 * this.intensity * this.iesIntensityScale / Math.PI / 1000 : this.intensity;
+        return this.isIESEnabled
+            ? (scale * 2.1 * this.intensity * this.iesIntensityScale) / Math.PI / 1000
+            : this.intensity;
     }
     /**
      * Copy the data to this light instance from source.
@@ -180,7 +190,14 @@ export class PointLight<T extends TextureV2 | Texture2D = Texture2D> extends Lig
      */
     deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
-        ctx.reads<PointLight>(['distance', 'decay', 'isIESEnabled', 'iesTextureResolution', 'iesIntensityScale', 'shadow']);
+        ctx.reads<PointLight>([
+            'distance',
+            'decay',
+            'isIESEnabled',
+            'iesTextureResolution',
+            'iesIntensityScale',
+            'shadow',
+        ]);
     }
     /**
      * Store the attributes of this class into string as serializing format.
@@ -188,7 +205,14 @@ export class PointLight<T extends TextureV2 | Texture2D = Texture2D> extends Lig
      */
     serialize(ctx: Serializer) {
         super.serialize(ctx);
-        ctx.puts<PointLight>(['distance', 'decay', 'isIESEnabled', 'iesTextureResolution', 'iesIntensityScale', 'shadow']);
+        ctx.puts<PointLight>([
+            'distance',
+            'decay',
+            'isIESEnabled',
+            'iesTextureResolution',
+            'iesIntensityScale',
+            'shadow',
+        ]);
     }
     /**
      * @internal
@@ -252,7 +276,8 @@ export const punctualLightIntensityToIrradianceFactor = createShaderBlock(
             return 1.0;
         #endif
         }
-        `);
+        `,
+);
 
 // any light should has a struct of data
 // and from given geometry ctx, provide a IncidentLight

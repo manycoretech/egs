@@ -1,5 +1,9 @@
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+    ShaderVaryingTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { Side } from '../../../utils/Constants';
@@ -18,37 +22,57 @@ export class SkyMaterial extends BackgroundLikeMaterial {
     private _rayleigh = 1;
     private _mieCoefficient = 0.003;
     private _mieDirectionalG = 0.8;
-    get luminance() { return this._luminance; }
+    get luminance() {
+        return this._luminance;
+    }
     set luminance(v) {
-        if (v === this._luminance) { return; }
+        if (v === this._luminance) {
+            return;
+        }
         ContentBridge.materialSetProperty(this, 'luminance', v);
         this._luminance = v;
         this.tEquirect = null;
     }
-    get turbidity() { return this._turbidity; }
+    get turbidity() {
+        return this._turbidity;
+    }
     set turbidity(v) {
-        if (v === this._turbidity) { return; }
+        if (v === this._turbidity) {
+            return;
+        }
         ContentBridge.materialSetProperty(this, 'turbidity', v);
         this._turbidity = v;
         this.tEquirect = null;
     }
-    get rayleigh() { return this._rayleigh; }
+    get rayleigh() {
+        return this._rayleigh;
+    }
     set rayleigh(v) {
-        if (v === this._rayleigh) { return; }
+        if (v === this._rayleigh) {
+            return;
+        }
         ContentBridge.materialSetProperty(this, 'rayleigh', v);
         this._rayleigh = v;
         this.tEquirect = null;
     }
-    get mieCoefficient() { return this._mieCoefficient; }
+    get mieCoefficient() {
+        return this._mieCoefficient;
+    }
     set mieCoefficient(v) {
-        if (v === this._luminance) { return; }
+        if (v === this._luminance) {
+            return;
+        }
         ContentBridge.materialSetProperty(this, 'mieCoefficient', v);
         this._mieCoefficient = v;
         this.tEquirect = null;
     }
-    get mieDirectionalG() { return this._mieDirectionalG; }
+    get mieDirectionalG() {
+        return this._mieDirectionalG;
+    }
     set mieDirectionalG(v) {
-        if (v === this._mieDirectionalG) { return; }
+        if (v === this._mieDirectionalG) {
+            return;
+        }
         ContentBridge.materialSetProperty(this, 'mieDirectionalG', v);
         this._mieDirectionalG = v;
         this.tEquirect = null;
@@ -70,7 +94,8 @@ export class SkyMaterial extends BackgroundLikeMaterial {
     }
 
     updateShadingUniforms(p: WGLProgram) {
-        if (this.tEquirect) { // fast path
+        if (this.tEquirect) {
+            // fast path
             p.setTexture2D('skyMap', this.tEquirect);
             return;
         }
@@ -83,10 +108,13 @@ export class SkyMaterial extends BackgroundLikeMaterial {
     }
 
     extendShaderShading(b: ShaderBuilder, _: any) {
-        if (this.tEquirect) { // fast path
+        if (this.tEquirect) {
+            // fast path
             b.addUniform('skyMap', WebGLShaderDataType.Sampler2D)
                 .addVarying(ShaderVaryingTypes.worldPosition)
-                .inject(ShaderInjectionTypes.gl_FragColor, `
+                .inject(
+                    ShaderInjectionTypes.gl_FragColor,
+                    `
                     const float pi = 3.141592653589793238462643383279502884197169;
                     const float halfPI = 3.141592653589793238462643383279502884197169 * 0.5;
                     const vec3 cameraPos = vec3(0.0, 0.0, 0.0);
@@ -99,7 +127,8 @@ export class SkyMaterial extends BackgroundLikeMaterial {
                         (latitude + halfPI) / pi // Normalize latitude to range [0, 1]
                     );
                     gl_FragColor = vec4(texture2D(skyMap, uv).xyz, 1.0);
-                `);
+                `,
+                );
             return;
         }
 
@@ -116,9 +145,12 @@ export class SkyMaterial extends BackgroundLikeMaterial {
             .addVarying(ShaderVaryingTypes.worldPosition)
             .addFragment(SkyFrag)
             .addVertex(SkyVert)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                     gl_FragColor = vec4(sky(vWorldPosition, cameraPos), 1.0);
-                `)
+                `,
+            )
             .inject(ShaderInjectionTypes.vary_any, SkyVray);
     }
 
@@ -170,7 +202,8 @@ export class PreSkyMapMaterial extends PassQuadMaterialBase {
     }
 
     extendShaderShading(builder: ShaderBuilder, _: any) {
-        builder.addUniform('luminance', WebGLShaderDataType.Float)
+        builder
+            .addUniform('luminance', WebGLShaderDataType.Float)
             .addUniform('turbidity', WebGLShaderDataType.Float)
             .addUniform('rayleigh', WebGLShaderDataType.Float)
             .addUniform('mieCoefficient', WebGLShaderDataType.Float)
@@ -184,7 +217,9 @@ export class PreSkyMapMaterial extends PassQuadMaterialBase {
             .addVarying(ShaderVaryingTypes.fragUV)
             .addFragment(SkyFrag)
             .addVertex(SkyVert)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 float longitude = (vUv.x * 2.0 * pi) - pi; // Convert back to longitude angle
                 float latitude = (vUv.y * pi) - halfPI; // Convert back to latitude angle
                 float cosLatitude = cos(latitude);
@@ -197,10 +232,10 @@ export class PreSkyMapMaterial extends PassQuadMaterialBase {
                     )
                 );
                 gl_FragColor = vec4(sky(direction, vec3(0.0)), 1.0);
-            `)
+            `,
+            )
             .inject(ShaderInjectionTypes.vary_any, SkyVray);
     }
-
 }
 
 const SkyVray = `

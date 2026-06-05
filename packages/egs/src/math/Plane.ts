@@ -22,8 +22,8 @@ export class Plane {
     constant: number;
 
     constructor(normal?: Vector3, constant?: number) {
-        this.normal = (normal !== undefined) ? normal : new Vector3(1, 0, 0);
-        this.constant = (constant !== undefined) ? constant : 0;
+        this.normal = normal !== undefined ? normal : new Vector3(1, 0, 0);
+        this.constant = constant !== undefined ? constant : 0;
     }
     /**
      * Sets this plane's {@link normal| normal} and {@link constant| constant} properties by copying the values from the given normal.
@@ -55,7 +55,7 @@ export class Plane {
      */
     setFromNormalAndCoplanarPoint(normal: Vector3, point: Vector3): Plane {
         this.normal.copy(normal);
-        this.constant = - point.dot(this.normal);
+        this.constant = -point.dot(this.normal);
         return this;
     }
     /**
@@ -99,7 +99,7 @@ export class Plane {
      * Negates both the normal vector and the constant.
      */
     negate(): Plane {
-        this.constant *= - 1;
+        this.constant *= -1;
         this.normal.negate();
         return this;
     }
@@ -121,7 +121,7 @@ export class Plane {
      * @param target the result will be copied into this Vector3.
      */
     projectPoint(point: Vector3, target: Vector3): Vector3 {
-        return target.copy(this.normal).multiplyScalar(- this.distanceToPoint(point)).add(point);
+        return target.copy(this.normal).multiplyScalar(-this.distanceToPoint(point)).add(point);
     }
     /**
      * Returns the intersection point of the passed line and the plane. Returns null
@@ -140,7 +140,7 @@ export class Plane {
             // Unsure if this is the correct method to handle this case.
             return null;
         }
-        const t = - (line.start.dot(this.normal) + this.constant) / denominator;
+        const t = -(line.start.dot(this.normal) + this.constant) / denominator;
         if (t < 0 || t > 1) {
             return null;
         }
@@ -176,7 +176,7 @@ export class Plane {
      * @param target the result will be copied into this Vector3.
      */
     coplanarPoint(target: Vector3): Vector3 {
-        return target.copy(this.normal).multiplyScalar(- this.constant);
+        return target.copy(this.normal).multiplyScalar(-this.constant);
     }
     /**
      * Apply a Matrix4 to the plane. The matrix must be an affine, homogeneous transform.
@@ -191,7 +191,7 @@ export class Plane {
         const normalMatrix = optionalNormalMatrix || tmpMat3.getNormalMatrix(matrix);
         const referencePoint = this.coplanarPoint(tmp1Vec3).applyMatrix4(matrix);
         const normal = this.normal.applyMatrix3(normalMatrix).normalize();
-        this.constant = - referencePoint.dot(normal);
+        this.constant = -referencePoint.dot(normal);
         return this;
     }
     /**
@@ -207,7 +207,7 @@ export class Plane {
      * Checks to see if two planes are equal (their {@link normal| normal} and {@link .constant| constant} properties match).
      */
     equals(plane: Plane): boolean {
-        return plane.normal.equals(this.normal) && (plane.constant === this.constant);
+        return plane.normal.equals(this.normal) && plane.constant === this.constant;
     }
 }
 

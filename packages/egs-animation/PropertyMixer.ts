@@ -99,7 +99,7 @@ function createUvRotationMixer(target: Material): IMixer {
         setIdentity,
         apply: (buffer: number[], offset: number) => {
             const q = target.metaData.rotation;
-            const x = buffer[offset];;
+            const x = buffer[offset];
             if (q === x) {
                 return;
             }

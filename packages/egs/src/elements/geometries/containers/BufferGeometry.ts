@@ -19,7 +19,13 @@ export const GeometryDisposeEvent = new EventType<BufferGeometryBase>();
 /**
  * Event emitted when a buffer geometry attribute is added, removed, or replaced.
  */
-export const GeometryAttributeChangedEvent = new EventType<{ geometry: BufferGeometryBase, attributeName: string, newValue: Nullable<BufferAttribute>, oldValue: Nullable<BufferAttribute>, update: boolean }>();
+export const GeometryAttributeChangedEvent = new EventType<{
+    geometry: BufferGeometryBase;
+    attributeName: string;
+    newValue: Nullable<BufferAttribute>;
+    oldValue: Nullable<BufferAttribute>;
+    update: boolean;
+}>();
 
 const vector = new Vector3();
 const box = new Box3();
@@ -97,7 +103,8 @@ export abstract class BufferGeometryBase extends GeometryBase {
      */
     _index: Nullable<IndexBufferAttribute> = null;
 
-    get index(): IndexBufferAttribute { // TODO: null type
+    get index(): IndexBufferAttribute {
+        // TODO: null type
         return this._index!;
     }
     set index(v) {
@@ -105,7 +112,13 @@ export abstract class BufferGeometryBase extends GeometryBase {
         ContentBridge.bufferGeometrySetIndexAttribute(this, v);
         this._index = v;
         if (oldValue !== v) {
-            this.emit(GeometryAttributeChangedEvent, { geometry: this, attributeName: 'index', newValue: v, oldValue, update: false });
+            this.emit(GeometryAttributeChangedEvent, {
+                geometry: this,
+                attributeName: 'index',
+                newValue: v,
+                oldValue,
+                update: false,
+            });
         }
     }
     /**
@@ -189,7 +202,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
         this.pushGroup({
             start,
             count,
-            materialIndex: materialIndex !== undefined ? materialIndex : 0
+            materialIndex: materialIndex !== undefined ? materialIndex : 0,
         });
     }
     /**
@@ -198,7 +211,6 @@ export abstract class BufferGeometryBase extends GeometryBase {
     clearGroups(): void {
         this.groups = [];
         ContentBridge.bufferGeometryClearGroups(this);
-
     }
 
     /**
@@ -249,7 +261,9 @@ export abstract class BufferGeometryBase extends GeometryBase {
         if (this.index) {
             result += this.index.getLayoutKey();
         }
-        result += Object.keys(this.attributes).map(key => this.attributes[key].getLayoutKey()).join('');
+        result += Object.keys(this.attributes)
+            .map(key => this.attributes[key].getLayoutKey())
+            .join('');
         return result;
     }
 
@@ -302,7 +316,10 @@ export abstract class BufferGeometryBase extends GeometryBase {
         if (index instanceof BufferAttribute) {
             this.index = index;
         } else {
-            this.index = new BufferAttribute(Utils.arrayMax(index) > 65535 ? new Uint32Array(index) : new Uint16Array(index), 1);
+            this.index = new BufferAttribute(
+                Utils.arrayMax(index) > 65535 ? new Uint32Array(index) : new Uint16Array(index),
+                1,
+            );
         }
         this.index.onUpdateCallback = this.onAttributeUpdate.bind(this);
         return this;
@@ -314,7 +331,13 @@ export abstract class BufferGeometryBase extends GeometryBase {
         this.attributes[name] = attribute;
         attribute.onUpdateCallback = this.onAttributeUpdate.bind(this);
         if (oldValue !== attribute) {
-            this.emit(GeometryAttributeChangedEvent, { geometry: this, attributeName: name, newValue: attribute, oldValue, update: false });
+            this.emit(GeometryAttributeChangedEvent, {
+                geometry: this,
+                attributeName: name,
+                newValue: attribute,
+                oldValue,
+                update: false,
+            });
         }
         return this;
     }
@@ -335,7 +358,13 @@ export abstract class BufferGeometryBase extends GeometryBase {
         if (attribute) {
             attribute.setArray(array);
             attribute.needsUpdate = true;
-            this.emit(GeometryAttributeChangedEvent, { geometry: this, attributeName: name, update: true, newValue: attribute, oldValue: null });
+            this.emit(GeometryAttributeChangedEvent, {
+                geometry: this,
+                attributeName: name,
+                update: true,
+                newValue: attribute,
+                oldValue: null,
+            });
         } else {
             this.addAttribute(name, new BufferAttribute(array, itemSize));
         }
@@ -373,7 +402,7 @@ export abstract class BufferGeometryBase extends GeometryBase {
             if (group.start <= index && index < group.start + group.count) {
                 return {
                     group,
-                    groupIndex: i
+                    groupIndex: i,
                 };
             }
         }
@@ -425,9 +454,11 @@ export abstract class BufferGeometryBase extends GeometryBase {
         }
 
         if (isNaN(this.boundingBox.min.x) || isNaN(this.boundingBox.min.y) || isNaN(this.boundingBox.min.z)) {
-            logger.warn('EGS.BufferGeometry.computeBoundingBox: Computed min/max have NaN values. The "position" attribute is likely to have NaN values.', this);
+            logger.warn(
+                'EGS.BufferGeometry.computeBoundingBox: Computed min/max have NaN values. The "position" attribute is likely to have NaN values.',
+                this,
+            );
         }
-
     }
     /**
      * Computes bounding sphere according to vertexes, updating boundingSphere attribute.
@@ -462,7 +493,10 @@ export abstract class BufferGeometryBase extends GeometryBase {
             this.boundingSphere.radius = Math.sqrt(maxRadiusSq);
 
             if (isNaN(this.boundingSphere.radius)) {
-                logger.warn('EGS.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values.', this);
+                logger.warn(
+                    'EGS.BufferGeometry.computeBoundingSphere(): Computed radius is NaN. The "position" attribute is likely to have NaN values.',
+                    this,
+                );
             }
         }
     }
@@ -536,14 +570,14 @@ export abstract class BufferGeometryBase extends GeometryBase {
             if (face.materialIndex !== materialIndex) {
                 materialIndex = face.materialIndex;
                 if (group !== undefined) {
-                    group.count = (i * 3) - group.start;
+                    group.count = i * 3 - group.start;
                     groups.push(group);
                 }
 
                 group = {
                     start: i * 3,
                     count: 0, // count will get later
-                    materialIndex
+                    materialIndex,
                 };
             }
         }
@@ -600,7 +634,10 @@ export abstract class BufferGeometryBase extends GeometryBase {
 
         const index = ctx.readRaw('index');
         if (index !== null) {
-            this.index = ctx.deserialize(index, new BufferAttribute(undefined as any, 0)) as BufferAttribute<Uint32Array>;
+            this.index = ctx.deserialize(
+                index,
+                new BufferAttribute(undefined as any, 0),
+            ) as BufferAttribute<Uint32Array>;
         } else {
             this.index = null!;
         }
@@ -675,23 +712,37 @@ enum PrimitiveTopology {
     TriangleStrip = 4,
 }
 
-interface Topology { __topologyTypeMark: PrimitiveTopology }
+interface Topology {
+    __topologyTypeMark: PrimitiveTopology;
+}
 /**
  * Topology marker for triangle-list buffer geometry.
  */
-export class TriangleList implements Topology { __topologyTypeMark: PrimitiveTopology.Triangle; __tl: boolean; }
+export class TriangleList implements Topology {
+    __topologyTypeMark: PrimitiveTopology.Triangle;
+    __tl: boolean;
+}
 /**
  * Topology marker for line-list buffer geometry.
  */
-export class LineList implements Topology { __topologyTypeMark: PrimitiveTopology.Line; __ll: boolean; }
+export class LineList implements Topology {
+    __topologyTypeMark: PrimitiveTopology.Line;
+    __ll: boolean;
+}
 /**
  * Topology marker for line-strip buffer geometry.
  */
-export class LineStrip implements Topology { __topologyTypeMark: PrimitiveTopology.LineStrip; __ls: boolean; }
+export class LineStrip implements Topology {
+    __topologyTypeMark: PrimitiveTopology.LineStrip;
+    __ls: boolean;
+}
 /**
  * Topology marker for point-list buffer geometry.
  */
-export class PointList implements Topology { __topologyTypeMark: PrimitiveTopology.Point; __pl: boolean; }
+export class PointList implements Topology {
+    __topologyTypeMark: PrimitiveTopology.Point;
+    __pl: boolean;
+}
 
 /**
  * GPU-friendly geometry container backed by buffer attributes.
@@ -700,8 +751,8 @@ export class BufferGeometry<T extends Topology = TriangleList> extends BufferGeo
     __topologyMark: T;
 
     /**
-    * Create a clone of this instance.
-    */
+     * Create a clone of this instance.
+     */
     clone(): BufferGeometry<T> {
         return new BufferGeometry().copy(this) as BufferGeometry<T>;
     }

@@ -1,9 +1,19 @@
 export interface ISingleSplat {
-    x: number, y: number, z: number,
-    sx: number, sy: number, sz: number,
-    qx: number, qy: number, qz: number, qw: number,
-    r: number, g: number, b: number, a: number,
-    shN: number[],
+    x: number;
+    y: number;
+    z: number;
+    sx: number;
+    sy: number;
+    sz: number;
+    qx: number;
+    qy: number;
+    qz: number;
+    qw: number;
+    r: number;
+    g: number;
+    b: number;
+    a: number;
+    shN: number[];
 }
 
 export interface IData {
@@ -99,7 +109,7 @@ export class BufferReader {
 
     read(counts: number): Uint8Array {
         const head = this.head;
-        const tail = this.head = head + counts;
+        const tail = (this.head = head + counts);
         return this.buffer.subarray(head, tail);
     }
 }
@@ -208,7 +218,8 @@ let context: OffscreenCanvasRenderingContext2D | undefined;
 export async function decodeImage(fileBytes: ArrayBuffer) {
     if (!context) {
         canvas = new OffscreenCanvas(1, 1);
-        context = canvas.getContext('2d', { willReadFrequently: true } as CanvasRenderingContext2DSettings) ?? undefined;
+        context =
+            canvas.getContext('2d', { willReadFrequently: true } as CanvasRenderingContext2DSettings) ?? undefined;
     }
     if (!context) {
         throw new Error('Failed to create context');

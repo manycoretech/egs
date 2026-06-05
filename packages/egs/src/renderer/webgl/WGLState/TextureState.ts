@@ -57,11 +57,15 @@ export class TextureState {
     getFreeSlot(): number {
         const slot = this.slot;
         if (this.slot > WGLCapabilities.MAX_COMBINED_TEXTURE_IMAGE_UNITS) {
-            logger.webglError('EGS: Trying to use ' + this.slot + ' texture units while this GPU supports only ' + WGLCapabilities.MAX_TEXTURES);
+            logger.webglError(
+                'EGS: Trying to use ' +
+                    this.slot +
+                    ' texture units while this GPU supports only ' +
+                    WGLCapabilities.MAX_TEXTURES,
+            );
             return this.slot - 1;
         }
         this.slot++;
         return slot;
     }
-
 }

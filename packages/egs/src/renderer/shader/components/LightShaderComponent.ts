@@ -8,7 +8,9 @@ import { DiskAreaLight, diskAreaLightCollect } from '../../../scene/lights/DiskA
 import type { HemisphereLight } from '../../../scene/lights/HemisphereLight';
 import type { Light } from '../../../scene/lights/Light';
 import {
-    PointLight, pointLightCollect, punctualLightIntensityToIrradianceFactor
+    PointLight,
+    pointLightCollect,
+    punctualLightIntensityToIrradianceFactor,
 } from '../../../scene/lights/PointLight';
 import { RectAreaLight, rectAreaLightCollect } from '../../../scene/lights/RectAreaLight';
 import { SpotLight, spotLightCollect } from '../../../scene/lights/SpotLight';
@@ -108,30 +110,24 @@ export class LightShaderComponent extends SharedShaderComponent {
     }
 
     lightAndShadowHashKey() {
-        return `
-p${this.pointLights.length
-            } s${this.spotLights.length
-            } d${this.directionalLights.length
-            } a${this.ambientLight === null
-            } h${this.hemiLights.length
-            } r${this.rectAreaLights.length
-            } r${this.diskAreaLights.length
-            }` + this.shadowHashKey() + `${this.onlyDirectLight}`;
+        return (
+            `
+p${this.pointLights.length} s${this.spotLights.length} d${this.directionalLights.length} a${
+                this.ambientLight === null
+            } h${this.hemiLights.length} r${this.rectAreaLights.length} r${this.diskAreaLights.length}` +
+            this.shadowHashKey() +
+            `${this.onlyDirectLight}`
+        );
     }
 
     // this only use for graph selection
     shadowHashKey() {
         return `
-ds ${this.directionalShadowLength
-            } ss ${this.spotShadowLength
-            } ps ${this.pointShadowLength
-            }`;
+ds ${this.directionalShadowLength} ss ${this.spotShadowLength} ps ${this.pointShadowLength}`;
     }
 
     get hasAnyShadow() {
-        return this.hasDirectionalShadow ||
-            this.hasSpotShadow ||
-            this.hasPointShadow;
+        return this.hasDirectionalShadow || this.hasSpotShadow || this.hasPointShadow;
     }
 
     clear() {
@@ -257,11 +253,21 @@ ds ${this.directionalShadowLength
         if (this.ambientLight) {
             this.ambientLight.updateUniforms(program);
         }
-        this.pointLights.forEach((l, i) => { l.updateUniformForForward(program, i); });
-        this.spotLights.forEach((l, i) => { l.updateUniformForForward(program, i); });
-        this.directionalLights.forEach((l, i) => { l.updateUniformForForward(program, i); });
-        this.rectAreaLights.forEach((l, i) => { l.updateUniformForForward(program, i); });
-        this.diskAreaLights.forEach((l, i) => { l.updateUniformForForward(program, i); });
+        this.pointLights.forEach((l, i) => {
+            l.updateUniformForForward(program, i);
+        });
+        this.spotLights.forEach((l, i) => {
+            l.updateUniformForForward(program, i);
+        });
+        this.directionalLights.forEach((l, i) => {
+            l.updateUniformForForward(program, i);
+        });
+        this.rectAreaLights.forEach((l, i) => {
+            l.updateUniformForForward(program, i);
+        });
+        this.diskAreaLights.forEach((l, i) => {
+            l.updateUniformForForward(program, i);
+        });
     }
 
     updateShadowMapUniforms(program: WGLProgram) {
@@ -300,7 +306,9 @@ ds ${this.directionalShadowLength
             .inject(ShaderInjectionTypes.gl_FragColor, this.buildLightCollector(builder));
 
         if (this.pointLights.length > 0) {
-            const IESLightEffect = Capabilities.IS_WEBGL2 ? ShaderBlockPool.IESLightEffect : ShaderBlockPool.IESLightEffectMock;
+            const IESLightEffect = Capabilities.IS_WEBGL2
+                ? ShaderBlockPool.IESLightEffect
+                : ShaderBlockPool.IESLightEffectMock;
             builder
                 .addShaderStrProcess(s => s.replace(/NUM_POINT_LIGHTS/g, this.pointLights.length + ''))
                 .addShaderStrProcess(s => s.replace(/NUM_POINT_LIGHT_SHADOWS/g, this.pointShadowLength + ''))
@@ -316,7 +324,9 @@ ds ${this.directionalShadowLength
             }
         }
         if (this.spotLights.length > 0) {
-            const IESLightEffect = Capabilities.IS_WEBGL2 ? ShaderBlockPool.IESLightEffect : ShaderBlockPool.IESLightEffectMock;
+            const IESLightEffect = Capabilities.IS_WEBGL2
+                ? ShaderBlockPool.IESLightEffect
+                : ShaderBlockPool.IESLightEffectMock;
             builder
                 .addShaderStrProcess(s => s.replace(/NUM_SPOT_LIGHTS/g, this.spotLights.length + ''))
                 .addShaderStrProcess(s => s.replace(/NUM_SPOT_LIGHT_SHADOWS/g, this.spotShadowLength + ''))
@@ -402,9 +412,7 @@ ds ${this.directionalShadowLength
         let irradianceExt = '';
         const env = builder.getComponent('EnvMapIBL') as EnvMapIBLShaderComponent;
         if (env !== undefined) {
-            builder
-                .addFragment(ShaderBlockPool.GetSpecularMIPLevel)
-                .addFragment(env.getLightProbeIndirectRadiance());
+            builder.addFragment(ShaderBlockPool.GetSpecularMIPLevel).addFragment(env.getLightProbeIndirectRadiance());
         }
 
         if (builder.hasComponent('LightMapChannel')) {
@@ -414,15 +422,17 @@ ds ${this.directionalShadowLength
         return `
         vec3 irradiance = getAmbientLightIrradiance( ambientLightColor );
 
-        ${this.hemiLights.length === 0 ? '' :
-                `
+        ${
+            this.hemiLights.length === 0
+                ? ''
+                : `
             #pragma unroll_loop_start
             for ( int i = 0; i < NUM_HEMI_LIGHTS; i ++ ) {
                 irradiance += getHemisphereLightIrradiance( hemisphereLights[ i ], geometry );
             }
             #pragma unroll_loop_end
             `
-            }
+        }
 
         ${irradianceExt}
         RE_IndirectDiffuse( irradiance, geometry, material, reflectedLight );
@@ -516,10 +526,13 @@ ds ${this.directionalShadowLength
 const envRadianceSample = `radiance += getLightProbeIndirectRadiance( /*specularLightProbe,*/ geometry, Material_BlinnShininessExponent( material ), maxMipLevel );`;
 
 interface ShadowLight {
-    shadow: Shadow<any>
+    shadow: Shadow<any>;
 }
 
 function reorderList<T extends ShadowLight>(lights: T[]): any {
     const hasShadowList = lights.filter(v => v.shadow && v.shadow.enabled);
-    return [hasShadowList.concat(lights.filter(v => v.shadow === undefined || !v.shadow.enabled)), hasShadowList.length];
+    return [
+        hasShadowList.concat(lights.filter(v => v.shadow === undefined || !v.shadow.enabled)),
+        hasShadowList.length,
+    ];
 }

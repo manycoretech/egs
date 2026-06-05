@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* oxlint-disable */
 
 declare global {
     const CONFIG: {
@@ -15,4 +15,4 @@ declare global {
     var EGS_WEBGL1_RENDERER_COUNT: number;
 }
 
-export { };
+export {};

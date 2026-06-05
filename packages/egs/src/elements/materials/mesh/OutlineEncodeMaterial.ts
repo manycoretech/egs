@@ -1,6 +1,10 @@
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { ShaderVaryingTypes, type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    ShaderVaryingTypes,
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
 import { Capabilities } from '../../../renderer/Capabilities';
 import { Platform } from '../../../utils/Platform';
@@ -40,9 +44,7 @@ export class OutlineEncodeMaterial extends SceneMaterial {
             .addFragment(Encoder)
             .inject(ShaderInjectionTypes.vary_any, 'float offset = 0.0;');
         if (useFlatVarying) {
-            builder
-                .addVertexCustom(`flat out vec2 vOutlineId;`)
-                .addFragmentCustom(`flat in vec2 vOutlineId;`);
+            builder.addVertexCustom(`flat out vec2 vOutlineId;`).addFragmentCustom(`flat in vec2 vOutlineId;`);
         } else {
             builder.addVaryingCustom('vOutlineId', WebGLShaderDataType.Float);
         }
@@ -59,12 +61,21 @@ export class OutlineEncodeMaterial extends SceneMaterial {
         }
         if (useFlatVarying) {
             builder
-                .inject(ShaderInjectionTypes.vary_any, 'vOutlineId = vec2(floor((encodeId + offset) / 256.0) / 256.0, mod(encodeId + offset, 256.0) / 256.0);')
-                .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = vec4(vOutlineId, encodeViewNormalStereo(normal));');
+                .inject(
+                    ShaderInjectionTypes.vary_any,
+                    'vOutlineId = vec2(floor((encodeId + offset) / 256.0) / 256.0, mod(encodeId + offset, 256.0) / 256.0);',
+                )
+                .inject(
+                    ShaderInjectionTypes.gl_FragColor,
+                    'gl_FragColor = vec4(vOutlineId, encodeViewNormalStereo(normal));',
+                );
         } else {
             builder
                 .inject(ShaderInjectionTypes.vary_any, 'vOutlineId = floor(encodeId + offset);')
-                .inject(ShaderInjectionTypes.gl_FragColor, 'gl_FragColor = vec4(vec2(floor(round(vOutlineId) / 256.0) / 256.0, mod(round(vOutlineId), 256.0) / 256.0), encodeViewNormalStereo(normal));');
+                .inject(
+                    ShaderInjectionTypes.gl_FragColor,
+                    'gl_FragColor = vec4(vec2(floor(round(vOutlineId) / 256.0) / 256.0, mod(round(vOutlineId), 256.0) / 256.0), encodeViewNormalStereo(normal));',
+                );
         }
     }
 }

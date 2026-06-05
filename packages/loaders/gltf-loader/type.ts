@@ -1,6 +1,15 @@
 import type { Object3D, Matrix4 } from '@qunhe/egs';
 
-type TypedArray = Float32Array | Float64Array | Int8Array | Uint8Array | Uint8ClampedArray | Int16Array | Uint16Array | Int32Array | Uint32Array;
+type TypedArray =
+    | Float32Array
+    | Float64Array
+    | Int8Array
+    | Uint8Array
+    | Uint8ClampedArray
+    | Int16Array
+    | Uint16Array
+    | Int32Array
+    | Uint32Array;
 
 //#region gltf format type
 interface IBase {
@@ -55,13 +64,13 @@ export enum PrimitiveMode {
     TRIANGLES = 4,
     TRIANGLE_STRIP = 5,
     TRIANGLE_FAN = 6,
-};
+}
 
 export enum ALPHA_MODES {
     OPAQUE = 'OPAQUE',
     MASK = 'MASK',
     BLEND = 'BLEND',
-};
+}
 
 export interface IMaterial extends IBase {
     name?: string;

@@ -1,5 +1,5 @@
 let mapId = 0;
-export class IterableWeakMap<K extends Object, V> {
+export class IterableWeakMap<K extends object, V> {
     private weakSet = new Set<WeakRef<K>>();
     private instanceId = mapId++;
     private finalizationRegistry = new FinalizationRegistry((key: WeakRef<K>) => {
@@ -11,7 +11,7 @@ export class IterableWeakMap<K extends Object, V> {
         if (!weak) {
             (key as any).$weak = weak = {
                 ref: new WeakRef(key),
-                values: []
+                values: [],
             };
         }
         if (!this.weakSet.has(weak.ref)) {
@@ -59,7 +59,7 @@ export class IterableWeakMap<K extends Object, V> {
     }
 }
 
-export class IterableWeakSet<V extends Object> {
+export class IterableWeakSet<V extends object> {
     private map = new IterableWeakMap<V, 1>();
 
     add(value: V) {

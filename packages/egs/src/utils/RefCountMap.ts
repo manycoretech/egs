@@ -3,10 +3,10 @@ interface RefC<T> {
     count: number;
 }
 
-export class RefCountMap<K, V>{
+export class RefCountMap<K, V> {
     map: Map<K, RefC<V>> = new Map();
 
-    onValueRemove = (_v: V) => { };
+    onValueRemove = (_v: V) => {};
 
     getValue(key: K) {
         const record = this.map.get(key);
@@ -22,7 +22,8 @@ export class RefCountMap<K, V>{
             old.count++;
         } else {
             this.map.set(key, {
-                item: value, count: 1
+                item: value,
+                count: 1,
             });
         }
     }

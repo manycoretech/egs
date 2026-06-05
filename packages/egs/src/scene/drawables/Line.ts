@@ -38,8 +38,8 @@ export class Line<M extends Material = Material> extends Drawable<M, BufferGeome
 
     constructor(geometry?: BufferGeometry<LineStrip>, material?: M | M[]) {
         super(
-            geometry !== undefined ? geometry : new BufferGeometry() as any,
-            material !== undefined ? material : new LineBasicMaterial() as any
+            geometry !== undefined ? geometry : (new BufferGeometry() as any),
+            material !== undefined ? material : (new LineBasicMaterial() as any),
         );
     }
 
@@ -61,7 +61,12 @@ export class Line<M extends Material = Material> extends Drawable<M, BufferGeome
     }
 }
 
-export function raycastLine(raycaster: Raycaster, intersects: Intersection[], object: Drawable, isLineSegments: boolean) {
+export function raycastLine(
+    raycaster: Raycaster,
+    intersects: Intersection[],
+    object: Drawable,
+    isLineSegments: boolean,
+) {
     let precision = raycaster.linePrecision;
     const geometry = object.geometry;
     const matrixWorld = object.matrixWorld;
@@ -74,7 +79,9 @@ export function raycastLine(raycaster: Raycaster, intersects: Intersection[], ob
     }
 
     sphere.radius += precision;
-    if (raycaster.ray.intersectsSphere(sphere) === false) { return; }
+    if (raycaster.ray.intersectsSphere(sphere) === false) {
+        return;
+    }
 
     //
     inverseMatrix.getInverse(matrixWorld);
@@ -100,7 +107,18 @@ export function raycastLine(raycaster: Raycaster, intersects: Intersection[], ob
             const b = indices[i + 1];
             vStart.fromArray(positions as any, a * 3);
             vEnd.fromArray(positions as any, b * 3);
-            const result = checkIntersectionLine(vStart, vEnd, i / step, i, object, raycaster, ray, realScaleTemp, localPrecisionSq, screenPrecisionMaxSq);
+            const result = checkIntersectionLine(
+                vStart,
+                vEnd,
+                i / step,
+                i,
+                object,
+                raycaster,
+                ray,
+                realScaleTemp,
+                localPrecisionSq,
+                screenPrecisionMaxSq,
+            );
             if (result !== undefined) {
                 intersects.push(result);
             }
@@ -110,7 +128,18 @@ export function raycastLine(raycaster: Raycaster, intersects: Intersection[], ob
             vStart.fromArray(positions as any, 3 * i);
             vEnd.fromArray(positions as any, 3 * i + 3);
 
-            const result = checkIntersectionLine(vStart, vEnd, i / step, i, object, raycaster, ray, realScaleTemp, localPrecisionSq, screenPrecisionMaxSq);
+            const result = checkIntersectionLine(
+                vStart,
+                vEnd,
+                i / step,
+                i,
+                object,
+                raycaster,
+                ray,
+                realScaleTemp,
+                localPrecisionSq,
+                screenPrecisionMaxSq,
+            );
             if (result !== undefined) {
                 intersects.push(result);
             }
@@ -122,8 +151,11 @@ const interSegment = new Vector3();
 const interRay = new Vector3();
 const diff = new Vector3();
 export function checkIntersectionLine(
-    start: Vector3, end: Vector3,
-    primitiveIndex: number, index: number, object: Drawable,
+    start: Vector3,
+    end: Vector3,
+    primitiveIndex: number,
+    index: number,
+    object: Drawable,
     raycaster: Raycaster,
     rayLocal: Ray,
     realScale: Vector3,
@@ -164,6 +196,6 @@ export function checkIntersectionLine(
         index,
         face: undefined,
         faceIndex: undefined,
-        object
+        object,
     };
 }

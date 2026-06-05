@@ -39,7 +39,7 @@ export class MeshMergePool extends ProxyOptimizer<Mesh, Mesh> {
             }
             const source = group[0];
             const mergeResult = merger.merge(group);
-            const geometry = (mergeResult && mergeResult.length > 0) ? mergeResult[0].geometry : DEFAULT_GEOMETRY!;
+            const geometry = mergeResult && mergeResult.length > 0 ? mergeResult[0].geometry : DEFAULT_GEOMETRY!;
             const mesh = new Mesh(geometry, source.getMaterials()[0]);
             mesh.mergeKey = source.mergeKey;
             mesh.layers.mask = source.netLayer.mask;
@@ -57,7 +57,7 @@ export class MeshMergePool extends ProxyOptimizer<Mesh, Mesh> {
 
     updateProxy(p: Mesh, meshes: Mesh[]): void {
         const mergeResult = merger.merge(meshes);
-        p.geometry = (mergeResult && mergeResult.length > 0) ? mergeResult[0].geometry : DEFAULT_GEOMETRY!;
+        p.geometry = mergeResult && mergeResult.length > 0 ? mergeResult[0].geometry : DEFAULT_GEOMETRY!;
         p.updateBoundings();
     }
 

@@ -22,17 +22,18 @@ export class RenderAttachment extends TextureV2 {
     readonly forceRenderBuffer: boolean = false;
 
     constructor(
-        dimension: TextureDimension, viewDimension: TextureViewDimension,
+        dimension: TextureDimension,
+        viewDimension: TextureViewDimension,
         format: TextureFormat,
-        width: number, height: number, depthOrArrayLayers: number,
-        mipmaps: boolean, sampleCount: number, forceRenderBuffer: boolean,
+        width: number,
+        height: number,
+        depthOrArrayLayers: number,
+        mipmaps: boolean,
+        sampleCount: number,
+        forceRenderBuffer: boolean,
         sampler: SamplerDescriptor,
     ) {
-        super(
-            dimension, viewDimension, format,
-            width, height, depthOrArrayLayers, sampleCount,
-            mipmaps, true
-        );
+        super(dimension, viewDimension, format, width, height, depthOrArrayLayers, sampleCount, mipmaps, true);
         this.forceRenderBuffer = forceRenderBuffer;
         this.samplerDescriptor.copy(sampler);
         ContentBridge.textureCreate(this);
@@ -53,7 +54,15 @@ export class RenderAttachment extends TextureV2 {
     /**
      * @internal
      */
-    attach(gl: WebGL2RenderingContext | WebGLRenderingContext, backend: RendererBackend, frameBuffer: number, attachment: number, data: WGLRenderAttachment, layer: number, level: number) {
+    attach(
+        gl: WebGL2RenderingContext | WebGLRenderingContext,
+        backend: RendererBackend,
+        frameBuffer: number,
+        attachment: number,
+        data: WGLRenderAttachment,
+        layer: number,
+        level: number,
+    ) {
         let glAttachment = gl.COLOR_ATTACHMENT0 + attachment;
         if (this.glFormat.external(backend) === WebGLPixelFormat.Depth) {
             glAttachment = gl.DEPTH_ATTACHMENT;

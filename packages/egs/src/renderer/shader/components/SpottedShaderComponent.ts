@@ -13,11 +13,12 @@ import { ContentBridge, materialProperty } from '../../../ContentAPI';
  */
 export enum SpottedType {
     dot = 0,
-    diagonal
+    diagonal,
 }
 
-export type SpottedShaderComponentParameter = ConvertMaterialParameters<Pick<SpottedShaderComponent,
-    'markerType' | 'markerColor' | 'markerSpacing' | 'diagonalProportion' | 'markerSize'>>;
+export type SpottedShaderComponentParameter = ConvertMaterialParameters<
+    Pick<SpottedShaderComponent, 'markerType' | 'markerColor' | 'markerSpacing' | 'diagonalProportion' | 'markerSize'>
+>;
 
 const keys = ['markerType', 'markerColor', 'markerSpacing', 'diagonalProportion', 'markerSize'];
 
@@ -76,10 +77,22 @@ export class SpottedShaderComponent extends ShaderComponent {
         Utils.copyProperties(keys, this, values);
     }
     serialize(ctx: Serializer) {
-        ctx.puts<SpottedShaderComponent>(['markerType', 'markerSize', 'markerColor', 'markerSpacing', 'diagonalProportion']);
+        ctx.puts<SpottedShaderComponent>([
+            'markerType',
+            'markerSize',
+            'markerColor',
+            'markerSpacing',
+            'diagonalProportion',
+        ]);
     }
     deserialize(ctx: Deserializer) {
-        ctx.reads<SpottedShaderComponent>(['markerType', 'markerSize', 'markerColor', 'markerSpacing', 'diagonalProportion']);
+        ctx.reads<SpottedShaderComponent>([
+            'markerType',
+            'markerSize',
+            'markerColor',
+            'markerSpacing',
+            'diagonalProportion',
+        ]);
     }
     /**
      * Copy the data to this object from other.
@@ -98,20 +111,25 @@ export class SpottedShaderComponent extends ShaderComponent {
     }
 
     extendShaderShading(builder: ShaderBuilder) {
-        builder.addUniform('markerColor', WebGLShaderDataType.Vec3)
+        builder
+            .addUniform('markerColor', WebGLShaderDataType.Vec3)
             .addUniform('markerSpacing', WebGLShaderDataType.Float)
             .addUniform('markerSize', WebGLShaderDataType.Float);
 
         if (this.markerType === SpottedType.dot) {
-            builder.inject(ShaderInjectionTypes.gl_FragColor, `
+            builder.inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
             float unit = markerSpacing + 1.0;
             vec2 dotted = mod(floor(gl_FragCoord.xy), unit);
             if (dotted.x < markerSize && dotted.y < markerSize) {
                 gl_FragColor = vec4( markerColor, 1.0 );
-            }`);
+            }`,
+            );
         } else {
-            builder.addUniform('diagonalProportion', WebGLShaderDataType.Float)
-                .inject(ShaderInjectionTypes.gl_FragColor, `
+            builder.addUniform('diagonalProportion', WebGLShaderDataType.Float).inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
             float unit = markerSpacing + 1.0;
             float threshold = unit / diagonalProportion;
             float dotted = mod(gl_FragCoord.x - gl_FragCoord.y, unit);
@@ -120,8 +138,8 @@ export class SpottedShaderComponent extends ShaderComponent {
             bool isMarker = isOnDiagonal && pos.x > threshold && pos.y > threshold;
             if (isMarker){
                 gl_FragColor = vec4( markerColor, 1.0 );
-            }`);
-
+            }`,
+            );
         }
     }
     /**

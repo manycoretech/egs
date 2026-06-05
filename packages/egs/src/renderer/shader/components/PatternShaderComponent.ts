@@ -12,8 +12,13 @@ import type { Color } from '../../../math/Color';
 import { BlendingFactor, BlendingEquation } from '../../../utils/Constants';
 import type { TextureV2 } from '../../../elements/textures/TextureV2';
 
-export type PatternShaderComponentParameter<T extends TextureV2 | Texture2D = Texture2D> = ConvertMaterialParameters<Pick<PatternShaderComponent<T>,
-    'pattern' | 'scale' | 'offset' | 'textureSize' | 'screenSpaceEnabled' | 'overrideSrcColor'>> & ShaderBlendParameter;
+export type PatternShaderComponentParameter<T extends TextureV2 | Texture2D = Texture2D> = ConvertMaterialParameters<
+    Pick<
+        PatternShaderComponent<T>,
+        'pattern' | 'scale' | 'offset' | 'textureSize' | 'screenSpaceEnabled' | 'overrideSrcColor'
+    >
+> &
+    ShaderBlendParameter;
 
 const keys = ['pattern', 'scale', 'offset', 'textureSize', 'screenSpaceEnabled', 'overrideSrcColor'];
 
@@ -52,11 +57,25 @@ export class PatternShaderComponent<T extends TextureV2 | Texture2D = Texture2D>
     }
 
     serialize(ctx: Serializer) {
-        ctx.puts<PatternShaderComponent>(['pattern', 'scale', 'offset', 'textureSize', 'screenSpaceEnabled', 'overrideSrcColor']);
+        ctx.puts<PatternShaderComponent>([
+            'pattern',
+            'scale',
+            'offset',
+            'textureSize',
+            'screenSpaceEnabled',
+            'overrideSrcColor',
+        ]);
     }
 
     deserialize(ctx: Deserializer) {
-        ctx.reads<PatternShaderComponent>(['pattern', 'scale', 'offset', 'textureSize', 'screenSpaceEnabled', 'overrideSrcColor']);
+        ctx.reads<PatternShaderComponent>([
+            'pattern',
+            'scale',
+            'offset',
+            'textureSize',
+            'screenSpaceEnabled',
+            'overrideSrcColor',
+        ]);
     }
 
     copy(other: PatternShaderComponent<T>) {
@@ -78,25 +97,31 @@ export class PatternShaderComponent<T extends TextureV2 | Texture2D = Texture2D>
             .addUniform('scale', WebGLShaderDataType.Vec2)
             .addUniform('offset', WebGLShaderDataType.Vec2)
             .addUniform('texture_size', WebGLShaderDataType.Vec2)
-            .inject(ShaderInjectionTypes.gl_FragColorModify, this.blendConfig.generateShader('pattern_tex', 'gl_FragColor', 'gl_FragColor'));
+            .inject(
+                ShaderInjectionTypes.gl_FragColorModify,
+                this.blendConfig.generateShader('pattern_tex', 'gl_FragColor', 'gl_FragColor'),
+            );
         if (this.overrideSrcColor) {
             builder.addUniform('overrideSrcColor', WebGLShaderDataType.Vec3);
         }
         if (this.screenSpaceEnabled) {
-            builder
-                .inject(ShaderInjectionTypes.gl_FragColor, `
+            builder.inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                     vec2 pattern_uv = (gl_FragCoord.xy + offset) / texture_size / scale;
                     vec4 pattern_tex = texture2D(pattern, pattern_uv);
                     ${this.overrideSrcColor ? 'pattern_tex.rgb = overrideSrcColor;' : ''}
-                `);
+                `,
+            );
         } else {
-            builder
-                .addVarying(ShaderVaryingTypes.fragUV)
-                .inject(ShaderInjectionTypes.gl_FragColor, `
+            builder.addVarying(ShaderVaryingTypes.fragUV).inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                     vec2 pattern_uv = (vUv + offset) / texture_size / scale;
                     vec4 pattern_tex = texture2D(pattern, pattern_uv);
                     ${this.overrideSrcColor ? 'pattern_tex.rgb = overrideSrcColor;' : ''}
-                `);
+                `,
+            );
         }
     }
 
@@ -111,15 +136,34 @@ export class PatternShaderComponent<T extends TextureV2 | Texture2D = Texture2D>
     }
 
     generateShaderKey() {
-        return (this.screenSpaceEnabled ? '1' : '0') +
+        return (
+            (this.screenSpaceEnabled ? '1' : '0') +
             (this.overrideSrcColor ? '1' : '0') +
-            this.blendConfig.generateShaderKey();
+            this.blendConfig.generateShaderKey()
+        );
     }
 }
 
-export type ShaderBlendParameter = ConvertMaterialParameters<Pick<ShaderBlend, 'shaderBlendSrc' | 'shaderBlendDst' | 'shaderBlendEquation' | 'shaderBlendSrcAlpha' | 'shaderBlendDstAlpha' | 'shaderBlendEquationAlpha'>>;
+export type ShaderBlendParameter = ConvertMaterialParameters<
+    Pick<
+        ShaderBlend,
+        | 'shaderBlendSrc'
+        | 'shaderBlendDst'
+        | 'shaderBlendEquation'
+        | 'shaderBlendSrcAlpha'
+        | 'shaderBlendDstAlpha'
+        | 'shaderBlendEquationAlpha'
+    >
+>;
 
-export const shaderBlendKeys = ['shaderBlendSrc', 'shaderBlendDst', 'shaderBlendEquation', 'shaderBlendSrcAlpha', 'shaderBlendDstAlpha', 'shaderBlendEquationAlpha'];
+export const shaderBlendKeys = [
+    'shaderBlendSrc',
+    'shaderBlendDst',
+    'shaderBlendEquation',
+    'shaderBlendSrcAlpha',
+    'shaderBlendDstAlpha',
+    'shaderBlendEquationAlpha',
+];
 
 class ShaderBlend<T extends TextureV2 | Texture2D = Texture2D> {
     private readonly parent: PatternShaderComponent<T>;
@@ -182,8 +226,14 @@ class ShaderBlend<T extends TextureV2 | Texture2D = Texture2D> {
     }
 
     generateShaderKey() {
-        return this._shaderBlendSrc.toString() + this._shaderBlendDst.toString() + this._shaderBlendEquation.toString() +
-            this._shaderBlendSrcAlpha.toString() + this._shaderBlendDstAlpha.toString() + this._shaderBlendEquationAlpha.toString();
+        return (
+            this._shaderBlendSrc.toString() +
+            this._shaderBlendDst.toString() +
+            this._shaderBlendEquation.toString() +
+            this._shaderBlendSrcAlpha.toString() +
+            this._shaderBlendDstAlpha.toString() +
+            this._shaderBlendEquationAlpha.toString()
+        );
     }
 
     generateShader(blendSrc: string, blendDst: string, result: string): string {
@@ -193,39 +243,59 @@ class ShaderBlend<T extends TextureV2 | Texture2D = Texture2D> {
         const alphaDstFac = ShaderBlend.factor(blendSrc, blendDst, this._shaderBlendDstAlpha);
         let colorShader = '';
         switch (this._shaderBlendEquation) {
-            case BlendingEquation.Add: colorShader = `
+            case BlendingEquation.Add:
+                colorShader = `
             ${result}.rgb = ${blendSrc}.rgb * ${colorSrcFac} + ${blendDst}.rgb * ${colorDstFac};
-            `; break;
-            case BlendingEquation.Subtract: colorShader = `
+            `;
+                break;
+            case BlendingEquation.Subtract:
+                colorShader = `
             ${result}.rgb = ${blendSrc}.rgb * ${colorSrcFac} - ${blendDst}.rgb * ${colorDstFac};
-            `; break;
-            case BlendingEquation.ReverseSubtract: colorShader = `
+            `;
+                break;
+            case BlendingEquation.ReverseSubtract:
+                colorShader = `
             ${result}.rgb = ${blendDst}.rgb * ${colorDstFac} - ${blendSrc}.rgb * ${colorSrcFac};
-            `; break;
-            case BlendingEquation.Min: colorShader = `
+            `;
+                break;
+            case BlendingEquation.Min:
+                colorShader = `
             ${result}.rgb = min(${blendDst}.rgb, ${blendSrc}.rgb);
-            `; break;
-            case BlendingEquation.Max: colorShader = `
+            `;
+                break;
+            case BlendingEquation.Max:
+                colorShader = `
             ${result}.rgb = max(${blendDst}.rgb, ${blendSrc}.rgb);
-            `; break;
+            `;
+                break;
         }
         let alphaShader = '';
         switch (this._shaderBlendEquationAlpha) {
-            case BlendingEquation.Add: alphaShader = `
+            case BlendingEquation.Add:
+                alphaShader = `
             ${result}.a = ${blendSrc}.a * ${alphaSrcFac} + ${blendDst}.a * ${alphaDstFac};
-            `; break;
-            case BlendingEquation.Subtract: alphaShader = `
+            `;
+                break;
+            case BlendingEquation.Subtract:
+                alphaShader = `
             ${result}.a = ${blendSrc}.a * ${alphaSrcFac} - ${blendDst}.a * ${alphaDstFac};
-            `; break;
-            case BlendingEquation.ReverseSubtract: alphaShader = `
+            `;
+                break;
+            case BlendingEquation.ReverseSubtract:
+                alphaShader = `
             ${result}.a = ${blendDst}.a * ${alphaDstFac} - ${blendSrc}.a * ${alphaSrcFac};
-            `; break;
-            case BlendingEquation.Min: alphaShader = `
+            `;
+                break;
+            case BlendingEquation.Min:
+                alphaShader = `
             ${result}.a = min(${blendDst}.a, ${blendSrc}.a);
-            `; break;
-            case BlendingEquation.Max: alphaShader = `
+            `;
+                break;
+            case BlendingEquation.Max:
+                alphaShader = `
             ${result}.a = max(${blendDst}.a, ${blendSrc}.a);
-            `; break;
+            `;
+                break;
         }
         return alphaShader + colorShader;
     }
@@ -240,16 +310,26 @@ class ShaderBlend<T extends TextureV2 | Texture2D = Texture2D> {
     }
     private static factor(src: string, dst: string, type: BlendingFactor) {
         switch (type) {
-            case BlendingFactor.Zero: return '0.0';
-            case BlendingFactor.One: return '1.0';
-            case BlendingFactor.SrcColor: return `${src}.rgb`;
-            case BlendingFactor.OneMinusSrcColor: return `(vec3(1.0, 1.0, 1.0) - ${src}.rgb)`;
-            case BlendingFactor.DstColor: return `${dst}.rgb`;
-            case BlendingFactor.OneMinusDstColor: return `(vec3(1.0, 1.0, 1.0) - ${dst}.rgb)`;
-            case BlendingFactor.SrcAlphaFactor: return `${src}.a`;
-            case BlendingFactor.OneMinusSrcAlpha: return `(1.0 - ${src}.a)`;
-            case BlendingFactor.DstAlpha: return `${dst}.a`;
-            case BlendingFactor.OneMinusDstAlpha: return `(1.0 - ${dst}.a)`;
+            case BlendingFactor.Zero:
+                return '0.0';
+            case BlendingFactor.One:
+                return '1.0';
+            case BlendingFactor.SrcColor:
+                return `${src}.rgb`;
+            case BlendingFactor.OneMinusSrcColor:
+                return `(vec3(1.0, 1.0, 1.0) - ${src}.rgb)`;
+            case BlendingFactor.DstColor:
+                return `${dst}.rgb`;
+            case BlendingFactor.OneMinusDstColor:
+                return `(vec3(1.0, 1.0, 1.0) - ${dst}.rgb)`;
+            case BlendingFactor.SrcAlphaFactor:
+                return `${src}.a`;
+            case BlendingFactor.OneMinusSrcAlpha:
+                return `(1.0 - ${src}.a)`;
+            case BlendingFactor.DstAlpha:
+                return `${dst}.a`;
+            case BlendingFactor.OneMinusDstAlpha:
+                return `(1.0 - ${dst}.a)`;
         }
     }
 }

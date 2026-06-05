@@ -16,7 +16,7 @@
     - 修复`Sprite`类型
 3. 优化
     - 改进`api`文档
-    - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`
+    - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`，迁移至`OXC`
     - 使`MeshPhongMaterial`和`SpriteMaterial`的类型可以被推导
     - 移除`require`
 

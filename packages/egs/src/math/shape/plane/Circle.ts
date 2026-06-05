@@ -85,13 +85,13 @@ export class Circle extends Shape {
         }
 
         const r2 = this.radius * this.radius;
-        let dx = (this.x - x);
-        let dy = (this.y - y);
+        let dx = this.x - x;
+        let dy = this.y - y;
 
         dx *= dx;
         dy *= dy;
 
-        return (dx + dy <= r2);
+        return dx + dy <= r2;
     }
     /**
      * Returns the framing rectangle of the circle as a Rectangle object.

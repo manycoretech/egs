@@ -8,7 +8,14 @@ import type { Nullable } from '../../../utils/Utils';
 import { TextureState } from './TextureState';
 import type { WGLProgram } from '../WGLProgram';
 import { WebGLCullFace, type WebGLTextureType } from '../WGLConstants';
-import { Blending, DepthModes, Side, type BlendingEquation, type StencilFunc, type StencilOp } from '../../../utils/Constants';
+import {
+    Blending,
+    DepthModes,
+    Side,
+    type BlendingEquation,
+    type StencilFunc,
+    type StencilOp,
+} from '../../../utils/Constants';
 import { BlendState } from './BlendState';
 import type { MaterialState } from '../../../elements/materials/Material';
 import type { WGLExtensions } from '../WGLExtensions';
@@ -179,8 +186,13 @@ export class WGLState {
             this.setBlending(Blending.NoBlending);
         } else {
             this.setBlending(
-                material.blending, material.blendEquation, material.blendSrc, material.blendDst,
-                material.blendEquationAlpha ?? undefined, material.blendSrcAlpha ?? undefined, material.blendDstAlpha ?? undefined,
+                material.blending,
+                material.blendEquation,
+                material.blendSrc,
+                material.blendDst,
+                material.blendEquationAlpha ?? undefined,
+                material.blendSrcAlpha ?? undefined,
+                material.blendDstAlpha ?? undefined,
                 material.premultipliedAlpha,
             );
         }
@@ -195,9 +207,16 @@ export class WGLState {
             material.colorWrite && material.colorWriteMasks[3],
         );
 
-        this.setStencil(material.stencilWrite, material.stencilWriteMask,
-            material.stencilFunc, material.stencilRef, material.stencilFuncMask,
-            material.stencilFail, material.stencilZFail, material.stencilZPass);
+        this.setStencil(
+            material.stencilWrite,
+            material.stencilWriteMask,
+            material.stencilFunc,
+            material.stencilRef,
+            material.stencilFuncMask,
+            material.stencilFail,
+            material.stencilZFail,
+            material.stencilZPass,
+        );
 
         this.setPolygonOffset(material.polygonOffset, material.polygonOffsetFactor, material.polygonOffsetUnits);
     }
@@ -221,14 +240,41 @@ export class WGLState {
     }
 
     setBlending(blending: Blending.NoBlending): void;
-    setBlending(blending: Blending, blendEquation: BlendingEquation, blendSrc: number, blendDst: number, blendEquationAlpha?: number, blendSrcAlpha?: number, blendDstAlpha?: number, premultipliedAlpha?: boolean): void;
-    setBlending(blending: Blending, blendEquation?: BlendingEquation, blendSrc?: number, blendDst?: number, blendEquationAlpha?: number, blendSrcAlpha?: number, blendDstAlpha?: number, premultipliedAlpha?: boolean): void {
+    setBlending(
+        blending: Blending,
+        blendEquation: BlendingEquation,
+        blendSrc: number,
+        blendDst: number,
+        blendEquationAlpha?: number,
+        blendSrcAlpha?: number,
+        blendDstAlpha?: number,
+        premultipliedAlpha?: boolean,
+    ): void;
+    setBlending(
+        blending: Blending,
+        blendEquation?: BlendingEquation,
+        blendSrc?: number,
+        blendDst?: number,
+        blendEquationAlpha?: number,
+        blendSrcAlpha?: number,
+        blendDstAlpha?: number,
+        premultipliedAlpha?: boolean,
+    ): void {
         if (blending === Blending.NoBlending) {
             this.disable(this.gl.BLEND);
             return;
         }
         this.enable(this.gl.BLEND);
-        this.blendState.setBlending(blending, blendEquation!, blendSrc!, blendDst!, blendEquationAlpha, blendSrcAlpha, blendDstAlpha, premultipliedAlpha);
+        this.blendState.setBlending(
+            blending,
+            blendEquation!,
+            blendSrc!,
+            blendDst!,
+            blendEquationAlpha,
+            blendSrcAlpha,
+            blendDstAlpha,
+            premultipliedAlpha,
+        );
     }
 
     setScissorTest(scissorTest: boolean): void {

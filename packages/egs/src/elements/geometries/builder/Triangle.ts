@@ -1,16 +1,15 @@
 import { BufferGeometry } from '../containers/BufferGeometry';
 import { BufferAttribute } from '../../attributes/BufferAttribute';
 
-export const WEBGL_QUAD_UV = new Float32Array([
-    0, 0, 2, 0, 0, 2
-]);
+export const WEBGL_QUAD_UV = new Float32Array([0, 0, 2, 0, 0, 2]);
 
-export const WEBGPU_QUAD_UV = new Float32Array([
-    0, 1, 2, 1, 0, -1
-]);
+export const WEBGPU_QUAD_UV = new Float32Array([0, 1, 2, 1, 0, -1]);
 
 export class FullScreenTriangleBufferGeometry extends BufferGeometry {
-    constructor(private isTargetQuad: boolean, private isWebGPU: boolean) {
+    constructor(
+        private isTargetQuad: boolean,
+        private isWebGPU: boolean,
+    ) {
         super();
         this.type = 'FullScreenTriangleBufferGeometry';
 
@@ -26,7 +25,10 @@ export class FullScreenTriangleBufferGeometry extends BufferGeometry {
 
         this.addAttribute('position', new BufferAttribute(new Float32Array(vertices), 3));
         this.addAttribute('normal', new BufferAttribute(new Float32Array(normals), 3));
-        this.addAttribute('uv', new BufferAttribute(new Float32Array(isTargetQuad && isWebGPU ? WEBGPU_QUAD_UV : WEBGL_QUAD_UV), 2));
+        this.addAttribute(
+            'uv',
+            new BufferAttribute(new Float32Array(isTargetQuad && isWebGPU ? WEBGPU_QUAD_UV : WEBGL_QUAD_UV), 2),
+        );
     }
 
     /**

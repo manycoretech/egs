@@ -1,7 +1,7 @@
 /**
  * Math utility class containing scalar helpers.
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
+// oxlint-disable-next-line
 export class _Math {
     /**
      * Two Pi.
@@ -22,17 +22,34 @@ export class _Math {
         // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
         const lut: string[] = [];
         for (let i = 0; i < 256; i++) {
-            lut[i] = (i < 16 ? '0' : '') + (i).toString(16);
+            lut[i] = (i < 16 ? '0' : '') + i.toString(16);
         }
 
-        const d0 = Math.random() * 0xffffffff | 0;
-        const d1 = Math.random() * 0xffffffff | 0;
-        const d2 = Math.random() * 0xffffffff | 0;
-        const d3 = Math.random() * 0xffffffff | 0;
-        const uuid = lut[d0 & 0xff] + lut[d0 >> 8 & 0xff] + lut[d0 >> 16 & 0xff] + lut[d0 >> 24 & 0xff] + '-' +
-            lut[d1 & 0xff] + lut[d1 >> 8 & 0xff] + '-' + lut[d1 >> 16 & 0x0f | 0x40] + lut[d1 >> 24 & 0xff] + '-' +
-            lut[d2 & 0x3f | 0x80] + lut[d2 >> 8 & 0xff] + '-' + lut[d2 >> 16 & 0xff] + lut[d2 >> 24 & 0xff] +
-            lut[d3 & 0xff] + lut[d3 >> 8 & 0xff] + lut[d3 >> 16 & 0xff] + lut[d3 >> 24 & 0xff];
+        const d0 = (Math.random() * 0xffffffff) | 0;
+        const d1 = (Math.random() * 0xffffffff) | 0;
+        const d2 = (Math.random() * 0xffffffff) | 0;
+        const d3 = (Math.random() * 0xffffffff) | 0;
+        const uuid =
+            lut[d0 & 0xff] +
+            lut[(d0 >> 8) & 0xff] +
+            lut[(d0 >> 16) & 0xff] +
+            lut[(d0 >> 24) & 0xff] +
+            '-' +
+            lut[d1 & 0xff] +
+            lut[(d1 >> 8) & 0xff] +
+            '-' +
+            lut[((d1 >> 16) & 0x0f) | 0x40] +
+            lut[(d1 >> 24) & 0xff] +
+            '-' +
+            lut[(d2 & 0x3f) | 0x80] +
+            lut[(d2 >> 8) & 0xff] +
+            '-' +
+            lut[(d2 >> 16) & 0xff] +
+            lut[(d2 >> 24) & 0xff] +
+            lut[d3 & 0xff] +
+            lut[(d3 >> 8) & 0xff] +
+            lut[(d3 >> 16) & 0xff] +
+            lut[(d3 >> 24) & 0xff];
 
         // .toUpperCase() here flattens concatenated strings to save heap memory space.
         return uuid.toUpperCase();
@@ -53,7 +70,7 @@ export class _Math {
      * Linear mapping from range <a1, a2> to range <b1, b2>.
      */
     static mapLinear(x: number, a1: number, a2: number, b1: number, b2: number): number {
-        return b1 + (x - a1) * (b2 - b1) / (a2 - a1);
+        return b1 + ((x - a1) * (b2 - b1)) / (a2 - a1);
     }
     /**
      * {@link https://en.wikipedia.org/wiki/Linear_interpolation | Linear interpolation}
@@ -150,7 +167,7 @@ export class _Math {
         const v1 = (p3 - p1) * 0.5;
         const t2 = t * t;
         const t3 = t * t2;
-        return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (- 3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
+        return (2 * p1 - 2 * p2 + v0 + v1) * t3 + (-3 * p1 + 3 * p2 - 2 * v0 - v1) * t2 + v0 * t + p1;
     }
     /**
      * Calculate the value at t of Bezier Curve which is controlled by p0, p1 and p2.
@@ -162,7 +179,12 @@ export class _Math {
      * Calculate the value at t of Bezier Curve which is controlled by p0, p1, p2 and p3.
      */
     static CubicBezier(t: number, p0: number, p1: number, p2: number, p3: number): number {
-        return (1 - t) * (1 - t) * (1 - t) * p0 + 3 * (1 - t) * (1 - t) * t * p1 + 3 * (1 - t) * t * t * p2 + t * t * t * p3;
+        return (
+            (1 - t) * (1 - t) * (1 - t) * p0 +
+            3 * (1 - t) * (1 - t) * t * p1 +
+            3 * (1 - t) * t * t * p2 +
+            t * t * t * p3
+        );
     }
     /**
      * Compute values of the standard normal distribution, the results will contain (2*kernelRadius + 1) numbers.
@@ -191,7 +213,7 @@ export class _Math {
     static CreateSampleWeights(kernelRadius: number, stdDev = 2): number[] {
         const weights: number[] = [];
         for (let i = 0; i <= kernelRadius; i++) {
-            const v = Math.exp(- (i * i) / (2.0 * (stdDev * stdDev))) / (Math.sqrt(2.0 * Math.PI) * stdDev);
+            const v = Math.exp(-(i * i) / (2.0 * (stdDev * stdDev))) / (Math.sqrt(2.0 * Math.PI) * stdDev);
             weights.push(v);
         }
         return weights;

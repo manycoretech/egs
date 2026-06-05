@@ -3,7 +3,11 @@ import { OrthographicCamera } from '../cameras/OrthographicCamera';
 import { Mesh } from '../drawables/Mesh';
 import type { Renderable } from './IRenderable';
 import type { Material } from '../../elements/materials/Material';
-import { PipelineContentBridge, PipelineContentAPIForRenderingAndFilteringEnabled, ShadowMode } from '../../fx/PipelineAPI';
+import {
+    PipelineContentBridge,
+    PipelineContentAPIForRenderingAndFilteringEnabled,
+    ShadowMode,
+} from '../../fx/PipelineAPI';
 import type { DeferredLightBase } from '../../fx/plugins/Deferred';
 import { FullScreenTriangleBufferGeometry } from '../../elements/geometries/builder/Triangle';
 import type { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
@@ -46,7 +50,13 @@ export class Quad implements Renderable {
         renderer.useCamera(oldCamera);
     }
 
-    private renderDeferred<L extends Light>(renderer: IRenderer, scene: Scene3D, lights: L[], before?: (light: L) => void, shadowMode: ShadowMode = ShadowMode.EnableAll) {
+    private renderDeferred<L extends Light>(
+        renderer: IRenderer,
+        scene: Scene3D,
+        lights: L[],
+        before?: (light: L) => void,
+        shadowMode: ShadowMode = ShadowMode.EnableAll,
+    ) {
         if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
             for (const light of lights) {
                 if (before) {
@@ -67,7 +77,14 @@ export class Quad implements Renderable {
         }
     }
 
-    renderDeferredWithMaterial<L extends Light>(renderer: IRenderer, scene: Scene3D, lights: L[], deferLightMaterial: DeferredLightBase<L>, before?: (light: L) => void, shadowMode: ShadowMode = ShadowMode.EnableAll) {
+    renderDeferredWithMaterial<L extends Light>(
+        renderer: IRenderer,
+        scene: Scene3D,
+        lights: L[],
+        deferLightMaterial: DeferredLightBase<L>,
+        before?: (light: L) => void,
+        shadowMode: ShadowMode = ShadowMode.EnableAll,
+    ) {
         deferLightMaterial.setResult();
         this.setMaterial(deferLightMaterial);
         this.renderDeferred(renderer, scene, lights, before, shadowMode);

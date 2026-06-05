@@ -49,19 +49,33 @@ export class WGLIndexedBufferRenderer {
 
     renderInstances(object: Drawable, geometry: InstancedBufferGeometry, start: number, count: number): void {
         if (WGLCapabilities.IS_WEBGL2) {
-            (this.gl as WebGL2RenderingContext).drawElementsInstanced(this.mode, count, this.type, start * this.bytesPerElement, geometry.instancedCount);
+            (this.gl as WebGL2RenderingContext).drawElementsInstanced(
+                this.mode,
+                count,
+                this.type,
+                start * this.bytesPerElement,
+                geometry.instancedCount,
+            );
         } else {
             if (this.instanceExtension === null || this.instanceExtension === undefined) {
-                logger.unsupported('WGLIndexedBufferRenderer: using InstancedBufferGeometry but hardware does not support extension ANGLE_instanced_arrays.');
+                logger.unsupported(
+                    'WGLIndexedBufferRenderer: using InstancedBufferGeometry but hardware does not support extension ANGLE_instanced_arrays.',
+                );
                 return;
             }
-            this.instanceExtension.drawElementsInstancedANGLE(this.mode, count, this.type, start * this.bytesPerElement, geometry.instancedCount);
+            this.instanceExtension.drawElementsInstancedANGLE(
+                this.mode,
+                count,
+                this.type,
+                start * this.bytesPerElement,
+                geometry.instancedCount,
+            );
         }
         this.infoRender.addDrawcall(object);
         this.infoRender.vertices += count * geometry.instancedCount;
 
         if (this.mode === this.gl.TRIANGLES) {
-            this.infoRender.faces += geometry.instancedCount * count / 3;
+            this.infoRender.faces += (geometry.instancedCount * count) / 3;
         }
     }
 }

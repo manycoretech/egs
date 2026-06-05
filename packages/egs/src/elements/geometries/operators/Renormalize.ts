@@ -48,7 +48,6 @@ export function computeNormalsByPosition(geometry: BufferGeometry): void {
         if (index) {
             const indices = index.array;
             for (let i = 0, il = index.count; i < il; i += 3) {
-
                 vA = indices[i + 0] * 3;
                 vB = indices[i + 1] * 3;
                 vC = indices[i + 2] * 3;

@@ -21,10 +21,13 @@ export class TAAMaterial extends PassQuadMaterialBase {
         b.addUniform('sampleCount', WebGLShaderDataType.Float)
             .addUniform('history', WebGLShaderDataType.Sampler2D)
             .addUniform('current', WebGLShaderDataType.Sampler2D)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
             vec4 color = texture2D(current, vUv);
             vec4 oldColor = texture2D(history, vUv);
-            gl_FragColor = (oldColor * sampleCount + color) / (sampleCount + 1.0);`);
+            gl_FragColor = (oldColor * sampleCount + color) / (sampleCount + 1.0);`,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {

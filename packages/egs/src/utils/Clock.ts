@@ -25,7 +25,7 @@ export class Clock {
     running: boolean;
 
     constructor(autoStart?: boolean) {
-        this.autoStart = (autoStart !== undefined) ? autoStart : true;
+        this.autoStart = autoStart !== undefined ? autoStart : true;
 
         this.startTime = 0;
         this.oldTime = 0;

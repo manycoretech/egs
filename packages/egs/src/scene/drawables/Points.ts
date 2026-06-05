@@ -32,7 +32,7 @@ export class Points<M extends Material = Material> extends Drawable<M, BufferGeo
     constructor(geometry?: BufferGeometry<PointList>, material?: M | M[]) {
         super(
             geometry !== undefined ? geometry : new BufferGeometry(),
-            material !== undefined ? material : new PointsMaterial() as any
+            material !== undefined ? material : (new PointsMaterial() as any),
         );
     }
     /**
@@ -74,7 +74,7 @@ export class Points<M extends Material = Material> extends Drawable<M, BufferGeo
                 primitiveIndex: index,
                 index,
                 face: undefined,
-                object
+                object,
             });
         }
 

@@ -2,9 +2,9 @@ import { unzipSync } from 'fflate';
 import { type IFile, type IData, type ISingleSplat, extractFromRootDir } from './utils';
 
 interface MetaAttribute {
-    name: string,
-    min: number[],
-    max: number[],
+    name: string;
+    min: number[];
+    max: number[];
 }
 
 interface Metadata {
@@ -52,19 +52,15 @@ function decodeRotation(v: number) {
     }
 
     return [qx, qy, qz, qw];
-};
+}
 
 function DecodePacked_11_10_11(enc: number) {
-    return [
-        (enc & 0x7FF) / 2047.0,
-        ((enc >> 11) & 0x3FF) / 1023.0,
-        ((enc >> 21) & 0x7FF) / 2047.0,
-    ];
-};
+    return [(enc & 0x7ff) / 2047.0, ((enc >> 11) & 0x3ff) / 1023.0, ((enc >> 21) & 0x7ff) / 2047.0];
+}
 
 function mix(min: number, max: number, s: number) {
     return (1.0 - s) * min + s * max;
-};
+}
 
 export class LccFile implements IFile {
     private counts: number = 0;
@@ -140,13 +136,26 @@ export class LccFile implements IFile {
             p[c.name] = c;
             return p;
         }, {});
-        const { scale: { min: scaleMin, max: scaleMax }, shcoef: { min: shMin, max: shMax } } = attributes;
+        const {
+            scale: { min: scaleMin, max: scaleMax },
+            shcoef: { min: shMin, max: shMax },
+        } = attributes;
 
         const single: ISingleSplat = {
-            x: 0, y: 0, z: 0,
-            sx: 0, sy: 0, sz: 0,
-            qx: 0, qy: 0, qz: 0, qw: 0,
-            r: 0, g: 0, b: 0, a: 0,
+            x: 0,
+            y: 0,
+            z: 0,
+            sx: 0,
+            sy: 0,
+            sz: 0,
+            qx: 0,
+            qy: 0,
+            qz: 0,
+            qw: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
             shN: [],
         };
         const shData = new Array(45);

@@ -45,10 +45,7 @@ export class CubicBezierCurve2D extends Curve2D {
         const v2 = this.v2;
         const v3 = this.v3;
 
-        point.set(
-            _Math.CubicBezier(t, v0.x, v1.x, v2.x, v3.x),
-            _Math.CubicBezier(t, v0.y, v1.y, v2.y, v3.y)
-        );
+        point.set(_Math.CubicBezier(t, v0.x, v1.x, v2.x, v3.x), _Math.CubicBezier(t, v0.y, v1.y, v2.y, v3.y));
         return point;
     }
 

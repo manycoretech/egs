@@ -482,5 +482,5 @@ vec3 applyQuat(in vec4 q, in vec3 v) {
             vec4 quaternion;
             vec4 color;
         };
-    `)
+    `),
 };

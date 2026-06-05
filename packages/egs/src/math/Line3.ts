@@ -16,8 +16,8 @@ export class Line3 {
     end: Vector3;
 
     constructor(start?: Vector3, end?: Vector3) {
-        this.start = (start !== undefined) ? start : new Vector3();
-        this.end = (end !== undefined) ? end : new Vector3();
+        this.start = start !== undefined ? start : new Vector3();
+        this.end = end !== undefined ? end : new Vector3();
     }
     /**
      * Sets the start and end values by copying the provided vectors.

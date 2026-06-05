@@ -17,14 +17,12 @@ export class PopShaderComponent extends ShaderComponent {
         return 'PopShaderComponent';
     }
 
-    extendShaderShading(_builder: ShaderBuilder) { }
+    extendShaderShading(_builder: ShaderBuilder) {}
     extendShaderShape(builder: ShaderBuilder) {
         builder
             .addGlobalUniform(BuiltInUniformTypes.lodInfo)
             .addVertex(ShaderBlockPool.PopComponentTransform)
-            .inject(ShaderInjectionTypes.position,
-                'position = transformPosition(position);'
-            );
+            .inject(ShaderInjectionTypes.position, 'position = transformPosition(position);');
     }
 
     computeShapeKey(): string {
@@ -39,6 +37,6 @@ export class PopShaderComponent extends ShaderComponent {
         return new PopShaderComponent().copy(this);
     }
 
-    serialize(_ctx: Serializer<any>): void { }
-    deserialize(_ctx: Deserializer): void | Promise<void> { }
+    serialize(_ctx: Serializer<any>): void {}
+    deserialize(_ctx: Deserializer): void | Promise<void> {}
 }

@@ -39,10 +39,20 @@ export class SplatEllipsoidPrimitiveSource implements BVHSource<SplatEllipsoidPr
 
     createEmpty(): SplatEllipsoidPrimitive {
         return {
-            x: 0, y: 0, z: 0,
-            sx: 0, sy: 0, sz: 0,
-            qx: 0, qy: 0, qz: 0, qw: 0,
-            r: 0, g: 0, b: 0, a: 0,
+            x: 0,
+            y: 0,
+            z: 0,
+            sx: 0,
+            sy: 0,
+            sz: 0,
+            qx: 0,
+            qy: 0,
+            qz: 0,
+            qw: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
         };
     }
 

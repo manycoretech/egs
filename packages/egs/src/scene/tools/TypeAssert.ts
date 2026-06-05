@@ -2,9 +2,7 @@ import type { BufferAttribute } from '../../elements/attributes/BufferAttribute'
 import type { InstancedBufferAttribute } from '../../elements/attributes/InstancedBufferAttribute';
 import type { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
 import type { Geometry } from '../../elements/geometries/containers/Geometry';
-import type {
-    InstancedBufferGeometry
-} from '../../elements/geometries/containers/InstancedBufferGeometry';
+import type { InstancedBufferGeometry } from '../../elements/geometries/containers/InstancedBufferGeometry';
 import type { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';
 import type { Material } from '../../elements/materials/Material';
 import type { LightableMaterial } from '../../elements/materials/mesh/LightableMaterial';
@@ -59,10 +57,12 @@ export class TypeAssert {
         return o.isObject3D === true;
     }
     static isDrawable(o: any): o is Drawable {
-        return o.isDrawable === true ||
+        return (
+            o.isDrawable === true ||
             o.isMesh === true || // this for support old export data
             o.isLine === true ||
-            o.isPoints === true;
+            o.isPoints === true
+        );
     }
 
     static isMaterial(m: any): m is Material {
@@ -121,7 +121,9 @@ export class TypeAssert {
     }
 
     static isLineLike(obj: any): obj is Line | LineSegments | FatLineSegments {
-        return TypeAssert.isLineSegments(obj) || TypeAssert.isLine(obj) || TypeAssert.isFatLineSegmentsDecideByUser(obj);
+        return (
+            TypeAssert.isLineSegments(obj) || TypeAssert.isLine(obj) || TypeAssert.isFatLineSegmentsDecideByUser(obj)
+        );
     }
 
     static isFatLineSegmentsDecideByUser(object: any): object is FatLineSegments {

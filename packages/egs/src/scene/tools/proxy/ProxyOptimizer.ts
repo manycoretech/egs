@@ -5,7 +5,7 @@ import type { RenderProxyManager } from './RenderProxyManager';
 import type { DrawableList } from '../DrawcallList';
 import { logger } from '../../../utils/Logger';
 
-export class ProxyItemModification<T extends Drawable>{
+export class ProxyItemModification<T extends Drawable> {
     // this sets is exclusive;
     added: Set<T> = new Set();
     changed: Set<T> = new Set();
@@ -44,7 +44,7 @@ export class ProxyItemModification<T extends Drawable>{
     }
 }
 
-export abstract class ProxyOptimizer<T extends Drawable, P extends Drawable>{
+export abstract class ProxyOptimizer<T extends Drawable, P extends Drawable> {
     abstract readonly optimizerName: string;
 
     dynamicAnalyser = new DynamicAnalyser<P>();

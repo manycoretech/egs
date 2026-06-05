@@ -1,4 +1,8 @@
-import { ShaderInjectionTypes, type ShaderBuilder, ShaderVaryingTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    ShaderInjectionTypes,
+    type ShaderBuilder,
+    ShaderVaryingTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import { Material, type MaterialParameters } from '../Material';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 
@@ -27,7 +31,7 @@ export abstract class PassQuadMaterialBase extends Material {
         return 'q';
     }
 
-    updateShapeUniforms(_1: WGLProgram) { }
+    updateShapeUniforms(_1: WGLProgram) {}
 
     copy(_: PassQuadMaterialBase) {
         return this;
@@ -48,15 +52,14 @@ export abstract class PassPointsMaterialBase extends Material {
         });
     }
 
-    extendShaderShape(_builder: ShaderBuilder) {
-    }
+    extendShaderShape(_builder: ShaderBuilder) {}
 
     computeShapeKey() {
         // PassPointsMaterialBase
         return 'p';
     }
 
-    updateShapeUniforms(_1: WGLProgram) { }
+    updateShapeUniforms(_1: WGLProgram) {}
 
     copy(_: PassPointsMaterialBase) {
         return this;

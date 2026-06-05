@@ -26,20 +26,15 @@ export class OutlineComposeMaterial extends PassQuadMaterialBase {
     }
 
     generateShaderKey() {
-        return HashKeyBuilder.getInstance()
-            .raw(this.className())
-            .bool(this.highQuality)
-            .getKey();
+        return HashKeyBuilder.getInstance().raw(this.className()).bool(this.highQuality).getKey();
     }
 
     extendShaderShading(builder: ShaderBuilder) {
-        builder
-            .addUniform('color', WebGLShaderDataType.Vec3)
-            .addUniform('tDiffuse', WebGLShaderDataType.Sampler2D);
+        builder.addUniform('color', WebGLShaderDataType.Vec3).addUniform('tDiffuse', WebGLShaderDataType.Sampler2D);
         if (this.highQuality) {
-            builder
-                .addUniform('texelSize', WebGLShaderDataType.Vec2)
-                .inject(ShaderInjectionTypes.gl_FragColor, `
+            builder.addUniform('texelSize', WebGLShaderDataType.Vec2).inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                     float edge = 0.0;
                     edge += texture2D(tDiffuse, vUv + texelSize * vec2(0.0, 0.0)).r;
                     edge += texture2D(tDiffuse, vUv + texelSize * vec2(1.0, 0.0)).r;
@@ -47,13 +42,16 @@ export class OutlineComposeMaterial extends PassQuadMaterialBase {
                     edge += texture2D(tDiffuse, vUv + texelSize * vec2(1.0, 1.0)).r;
                     edge *= 0.25;
                     gl_FragColor = vec4(color, edge);
-                `);
+                `,
+            );
         } else {
-            builder
-                .inject(ShaderInjectionTypes.gl_FragColor, `
+            builder.inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                     float edge = texture2D(tDiffuse, vUv).r;
                     gl_FragColor = vec4(color, edge);
-                `);
+                `,
+            );
         }
     }
 

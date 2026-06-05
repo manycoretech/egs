@@ -41,8 +41,8 @@ export enum BackgroundMode {
  * @deprecated
  */
 export interface SolidColorBackgroundParameter {
-    color: Color,
-    alpha: number,
+    color: Color;
+    alpha: number;
 }
 
 /**
@@ -50,8 +50,8 @@ export interface SolidColorBackgroundParameter {
  * @deprecated
  */
 export interface GradientBackgroundParameter {
-    skyColor: Color,
-    groundColor: Color,
+    skyColor: Color;
+    groundColor: Color;
 }
 
 /**
@@ -59,12 +59,12 @@ export interface GradientBackgroundParameter {
  * @deprecated
  */
 export interface SkyBackgroundParameter {
-    enableSkyMap: boolean,
-    luminance: number,
-    turbidity: number,
-    rayleigh: number,
-    mieCoefficient: number,
-    mieDirectionalG: number,
+    enableSkyMap: boolean;
+    luminance: number;
+    turbidity: number;
+    rayleigh: number;
+    mieCoefficient: number;
+    mieDirectionalG: number;
 }
 
 /**
@@ -72,10 +72,10 @@ export interface SkyBackgroundParameter {
  * @deprecated
  */
 export interface EnvMapBackgroundParameter {
-    texture: Texture,
-    luma: number,
-    verticalRotation: number,
-    horizonRotation: number,
+    texture: Texture;
+    luma: number;
+    verticalRotation: number;
+    horizonRotation: number;
 }
 
 /**
@@ -83,9 +83,9 @@ export interface EnvMapBackgroundParameter {
  * @deprecated
  */
 export interface BasicBackgroundParameter {
-    color: Color,
-    alpha: number,
-    texture: Texture,
+    color: Color;
+    alpha: number;
+    texture: Texture;
 }
 
 /**
@@ -93,14 +93,14 @@ export interface BasicBackgroundParameter {
  * @deprecated
  */
 export interface BackgroundParameter {
-    mode: BackgroundMode,
+    mode: BackgroundMode;
     parameter?: Partial<
-        BasicBackgroundParameter |
-        SolidColorBackgroundParameter |
-        GradientBackgroundParameter |
-        SkyBackgroundParameter |
-        EnvMapBackgroundParameter
-    >,
+        | BasicBackgroundParameter
+        | SolidColorBackgroundParameter
+        | GradientBackgroundParameter
+        | SkyBackgroundParameter
+        | EnvMapBackgroundParameter
+    >;
 }
 
 /**
@@ -113,7 +113,7 @@ export class SolidColorBackground implements Renderable {
     alpha: number = 1;
 
     constructor(color?: Color, alpha: number = 1.0) {
-        this.color = color || new Color(0xE8E8E8);
+        this.color = color || new Color(0xe8e8e8);
         this.alpha = alpha;
     }
 
@@ -140,7 +140,7 @@ export class BasicBackground implements Renderable {
     private copy = new CopyMaterial();
 
     constructor(color?: Color, alpha: number = 1.0) {
-        this.color = color || new Color(0xE8E8E8);
+        this.color = color || new Color(0xe8e8e8);
         this.alpha = alpha;
         this.quad.setMaterial(this.copy);
     }
@@ -246,8 +246,8 @@ export class SkyBackground extends MeshBackground<SkyMaterial> {
     }
 
     /**
-    * @internal
-    */
+     * @internal
+     */
     setSkyMap(texture: Nullable<Texture>) {
         this.material.tEquirect = texture;
     }

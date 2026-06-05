@@ -90,7 +90,10 @@ export class WGLProgram {
                 logger.warn(`Uniform blocks <${u.name}> not really used in shader: `);
                 return;
             }
-            this.uniformBlocks.set(u.name, new WGLUniformBlock(this, u, index, this.renderState.resourceManager.uboManager!));
+            this.uniformBlocks.set(
+                u.name,
+                new WGLUniformBlock(this, u, index, this.renderState.resourceManager.uboManager!),
+            );
         });
     }
 
@@ -100,7 +103,8 @@ export class WGLProgram {
         for (let i = 0; i < n; ++i) {
             const info = this.gl.getActiveUniform(program, i)!;
             const addr = this.gl.getUniformLocation(program, info.name);
-            if (addr === null || addr === undefined) { // UBO uniform
+            if (addr === null || addr === undefined) {
+                // UBO uniform
                 continue;
             }
             const isArrayFloat = info.type === WebGLShaderDataType.Float && info.size > 1;

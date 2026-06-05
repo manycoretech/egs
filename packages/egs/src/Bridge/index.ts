@@ -1,4 +1,14 @@
-import { type ContentAPI, registerContentAPI, unregisterContentAPI, ContentBridge, getMaterialProperties, getMaterialShaderComponents, getLightProperties, hasManagedContentAPI, ManagedContentBridge } from '../ContentAPI';
+import {
+    type ContentAPI,
+    registerContentAPI,
+    unregisterContentAPI,
+    ContentBridge,
+    getMaterialProperties,
+    getMaterialShaderComponents,
+    getLightProperties,
+    hasManagedContentAPI,
+    ManagedContentBridge,
+} from '../ContentAPI';
 import type { BufferAttribute } from '../elements/attributes/BufferAttribute';
 import type { Texture } from '../elements/textures/Texture';
 import { Texture2D } from '../elements/textures/Texture2D';
@@ -27,7 +37,6 @@ import { SpriteBufferGeometry } from '../elements/geometries/containers/SpriteBu
 import { TypeAssert } from '../scene/tools/TypeAssert';
 
 function checkMaterialPropertyValid(value: any) {
-    // eslint-disable-next-line eqeqeq
     if (value == null) {
         return false;
     }
@@ -56,7 +65,7 @@ class PreInitializedWASMBridge implements ContentAPI {
     private scenes = new IterableWeakSet<Scene3D>();
     private lightsToSync: Set<Light> = new Set();
 
-    private constructor() { }
+    private constructor() {}
 
     defaultTexture: Texture2D;
     ltc_1: Texture2D;
@@ -290,7 +299,6 @@ class PreInitializedWASMBridge implements ContentAPI {
     }
 
     private rebuildSceneNode(node: Object3D) {
-
         ContentBridge.sceneNodeCreate(node);
         ContentBridge.sceneNodeSyncData(node);
         ContentBridge.sceneNodeSyncMatrix(node);
@@ -312,7 +320,8 @@ class PreInitializedWASMBridge implements ContentAPI {
             ContentBridge.drawableInit(node);
             ContentBridge.drawableSyncAllData(node);
 
-            if (node.geometry) { // when mesh init, geometry may not exist
+            if (node.geometry) {
+                // when mesh init, geometry may not exist
                 ContentBridge.drawableSetGeometry(node, node.geometry);
             }
             node.getMaterials().forEach((m, i) => {
@@ -369,7 +378,11 @@ export function beforeAPIRegister() {
 
 function patchMath() {
     (Matrix3 as any).prototype._applyToBufferAttribute = Matrix3.prototype.applyToBufferAttribute;
-    Matrix3.prototype.applyToBufferAttribute = function (this: Matrix3, attribute: BufferAttribute, __forceJSImpl: boolean = false): BufferAttribute {
+    Matrix3.prototype.applyToBufferAttribute = function (
+        this: Matrix3,
+        attribute: BufferAttribute,
+        __forceJSImpl: boolean = false,
+    ): BufferAttribute {
         if (!__forceJSImpl && hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             ManagedContentBridge.bufferAttributeApplyMat3(attribute, this);
             return attribute;
@@ -377,7 +390,11 @@ function patchMath() {
         return (this as any)._applyToBufferAttribute(attribute, __forceJSImpl);
     };
     (Matrix4 as any).prototype._applyToBufferAttribute = Matrix4.prototype.applyToBufferAttribute;
-    Matrix4.prototype.applyToBufferAttribute = function (this: Matrix4, attribute: BufferAttribute, __forceJSImpl: boolean = false): BufferAttribute {
+    Matrix4.prototype.applyToBufferAttribute = function (
+        this: Matrix4,
+        attribute: BufferAttribute,
+        __forceJSImpl: boolean = false,
+    ): BufferAttribute {
         if (!__forceJSImpl && hasManagedContentAPI() && ManagedContentBridge.isContentOwnGeometricData()) {
             ManagedContentBridge.bufferAttributeApplyMat4(attribute, this);
             return attribute;

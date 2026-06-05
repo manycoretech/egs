@@ -28,7 +28,7 @@ import { TextureFormat } from '../../elements/textures/types';
 /**
  * Type of parameters of {@link setHighlightObjects|setHighlightObjects}
  * @highlightGroupIndex If there are more than one material for geometry groups, the index of groups which need be highlight must push into this.
-*/
+ */
 export interface HighLightItem {
     object: Drawable;
     highlightGroupIndex?: number[];
@@ -47,14 +47,23 @@ export interface HighlightGroup {
     innerOpacity?: number;
 }
 
-function createHighlightDrawcallList(highlightList: HighLightItem[], camera: Camera3D, viewHeight = window.innerHeight) {
+function createHighlightDrawcallList(
+    highlightList: HighLightItem[],
+    camera: Camera3D,
+    viewHeight = window.innerHeight,
+) {
     const list = new DrawableList();
 
     if (PipelineContentAPIForRenderingAndFilteringEnabled()) {
         highlightList.forEach(item => list.push(item.object));
         const result = new ProjectedDrawcallList(list, [], [], camera);
         PipelineContentBridge.drawcallListCreateFromDrawableList(
-            result, list, camera, true, false, false,
+            result,
+            list,
+            camera,
+            true,
+            false,
+            false,
             highlightList.map(item => ({ groupIndex: item.highlightGroupIndex, instanceIndex: item.instanceIndex })),
         );
         return result;
@@ -152,7 +161,7 @@ export class HighlightPlugin extends PipelinePlugin {
         this.texelSize.set(width, height);
     }
 
-    updateEffect() { }
+    updateEffect() {}
 
     notifyChanged() {
         for (const material of this.blendMaterials) {
@@ -188,18 +197,18 @@ export class HighlightPlugin extends PipelinePlugin {
                         const blendMaterial = this.blendMaterials[i];
                         const highlightGroup = this.highlightGroups[i];
                         blendMaterial.width = highlightGroup.width ?? this.width;
-                        const borderColor = (highlightGroup.borderColor ?? this.borderColor);
+                        const borderColor = highlightGroup.borderColor ?? this.borderColor;
                         if (!blendMaterial.borderColor.equals(borderColor)) {
                             blendMaterial.borderColor = borderColor.cloneReadonly();
                         }
                         blendMaterial.borderOpacity = highlightGroup.borderOpacity ?? this.borderOpacity;
-                        const innerColor = (highlightGroup.innerColor ?? this.innerColor);
+                        const innerColor = highlightGroup.innerColor ?? this.innerColor;
                         if (!blendMaterial.innerColor.equals(innerColor)) {
                             blendMaterial.innerColor = innerColor.cloneReadonly();
                         }
                         blendMaterial.innerOpacity = highlightGroup.innerOpacity ?? this.innerOpacity;
                     })
-                    .use(drawQuadDynamic(() => this.blendMaterials[i]))
+                    .use(drawQuadDynamic(() => this.blendMaterials[i])),
             ]);
         }
     }
@@ -208,27 +217,39 @@ export class HighlightPlugin extends PipelinePlugin {
         return {
             enabled: {
                 get: () => this._enabled,
-                set: (v: boolean) => { this._enabled = v; },
+                set: (v: boolean) => {
+                    this._enabled = v;
+                },
             },
             width: {
                 get: () => this.width,
-                set: (v: number) => { this.width = v; },
+                set: (v: number) => {
+                    this.width = v;
+                },
             },
             borderColor: {
                 get: () => this.borderColor.clone(),
-                set: (v: Color) => { this.borderColor = v.clone(); },
+                set: (v: Color) => {
+                    this.borderColor = v.clone();
+                },
             },
             borderOpacity: {
                 get: () => this.borderOpacity,
-                set: (v: number) => { this.borderOpacity = v; },
+                set: (v: number) => {
+                    this.borderOpacity = v;
+                },
             },
             innerColor: {
                 get: () => this.innerColor.clone(),
-                set: (v: Color) => { this.innerColor = v.clone(); },
+                set: (v: Color) => {
+                    this.innerColor = v.clone();
+                },
             },
             innerOpacity: {
                 get: () => this.innerOpacity,
-                set: (v: number) => { this.innerOpacity = v; },
+                set: (v: number) => {
+                    this.innerOpacity = v;
+                },
             },
         };
     }

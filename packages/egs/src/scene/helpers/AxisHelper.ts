@@ -16,17 +16,9 @@ export class AxisHelper extends LineSegments<LineBasicMaterial> {
     constructor(size?: number) {
         size = size || 1;
 
-        const vertices = [
-            0, 0, 0, size, 0, 0,
-            0, 0, 0, 0, size, 0,
-            0, 0, 0, 0, 0, size
-        ];
+        const vertices = [0, 0, 0, size, 0, 0, 0, 0, 0, 0, size, 0, 0, 0, 0, 0, 0, size];
 
-        const colors = [
-            1, 0, 0, 1, 0, 0,
-            0, 1, 0, 0, 1, 0,
-            0, 0, 1, 0, 0, 1
-        ];
+        const colors = [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1];
 
         const geometry = new BufferGeometry<LineList>();
         geometry.addAttribute('position', new BufferAttribute(new Float32Array(vertices), 3));

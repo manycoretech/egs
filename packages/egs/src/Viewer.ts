@@ -2,8 +2,13 @@ import { RenderEngine, ResetRendererEvent, RendererInitialized } from './engine/
 import { type RenderInfo, FrameInfo } from './utils/RenderInfo';
 import type { ViewerConfig, EngineInitializeConfig, RenderMode, ConfigCell } from './engine/EngineConfig';
 import {
-    BackgroundMode, type BackgroundParameter,
-    type SolidColorBackgroundParameter, type GradientBackgroundParameter, type SkyBackgroundParameter, type EnvMapBackgroundParameter, type BasicBackgroundParameter,
+    BackgroundMode,
+    type BackgroundParameter,
+    type SolidColorBackgroundParameter,
+    type GradientBackgroundParameter,
+    type SkyBackgroundParameter,
+    type EnvMapBackgroundParameter,
+    type BasicBackgroundParameter,
 } from './scene/renderables/Background';
 import { Scene3D, SceneChangeEvent } from './scene/Scene3D';
 import { exportScene } from './scene/tools/SceneIO';
@@ -15,7 +20,12 @@ import { TickEvent } from './utils/FPSTimer';
 import { logger } from './utils/Logger';
 import type { SnapshotRenderer as DeprecatedSnapshotRenderer } from './snapshot/SnapshotRenderer';
 import type { SnapshotRenderer } from './snapshot/SnapshotRendererV2';
-import { ContextLostEvent, ContextLostRestoreFailedEvent, type CtxLostInfo, MemoryGrowFailed } from './renderer/IRenderer';
+import {
+    ContextLostEvent,
+    ContextLostRestoreFailedEvent,
+    type CtxLostInfo,
+    MemoryGrowFailed,
+} from './renderer/IRenderer';
 import { CoordinateSystemHelper } from './scene/helpers/CoordinateSystemHelper';
 import type { RenderTarget } from './elements/textures/RenderTarget';
 import type { ArrayCamera } from './scene/cameras/ArrayCamera';
@@ -23,7 +33,7 @@ import type { BaseElement } from './utils/ElementBase';
 import { ContentBridge } from './ContentAPI';
 import { type MemoryInfo, RendererBackend } from './renderer/IRenderer';
 import { TypeAssert } from './scene/tools/TypeAssert';
-import type { HighLightItem,HighlightGroup } from './fx/plugins/Highlight';
+import type { HighLightItem, HighlightGroup } from './fx/plugins/Highlight';
 import { type RenderingConfig, TextureCompression } from './fx/plugins/PipelinePlugin';
 import { COMPOSITE_TARGET_NAME } from './fx/plugins/Composite';
 import { Viewport } from './Viewport';
@@ -39,7 +49,7 @@ export type RequestRenderHandler = () => void;
 /**
  * Event emitted after a viewer is resized.
  */
-export const ViewerResizeEvent = new EventType<{ target: Viewer, width: number, height: number }>();
+export const ViewerResizeEvent = new EventType<{ target: Viewer; width: number; height: number }>();
 /**
  * Event emitted when a viewer is uninitialized.
  */
@@ -189,7 +199,7 @@ export class Viewer extends EventDispatcher {
         scene.renderProxyManager.enableMeshMerge = this.enableMultiMeshMerge;
         scene.renderProxyManager.enableAutoInstanceKey = this.enableAutoInstanceKey;
         this.scene.item = scene;
-        this.viewportList.forEach(v => v.scene = scene);
+        this.viewportList.forEach(v => (v.scene = scene));
         this.engine.refreshRenderables();
         this.requestRender();
     }
@@ -205,7 +215,9 @@ export class Viewer extends EventDispatcher {
      * @defaultValue `false`
      */
     private _enableInstance: boolean = false;
-    get enableInstance() { return this._enableInstance; }
+    get enableInstance() {
+        return this._enableInstance;
+    }
     set enableInstance(v) {
         this._enableInstance = v;
         if (this.scene) {
@@ -217,7 +229,9 @@ export class Viewer extends EventDispatcher {
      * @defaultValue `false`
      */
     private _enableAutoInstanceKey: boolean = false;
-    get enableAutoInstanceKey() { return this._enableAutoInstanceKey; }
+    get enableAutoInstanceKey() {
+        return this._enableAutoInstanceKey;
+    }
     set enableAutoInstanceKey(v) {
         this._enableAutoInstanceKey = v;
         if (this.scene) {
@@ -230,7 +244,9 @@ export class Viewer extends EventDispatcher {
      * @defaultValue `true`
      */
     private _enableMultiMeshMerge: boolean = false;
-    get enableMultiMeshMerge() { return this._enableMultiMeshMerge; }
+    get enableMultiMeshMerge() {
+        return this._enableMultiMeshMerge;
+    }
     set enableMultiMeshMerge(v) {
         this._enableMultiMeshMerge = v;
         if (this.scene) {
@@ -243,7 +259,9 @@ export class Viewer extends EventDispatcher {
      * @defaultValue `true`
      */
     private _enableMeshMerge: boolean = false;
-    get enableMeshMerge() { return this._enableMeshMerge; }
+    get enableMeshMerge() {
+        return this._enableMeshMerge;
+    }
     set enableMeshMerge(v) {
         this._enableMeshMerge = v;
         if (this.scene) {
@@ -256,12 +274,15 @@ export class Viewer extends EventDispatcher {
      * @internal
      * @defaultValue `false`
      */
-    get enableGpuDriven() { return this.renderingConfig.gpuDriven.enabled; }
+    get enableGpuDriven() {
+        return this.renderingConfig.gpuDriven.enabled;
+    }
     /**
      * @internal
      */
     set enableGpuDriven(v) {
-        const enabled = v && this.engine.renderer.backend === RendererBackend.WEBGPU_WASM && !this.renderingConfig.tlsFlags;
+        const enabled =
+            v && this.engine.renderer.backend === RendererBackend.WEBGPU_WASM && !this.renderingConfig.tlsFlags;
         this.renderingConfig.gpuDriven.enabled = enabled;
         if (this.scene) {
             this.scene.item.renderProxyManager.enableGpuDriven = enabled;
@@ -333,7 +354,7 @@ export class Viewer extends EventDispatcher {
     }
     set requestRenderHandler(v) {
         this._requestRenderHandler = v;
-        this.viewportList.forEach(v => v.requestRenderHandler = this._requestRenderHandler);
+        this.viewportList.forEach(v => (v.requestRenderHandler = this._requestRenderHandler));
     }
     /**
      * Request to invoke RenderHandler function if it is not null;
@@ -352,7 +373,7 @@ export class Viewer extends EventDispatcher {
             throw new Error('EGS Exception: default viewport is unavailable when viewport manually created.');
         }
         return this.viewportList[0];
-    };
+    }
 
     /**
      * @internal
@@ -457,7 +478,7 @@ export class Viewer extends EventDispatcher {
         this.emit(ViewerResizeEvent, {
             target: this,
             width: this.engine.width,
-            height: this.engine.height
+            height: this.engine.height,
         });
         this.createViewport('default');
         this.onlyDefaultViewport = true;
@@ -470,9 +491,7 @@ export class Viewer extends EventDispatcher {
             this.onlyDefaultViewport = false;
             this.clearViewport();
         }
-        const viewport = new Viewport(
-            name, this, this.engine, this.getScene(),
-            this.viewportList.length, bound);
+        const viewport = new Viewport(name, this, this.engine, this.getScene(), this.viewportList.length, bound);
         viewport.requestRenderHandler = this.requestRenderHandler;
         this.viewportList.push(viewport);
         return viewport;
@@ -506,12 +525,10 @@ export class Viewer extends EventDispatcher {
     private notifyRendered = () => {
         this.lastRenderEmitTime = performance.now();
         if (this.noRenderChecker === undefined) {
-            this.noRenderChecker = this.waitForRenderOver().then(
-                () => {
-                    this.emit(NoRenderForAWhileEvent);
-                    this.noRenderChecker = undefined;
-                }
-            );
+            this.noRenderChecker = this.waitForRenderOver().then(() => {
+                this.emit(NoRenderForAWhileEvent);
+                this.noRenderChecker = undefined;
+            });
         }
     };
     /**
@@ -520,7 +537,7 @@ export class Viewer extends EventDispatcher {
      */
     waitForRenderOver = async (v: number = 1000) => {
         const time = Math.max(16, v);
-        while ((performance.now() - this.lastRenderEmitTime) < time || this.lastRenderEmitTime === 0) {
+        while (performance.now() - this.lastRenderEmitTime < time || this.lastRenderEmitTime === 0) {
             await Utils.wait(time);
         }
     };
@@ -587,7 +604,9 @@ export class Viewer extends EventDispatcher {
             return;
         }
 
-        this.plugins.forEach(p => p.beforeRendering?.(this.frameInfo.fpsCollector.frameId, this.engine.lastRenderedFrameId));
+        this.plugins.forEach(p =>
+            p.beforeRendering?.(this.frameInfo.fpsCollector.frameId, this.engine.lastRenderedFrameId),
+        );
         ContentBridge.beforeFrame(this);
         this.engine.renderer.beforeFrameRender(this.frameInfo.fpsCollector.frameId, this.engine.lastRenderedFrameId);
         this.frameInfo.beginFrameTick();
@@ -602,7 +621,12 @@ export class Viewer extends EventDispatcher {
         const viewportList = this.viewportList.sort((a, b) => a.layer - b.layer);
         for (let i = 0; i < viewportList.length; i++) {
             const viewport = viewportList[i];
-            shouldContinue = viewport.render(this.frameInfo.fpsCollector.frameId, this.forceNextFrameRender || viewportList.length > 1, this.isPerformanceSlow) || shouldContinue;
+            shouldContinue =
+                viewport.render(
+                    this.frameInfo.fpsCollector.frameId,
+                    this.forceNextFrameRender || viewportList.length > 1,
+                    this.isPerformanceSlow,
+                ) || shouldContinue;
         }
         scene.afterRender();
         this.engine.afterRender();
@@ -611,7 +635,7 @@ export class Viewer extends EventDispatcher {
         this.emit(RenderOverEvent);
         this.frameInfo.endFrameTick();
         const frameTimeAvg = this.frameInfo.fpsCollector.getAverageFrameTime();
-        this.isPerformanceSlow = (1000 / frameTimeAvg) < 30;
+        this.isPerformanceSlow = 1000 / frameTimeAvg < 30;
         ContentBridge.afterFrame();
         this.engine.renderer.afterFrameRender(this.engine.lastRenderedFrameId);
         this.plugins.forEach(p => p.afterRendering?.(this.engine.lastRenderedFrameId));
@@ -636,7 +660,9 @@ export class Viewer extends EventDispatcher {
             logger.invalidInput('this.engine has been destroyed');
             return;
         }
-        const target = this.defaultViewport.pipeline._getEffectComposer()._getFrameBuffer(COMPOSITE_TARGET_NAME) as RenderTarget;
+        const target = this.defaultViewport.pipeline
+            ._getEffectComposer()
+            ._getFrameBuffer(COMPOSITE_TARGET_NAME) as RenderTarget;
         if (!target) {
             logger.invalidInput('readRenderResult need enable isExtraCopyBeforeScreenEnabled');
             return;
@@ -658,7 +684,9 @@ export class Viewer extends EventDispatcher {
             logger.invalidInput('this.engine has been destroyed');
             return;
         }
-        const target = this.defaultViewport.pipeline._getEffectComposer()._getFrameBuffer(COMPOSITE_TARGET_NAME) as RenderTarget;
+        const target = this.defaultViewport.pipeline
+            ._getEffectComposer()
+            ._getFrameBuffer(COMPOSITE_TARGET_NAME) as RenderTarget;
         if (!target) {
             logger.invalidInput('readRenderResult need enable isExtraCopyBeforeScreenEnabled');
             return;
@@ -780,8 +808,14 @@ export class Viewer extends EventDispatcher {
         this.config.background.active.set(v);
     }
 
-    get ground() { return this.defaultViewport.pipeline.backgroundPlugin.ground; }
-    set ground(v) { if (v !== this.ground) { this.defaultViewport.pipeline.backgroundPlugin.ground = v; } }
+    get ground() {
+        return this.defaultViewport.pipeline.backgroundPlugin.ground;
+    }
+    set ground(v) {
+        if (v !== this.ground) {
+            this.defaultViewport.pipeline.backgroundPlugin.ground = v;
+        }
+    }
     /**
      * An instance of CoordinateSystemHelper which could be turned on by the config.
      */
@@ -800,56 +834,76 @@ export class Viewer extends EventDispatcher {
      * @deprecated use `config.background.basic` instead
      * basicBackground is move to postPipeline
      */
-    get basicBackground() { return this.defaultViewport.pipeline.backgroundPlugin.basicBackground; };
+    get basicBackground() {
+        return this.defaultViewport.pipeline.backgroundPlugin.basicBackground;
+    }
     /**
      * @deprecated  set is not allow to use, use `config.background.basic` to update parameters instead.
      * basicBackground is move to postPipeline
      */
-    set basicBackground(background) { this.defaultViewport.pipeline.backgroundPlugin.basicBackground = background; };
+    set basicBackground(background) {
+        this.defaultViewport.pipeline.backgroundPlugin.basicBackground = background;
+    }
     /**
      * An instance of SolidColorBackground, which only works when the render mode of background is set to SolidColorBackground.
      * @deprecated use `config.background.solid` instead
      * solidBackground is move to postPipeline
      */
-    get solidBackground() { return this.defaultViewport.pipeline.backgroundPlugin.solidBackground; };
+    get solidBackground() {
+        return this.defaultViewport.pipeline.backgroundPlugin.solidBackground;
+    }
     /**
      * @deprecated set is not allow to use, use `config.background.solid` to update parameters instead.
      * solidBackground is move to postPipeline
      */
-    set solidBackground(background) { this.defaultViewport.pipeline.backgroundPlugin.solidBackground = background; };
+    set solidBackground(background) {
+        this.defaultViewport.pipeline.backgroundPlugin.solidBackground = background;
+    }
     /**
      * An instance of SkyBackground, which only works when the render mode of background is set to SkyBackground.
      * @deprecated use `config.background.sky` instead
      * skyBackground is move to postPipeline
      */
-    get skyBackground() { return this.defaultViewport.pipeline.backgroundPlugin.skyBackground; };
+    get skyBackground() {
+        return this.defaultViewport.pipeline.backgroundPlugin.skyBackground;
+    }
     /**
      * @deprecated set is not allow to use, use `config.background.sky` to update parameters instead.
      * skyBackground is move to postPipeline
      */
-    set skyBackground(background) { this.defaultViewport.pipeline.backgroundPlugin.skyBackground = background; };
+    set skyBackground(background) {
+        this.defaultViewport.pipeline.backgroundPlugin.skyBackground = background;
+    }
     /**
      * An instance of EnvMapBackground, which only works when the render mode of background is set to EnvMapBackground.
      * @deprecated use `config.background.envmap` instead
      * envBackground is move to postPipeline
      */
-    get envBackground() { return this.defaultViewport.pipeline.backgroundPlugin.envBackground; };
+    get envBackground() {
+        return this.defaultViewport.pipeline.backgroundPlugin.envBackground;
+    }
     /**
      * @deprecated set is not allow to use, use `config.background.envmap` to update parameters instead.
      * envBackground is move to postPipeline
      */
-    set envBackground(background) { this.defaultViewport.pipeline.backgroundPlugin.envBackground = background; };
+    set envBackground(background) {
+        this.defaultViewport.pipeline.backgroundPlugin.envBackground = background;
+    }
     /**
      * An instance of GradientBackground, which only works when the render mode of background is set to GradientBackground.
      * @deprecated use `config.background.gradient` instead
      * gradientBackground is move to postPipeline
      */
-    get gradientBackground() { return this.defaultViewport.pipeline.backgroundPlugin.gradientBackground; };
+    get gradientBackground() {
+        return this.defaultViewport.pipeline.backgroundPlugin.gradientBackground;
+    }
     /**
      * @deprecated set is not allow to use, use `config.background.gradient` to update parameters instead.
      * gradientBackground is move to postPipeline
      */
-    set gradientBackground(background) { this.defaultViewport.pipeline.backgroundPlugin.gradientBackground = background; };
+    set gradientBackground(background) {
+        this.defaultViewport.pipeline.backgroundPlugin.gradientBackground = background;
+    }
 
     /**
      * @deprecated use `canvasContainer`

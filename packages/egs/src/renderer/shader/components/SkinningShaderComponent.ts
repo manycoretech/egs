@@ -9,8 +9,7 @@ export class SkinningShaderComponent extends ShaderComponent {
         return 'SkinningShaderComponent';
     }
 
-    extendShaderShading(_builder: ShaderBuilder): void {
-    }
+    extendShaderShading(_builder: ShaderBuilder): void {}
 
     extendShaderShape(builder: ShaderBuilder) {
         builder
@@ -19,9 +18,7 @@ export class SkinningShaderComponent extends ShaderComponent {
             .addGlobalUniform(BuiltInUniformTypes.boneTexture)
             .addGlobalUniform(BuiltInUniformTypes.boneTextureSize)
             .addVertex(skinningInclude)
-            .inject(ShaderInjectionTypes.position,
-                skinningPosition
-            );
+            .inject(ShaderInjectionTypes.position, skinningPosition);
     }
 
     computeShapeKey(): string {
@@ -36,10 +33,8 @@ export class SkinningShaderComponent extends ShaderComponent {
         return new SkinningShaderComponent().copy(this);
     }
 
-    serialize(_ctx: Serializer<any>): void {
-    }
-    deserialize(_ctx: Deserializer): void | Promise<void> {
-    }
+    serialize(_ctx: Serializer<any>): void {}
+    deserialize(_ctx: Deserializer): void | Promise<void> {}
 }
 
 const skinningInclude = createShaderBlock(`
@@ -80,4 +75,3 @@ const skinningPosition = `
 
     position = skinned.xyz;
 `;
-

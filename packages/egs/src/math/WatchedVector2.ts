@@ -14,7 +14,7 @@ export class WatchedVector2 extends Vector2 {
         this._y = y || 0;
     }
 
-    onChange = () => { };
+    onChange = () => {};
 
     set(x: number, y: number): WatchedVector2 {
         this._x = x;
@@ -47,7 +47,7 @@ Object.defineProperties(WatchedVector2.prototype, {
             this.onChange?.();
         },
         enumerable: true,
-        configurable: true
+        configurable: true,
     },
     y: {
         get() {
@@ -61,6 +61,6 @@ Object.defineProperties(WatchedVector2.prototype, {
             this.onChange?.();
         },
         enumerable: true,
-        configurable: true
-    }
+        configurable: true,
+    },
 });

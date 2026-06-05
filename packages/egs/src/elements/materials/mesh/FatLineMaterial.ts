@@ -1,8 +1,18 @@
-import { LineBasicMaterial, ColorWithAlpha, LineDash, type LineDashParam, type ColorWithAlphaParam } from './LineMaterial';
+import {
+    LineBasicMaterial,
+    ColorWithAlpha,
+    LineDash,
+    type LineDashParam,
+    type ColorWithAlphaParam,
+} from './LineMaterial';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderVaryingTypes,
+    ShaderInjectionTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { ConvertMaterialParameters,MaterialParameters } from '../Material';
+import type { ConvertMaterialParameters, MaterialParameters } from '../Material';
 import type { Serializer, Deserializer } from '../../../utils/Serialization';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
 import { Utils } from '../../../utils/Utils';
@@ -11,8 +21,12 @@ import { materialProperty, shaderComponentInMaterial } from '../../../ContentAPI
 import type { Renderer } from '../../../renderer/Renderer';
 import { SceneClipMaterial } from '../base';
 
-export type FatLineMaterialParameter = ConvertMaterialParameters<Pick<FatLineMaterial, 'enableDash' | 'fatLineWidth' | 'enableViewIndependentDashScale'>>
-    & LineDashParam & ColorWithAlphaParam & MaterialParameters;
+export type FatLineMaterialParameter = ConvertMaterialParameters<
+    Pick<FatLineMaterial, 'enableDash' | 'fatLineWidth' | 'enableViewIndependentDashScale'>
+> &
+    LineDashParam &
+    ColorWithAlphaParam &
+    MaterialParameters;
 /**
  * This material is specifically used to draw line or dash-line which has width more than 1 pixel.
  */

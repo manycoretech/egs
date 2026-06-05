@@ -19,29 +19,29 @@ export interface RenderSource {
     /**
      * used to update render pass, such as clear
      */
-    config?: ConfigMethod,
+    config?: ConfigMethod;
     /**
      * do render
      */
-    render: RenderMethod,
+    render: RenderMethod;
 }
 
 export const EMPTY_RENDER_SOURCE: RenderSource = {
-    render() { }
+    render() {},
 };
 
 type AttachmentDescriptor = number | 'depth';
 
 export interface OverrideScreenOutputTarget {
-    target: RenderTarget,
-    resolveTarget?: RenderTarget
+    target: RenderTarget;
+    resolveTarget?: RenderTarget;
 }
 
 export interface PassExecuteCtx {
-    renderer: RendererAdaptor,
-    target?: RenderTarget,
-    resolveTarget?: RenderTarget,
-    overrideScreenOutputTarget?: OverrideScreenOutputTarget,
+    renderer: RendererAdaptor;
+    target?: RenderTarget;
+    resolveTarget?: RenderTarget;
+    overrideScreenOutputTarget?: OverrideScreenOutputTarget;
 }
 
 /**
@@ -141,10 +141,10 @@ export class PassNode extends ExecuteNode<PassExecuteCtx> {
 
     private _needStoreOutput: boolean = true;
     /**
-    * whether discard attachments.
-    * for webgpu set storeOp to 'discard' in begin render pass
-    * for webgl will call invalidateFramebuffer.
-    */
+     * whether discard attachments.
+     * for webgpu set storeOp to 'discard' in begin render pass
+     * for webgl will call invalidateFramebuffer.
+     */
     discardOutput() {
         this._needStoreOutput = false;
         return this;
@@ -171,7 +171,8 @@ export class PassNode extends ExecuteNode<PassExecuteCtx> {
             this.dependResources.delete(prev);
             prev.disconnect(this);
         }
-        const resource = attachment === 'depth' ? dependNode.depthAttachment! : dependNode.colorAttachments[attachment]!;
+        const resource =
+            attachment === 'depth' ? dependNode.depthAttachment! : dependNode.colorAttachments[attachment]!;
         this.inputs.set(key, resource);
         this.dependResources.add(resource);
         resource.connect(this);
@@ -300,7 +301,6 @@ export class PassNode extends ExecuteNode<PassExecuteCtx> {
             batchable = batchable && r;
         }
         return batchable;
-
     }
 
     execute(ctx: PassExecuteCtx) {
@@ -313,7 +313,7 @@ export class PassNode extends ExecuteNode<PassExecuteCtx> {
         renderer.renderer.overrideDispatcher = overrideDispatcher;
         renderer.activeResources = this.resources;
         if (drivenMaterial) {
-            this.resources.forEach((resource, name) => (drivenMaterial as any)[name] = resource);
+            this.resources.forEach((resource, name) => ((drivenMaterial as any)[name] = resource));
         }
 
         // run custom pass and ignore all processes

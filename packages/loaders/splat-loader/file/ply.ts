@@ -1,14 +1,16 @@
-import { type IFile, type IData, type ISingleSplat, SH_MAPS, SH_C0, BufferReader, StreamChunkDecoder, type ChunkDecoder, NUM_F_REST_TO_SH_DEGREE } from './utils';
+import {
+    type IFile,
+    type IData,
+    type ISingleSplat,
+    SH_MAPS,
+    SH_C0,
+    BufferReader,
+    StreamChunkDecoder,
+    type ChunkDecoder,
+    NUM_F_REST_TO_SH_DEGREE,
+} from './utils';
 
-type PlyPropertyType =
-    | 'char'
-    | 'uchar'
-    | 'short'
-    | 'ushort'
-    | 'int'
-    | 'uint'
-    | 'float'
-    | 'double';
+type PlyPropertyType = 'char' | 'uchar' | 'short' | 'ushort' | 'int' | 'uint' | 'float' | 'double';
 
 interface PlyElement {
     name: string;
@@ -17,7 +19,10 @@ interface PlyElement {
 }
 
 const F_REST_REGEX = /^f_rest_([0-9]{1,2})$/;
-function createEmptyBlock(properties: Record<string, PlyPropertyType>, shDegree: number): Record<string, number | number[]> {
+function createEmptyBlock(
+    properties: Record<string, PlyPropertyType>,
+    shDegree: number,
+): Record<string, number | number[]> {
     const result: Record<string, number | number[]> = {
         f_rest: new Array(SH_MAPS[shDegree]),
     };
@@ -87,27 +92,49 @@ function createParseFn(
 }
 
 interface ISSChunk {
-    min_x: number, min_y: number, min_z: number,
-    max_x: number, max_y: number, max_z: number,
-    min_scale_x: number, min_scale_y: number, min_scale_z: number,
-    max_scale_x: number, max_scale_y: number, max_scale_z: number,
-    min_r: number, min_g: number, min_b: number,
-    max_r: number, max_g: number, max_b: number,
+    min_x: number;
+    min_y: number;
+    min_z: number;
+    max_x: number;
+    max_y: number;
+    max_z: number;
+    min_scale_x: number;
+    min_scale_y: number;
+    min_scale_z: number;
+    max_scale_x: number;
+    max_scale_y: number;
+    max_scale_z: number;
+    min_r: number;
+    min_g: number;
+    min_b: number;
+    max_r: number;
+    max_g: number;
+    max_b: number;
 }
 
 interface ISSVertexBlock {
-    packed_position: number,
-    packed_rotation: number,
-    packed_scale: number,
-    packed_color: number,
+    packed_position: number;
+    packed_rotation: number;
+    packed_scale: number;
+    packed_color: number;
 }
 
 interface IVertexBlock {
-    x: number, y: number, z: number,
-    scale_0: number, scale_1: number, scale_2: number,
-    rot_0: number, rot_1: number, rot_2: number, rot_3: number,
-    f_dc_0: number, f_dc_1: number, f_dc_2: number, opacity: number,
-    f_rest: number[],
+    x: number;
+    y: number;
+    z: number;
+    scale_0: number;
+    scale_1: number;
+    scale_2: number;
+    rot_0: number;
+    rot_1: number;
+    rot_2: number;
+    rot_3: number;
+    f_dc_0: number;
+    f_dc_1: number;
+    f_dc_2: number;
+    opacity: number;
+    f_rest: number[];
 }
 
 const HeaderTerminator = 'end_header\n';
@@ -122,7 +149,11 @@ export class PlyFile implements IFile {
 
     private initHeader(header: string) {
         let curElement: PlyElement | undefined;
-        const lines = header.trim().split('\n').map(v => v.trim()).filter(v => !!v);
+        const lines = header
+            .trim()
+            .split('\n')
+            .map(v => v.trim())
+            .filter(v => !!v);
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
             if (i === 0) {
@@ -176,7 +207,7 @@ export class PlyFile implements IFile {
         }
 
         const { elements } = this;
-        const isSuperSplatCompressed = this.isSuperSplatCompressed = !!elements.chunk;
+        const isSuperSplatCompressed = (this.isSuperSplatCompressed = !!elements.chunk);
         this.counts = elements.vertex?.count ?? 0;
 
         const shElement = isSuperSplatCompressed ? elements.sh : elements.vertex;
@@ -200,20 +231,44 @@ export class PlyFile implements IFile {
             if (isSuperSplatCompressed) {
                 if (name === 'chunk') {
                     const {
-                        min_x, min_y, min_z,
-                        max_x, max_y, max_z,
-                        min_scale_x, min_scale_y, min_scale_z,
-                        max_scale_x, max_scale_y, max_scale_z,
-                        min_r, min_g, min_b,
-                        max_r, max_g, max_b,
+                        min_x,
+                        min_y,
+                        min_z,
+                        max_x,
+                        max_y,
+                        max_z,
+                        min_scale_x,
+                        min_scale_y,
+                        min_scale_z,
+                        max_scale_x,
+                        max_scale_y,
+                        max_scale_z,
+                        min_r,
+                        min_g,
+                        min_b,
+                        max_r,
+                        max_g,
+                        max_b,
                     } = properties;
                     if (
-                        !min_x || !min_y || !min_z ||
-                        !max_x || !max_y || !max_z ||
-                        !min_scale_x || !min_scale_y || !min_scale_z ||
-                        !max_scale_x || !max_scale_y || !max_scale_z ||
-                        !min_r || !min_g || !min_b ||
-                        !max_r || !max_g || !max_b
+                        !min_x ||
+                        !min_y ||
+                        !min_z ||
+                        !max_x ||
+                        !max_y ||
+                        !max_z ||
+                        !min_scale_x ||
+                        !min_scale_y ||
+                        !min_scale_z ||
+                        !max_scale_x ||
+                        !max_scale_y ||
+                        !max_scale_z ||
+                        !min_r ||
+                        !min_g ||
+                        !min_b ||
+                        !max_r ||
+                        !max_g ||
+                        !max_b
                     ) {
                         throw new Error('Missing Compressed PLY chunk properties');
                     }
@@ -226,16 +281,36 @@ export class PlyFile implements IFile {
             } else {
                 if (name === 'vertex') {
                     const {
-                        x, y, z,
-                        scale_0, scale_1, scale_2,
-                        rot_0, rot_1, rot_2, rot_3,
-                        f_dc_0, f_dc_1, f_dc_2, opacity,
+                        x,
+                        y,
+                        z,
+                        scale_0,
+                        scale_1,
+                        scale_2,
+                        rot_0,
+                        rot_1,
+                        rot_2,
+                        rot_3,
+                        f_dc_0,
+                        f_dc_1,
+                        f_dc_2,
+                        opacity,
                     } = properties;
                     if (
-                        !x || !y || !z ||
-                        !scale_0 || !scale_1 || !scale_2 ||
-                        !rot_0 || !rot_1 || !rot_2 || !rot_3 ||
-                        !f_dc_0 || !f_dc_1 || !f_dc_2 || !opacity
+                        !x ||
+                        !y ||
+                        !z ||
+                        !scale_0 ||
+                        !scale_1 ||
+                        !scale_2 ||
+                        !rot_0 ||
+                        !rot_1 ||
+                        !rot_2 ||
+                        !rot_3 ||
+                        !f_dc_0 ||
+                        !f_dc_1 ||
+                        !f_dc_2 ||
+                        !opacity
                     ) {
                         throw new Error('Missing PLY vertex properties');
                     }
@@ -257,10 +332,20 @@ export class PlyFile implements IFile {
         let BlockOffset: number = 0;
         const chunks: ISSChunk[] = [];
         const single: ISingleSplat = {
-            x: 0, y: 0, z: 0,
-            sx: 0, sy: 0, sz: 0,
-            qx: 0, qy: 0, qz: 0, qw: 0,
-            r: 0, g: 0, b: 0, a: 0,
+            x: 0,
+            y: 0,
+            z: 0,
+            sx: 0,
+            sy: 0,
+            sz: 0,
+            qx: 0,
+            qy: 0,
+            qz: 0,
+            qw: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
             shN: [],
         };
         const initDecoder = () => {
@@ -272,15 +357,18 @@ export class PlyFile implements IFile {
                 const block = createEmptyBlock(properties, shDegree);
                 const [itemSize, parseFn] = createParseFn(properties, littleEndian, shDegree);
 
-                let fn: ((index: number, item: any) => void) = () => { };
+                let fn: (index: number, item: any) => void = () => {};
                 if (isSuperSplatCompressed) {
                     if (name === 'chunk') {
                         fn = (i: number, item: ISSChunk) => {
-                            chunks[(i - BlockOffset)] = { ...item };
+                            chunks[i - BlockOffset] = { ...item };
                         };
                     } else if (name === 'sh') {
                         fn = (i: number, item: Record<string, number[]>) => {
-                            setShFn(i, item.f_rest.map(v => (v * 8) / 255 - 4));
+                            setShFn(
+                                i,
+                                item.f_rest.map(v => (v * 8) / 255 - 4),
+                            );
                         };
                     } else if (name === 'vertex') {
                         fn = (i: number, item: ISSVertexBlock) => {
@@ -289,12 +377,24 @@ export class PlyFile implements IFile {
                                 throw new Error('Missing PLY chunk');
                             }
                             const {
-                                min_x, min_y, min_z,
-                                max_x, max_y, max_z,
-                                min_scale_x, min_scale_y, min_scale_z,
-                                max_scale_x, max_scale_y, max_scale_z,
-                                min_r, min_g, min_b,
-                                max_r, max_g, max_b,
+                                min_x,
+                                min_y,
+                                min_z,
+                                max_x,
+                                max_y,
+                                max_z,
+                                min_scale_x,
+                                min_scale_y,
+                                min_scale_z,
+                                max_scale_x,
+                                max_scale_y,
+                                max_scale_z,
+                                min_r,
+                                min_g,
+                                min_b,
+                                max_r,
+                                max_g,
+                                max_b,
                             } = chunk;
                             const { packed_position, packed_rotation, packed_scale, packed_color } = item;
 
@@ -312,9 +412,15 @@ export class PlyFile implements IFile {
                             single.qz = rOrder <= 2 ? r2 : rr;
                             single.qw = rOrder === 0 ? rr : r0;
 
-                            single.sx = Math.exp((((packed_scale >>> 21) & 2047) / 2047) * (max_scale_x - min_scale_x) + min_scale_x);
-                            single.sy = Math.exp((((packed_scale >>> 11) & 1023) / 1023) * (max_scale_y - min_scale_y) + min_scale_y);
-                            single.sz = Math.exp(((packed_scale & 2047) / 2047) * (max_scale_z - min_scale_z) + min_scale_z);
+                            single.sx = Math.exp(
+                                (((packed_scale >>> 21) & 2047) / 2047) * (max_scale_x - min_scale_x) + min_scale_x,
+                            );
+                            single.sy = Math.exp(
+                                (((packed_scale >>> 11) & 1023) / 1023) * (max_scale_y - min_scale_y) + min_scale_y,
+                            );
+                            single.sz = Math.exp(
+                                ((packed_scale & 2047) / 2047) * (max_scale_z - min_scale_z) + min_scale_z,
+                            );
 
                             single.r = (((packed_color >>> 24) & 255) / 255) * (max_r - min_r) + min_r;
                             single.g = (((packed_color >>> 16) & 255) / 255) * (max_g - min_g) + min_g;
@@ -379,7 +485,8 @@ export class PlyFile implements IFile {
                     const idx = header.indexOf(HeaderTerminator);
                     if (idx >= 0) {
                         header = header.slice(0, idx + HeaderTerminator.length);
-                        reader.head -= HeaderReadBlockSize - (new TextEncoder().encode(header).length % HeaderReadBlockSize);
+                        reader.head -=
+                            HeaderReadBlockSize - (new TextEncoder().encode(header).length % HeaderReadBlockSize);
                         this.initHeader(header);
                         initDecoder();
                         BlockOffset = await data.initBlock(this.counts, this.shDegree);
@@ -427,7 +534,9 @@ export class PlyFile implements IFile {
             new Array(shCounts).fill(0).map((_, i) => `property float f_rest_${i}`),
             'end_header',
             '',
-        ].flat().join('\n');
+        ]
+            .flat()
+            .join('\n');
         writer.write(new TextEncoder().encode(header));
 
         const ItemSize = 14 + shCounts;
@@ -435,10 +544,20 @@ export class PlyFile implements IFile {
         const chunkCounts = Math.ceil(counts / chunkSize);
 
         const single: ISingleSplat = {
-            x: 0, y: 0, z: 0,
-            sx: 0, sy: 0, sz: 0,
-            qx: 0, qy: 0, qz: 0, qw: 0,
-            r: 0, g: 0, b: 0, a: 0,
+            x: 0,
+            y: 0,
+            z: 0,
+            sx: 0,
+            sy: 0,
+            sz: 0,
+            qx: 0,
+            qy: 0,
+            qz: 0,
+            qw: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
             shN: new Array(shCounts),
         };
         const shN = single.shN;

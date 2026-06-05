@@ -16,14 +16,16 @@ export class MixPlanarShadowMaterial extends PassQuadMaterialBase {
     }
 
     extendShaderShading(b: ShaderBuilder) {
-        b
-            .addUniform('tDiffuse', WebGLShaderDataType.Sampler2D)
+        b.addUniform('tDiffuse', WebGLShaderDataType.Sampler2D)
             .addUniform('occlusionMap', WebGLShaderDataType.Sampler2D)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 float a = texture2D(tDiffuse, vUv).r;
                 float s = texture2D(occlusionMap, vUv).r;
                 gl_FragColor = vec4(0., 0., 0., (1. - a) * (1. - s));
-            `);
+            `,
+            );
     }
 
     updateShadingUniforms(p: WGLProgram) {

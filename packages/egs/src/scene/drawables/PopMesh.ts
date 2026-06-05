@@ -18,15 +18,15 @@ export class PopMesh extends Mesh<MeshPhongMaterial, PopBufferGeometry> {
     readonly type = 'PopMesh';
     /**
      * Record the LOD level of last update.
-    */
+     */
     oldLevelFactor = -1;
     /**
      * Record the frame id of last updating LOD level.
-    */
+     */
     LODUpdateId = -1;
     /**
      * a unique key of the Mesh. When this Mesh is merged, this key will be update.
-    */
+     */
     popMergeCacheKey: Nullable<string> = null;
     /**
      * Switch of LOD.
@@ -57,8 +57,11 @@ export class PopMesh extends Mesh<MeshPhongMaterial, PopBufferGeometry> {
      */
     updateRenderEntity() {
         this.oldLevelFactor = -1;
-        if (this.geometryChanged || this.materialChanged // this make sure we only care about geo mat change
-            || this._renderGeometry === null || this._renderMaterial === null
+        if (
+            this.geometryChanged ||
+            this.materialChanged || // this make sure we only care about geo mat change
+            this._renderGeometry === null ||
+            this._renderMaterial === null
         ) {
             const scene = this.scene;
             if (scene) {
@@ -76,7 +79,6 @@ export class PopMesh extends Mesh<MeshPhongMaterial, PopBufferGeometry> {
                 this._renderGeometry = this.geometry;
                 this._renderMaterial = this._material;
             }
-
         }
     }
     /**
@@ -85,5 +87,4 @@ export class PopMesh extends Mesh<MeshPhongMaterial, PopBufferGeometry> {
     clone(): PopMesh {
         return new PopMesh(this.geometry, this._material.slice()).copy(this);
     }
-
 }

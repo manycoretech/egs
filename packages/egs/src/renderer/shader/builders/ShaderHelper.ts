@@ -1,5 +1,5 @@
 import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import type { ShaderInputDescriptor,UniformArrayDescriptor,VaryArrayDescriptor } from '../Shader';
+import type { ShaderInputDescriptor, UniformArrayDescriptor, VaryArrayDescriptor } from '../Shader';
 import type { UniformBlockObject } from '../components/UniformBlockObject';
 import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
 
@@ -47,7 +47,7 @@ export enum ShaderInjectionTypes {
     gl_FragColor,
     gl_FragColorModify,
     gl_FragDepthEXT,
-    frag_any
+    frag_any,
 }
 
 export enum ShaderExtensionTypes {
@@ -226,11 +226,17 @@ function createFragVaryingArray(des: VaryArrayDescriptor, useWebGL2: boolean) {
 }
 
 export function createVertVaryings(des: ShaderInputDescriptor[], arrayDes: VaryArrayDescriptor[], useWebGL2: boolean) {
-    return des.map(d => createVertVarying(d, useWebGL2)).join('\n') + arrayDes.map(d => createVertVaryingArray(d, useWebGL2)).join('\n');
+    return (
+        des.map(d => createVertVarying(d, useWebGL2)).join('\n') +
+        arrayDes.map(d => createVertVaryingArray(d, useWebGL2)).join('\n')
+    );
 }
 
 export function createFragVaryings(des: ShaderInputDescriptor[], arrayDes: VaryArrayDescriptor[], useWebGL2: boolean) {
-    return des.map(d => createFragVarying(d, useWebGL2)).join('\n') + arrayDes.map(d => createFragVaryingArray(d, useWebGL2)).join('\n');
+    return (
+        des.map(d => createFragVarying(d, useWebGL2)).join('\n') +
+        arrayDes.map(d => createFragVaryingArray(d, useWebGL2)).join('\n')
+    );
 }
 
 export function createHeader(isWebGL2: boolean) {
@@ -262,14 +268,13 @@ precision highp int;
     `;
 }
 
-const unrollLoopPattern = /#pragma unroll_loop_start[\s]+?for\s*\(\s*int i \= (\d+)\; i < (\d+)\; i\s*\+\+\s*\)\s*{([\s\S]+?)(?=\})\}[\s]+?#pragma unroll_loop_end/g;
+const unrollLoopPattern =
+    /#pragma unroll_loop_start[\s]+?for\s*\(\s*int i = (\d+); i < (\d+); i\s*\+\+\s*\)\s*{([\s\S]+?)(?=\})\}[\s]+?#pragma unroll_loop_end/g;
 
 function loopReplacer(_match: string, start: string, end: string, snippet: string) {
     let string = '';
     for (let i = parseInt(start, 10); i < parseInt(end, 10); i++) {
-        string += snippet
-            .replace(/\[ i \]/g, '[ ' + i + ' ]')
-            .replace(/UNROLLED_LOOP_INDEX/g, i.toString());
+        string += snippet.replace(/\[ i \]/g, '[ ' + i + ' ]').replace(/UNROLLED_LOOP_INDEX/g, i.toString());
     }
     return string;
 }

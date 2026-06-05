@@ -103,7 +103,6 @@ export class AnimationAction {
                             materialSet.add(material);
                         }
                     }
-
                 } else {
                     nodeTarget = getNodeByName(nodeName, target);
                 }
@@ -131,7 +130,7 @@ export class AnimationAction {
                     itemSize = 1;
                     break;
             }
-            if (itemSize !== (values.length / times.length)) {
+            if (itemSize !== values.length / times.length) {
                 console.warn('EGS Animation: invalid itemSize');
                 continue;
             }
@@ -196,7 +195,7 @@ export class AnimationAction {
         }
     }
 
-    private updateTime(deltaTime: number): { deactivateNext: boolean, time: number } {
+    private updateTime(deltaTime: number): { deactivateNext: boolean; time: number } {
         const { duration, repetitions } = this;
         if (repetitions <= 0) {
             return { deactivateNext: true, time: this.time };
@@ -237,7 +236,7 @@ export class AnimationAction {
             this.animationMixer.emit(AnimationFinishEvent, { action: this });
         }
         this.time = time;
-        if (this.loop === Loop.PingPong && (this.loopCounts % 2 === 1)) {
+        if (this.loop === Loop.PingPong && this.loopCounts % 2 === 1) {
             time = duration - time;
         }
         return { deactivateNext, time };
@@ -264,7 +263,9 @@ function getMaterialByName(name: string, node: Object3D): Material | undefined {
 }
 
 function getNodeByName(name: string, node: Object3D): Object3D | undefined {
-    if (node.name === name) { return node; }
+    if (node.name === name) {
+        return node;
+    }
     for (let i = 0, l = node.children.length; i < l; i++) {
         const child = node.children[i];
         const object = getNodeByName(name, child);

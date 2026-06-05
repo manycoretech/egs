@@ -44,11 +44,11 @@ export enum TextureDataType {
     IntType = 0x1404,
     UnsignedIntType = 0x1405,
     FloatType = 0x1406,
-    HalfFloatType = 0x140B,
+    HalfFloatType = 0x140b,
     UnsignedShort4444Type = 0x8033,
     UnsignedShort5551Type = 0x8034,
     UnsignedShort565Type = 0x8363,
-    UnsignedInt248Type = 0x84FA,
+    UnsignedInt248Type = 0x84fa,
     UnsignedInt2101010Type = 0x8368,
 }
 
@@ -57,16 +57,26 @@ export enum TextureDataType {
  */
 export function getTextureDataTypeSize(t: TextureDataType) {
     switch (t) {
-        case TextureDataType.UnsignedByteType: return 1;
-        case TextureDataType.ByteType: return 1;
-        case TextureDataType.UnsignedInt2101010Type: return 1;
-        case TextureDataType.ShortType: return 2;
-        case TextureDataType.UnsignedShortType: return 2;
-        case TextureDataType.IntType: return 4;
-        case TextureDataType.UnsignedIntType: return 4;
-        case TextureDataType.FloatType: return 4;
-        case TextureDataType.HalfFloatType: return 2;
-        default: return 4;
+        case TextureDataType.UnsignedByteType:
+            return 1;
+        case TextureDataType.ByteType:
+            return 1;
+        case TextureDataType.UnsignedInt2101010Type:
+            return 1;
+        case TextureDataType.ShortType:
+            return 2;
+        case TextureDataType.UnsignedShortType:
+            return 2;
+        case TextureDataType.IntType:
+            return 4;
+        case TextureDataType.UnsignedIntType:
+            return 4;
+        case TextureDataType.FloatType:
+            return 4;
+        case TextureDataType.HalfFloatType:
+            return 2;
+        default:
+            return 4;
     }
 }
 
@@ -254,11 +264,11 @@ export enum SamplerWrap {
     /**
      * ClampToEdgeWrapping is the default. The last pixel of the texture stretches to the edge of the mesh.
      */
-    ClampToEdge = 0x812F,
+    ClampToEdge = 0x812f,
     /**
      * With MirroredRepeatWrapping the texture will repeats to infinity, mirroring on each repeat.
      */
-    MirroredRepeat = 0x8370
+    MirroredRepeat = 0x8370,
 }
 
 /**
@@ -270,7 +280,7 @@ export enum SamplerFilter {
     NearestMipmapNearest = 0x2700,
     LinearMipmapNearest = 0x2701,
     NearestMipmapLinear = 0x2702,
-    LinearMipmapLinear = 0x2703
+    LinearMipmapLinear = 0x2703,
 }
 
 /**
@@ -278,8 +288,8 @@ export enum SamplerFilter {
  */
 export enum BlendingEquation {
     Add = 0x8006,
-    Subtract = 0x800A,
-    ReverseSubtract = 0x800B,
+    Subtract = 0x800a,
+    ReverseSubtract = 0x800b,
     Min = 0x8007,
     Max = 0x8008,
 }
@@ -313,7 +323,7 @@ export enum StencilOp {
     DecrementStencilOp = 7683,
     IncrementWrapStencilOp = 34055,
     DecrementWrapStencilOp = 34056,
-    InvertStencilOp = 5386
+    InvertStencilOp = 5386,
 }
 /**
  * The stencilFunc method of the WebGL API sets the front and back function and reference value for stencil testing.
@@ -327,5 +337,5 @@ export enum StencilFunc {
     GreaterStencilFunc = 516,
     NotEqualStencilFunc = 517,
     GreaterEqualStencilFunc = 518,
-    AlwaysStencilFunc = 519
+    AlwaysStencilFunc = 519,
 }

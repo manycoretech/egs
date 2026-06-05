@@ -1,6 +1,6 @@
 import type { ReadonlyVector2 } from './math/Vector2';
 import { ContentBridge } from './ContentAPI.impl';
-import type { TypedArray,Nullable } from './utils/Utils';
+import type { TypedArray, Nullable } from './utils/Utils';
 import type { BufferGeometryBase, BufferGroup } from './elements/geometries/containers/BufferGeometry';
 import type { Material } from './elements/materials/Material';
 import type { Object3D } from './scene/Object3D';
@@ -113,7 +113,7 @@ export function materialPropertyDeclare() {
     };
 }
 
-const materialGetSetCache = new Map<string, { getter: any, setter: any }>();
+const materialGetSetCache = new Map<string, { getter: any; setter: any }>();
 export function materialProperty() {
     return function (target: Material | ShaderComponent, propertyKey: string) {
         if (window.EGS_ENABLE_CONTENT_API !== true) {
@@ -126,13 +126,16 @@ export function materialProperty() {
         if (!cache) {
             const inner_name = '__' + propertyKey;
             const getter = new Function(`return this.${inner_name}`) as any;
-            const setter = new Function('newVal', `
+            const setter = new Function(
+                'newVal',
+                `
                 if (this.${inner_name} === newVal) {
                     return;
                 }
                 this.$ContentBridge.materialSetProperty(this, '${propertyKey}', newVal);
                 this.${inner_name} = newVal;
-            `);
+            `,
+            );
             cache = { getter, setter };
             materialGetSetCache.set(propertyKey, cache);
         }
@@ -160,7 +163,7 @@ export function shaderComponentInMaterial() {
         };
         Object.defineProperty(target, propertyKey, {
             get: getter,
-            set: setter
+            set: setter,
         });
     };
 }
@@ -228,12 +231,12 @@ export function lightProperty(bridgeKey?: string) {
         };
         Object.defineProperty(target, propertyKey, {
             get: getter,
-            set: setter
+            set: setter,
         });
     };
 }
 
-const drawableGetSetCache = new Map<string, { getter: any, setter: any }>();
+const drawableGetSetCache = new Map<string, { getter: any; setter: any }>();
 export function drawableState() {
     return function (target: Drawable, propertyKey: string) {
         if (window.EGS_ENABLE_CONTENT_API !== true) {
@@ -245,13 +248,16 @@ export function drawableState() {
         if (!cache) {
             const inner_name = '__' + propertyKey;
             const getter = new Function(`return this.${inner_name}`) as any;
-            const setter = new Function('newVal', `
+            const setter = new Function(
+                'newVal',
+                `
                 if (this.${inner_name} === newVal) {
                     return;
                 }
                 this.$ContentBridge.drawableSyncData(this, '${propertyKey}', newVal);
                 this.${inner_name} = newVal;
-            `);
+            `,
+            );
             cache = { getter, setter };
             drawableGetSetCache.set(propertyKey, cache);
         }
@@ -277,7 +283,7 @@ export function cameraState() {
         };
         Object.defineProperty(target, propertyKey, {
             get: getter,
-            set: setter
+            set: setter,
         });
     };
 }
@@ -313,7 +319,13 @@ export interface ContentAPI {
     bufferAttributeCreate?(attribute: BufferAttribute): void;
     bufferAttributeDestroy?(attribute: BufferAttribute): void;
     bufferAttributeFreeGPU?(attribute: BufferAttribute): void;
-    bufferAttributeSetData?(attribute: BufferAttribute, data: TypedArray, itemSize: number, count: number, normalized: boolean): void;
+    bufferAttributeSetData?(
+        attribute: BufferAttribute,
+        data: TypedArray,
+        itemSize: number,
+        count: number,
+        normalized: boolean,
+    ): void;
     bufferAttributeNotifyContentChange?(attribute: BufferAttribute): void;
 
     textureCreate?(texture: Texture): void;
@@ -335,7 +347,12 @@ export interface ContentAPI {
     materialCreate?(material: Material): void;
     materialDestroy?(material: Material): void;
     materialFreeGPU?(material: Material): void;
-    materialSetShaderComponent?(material: Material, key: string, prev: Nullable<ShaderComponent>, value: ShaderComponent): void;
+    materialSetShaderComponent?(
+        material: Material,
+        key: string,
+        prev: Nullable<ShaderComponent>,
+        value: ShaderComponent,
+    ): void;
     materialAddShaderComponent?(material: Material, component: ShaderComponent, index?: number): void;
     materialDeleteShaderComponent?(material: Material, component: ShaderComponent, index: number): void;
     materialSetProperty?(material: Material | ShaderComponent, key: string, value: any, force?: boolean): void;
@@ -360,7 +377,9 @@ export interface ContentAPI {
     drawableSyncAllData?(node: Drawable): void;
 
     skinnedMeshSetSkeleton?<M extends Material, T extends Texture2D | SourceTexture>(node: SkinnedMesh<M, T>): void;
-    skinnedMeshSyncBoneMatrices?<M extends Material, T extends Texture2D | SourceTexture>(node: SkinnedMesh<M, T>): void;
+    skinnedMeshSyncBoneMatrices?<M extends Material, T extends Texture2D | SourceTexture>(
+        node: SkinnedMesh<M, T>,
+    ): void;
 
     lightInit?(light: Light): void;
     lightSetProperty?(light: Light, key: string, target: Light | Shadow<unknown>, value: any): void;

@@ -41,7 +41,9 @@ export class Matrix3 {
      * @deprecated use `fromArray` instead;
      */
     set elements(v: Float32Array) {
-        logger.error(`set Matrix3.elements is not allowed and deprecated, use fromArray stead, call stack ${new Error().stack}`);
+        logger.error(
+            `set Matrix3.elements is not allowed and deprecated, use fromArray stead, call stack ${new Error().stack}`,
+        );
         this._elements = v;
     }
 
@@ -67,11 +69,27 @@ export class Matrix3 {
      * @param n32 value to put in row 3, col 2.
      * @param n33 value to put in row 3, col 3.
      */
-    set(n11: number, n12: number, n13: number, n21: number, n22: number, n23: number, n31: number, n32: number, n33: number): Matrix3 {
+    set(
+        n11: number,
+        n12: number,
+        n13: number,
+        n21: number,
+        n22: number,
+        n23: number,
+        n31: number,
+        n32: number,
+        n33: number,
+    ): Matrix3 {
         const te = this._elements;
-        te[0] = n11; te[1] = n21; te[2] = n31;
-        te[3] = n12; te[4] = n22; te[5] = n32;
-        te[6] = n13; te[7] = n23; te[8] = n33;
+        te[0] = n11;
+        te[1] = n21;
+        te[2] = n31;
+        te[3] = n12;
+        te[4] = n22;
+        te[5] = n32;
+        te[6] = n13;
+        te[7] = n23;
+        te[8] = n33;
         return this;
     }
     /**
@@ -148,13 +166,24 @@ export class Matrix3 {
         const be = b._elements;
         const te = this._elements;
 
-        const a11 = ae[0], a12 = ae[3], a13 = ae[6],
-            a21 = ae[1], a22 = ae[4], a23 = ae[7],
-            a31 = ae[2], a32 = ae[5], a33 = ae[8],
-
-            b11 = be[0], b12 = be[3], b13 = be[6],
-            b21 = be[1], b22 = be[4], b23 = be[7],
-            b31 = be[2], b32 = be[5], b33 = be[8];
+        const a11 = ae[0],
+            a12 = ae[3],
+            a13 = ae[6],
+            a21 = ae[1],
+            a22 = ae[4],
+            a23 = ae[7],
+            a31 = ae[2],
+            a32 = ae[5],
+            a33 = ae[8],
+            b11 = be[0],
+            b12 = be[3],
+            b13 = be[6],
+            b21 = be[1],
+            b22 = be[4],
+            b23 = be[7],
+            b31 = be[2],
+            b32 = be[5],
+            b33 = be[8];
 
         te[0] = a11 * b11 + a12 * b21 + a13 * b31;
         te[3] = a11 * b12 + a12 * b22 + a13 * b32;
@@ -176,13 +205,24 @@ export class Matrix3 {
         const be = b._elements;
         const te = this._elements;
 
-        const a11 = ae[0], a12 = ae[3], a13 = ae[6],
-            a21 = ae[1], a22 = ae[4], a23 = ae[7],
-            a31 = ae[2], a32 = ae[5], a33 = ae[8],
-
-            b11 = be[0], b12 = be[3], b13 = be[6],
-            b21 = be[1], b22 = be[4], b23 = be[7],
-            b31 = be[2], b32 = be[5], b33 = be[8];
+        const a11 = ae[0],
+            a12 = ae[3],
+            a13 = ae[6],
+            a21 = ae[1],
+            a22 = ae[4],
+            a23 = ae[7],
+            a31 = ae[2],
+            a32 = ae[5],
+            a33 = ae[8],
+            b11 = be[0],
+            b12 = be[3],
+            b13 = be[6],
+            b21 = be[1],
+            b22 = be[4],
+            b23 = be[7],
+            b31 = be[2],
+            b32 = be[5],
+            b33 = be[8];
 
         te[0] = a11 + b11;
         te[3] = a12 + b12;
@@ -204,9 +244,15 @@ export class Matrix3 {
      */
     multiplyScalar(s: number): Matrix3 {
         const te = this._elements;
-        te[0] *= s; te[3] *= s; te[6] *= s;
-        te[1] *= s; te[4] *= s; te[7] *= s;
-        te[2] *= s; te[5] *= s; te[8] *= s;
+        te[0] *= s;
+        te[3] *= s;
+        te[6] *= s;
+        te[1] *= s;
+        te[4] *= s;
+        te[7] *= s;
+        te[2] *= s;
+        te[5] *= s;
+        te[8] *= s;
         return this;
     }
     /**
@@ -214,9 +260,15 @@ export class Matrix3 {
      */
     determinant(): number {
         const te = this._elements;
-        const a = te[0], b = te[1], c = te[2],
-            d = te[3], e = te[4], f = te[5],
-            g = te[6], h = te[7], i = te[8];
+        const a = te[0],
+            b = te[1],
+            c = te[2],
+            d = te[3],
+            e = te[4],
+            f = te[5],
+            g = te[6],
+            h = te[7],
+            i = te[8];
         return a * e * i - a * f * h - b * d * i + b * f * g + c * d * h - c * e * g;
     }
     /**
@@ -225,15 +277,21 @@ export class Matrix3 {
     getInverse(matrix: Matrix3, throwOnDegenerate?: boolean): Matrix3 {
         const te = this._elements;
         const me = matrix._elements,
-            n11 = me[0], n21 = me[1], n31 = me[2],
-            n12 = me[3], n22 = me[4], n32 = me[5],
-            n13 = me[6], n23 = me[7], n33 = me[8],
+            n11 = me[0],
+            n21 = me[1],
+            n31 = me[2],
+            n12 = me[3],
+            n22 = me[4],
+            n32 = me[5],
+            n13 = me[6],
+            n23 = me[7],
+            n33 = me[8],
             t11 = n33 * n22 - n32 * n23,
             t12 = n32 * n13 - n33 * n12,
             t13 = n23 * n12 - n22 * n13,
             det = n11 * t11 + n21 * t12 + n31 * t13;
         if (det === 0) {
-            const msg = 'EGS.Matrix3: .getInverse() can\'t invert matrix, determinant is 0';
+            const msg = "EGS.Matrix3: .getInverse() can't invert matrix, determinant is 0";
             if (throwOnDegenerate === true) {
                 logger.unsupported(msg);
             }
@@ -258,9 +316,15 @@ export class Matrix3 {
     transpose(): Matrix3 {
         let tmp: number;
         const m = this._elements;
-        tmp = m[1]; m[1] = m[3]; m[3] = tmp;
-        tmp = m[2]; m[2] = m[6]; m[6] = tmp;
-        tmp = m[5]; m[5] = m[7]; m[7] = tmp;
+        tmp = m[1];
+        m[1] = m[3];
+        m[3] = tmp;
+        tmp = m[2];
+        m[2] = m[6];
+        m[6] = tmp;
+        tmp = m[5];
+        m[5] = m[7];
+        m[7] = tmp;
         return this;
     }
     /**
@@ -301,9 +365,16 @@ export class Matrix3 {
     setUVTransform(tx: number, ty: number, sx: number, sy: number, rotation: number, cx: number, cy: number): void {
         const c = Math.cos(rotation);
         const s = Math.sin(rotation);
-        this.set(sx * c, sx * s, -sx * (c * cx + s * cy) + cx + tx,
-            -sy * s, sy * c, -sy * (-s * cx + c * cy) + cy + ty,
-            0, 0, 1
+        this.set(
+            sx * c,
+            sx * s,
+            -sx * (c * cx + s * cy) + cx + tx,
+            -sy * s,
+            sy * c,
+            -sy * (-s * cx + c * cy) + cy + ty,
+            0,
+            0,
+            1,
         );
     }
     /**
@@ -313,8 +384,12 @@ export class Matrix3 {
      */
     scale(sx: number, sy: number): Matrix3 {
         const te = this._elements;
-        te[0] *= sx; te[3] *= sx; te[6] *= sx;
-        te[1] *= sy; te[4] *= sy; te[7] *= sy;
+        te[0] *= sx;
+        te[3] *= sx;
+        te[6] *= sx;
+        te[1] *= sy;
+        te[4] *= sy;
+        te[7] *= sy;
         return this;
     }
     /**
@@ -325,16 +400,20 @@ export class Matrix3 {
         const c = Math.cos(theta);
         const s = Math.sin(theta);
         const te = this._elements;
-        const a11 = te[0], a12 = te[3], a13 = te[6],
-            a21 = te[1], a22 = te[4], a23 = te[7];
+        const a11 = te[0],
+            a12 = te[3],
+            a13 = te[6],
+            a21 = te[1],
+            a22 = te[4],
+            a23 = te[7];
 
         te[0] = c * a11 + s * a21;
         te[3] = c * a12 + s * a22;
         te[6] = c * a13 + s * a23;
 
-        te[1] = - s * a11 + c * a21;
-        te[4] = - s * a12 + c * a22;
-        te[7] = - s * a13 + c * a23;
+        te[1] = -s * a11 + c * a21;
+        te[4] = -s * a12 + c * a22;
+        te[7] = -s * a13 + c * a23;
         return this;
     }
     /**
@@ -344,8 +423,12 @@ export class Matrix3 {
      */
     translate(tx: number, ty: number): Matrix3 {
         const te = this._elements;
-        te[0] += tx * te[2]; te[3] += tx * te[5]; te[6] += tx * te[8];
-        te[1] += ty * te[2]; te[4] += ty * te[5]; te[7] += ty * te[8];
+        te[0] += tx * te[2];
+        te[3] += tx * te[5];
+        te[6] += tx * te[8];
+        te[1] += ty * te[2];
+        te[4] += ty * te[5];
+        te[7] += ty * te[8];
         return this;
     }
     /**
@@ -370,8 +453,8 @@ export class Matrix3 {
         const x = pos.x;
         const y = pos.y;
 
-        newPos.x = (this._elements[0] * x) + (this._elements[3] * y) + this._elements[6];
-        newPos.y = (this._elements[1] * x) + (this._elements[4] * y) + this._elements[7];
+        newPos.x = this._elements[0] * x + this._elements[3] * y + this._elements[6];
+        newPos.y = this._elements[1] * x + this._elements[4] * y + this._elements[7];
 
         if (!this.is2x3) {
             const w = 1 / (this._elements[2] * x + this._elements[5] * y + this._elements[8]);
@@ -390,8 +473,8 @@ export class Matrix3 {
             const x = array[i * 3];
             const y = array[i * 3 + 1];
 
-            array[i * 3] = (this._elements[0] * x) + (this._elements[3] * y) + this._elements[6];
-            array[i * 3 + 1] = (this._elements[1] * x) + (this._elements[4] * y) + this._elements[7];
+            array[i * 3] = this._elements[0] * x + this._elements[3] * y + this._elements[6];
+            array[i * 3 + 1] = this._elements[1] * x + this._elements[4] * y + this._elements[7];
         }
         return array;
     }
@@ -406,13 +489,13 @@ export class Matrix3 {
         const d = this._elements[4];
         const tx = this._elements[6];
         const ty = this._elements[7];
-        const id = 1 / ((a * d) + (c * -b));
+        const id = 1 / (a * d + c * -b);
 
         const x = pos.x;
         const y = pos.y;
 
-        newPos.x = (d * id * x) + (-c * id * y) + (((ty * c) - (tx * d)) * id);
-        newPos.y = (a * id * y) + (-b * id * x) + (((-ty * a) + (tx * b)) * id);
+        newPos.x = d * id * x + -c * id * y + (ty * c - tx * d) * id;
+        newPos.y = a * id * y + -b * id * x + (-ty * a + tx * b) * id;
 
         return newPos;
     }
@@ -500,8 +583,17 @@ export class Matrix3 {
      * @param skewY Skew on the y axis.
      * @return This matrix. Good for chaining method calls.
      */
-    compose(x: number, y: number, pivotX: number, pivotY: number, scaleX: number,
-        scaleY: number, rotation: number, skewX: number, skewY: number): this {
+    compose(
+        x: number,
+        y: number,
+        pivotX: number,
+        pivotY: number,
+        scaleX: number,
+        scaleY: number,
+        rotation: number,
+        skewX: number,
+        skewY: number,
+    ): this {
         this._elements[0] = Math.cos(rotation + skewY) * scaleX;
         this._elements[1] = Math.sin(rotation + skewY) * scaleX;
         this._elements[2] = 0;
@@ -509,8 +601,8 @@ export class Matrix3 {
         this._elements[4] = Math.cos(rotation - skewX) * scaleY;
         this._elements[5] = 0;
 
-        this._elements[6] = x - ((pivotX * this._elements[0]) + (pivotY * this._elements[3]));
-        this._elements[7] = y - ((pivotX * this._elements[1]) + (pivotY * this._elements[4]));
+        this._elements[6] = x - (pivotX * this._elements[0] + pivotY * this._elements[3]);
+        this._elements[7] = y - (pivotX * this._elements[1] + pivotY * this._elements[4]);
         this._elements[8] = 1;
 
         this.is2x3 = true;
@@ -522,8 +614,13 @@ export class Matrix3 {
      */
     decompose() {
         const transform: {
-            x: number, y: number, scaleX: number,
-            scaleY: number, rotation: number, skewX: number, skewY: number
+            x: number;
+            y: number;
+            scaleX: number;
+            scaleY: number;
+            rotation: number;
+            skewX: number;
+            skewY: number;
         } = <any>{};
 
         // sort out rotation / skew..
@@ -547,8 +644,8 @@ export class Matrix3 {
         }
 
         // next set scale
-        transform.scaleX = Math.sqrt((a * a) + (b * b));
-        transform.scaleY = Math.sqrt((c * c) + (d * d));
+        transform.scaleX = Math.sqrt(a * a + b * b);
+        transform.scaleY = Math.sqrt(c * c + d * d);
 
         // next set position
         transform.x = this._elements[6];
@@ -568,9 +665,15 @@ export class Matrix3 {
         const x = (right + left) * w;
         const y = (top + bottom) * h;
 
-        te[0] = 2 * w; te[3] = 0; te[6] = - x;
-        te[1] = 0; te[4] = 2 * h; te[7] = - y;
-        te[2] = 0; te[5] = 0; te[8] = 1;
+        te[0] = 2 * w;
+        te[3] = 0;
+        te[6] = -x;
+        te[1] = 0;
+        te[4] = 2 * h;
+        te[7] = -y;
+        te[2] = 0;
+        te[5] = 0;
+        te[8] = 1;
         return this;
     }
     /**
@@ -583,10 +686,10 @@ export class Matrix3 {
         }
 
         if (a._elements[0] !== 1 || a._elements[1] !== 0 || a._elements[3] !== 0 || a._elements[4] !== 1) {
-            result._elements[0] = (b._elements[0] * a._elements[0]) + (b._elements[1] * a._elements[3]);
-            result._elements[1] = (b._elements[0] * a._elements[1]) + (b._elements[1] * a._elements[4]);
-            result._elements[3] = (b._elements[3] * a._elements[0]) + (b._elements[4] * a._elements[3]);
-            result._elements[4] = (b._elements[3] * a._elements[1]) + (b._elements[4] * a._elements[4]);
+            result._elements[0] = b._elements[0] * a._elements[0] + b._elements[1] * a._elements[3];
+            result._elements[1] = b._elements[0] * a._elements[1] + b._elements[1] * a._elements[4];
+            result._elements[3] = b._elements[3] * a._elements[0] + b._elements[4] * a._elements[3];
+            result._elements[4] = b._elements[3] * a._elements[1] + b._elements[4] * a._elements[4];
         } else {
             result._elements[0] = b._elements[0];
             result._elements[1] = b._elements[1];
@@ -594,8 +697,8 @@ export class Matrix3 {
             result._elements[4] = b._elements[4];
         }
 
-        result._elements[6] = (b._elements[6] * a._elements[0]) + (b._elements[7] * a._elements[3]) + a._elements[6];
-        result._elements[7] = (b._elements[6] * a._elements[1]) + (b._elements[7] * a._elements[4]) + a._elements[7];
+        result._elements[6] = b._elements[6] * a._elements[0] + b._elements[7] * a._elements[3] + a._elements[6];
+        result._elements[7] = b._elements[6] * a._elements[1] + b._elements[7] * a._elements[4] + a._elements[7];
 
         result._elements[2] = 0;
         result._elements[5] = 0;
@@ -605,7 +708,6 @@ export class Matrix3 {
 
         return result;
     }
-
 }
 
 const tmpVec3 = new Vector3();
@@ -613,9 +715,16 @@ const tmpVec3 = new Vector3();
 /**
  * Readonly view of the public Matrix3 API.
  */
-export type ReadonlyMatrix3 = PickReadonly<Matrix3,
-    'elements' | 'equals'
-    | 'applyToBufferAttribute' | 'determinant' | 'transposeIntoArray'
-    | 'applyToArray' | 'applyInverse' | 'getNumberCount' | 'toArray'
+export type ReadonlyMatrix3 = PickReadonly<
+    Matrix3,
+    | 'elements'
+    | 'equals'
+    | 'applyToBufferAttribute'
+    | 'determinant'
+    | 'transposeIntoArray'
+    | 'applyToArray'
+    | 'applyInverse'
+    | 'getNumberCount'
+    | 'toArray'
     | 'decompose'
 >;

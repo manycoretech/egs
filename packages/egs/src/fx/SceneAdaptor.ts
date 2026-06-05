@@ -56,15 +56,18 @@ export class SceneAdaptorDispatcher {
     isDirectionalShadowRequireUpdate(i: number) {
         return () => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowDirectionalLight(i);
-            return l.isShadowNeedsUpdate ||
+            return (
+                l.isShadowNeedsUpdate ||
                 this.adaptor.scene.isShadowMapNeedsUpdate ||
                 (Shadow._IN_TEMPORAL && Shadow.ENABLE_TEMPORAL_EFFECT) ||
-                !l.shadow.map || l.shadow.map.isDestroyed();
+                !l.shadow.map ||
+                l.shadow.map.isDestroyed()
+            );
         };
     }
 
     getDirectionalShadowMapSize(i: number): ResizeFN {
-        return (_) => {
+        return _ => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowDirectionalLight(i);
             return l.shadow.mapSize.intoSize();
         };
@@ -100,15 +103,18 @@ export class SceneAdaptorDispatcher {
     isSpotShadowRequireUpdate(i: number) {
         return () => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowSpotLight(i);
-            return l.isShadowNeedsUpdate ||
+            return (
+                l.isShadowNeedsUpdate ||
                 this.adaptor.scene.isShadowMapNeedsUpdate ||
                 (Shadow._IN_TEMPORAL && Shadow.ENABLE_TEMPORAL_EFFECT) ||
-                !l.shadow.map || l.shadow.map.isDestroyed();
+                !l.shadow.map ||
+                l.shadow.map.isDestroyed()
+            );
         };
     }
 
     getSpotShadowMapSize(i: number): ResizeFN {
-        return (_) => {
+        return _ => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowSpotLight(i);
             return l.shadow.mapSize.intoSize();
         };
@@ -146,15 +152,18 @@ export class SceneAdaptorDispatcher {
     isPointShadowRequireUpdate(i: number) {
         return () => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowPointLight(i);
-            return l.isShadowNeedsUpdate ||
+            return (
+                l.isShadowNeedsUpdate ||
                 this.adaptor.scene.isShadowMapNeedsUpdate ||
                 (Shadow._IN_TEMPORAL && Shadow.ENABLE_TEMPORAL_EFFECT) ||
-                !l.shadow.map || l.shadow.map.isDestroyed();
+                !l.shadow.map ||
+                l.shadow.map.isDestroyed()
+            );
         };
     }
 
     getPointShadowMapSize(i: number): ResizeFN {
-        return (_) => {
+        return _ => {
             const l = this.adaptor.scene.shaderComponentRegistry.light.getNthShadowPointLight(i);
             return l.shadow.mapSize.intoSize();
         };
@@ -162,8 +171,9 @@ export class SceneAdaptorDispatcher {
 
     getPointShadowPassContent(useProxy: boolean) {
         return () => {
-            return (useProxy ? this.adaptor.proxied : this.adaptor.origin)
-                .filter(PipelineFilters.isDrawableShadowMapCaster);
+            return (useProxy ? this.adaptor.proxied : this.adaptor.origin).filter(
+                PipelineFilters.isDrawableShadowMapCaster,
+            );
         };
     }
 
@@ -193,8 +203,8 @@ export class SceneAdaptorDispatcher {
 export class SceneAdaptor {
     constructor(
         public scene: Scene3D,
-        public camera: Camera3D
-    ) { }
+        public camera: Camera3D,
+    ) {}
     get origin() {
         return this.scene.generateDrawableList(false);
     }
@@ -215,7 +225,8 @@ export class SceneAdaptor {
     private cachedOIT: Nullable<ProjectedDrawcallList> = null;
     get OIT() {
         if (this.cachedOIT === null) {
-            this.cachedOIT = this.scene.generateDrawableList(true)
+            this.cachedOIT = this.scene
+                .generateDrawableList(true)
                 .project(this.camera, undefined, undefined, DrawcallListClassifyList.oit);
             this.cachedOIT.useOnce = false;
         }

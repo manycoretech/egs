@@ -23,7 +23,9 @@ export class PerspectiveCamera extends Camera3D {
     /**
      * This effect can elongate models when camera looks up or down.
      */
-    get isTwoPointPerspectiveViewEnabled() { return this._isTwoPointPerspectiveViewEnabled; }
+    get isTwoPointPerspectiveViewEnabled() {
+        return this._isTwoPointPerspectiveViewEnabled;
+    }
     set isTwoPointPerspectiveViewEnabled(v) {
         this._isTwoPointPerspectiveViewEnabled = v;
         this.setMatrixDirty();
@@ -49,32 +51,52 @@ export class PerspectiveCamera extends Camera3D {
     /**
      * Camera frustum vertical field of view, from bottom to top of view, in degrees.
      */
-    get fov() { return this._fov; }
-    set fov(v) { this._fov = v; this.notifyCameraChanged(); }
+    get fov() {
+        return this._fov;
+    }
+    set fov(v) {
+        this._fov = v;
+        this.notifyCameraChanged();
+    }
 
     @cameraState()
     private _zoom: number;
     /**
      * Scale width and height of view frustum.
      */
-    get zoom() { return this._zoom; }
-    set zoom(v) { this._zoom = v; this.notifyCameraChanged(); }
+    get zoom() {
+        return this._zoom;
+    }
+    set zoom(v) {
+        this._zoom = v;
+        this.notifyCameraChanged();
+    }
 
     @cameraState()
     private _near: number;
     /**
      * Distance from camera position to small plane of view frustum.
      */
-    get near() { return this._near; }
-    set near(v) { this._near = v; this.notifyCameraChanged(); }
+    get near() {
+        return this._near;
+    }
+    set near(v) {
+        this._near = v;
+        this.notifyCameraChanged();
+    }
 
     @cameraState()
     private _far: number;
     /**
      * Distance from camera position to big plane of view frustum.
      */
-    get far() { return this._far; }
-    set far(v) { this._far = v; this.notifyCameraChanged(); }
+    get far() {
+        return this._far;
+    }
+    set far(v) {
+        this._far = v;
+        this.notifyCameraChanged();
+    }
 
     @cameraState()
     private _focus: number;
@@ -82,16 +104,26 @@ export class PerspectiveCamera extends Camera3D {
      * Object distance used for stereoscopy and depth-of-field effects.
      * @defaultValue `10`.
      */
-    get focus() { return this._focus; }
-    set focus(v) { this._focus = v; this.notifyCameraChanged(); }
+    get focus() {
+        return this._focus;
+    }
+    set focus(v) {
+        this._focus = v;
+        this.notifyCameraChanged();
+    }
 
     @cameraState()
     private _aspect: number;
     /**
      * Full screen width divided by its height in case of more view, this value equals to fov when there was only one viewer.
      */
-    get aspect() { return this._aspect; }
-    set aspect(v) { this._aspect = v; this.notifyCameraChanged(); }
+    get aspect() {
+        return this._aspect;
+    }
+    set aspect(v) {
+        this._aspect = v;
+        this.notifyCameraChanged();
+    }
     /**
      * Frustum window specification or null.
      * This is set using the {@link setViewOffset| setViewOffset } method and cleared using {@link clearViewOffset| clearViewOffset }.
@@ -129,8 +161,8 @@ export class PerspectiveCamera extends Camera3D {
 
         this.aspect = aspect !== undefined ? aspect : 1;
 
-        this.filmGauge = 35;	// width of the film (default in millimeters)
-        this.filmOffset = 0;	// horizontal film offset (same unit as gauge)
+        this.filmGauge = 35; // width of the film (default in millimeters)
+        this.filmOffset = 0; // horizontal film offset (same unit as gauge)
 
         this.updateProjectionMatrix();
     }
@@ -162,14 +194,14 @@ export class PerspectiveCamera extends Camera3D {
      * The tangent value of camera frustum's vertical angle.
      */
     getPixelsOfDistOne() {
-        return 2 * Math.tan(this.fov * TO_RADIANS / 2) / this.zoom;
+        return (2 * Math.tan((this.fov * TO_RADIANS) / 2)) / this.zoom;
     }
 
     /**
      * As name says
      */
     getDistanceWhenEachWorldUnitMatchScreenUnit(viewHeight: number) {
-        return (viewHeight) / this.getPixelsOfDistOne();
+        return viewHeight / this.getPixelsOfDistOne();
     }
 
     /**
@@ -197,7 +229,7 @@ export class PerspectiveCamera extends Camera3D {
      */
     setFocalLength(focalLength: number): void {
         // see http://www.bobatkins.com/photography/technical/field_of_view.html
-        const vExtentSlope = 0.5 * this.getFilmHeight() / focalLength;
+        const vExtentSlope = (0.5 * this.getFilmHeight()) / focalLength;
         this.fov = _Math.RAD2DEG * 2 * Math.atan(vExtentSlope);
         this.updateProjectionMatrix();
     }
@@ -206,7 +238,7 @@ export class PerspectiveCamera extends Camera3D {
      */
     getFocalLength() {
         const vExtentSlope = Math.tan(_Math.DEG2RAD * 0.5 * this.fov);
-        return 0.5 * this.getFilmHeight() / vExtentSlope;
+        return (0.5 * this.getFilmHeight()) / vExtentSlope;
     }
     /**
      * Returns the current vertical field of view angle in degrees considering {@link zoom | zoom }.
@@ -273,7 +305,7 @@ export class PerspectiveCamera extends Camera3D {
                 offsetX: 0,
                 offsetY: 0,
                 width: 1,
-                height: 1
+                height: 1,
             };
         }
 
@@ -301,37 +333,36 @@ export class PerspectiveCamera extends Camera3D {
      * this method will have to be called for the changes to take effect.
      * @param { Object } jitter if jitters need to be applied on this camera, this parameter need to be given.
      */
-    updateProjectionMatrix(jitter?: { offset: Vector2, canvas_size: Vector2 }) {
+    updateProjectionMatrix(jitter?: { offset: Vector2; canvas_size: Vector2 }) {
         const near = this.near;
-        let top = near * Math.tan(_Math.DEG2RAD * 0.5 * this.fov) / this.zoom;
+        let top = (near * Math.tan(_Math.DEG2RAD * 0.5 * this.fov)) / this.zoom;
         let height = 2 * top;
         let width = this.aspect * height;
-        let left = - 0.5 * width;
+        let left = -0.5 * width;
 
         if (this.view !== null && this.view.enabled) {
             const view = this.view;
             const fullWidth = view.fullWidth;
             const fullHeight = view.fullHeight;
 
-            left += view.offsetX * width / fullWidth;
-            top -= view.offsetY * height / fullHeight;
+            left += (view.offsetX * width) / fullWidth;
+            top -= (view.offsetY * height) / fullHeight;
             width *= view.width / fullWidth;
             height *= view.height / fullHeight;
         }
 
         const skew = this.filmOffset;
         if (skew !== 0) {
-            left += near * skew / this.getFilmWidth();
+            left += (near * skew) / this.getFilmWidth();
         }
         this.projectionMatrix.makePerspective(left, left + width, top, top - height, near, this.far);
 
         if (jitter) {
-            this.projectionMatrix._elements[8] += ((2 * jitter.offset.x - 1) / jitter.canvas_size.x);
-            this.projectionMatrix._elements[9] += ((2 * jitter.offset.y - 1) / jitter.canvas_size.y);
+            this.projectionMatrix._elements[8] += (2 * jitter.offset.x - 1) / jitter.canvas_size.x;
+            this.projectionMatrix._elements[9] += (2 * jitter.offset.y - 1) / jitter.canvas_size.y;
         }
 
         this.projectionMatrixInverse.getInverse(this.projectionMatrix);
-
     }
     /**
      * Store the attributes of this class into string as serializing format.
@@ -340,7 +371,15 @@ export class PerspectiveCamera extends Camera3D {
     serialize(ctx: Serializer) {
         super.serialize(ctx);
         ctx.puts<PerspectiveCamera>([
-            'fov', 'zoom', 'near', 'far', 'focus', 'aspect', 'filmGauge', 'filmOffset', 'isTwoPointPerspectiveViewEnabled'
+            'fov',
+            'zoom',
+            'near',
+            'far',
+            'focus',
+            'aspect',
+            'filmGauge',
+            'filmOffset',
+            'isTwoPointPerspectiveViewEnabled',
         ]);
         ctx.putRaw('view', ctx.deepClone(this.view));
     }
@@ -351,7 +390,15 @@ export class PerspectiveCamera extends Camera3D {
     deserialize(ctx: Deserializer) {
         super.deserialize(ctx);
         ctx.reads<PerspectiveCamera>([
-            'fov', 'zoom', 'near', 'far', 'focus', 'aspect', 'filmGauge', 'filmOffset', 'isTwoPointPerspectiveViewEnabled'
+            'fov',
+            'zoom',
+            'near',
+            'far',
+            'focus',
+            'aspect',
+            'filmGauge',
+            'filmOffset',
+            'isTwoPointPerspectiveViewEnabled',
         ]);
         this.view = ctx.readRaw('view');
     }

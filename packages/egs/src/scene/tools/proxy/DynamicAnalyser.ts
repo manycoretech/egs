@@ -1,7 +1,7 @@
 import { type Drawable, DrawableRenderMode } from '../../drawables/Drawable';
 import type { DrawableList } from '../DrawcallList';
 
-export class DynamicAnalyser<T extends Drawable = Drawable>{
+export class DynamicAnalyser<T extends Drawable = Drawable> {
     // after this time duration, the dynamic node is considered to be static
     // dynamicConvertingGroup -> staticWaitingGroup
     static DYNAMIC_CONVERSION_TIME = 3000; // in ms
@@ -14,7 +14,7 @@ export class DynamicAnalyser<T extends Drawable = Drawable>{
     private dynamicGroup: Set<T> = new Set();
     private dynamicConvertingGroup: Map<T, number> = new Map();
     private staticFrameGroup: Set<T> = new Set();
-    onStaticFrameDirty = () => { };
+    onStaticFrameDirty = () => {};
 
     get staticFrameSize() {
         return this.staticFrameGroup.size;
@@ -88,7 +88,10 @@ export class DynamicAnalyser<T extends Drawable = Drawable>{
     }
 }
 
-export function extractorCreator(cache: DrawableList, renderMode: DrawableRenderMode = DrawableRenderMode.Default): (o: Drawable) => void {
+export function extractorCreator(
+    cache: DrawableList,
+    renderMode: DrawableRenderMode = DrawableRenderMode.Default,
+): (o: Drawable) => void {
     return (o: Drawable) => {
         if (o.netVisibility && o.renderMode === renderMode) {
             cache.push(o);

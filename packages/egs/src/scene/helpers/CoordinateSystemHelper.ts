@@ -14,7 +14,8 @@ import type { Material } from '../../elements/materials/Material';
 import { shape } from '../../elements/geometries/builder/Index';
 import type { IRenderer } from '../../renderer/IRenderer';
 
-const ALPHABET_X = new Shape().fromJSON(JSON.parse(`{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"Shape","autoClose":false,"curves":
+const ALPHABET_X = new Shape().fromJSON(
+    JSON.parse(`{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"Shape","autoClose":false,"curves":
 [{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[0.23,0],"v2":[2.5100000000000002,3.5300000000000002]},
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[2.5100000000000002,3.5300000000000002],"v2":[0.42,6.94]},
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[0.42,6.94],"v2":[1.47,6.94]},
@@ -30,9 +31,11 @@ const ALPHABET_X = new Shape().fromJSON(JSON.parse(`{"metadata":{"version":4.5,"
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[3.11,2.98],"v2":[1.24,0]},
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[1.24,0],"v2":[0.23,0]}],
 "currentPoint":[0,0],"uuid":"AA7B7278-0C72-4A5F-AA95-50D2CBEE438B","holes":[]}
-`));
+`),
+);
 
-const ALPHABET_Y = new Shape().fromJSON(JSON.parse(`{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"Shape","autoClose":false,"curves":
+const ALPHABET_Y = new Shape().fromJSON(
+    JSON.parse(`{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"Shape","autoClose":false,"curves":
 [{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[2.5100000000000002,0],"v2":[2.5100000000000002,2.98]},
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[2.5100000000000002,2.98],"v2":[0.06,6.94]},
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[0.06,6.94],"v2":[1.1,6.94]},
@@ -44,9 +47,11 @@ const ALPHABET_Y = new Shape().fromJSON(JSON.parse(`{"metadata":{"version":4.5,"
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[3.41,2.99],"v2":[3.41,0]},
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[3.41,0],"v2":[2.5100000000000002,0]}],
 "currentPoint":[0,0],"uuid":"121F61BC-4FD8-4510-AA77-EF598B7C0C0F","holes":[]}
-`));
+`),
+);
 
-const ALPHABET_Z = new Shape().fromJSON(JSON.parse(`{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"Shape","autoClose":false,"curves":
+const ALPHABET_Z = new Shape().fromJSON(
+    JSON.parse(`{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"Shape","autoClose":false,"curves":
 [{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[0.58,0],"v2":[0.58,0.92]},
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[0.58,0.92],"v2":[4.57,6.08]},
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[4.57,6.08],"v2":[4.5600000000000005,6.140000000000001]},
@@ -59,7 +64,8 @@ const ALPHABET_Z = new Shape().fromJSON(JSON.parse(`{"metadata":{"version":4.5,"
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[1.55,0.81],"v2":[5.83,0.81]},
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[5.83,0.81],"v2":[5.83,0]},
 {"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"LineCurve2D","v1":[5.83,0],"v2":[0.58,0]}],
-"currentPoint":[0,0],"uuid":"ECBB5DA0-B373-4675-A462-EAE78DDC76D4","holes":[]}`));
+"currentPoint":[0,0],"uuid":"ECBB5DA0-B373-4675-A462-EAE78DDC76D4","holes":[]}`),
+);
 
 const tmpDir = new Vector3();
 const tmpCross = new Vector3();
@@ -70,7 +76,7 @@ const ARROW_HELPER_LINE_LENGTH = 300; // arrow line length
 enum Direction {
     X,
     Y,
-    Z
+    Z,
 }
 /**
  * This class is used to draw a fixed coordinate system on screen.
@@ -123,13 +129,34 @@ export class CoordinateSystemHelper implements Renderable {
         let arrowHelper: ArrowHelper;
         switch (direction) {
             case Direction.X:
-                arrowHelper = new ArrowHelper(new Vector3(1, 0, 0), new Vector3(0, 0, 0), ARROW_HELPER_LINE_LENGTH, 0xff0000, 50, 20);
+                arrowHelper = new ArrowHelper(
+                    new Vector3(1, 0, 0),
+                    new Vector3(0, 0, 0),
+                    ARROW_HELPER_LINE_LENGTH,
+                    0xff0000,
+                    50,
+                    20,
+                );
                 break;
             case Direction.Y:
-                arrowHelper = new ArrowHelper(new Vector3(0, 1, 0), new Vector3(0, 0, 0), ARROW_HELPER_LINE_LENGTH, 0x00ff00, 50, 20);
+                arrowHelper = new ArrowHelper(
+                    new Vector3(0, 1, 0),
+                    new Vector3(0, 0, 0),
+                    ARROW_HELPER_LINE_LENGTH,
+                    0x00ff00,
+                    50,
+                    20,
+                );
                 break;
             case Direction.Z:
-                arrowHelper = new ArrowHelper(new Vector3(0, 0, 1), new Vector3(0, 0, 0), ARROW_HELPER_LINE_LENGTH, 0x0000ff, 50, 20);
+                arrowHelper = new ArrowHelper(
+                    new Vector3(0, 0, 1),
+                    new Vector3(0, 0, 0),
+                    ARROW_HELPER_LINE_LENGTH,
+                    0x0000ff,
+                    50,
+                    20,
+                );
                 break;
         }
 
@@ -191,7 +218,7 @@ export class CoordinateSystemHelper implements Renderable {
             this.alphabetY.scale.set(scale, scale, scale);
             this.alphabetZ.scale.set(scale, scale, scale);
         }
-        const material = (this.alphabetX.expectOnlyMaterial() as MeshBasicMaterial);
+        const material = this.alphabetX.expectOnlyMaterial() as MeshBasicMaterial;
         if (colorX !== undefined) {
             material.color.color = colorX.cloneReadonly();
         }
@@ -230,10 +257,12 @@ export class CoordinateSystemHelper implements Renderable {
         if (this.isCameraNeedsUpdate) {
             if (TypeAssert.isPerspectiveCamera(camera)) {
                 let width, height;
-                if (camera.aspect >= 1) { // width >= height
+                if (camera.aspect >= 1) {
+                    // width >= height
                     height = this.total_length;
                     width = Math.ceil(height * camera.aspect);
-                } else { // height >= width
+                } else {
+                    // height >= width
                     width = this.total_length;
                     height = Math.ceil(width / camera.aspect);
                 }
@@ -264,17 +293,35 @@ export class CoordinateSystemHelper implements Renderable {
 
     private renderArrowHelper(arrowHelper: ArrowHelper, renderer: IRenderer) {
         arrowHelper.line.modelViewMatrix.multiplyMatrices(tmpRotateInverseMatrix, arrowHelper.line.matrixWorld);
-        renderer.renderDrawcall(arrowHelper.line.geometry, arrowHelper.line.expectOnlyMaterial(), arrowHelper.line, null);
+        renderer.renderDrawcall(
+            arrowHelper.line.geometry,
+            arrowHelper.line.expectOnlyMaterial(),
+            arrowHelper.line,
+            null,
+        );
         arrowHelper.cone.modelViewMatrix.multiplyMatrices(tmpRotateInverseMatrix, arrowHelper.cone.matrixWorld);
-        renderer.renderDrawcall(arrowHelper.cone.geometry, arrowHelper.cone.expectOnlyMaterial(), arrowHelper.cone, null);
+        renderer.renderDrawcall(
+            arrowHelper.cone.geometry,
+            arrowHelper.cone.expectOnlyMaterial(),
+            arrowHelper.cone,
+            null,
+        );
     }
 
     private renderAlphabet(alphabet: Mesh<Material>, renderer: IRenderer) {
-        tmpDir.copy(alphabet.position).applyMatrix4(tmpRotateInverseMatrix).add(new Vector3(0, 0, 1)).applyMatrix4(tmpRotateOriginMatrix);
+        tmpDir
+            .copy(alphabet.position)
+            .applyMatrix4(tmpRotateInverseMatrix)
+            .add(new Vector3(0, 0, 1))
+            .applyMatrix4(tmpRotateOriginMatrix);
         tmpCross.subVectors(tmpDir, alphabet.position).normalize();
         tmpCross.crossVectors(alphabet.up, tmpCross);
         if (tmpCross.lengthSq() < 1e-9) {
-            tmpDir.copy(alphabet.position).applyMatrix4(tmpRotateInverseMatrix).add(new Vector3(0, Math.sign(tmpRotateInverseMatrix.elements[10]) * -0.0001, 0.999999995)).applyMatrix4(tmpRotateOriginMatrix);
+            tmpDir
+                .copy(alphabet.position)
+                .applyMatrix4(tmpRotateInverseMatrix)
+                .add(new Vector3(0, Math.sign(tmpRotateInverseMatrix.elements[10]) * -0.0001, 0.999999995))
+                .applyMatrix4(tmpRotateOriginMatrix);
         }
         alphabet.lookAt(tmpDir);
         alphabet.modelViewMatrix.multiplyMatrices(tmpRotateInverseMatrix, alphabet.matrixWorld);
@@ -319,17 +366,23 @@ export class CoordinateSystemHelper implements Renderable {
         const yDepth = tmpRotateInverseMatrix._elements[6];
         const zDepth = tmpRotateInverseMatrix._elements[10];
 
-        if (xDepth >= yDepth && yDepth >= zDepth) { // X > Y > Z
+        if (xDepth >= yDepth && yDepth >= zDepth) {
+            // X > Y > Z
             this.renderByOrder('ZYX', renderer);
-        } else if (xDepth >= zDepth && zDepth >= yDepth) { // X > Z > Y
+        } else if (xDepth >= zDepth && zDepth >= yDepth) {
+            // X > Z > Y
             this.renderByOrder('YZX', renderer);
-        } else if (yDepth >= xDepth && xDepth >= zDepth) { // Y > X > Z
+        } else if (yDepth >= xDepth && xDepth >= zDepth) {
+            // Y > X > Z
             this.renderByOrder('ZXY', renderer);
-        } else if (yDepth >= zDepth && zDepth >= xDepth) { // Y > Z > X
+        } else if (yDepth >= zDepth && zDepth >= xDepth) {
+            // Y > Z > X
             this.renderByOrder('XZY', renderer);
-        } else if (zDepth >= xDepth && xDepth >= yDepth) { // Z > X > Y
+        } else if (zDepth >= xDepth && xDepth >= yDepth) {
+            // Z > X > Y
             this.renderByOrder('YXZ', renderer);
-        } else {                                         // Z > Y > X
+        } else {
+            // Z > Y > X
             this.renderByOrder('XYZ', renderer);
         }
 

@@ -80,11 +80,11 @@ export class FontPath implements SerializerableDelegatedAsReference {
         }
 
         interface PathInfo {
-            p: Path,
-            b: Box2,
-            boxArea: number,
-            cw: boolean,
-            s: Shape,
+            p: Path;
+            b: Box2;
+            boxArea: number;
+            cw: boolean;
+            s: Shape;
         }
         const paths: PathInfo[] = [];
         const tempVec = new Vector2();
@@ -147,7 +147,13 @@ export class FontPath implements SerializerableDelegatedAsReference {
 function createPath(char: string, scale: number, offsetX: number, offsetY: number, data: OpentypeFont) {
     const glyph = data.charToGlyph(char);
     if (!glyph) {
-        logger.error('EGS.Font: character "' + char + '" does not exists in font family ' + JSON.stringify(data.names.fontFamily) + '.');
+        logger.error(
+            'EGS.Font: character "' +
+                char +
+                '" does not exists in font family ' +
+                JSON.stringify(data.names.fontFamily) +
+                '.',
+        );
         return;
     }
     const path = new FontPath();
@@ -159,7 +165,7 @@ function createPath(char: string, scale: number, offsetX: number, offsetY: numbe
         }
         const commands = path0.commands;
 
-        for (let i = 0, l = commands.length; i < l;) {
+        for (let i = 0, l = commands.length; i < l; ) {
             const command = commands[i++];
             switch (command.type) {
                 case 'M': // moveTo
@@ -199,7 +205,13 @@ function createPath(char: string, scale: number, offsetX: number, offsetY: numbe
     return { offsetX: glyph.advanceWidth * scale, path };
 }
 
-function createPaths(text: string, size: number, lineHeight: number, data: OpentypeFont, align: 'left' | 'center' | 'right' = 'left'): FontPath[] {
+function createPaths(
+    text: string,
+    size: number,
+    lineHeight: number,
+    data: OpentypeFont,
+    align: 'left' | 'center' | 'right' = 'left',
+): FontPath[] {
     const scale = size / data.unitsPerEm;
     const line_height = lineHeight;
     const paths: FontPath[] = [];
@@ -300,7 +312,7 @@ export class Font implements SerializerableDelegatedAsReference {
         [char: string]: {
             path: FontPath;
             width: number;
-        }
+        };
     } = {};
     unitsPerEm = 256;
 
@@ -312,7 +324,12 @@ export class Font implements SerializerableDelegatedAsReference {
         }
     }
 
-    generateShapes(text: string, size?: number, lineHeight?: number, align: 'left' | 'center' | 'right' = 'left'): Shape[] {
+    generateShapes(
+        text: string,
+        size?: number,
+        lineHeight?: number,
+        align: 'left' | 'center' | 'right' = 'left',
+    ): Shape[] {
         if (size === undefined) {
             size = 100;
         }
@@ -335,7 +352,7 @@ export class Font implements SerializerableDelegatedAsReference {
         for (const i in this.charGeometryCache) {
             const g = {
                 path: this.charGeometryCache[i].path,
-                width: this.charGeometryCache[i].width
+                width: this.charGeometryCache[i].width,
             };
             tempGeometry[i] = g;
         }
@@ -352,12 +369,12 @@ export class Font implements SerializerableDelegatedAsReference {
                 width: tempGeometry[i].width,
                 geometry: {
                     points: [],
-                    indices: []
+                    indices: [],
                 },
                 geometryOutline: {
                     points: [],
-                    indices: []
-                }
+                    indices: [],
+                },
             };
             this.charGeometryCache[i] = g;
         }
@@ -377,7 +394,7 @@ interface OpentypeFont {
 
 interface OpentypeGlyph {
     advanceWidth: number;
-    path: OpentypePath | (() => OpentypePath)
+    path: OpentypePath | (() => OpentypePath);
 }
 
 interface OpentypePath {
@@ -386,39 +403,39 @@ interface OpentypePath {
 
 type PathCommand =
     | {
-        type: 'M';
-        x: number;
-        y: number;
-    }
+          type: 'M';
+          x: number;
+          y: number;
+      }
     | {
-        type: 'L';
-        x: number;
-        y: number;
-    }
+          type: 'L';
+          x: number;
+          y: number;
+      }
     | {
-        type: 'C';
-        x1: number;
-        y1: number;
-        x2: number;
-        y2: number;
-        x: number;
-        y: number;
-    }
+          type: 'C';
+          x1: number;
+          y1: number;
+          x2: number;
+          y2: number;
+          x: number;
+          y: number;
+      }
     | {
-        type: 'Q';
-        x1: number;
-        y1: number;
-        x: number;
-        y: number;
-    }
+          type: 'Q';
+          x1: number;
+          y1: number;
+          x: number;
+          y: number;
+      }
     | {
-        type: 'Z';
-    };
+          type: 'Z';
+      };
 
 /**
  * Tests whether a 2D point lies inside a polygon.
  */
-export function isPointInsidePolygon(inPt: { x: number, y: number }, inPolygon: Array<{ x: number, y: number }>) {
+export function isPointInsidePolygon(inPt: { x: number; y: number }, inPolygon: Array<{ x: number; y: number }>) {
     const polyLen = inPolygon.length;
     // inPt on polygon contour => immediate success or
     // toggling of inside/outside at every single! intersection point of an edge
@@ -438,7 +455,7 @@ export function isPointInsidePolygon(inPt: { x: number, y: number }, inPolygon: 
                 edgeHighPt = inPolygon[p];
                 edgeDy = -edgeDy;
             }
-            if ((inPt.y < edgeLowPt.y) || (inPt.y > edgeHighPt.y)) {
+            if (inPt.y < edgeLowPt.y || inPt.y > edgeHighPt.y) {
                 continue;
             }
             if (inPt.y === edgeLowPt.y) {
@@ -461,7 +478,10 @@ export function isPointInsidePolygon(inPt: { x: number, y: number }, inPolygon: 
                 continue; // parallel
             }
             // edge lies on the same horizontal line as inPt
-            if (((edgeHighPt.x <= inPt.x) && (inPt.x <= edgeLowPt.x)) || ((edgeLowPt.x <= inPt.x) && (inPt.x <= edgeHighPt.x))) {
+            if (
+                (edgeHighPt.x <= inPt.x && inPt.x <= edgeLowPt.x) ||
+                (edgeLowPt.x <= inPt.x && inPt.x <= edgeHighPt.x)
+            ) {
                 return true; // inPt: Point on contour !
             }
             // continue;

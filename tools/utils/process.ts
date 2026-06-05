@@ -3,8 +3,8 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 
 interface Worker {
-    process: child_process.ChildProcess,
-    piped: boolean
+    process: child_process.ChildProcess;
+    piped: boolean;
 }
 
 export const workers: Worker[] = [];
@@ -65,7 +65,7 @@ const DEFAULT_EXEC_OPTIONS: Required<ExecOptions> = {
     cwd: process.cwd(),
     env: process.env,
     ioPrefix: '',
-    pipe: true
+    pipe: true,
 };
 
 function writeOutput(data: string, ioPrefix: string, stream: NodeJS.WriteStream, writeStartPrefix: boolean) {
@@ -162,7 +162,7 @@ function bindAndPromisify(p: child_process.ChildProcess, ioPrefix: string, pipe:
         }
         workers.push({
             process: p,
-            piped: pipe
+            piped: pipe,
         });
     });
 }
@@ -174,7 +174,11 @@ export function execCommand(command: string, options: ExecOptions = DEFAULT_EXEC
     });
     return {
         process,
-        promise: bindAndPromisify(process, options.ioPrefix ?? DEFAULT_EXEC_OPTIONS.ioPrefix, options.pipe ?? DEFAULT_EXEC_OPTIONS.pipe),
+        promise: bindAndPromisify(
+            process,
+            options.ioPrefix ?? DEFAULT_EXEC_OPTIONS.ioPrefix,
+            options.pipe ?? DEFAULT_EXEC_OPTIONS.pipe,
+        ),
     };
 }
 
@@ -184,12 +188,12 @@ export function echoAndExecCommand(command: string, options: ExecOptions = DEFAU
 }
 
 interface SpawnOptions extends ExecOptions {
-    shell?: boolean | string
+    shell?: boolean | string;
 }
 
 const DEFAULT_SPAWN_OPTIONS: Required<SpawnOptions> = {
     ...DEFAULT_EXEC_OPTIONS,
-    shell: false
+    shell: false,
 };
 
 export function spawnProcess(command: string, args: string[], options: SpawnOptions = DEFAULT_SPAWN_OPTIONS) {
@@ -201,7 +205,11 @@ export function spawnProcess(command: string, args: string[], options: SpawnOpti
 
     return {
         process,
-        promise: bindAndPromisify(process, options.ioPrefix ?? DEFAULT_SPAWN_OPTIONS.ioPrefix, options.pipe ?? DEFAULT_SPAWN_OPTIONS.pipe),
+        promise: bindAndPromisify(
+            process,
+            options.ioPrefix ?? DEFAULT_SPAWN_OPTIONS.ioPrefix,
+            options.pipe ?? DEFAULT_SPAWN_OPTIONS.pipe,
+        ),
     };
 }
 

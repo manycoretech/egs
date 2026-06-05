@@ -38,7 +38,7 @@ export class Application {
     createViewer(name: string, container: HTMLElement, engineInitConfig: EngineInitializeConfig): Viewer {
         const viewer = new Viewer(container, {
             name,
-            ...engineInitConfig
+            ...engineInitConfig,
         });
         viewer.name = name;
         this.viewers.set(name, viewer);
@@ -65,16 +65,24 @@ export class Application {
     }
 
     private logVersion(): void {
-        // eslint-disable-next-line no-restricted-syntax
-        console.log('\n%c%s%c%s%c%s%c%s%c%s%c%s%c%s\n',
-            'background-color: #369;font-size: 12px;', ' ',
-            'background-color: #58a;font-size: 12px;', ' ',
-            'background-color: #7ac;font-size: 12px;', ' ',
+        // oxlint-disable-next-line
+        console.log(
+            '\n%c%s%c%s%c%s%c%s%c%s%c%s%c%s\n',
+            'background-color: #369;font-size: 12px;',
+            ' ',
+            'background-color: #58a;font-size: 12px;',
+            ' ',
+            'background-color: #7ac;font-size: 12px;',
+            ' ',
             'background-color: #9ce;color: #fff; font-weight: lighter;font-size: 12px;',
             ` ${projectName} ${Application.version} `,
-            'background-color: #7ac;font-size: 12px;', ' ',
-            'background-color: #58a;font-size: 12px;', ' ',
-            'background-color: #369;font-size: 12px;', ' ');
+            'background-color: #7ac;font-size: 12px;',
+            ' ',
+            'background-color: #58a;font-size: 12px;',
+            ' ',
+            'background-color: #369;font-size: 12px;',
+            ' ',
+        );
     }
 
     private onViewerUninitialise = (event: { target: Viewer }) => {

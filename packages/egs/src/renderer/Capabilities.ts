@@ -10,80 +10,80 @@ export class Capabilities {
     /**
      * Whether or not enable WebGL2 backend.
      */
-     static IS_WEBGL2: boolean;
+    static IS_WEBGL2: boolean;
 
     /**
      * Whether or not enable WEBGPU backend.
      */
-     static get IS_WEBGPU() {
+    static get IS_WEBGPU() {
         return !!window.EGS_ENABLE_WEBGPU;
     }
 
     /**
      * Whether or not using advanced graphics backends. such as webgl2, webgpu.
      */
-     static get IS_ADVANCED_BACKEND() {
+    static get IS_ADVANCED_BACKEND() {
         return Capabilities.IS_WEBGL2 || Capabilities.IS_WEBGPU;
     }
 
     /**
      * Shader precision. Can be "highp", "mediump" or "lowp".
      */
-     static PRECISION: string;
+    static PRECISION: string;
     /**
      * Get the maximum precision by {@link _IS_SUPPORT_HIGH_FLOAT| high} and {@link _IS_SUPPORT_MEDIUM_FLOAT| medium}.
      */
-     static MAX_PRECISION: string;
+    static MAX_PRECISION: string;
     /**
      * Maximum of the number of texture supported by browser.
      */
-     static MAX_COMBINED_TEXTURE_IMAGE_UNITS: number;
+    static MAX_COMBINED_TEXTURE_IMAGE_UNITS: number;
     /**
      * Maximum of the number of texture supported by browser.
      */
-     static MAX_TEXTURES: number;
-     static MAX_VERTEX_TEXTURES: number;
+    static MAX_TEXTURES: number;
+    static MAX_VERTEX_TEXTURES: number;
     /**
      * The limitation of texture's pixel count.
      */
-     static MAX_TEXTURE_SIZE: number;
+    static MAX_TEXTURE_SIZE: number;
     /**
      * The limitation of cube map's pixel count.
      */
-     static MAX_CUBEMAP_SIZE: number;
+    static MAX_CUBEMAP_SIZE: number;
     /**
      * The max number of vertex attributes supported by browser.
      */
-     static MAX_ATTRIBUTES: number;
-     static MAX_VERTEX_UNIFORMS: number;
-     static MAX_VARYINGS: number;
-     static MAX_FRAGMENT_UNIFORMS: number;
-     static IS_SUPPORT_VERTEX_TEXTURES: boolean;
-     static IS_SUPPORT_FLOAT_FRAGMENT_TEXTURES: boolean;
-     static IS_SUPPORT_FLOAT_VERTEX_TEXTURES: boolean;
-     static IS_SUPPORT_VAO: boolean;
-     static IS_SUPPORT_INSTANCE: boolean;
-     static MAX_SAMPLES: number;
-     static MAX_ANISOTROPY: number;
+    static MAX_ATTRIBUTES: number;
+    static MAX_VERTEX_UNIFORMS: number;
+    static MAX_VARYINGS: number;
+    static MAX_FRAGMENT_UNIFORMS: number;
+    static IS_SUPPORT_VERTEX_TEXTURES: boolean;
+    static IS_SUPPORT_FLOAT_FRAGMENT_TEXTURES: boolean;
+    static IS_SUPPORT_FLOAT_VERTEX_TEXTURES: boolean;
+    static IS_SUPPORT_VAO: boolean;
+    static IS_SUPPORT_INSTANCE: boolean;
+    static MAX_SAMPLES: number;
+    static MAX_ANISOTROPY: number;
     /**
      * High precision float is or not supported by WebGLContext.
      */
-     static _IS_SUPPORT_HIGH_FLOAT: boolean;
+    static _IS_SUPPORT_HIGH_FLOAT: boolean;
     /**
      * Medium precision float is or not supported by WebGLContext.
      */
-     static _IS_SUPPORT_MEDIUM_FLOAT: boolean;
-     static IS_SUPPORT_DEPTH_TEXTURE: boolean;
-     static IS_SUPPORT_SHADER_TEXTURE_LOD: boolean;
+    static _IS_SUPPORT_MEDIUM_FLOAT: boolean;
+    static IS_SUPPORT_DEPTH_TEXTURE: boolean;
+    static IS_SUPPORT_SHADER_TEXTURE_LOD: boolean;
 
-     static SUPPORTED_COMPRESS_TEXTURE_TYPES: CompressTextureType[] = [];
-     static SUPPORTED_COMPRESS_TEXTURE_FORMATS: Array<WebGLPixelFormat | CompressedPixelFormat> = [];
+    static SUPPORTED_COMPRESS_TEXTURE_TYPES: CompressTextureType[] = [];
+    static SUPPORTED_COMPRESS_TEXTURE_FORMATS: Array<WebGLPixelFormat | CompressedPixelFormat> = [];
 
-     static isCompressTextureFormatSupport(glFormat: WebGLPixelFormat | CompressedPixelFormat): boolean {
-        return Capabilities.SUPPORTED_COMPRESS_TEXTURE_FORMATS.indexOf(glFormat) > - 1;
+    static isCompressTextureFormatSupport(glFormat: WebGLPixelFormat | CompressedPixelFormat): boolean {
+        return Capabilities.SUPPORTED_COMPRESS_TEXTURE_FORMATS.indexOf(glFormat) > -1;
     }
 
-     static getMaxPrecision(precision: string): string {
+    static getMaxPrecision(precision: string): string {
         if (precision === 'highp') {
             if (Capabilities._IS_SUPPORT_HIGH_FLOAT) {
                 return 'highp';
@@ -101,9 +101,9 @@ export class Capabilities {
 }
 
 interface TextureCompressionSupportedInfo {
-    textureCompressionBCSupported: boolean
-    textureCompressionETC2Supported: boolean
-    textureCompressionASTCSupported: boolean
+    textureCompressionBCSupported: boolean;
+    textureCompressionETC2Supported: boolean;
+    textureCompressionASTCSupported: boolean;
 }
 
 export function setupWebGPUCompressedTextureCapabilities(info: TextureCompressionSupportedInfo) {
@@ -127,7 +127,7 @@ export function setupWebGPUCompressedTextureCapabilities(info: TextureCompressio
             CompressedPixelFormat.RGB8_ETC2_UNORM_Format,
             CompressedPixelFormat.RGB8_ETC2_SRGB_Format,
             CompressedPixelFormat.RGBA8_ETC2_UNORM_Format,
-            CompressedPixelFormat.RGBA8_ETC2_SRGB_Format
+            CompressedPixelFormat.RGBA8_ETC2_SRGB_Format,
         );
     }
 
@@ -166,7 +166,11 @@ export function setupWebGPUCompressedTextureCapabilities(info: TextureCompressio
     }
 }
 
-export function setupWebGPUCapabilities(d: any, info: TextureCompressionSupportedInfo, parameters: RendererParameters): void {
+export function setupWebGPUCapabilities(
+    d: any,
+    info: TextureCompressionSupportedInfo,
+    parameters: RendererParameters,
+): void {
     const device: GPUDevice = d;
     Capabilities.IS_WEBGL2 = true; // WebGPU is always considered as WebGL2 for compatibility.
     Capabilities.PRECISION = parameters.precision !== undefined ? parameters.precision : 'highp';

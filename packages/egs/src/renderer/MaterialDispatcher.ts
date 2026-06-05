@@ -20,7 +20,7 @@ export function checkInstance(object: Drawable, geometry: BufferGeometryBase): b
     if (isInstance && !TypeAssert.isInstancedBufferGeometry(geometry)) {
         logger.invalidInput('Should use EGS.InstancedBufferGeometry in InstanceRendering.');
     }
-    if (TypeAssert.isInstancedBufferGeometry(geometry) && (!Capabilities.IS_SUPPORT_INSTANCE)) {
+    if (TypeAssert.isInstancedBufferGeometry(geometry) && !Capabilities.IS_SUPPORT_INSTANCE) {
         logger.unsupported('Using EGS.InstancedBufferGeometry but hardware does not support instance rendering.');
     }
     return isInstance;
@@ -44,7 +44,12 @@ export abstract class MaterialDispatcher extends BaseElement {
     }
 
     abstract className(): string;
-    abstract dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, object: Drawable): Nullable<WGLProgram>;
+    abstract dispatch(
+        renderer: Renderer,
+        geometry: BufferGeometryBase,
+        material: Material,
+        object: Drawable,
+    ): Nullable<WGLProgram>;
 }
 
 const DEFAULT = singleton(() => new DefaultMaterialDispatcher());
@@ -61,7 +66,12 @@ export class DefaultMaterialDispatcher extends MaterialDispatcher {
         renderer.wglState.setMaterial(material, drawable.frontFaceCW);
     }
 
-    dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, drawable: Drawable): Nullable<WGLProgram> {
+    dispatch(
+        renderer: Renderer,
+        geometry: BufferGeometryBase,
+        material: Material,
+        drawable: Drawable,
+    ): Nullable<WGLProgram> {
         const isInstance = checkInstance(drawable, geometry);
         material.refreshInstanceInBuilding(isInstance);
         this.setMaterialState(renderer, material, drawable);
@@ -121,7 +131,12 @@ export abstract class ShapeExtractableDispatcher extends MaterialDispatcher {
         return builder;
     }
 
-    dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, drawable: Drawable): Nullable<WGLProgram> {
+    dispatch(
+        renderer: Renderer,
+        geometry: BufferGeometryBase,
+        material: Material,
+        drawable: Drawable,
+    ): Nullable<WGLProgram> {
         if (this.preExit(material)) {
             return null;
         }
@@ -136,7 +151,12 @@ export abstract class ShapeExtractableDispatcher extends MaterialDispatcher {
         let program = programCache.get(shaderKey);
         if (program === undefined) {
             try {
-                program = new WGLProgram(renderer.renderState, this.createShader(registry, material).build(), null, shaderKey);
+                program = new WGLProgram(
+                    renderer.renderState,
+                    this.createShader(registry, material).build(),
+                    null,
+                    shaderKey,
+                );
             } catch (error) {
                 logger.unsupported('cant create shader in dispatcher');
                 logger.unsupported(error);
@@ -190,8 +210,7 @@ export class DeferredDispatcher extends ShapeExtractableDispatcher {
     }
 
     customKey(origin: Material, registry: ShaderComponentRegistry, isInstance: boolean): string {
-        return origin.generateShaderKey(registry) + this.dispatchKey() + (isInstance ? '0' : '1')
-            + this.decodeSrgb;
+        return origin.generateShaderKey(registry) + this.dispatchKey() + (isInstance ? '0' : '1') + this.decodeSrgb;
     }
 
     preExit(m: Material) {
@@ -217,9 +236,12 @@ export class DeferredDispatcher extends ShapeExtractableDispatcher {
             origin.extendEncodeDeferred(b);
             if (this.decodeSrgb) {
                 b.addFragment(ShaderBlockPool.ColorTransferFunctions);
-                b.inject(ShaderInjectionTypes.frag_any, `
+                b.inject(
+                    ShaderInjectionTypes.frag_any,
+                    `
                 fragOut1 = srgbToLinear(fragOut1);
-            `);
+            `,
+                );
             }
         } else {
             origin.extendShaderShading(b, reg);
@@ -229,7 +251,12 @@ export class DeferredDispatcher extends ShapeExtractableDispatcher {
         origin.getComponents().forEach(c => c.extendShaderShading(b));
     }
 
-    dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, drawable: Drawable): Nullable<WGLProgram> {
+    dispatch(
+        renderer: Renderer,
+        geometry: BufferGeometryBase,
+        material: Material,
+        drawable: Drawable,
+    ): Nullable<WGLProgram> {
         renderer.renderState.activeShaderComponentRegistry.isDeferMode = true;
         const p = super.dispatch(renderer, geometry, material, drawable);
         renderer.renderState.activeShaderComponentRegistry.isDeferMode = false;
@@ -250,7 +277,12 @@ export class DynamicForwardLightsDispatcher extends DefaultMaterialDispatcher {
         return origin.generateShaderKey(registry) + this.dispatchKey() + (isInstance ? '0' : '1');
     }
 
-    dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, drawable: Drawable): Nullable<WGLProgram> {
+    dispatch(
+        renderer: Renderer,
+        geometry: BufferGeometryBase,
+        material: Material,
+        drawable: Drawable,
+    ): Nullable<WGLProgram> {
         const registry = renderer.renderState.activeShaderComponentRegistry;
 
         // Prepare specific lights for transparent MeshPhongMaterial.

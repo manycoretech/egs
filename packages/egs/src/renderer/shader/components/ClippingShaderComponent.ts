@@ -81,18 +81,20 @@ export class ClippingShaderComponent extends SharedShaderComponent {
         if (this.planeCount === 0) {
             return;
         }
-        builder.addVarying(ShaderVaryingTypes.viewPosition)
+        builder
+            .addVarying(ShaderVaryingTypes.viewPosition)
             .addUniformArray(this.uniformName, WebGLShaderDataType.Vec4, this.planeCount)
-            .inject(ShaderInjectionTypes.discard,
+            .inject(
+                ShaderInjectionTypes.discard,
                 `
     for ( int i = 0; i < ${this._clippingPlanes.length}; i ++ ) {
         vec4 plane = ${this.uniformName}[ i ];
         if ( dot( vViewPosition, plane.xyz ) > plane.w ) discard;
     }
-            `);
+            `,
+            );
     }
-    extendShaderShading(_builder: ShaderBuilder): void {
-    }
+    extendShaderShading(_builder: ShaderBuilder): void {}
 
     updateShapeUniforms(program: WGLProgram) {
         if (this.planeCount === 0) {
@@ -114,7 +116,7 @@ export class ClippingShaderComponent extends SharedShaderComponent {
         const planesData = this._clippingPlanes.map(plane => {
             return {
                 normal: plane.normal.getSerializeData(),
-                constant: plane.constant
+                constant: plane.constant,
             };
         });
         ctx.putRaw('clippingPlanes', planesData);

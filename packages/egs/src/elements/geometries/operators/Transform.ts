@@ -7,7 +7,7 @@ import { Matrix3 } from '../../../math/Matrix3';
  * @param {Matrix4} matrix a 4×4 matrix which is applied to.
  * @remarks See {@link Matrix4.applyToBufferAttribute| applyToBufferAttribute} for more details.
  */
-export function transform(geometry: BufferGeometry, matrix: Matrix4):BufferGeometry {
+export function transform(geometry: BufferGeometry, matrix: Matrix4): BufferGeometry {
     const position = geometry.getAttribute('position');
 
     if (position !== undefined) {

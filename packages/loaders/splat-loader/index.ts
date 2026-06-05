@@ -17,11 +17,11 @@ try {
     SplatWorkerFactor = () => new W();
 } catch {
     SplatWorkerFactor = () => new Worker(new URL('./worker', import.meta.url), { type: 'module' });
-};
+}
 const poll = new FactoryWorkerPool('splat', SplatWorkerFactor, 4, 1);
 export async function parseSplatData(
     type: SplatFileType,
-    input: Uint8Array | string | File | { stream: ReadableStream<Uint8Array>, contentLength: number },
+    input: Uint8Array | string | File | { stream: ReadableStream<Uint8Array>; contentLength: number },
     packType: SplatPackType = SplatPackType.SuperCompressed,
     extras: Partial<ParseExtras> = {},
 ): Promise<SplatData> {
@@ -96,7 +96,7 @@ export async function parseSplatData(
                 maxShDegree: extras.maxShDegree ?? 3,
                 maxTextureSize: extras.maxTextureSize ?? getMaxTextureSize(),
             },
-        }
+        },
     };
     worker.postMessage(payload, isMockStream ? [] : [stream as any]);
     if (isMockStream) {
@@ -120,7 +120,11 @@ export async function parseSplatData(
 }
 
 async function sortSplats(splatCounts: number, sorting: Uint16Array, ordering: Uint32Array) {
-    const { promise, resolve, reject } = deferred<{ activeSplats: number; sorting: Uint16Array; ordering: Uint32Array; }>();
+    const { promise, resolve, reject } = deferred<{
+        activeSplats: number;
+        sorting: Uint16Array;
+        ordering: Uint32Array;
+    }>();
     const worker = await poll.getWorker();
     worker.onmessage = (event: MessageEvent) => {
         const data = event.data as ReceiveMessage<TaskType.SortSplats>;
@@ -132,7 +136,10 @@ async function sortSplats(splatCounts: number, sorting: Uint16Array, ordering: U
         worker.release();
     };
 
-    const payload: SendMessage<TaskType.SortSplats> = { taskType: TaskType.SortSplats, payload: { splatCounts, sorting, ordering } };
+    const payload: SendMessage<TaskType.SortSplats> = {
+        taskType: TaskType.SortSplats,
+        payload: { splatCounts, sorting, ordering },
+    };
     worker.postMessage(payload, [sorting.buffer, ordering.buffer]);
 
     return promise;

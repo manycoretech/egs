@@ -25,7 +25,7 @@ export class WireframeBufferGeometry extends BufferGeometry<LineList> {
         // helper variables
         let i, j, l, o, ol, e, edge1, edge2, key, vertex;
         const edge = [0, 0];
-        const edges: Record<string, { index1: number, index2: number }> = {};
+        const edges: Record<string, { index1: number; index2: number }> = {};
         const keys = ['a', 'b', 'c'];
 
         // different logic for Geometry and BufferGeometry
@@ -56,9 +56,7 @@ export class WireframeBufferGeometry extends BufferGeometry<LineList> {
                 vertices.push(vertex.x, vertex.y, vertex.z);
             }
         } else if (TypeAssert.isBufferGeometry(geometry)) {
-            let position, indices, groups,
-                group, start, count,
-                index1, index2;
+            let position, indices, groups, group, start, count, index1, index2;
             vertex = new Vector3();
             if (geometry.index !== null) {
                 // indexed BufferGeometry
@@ -75,10 +73,10 @@ export class WireframeBufferGeometry extends BufferGeometry<LineList> {
                     group = groups[o];
                     start = group.start;
                     count = group.count;
-                    for (i = start, l = (start + count); i < l; i += 3) {
+                    for (i = start, l = start + count; i < l; i += 3) {
                         for (j = 0; j < 3; j++) {
                             edge1 = indices.getX(i + j);
-                            edge2 = indices.getX(i + (j + 1) % 3);
+                            edge2 = indices.getX(i + ((j + 1) % 3));
                             edge[0] = Math.min(edge1, edge2); // sorting prevents duplicates
                             edge[1] = Math.max(edge1, edge2);
                             key = edge[0] + ',' + edge[1];
@@ -100,7 +98,7 @@ export class WireframeBufferGeometry extends BufferGeometry<LineList> {
             } else {
                 // non-indexed BufferGeometry
                 position = geometry.position;
-                for (i = 0, l = (position.count / 3); i < l; i++) {
+                for (i = 0, l = position.count / 3; i < l; i++) {
                     for (j = 0; j < 3; j++) {
                         // three edges per triangle, an edge is represented as (index1, index2)
                         // e.g. the first triangle has the following edges: (0,1),(1,2),(2,0)

@@ -1,4 +1,10 @@
-import { type TypedArray, type PickSubTypeProperty, isNumber, type ReadonlyMarked, type ReadOnlyMarkedCreatable } from './Utils';
+import {
+    type TypedArray,
+    type PickSubTypeProperty,
+    isNumber,
+    type ReadonlyMarked,
+    type ReadOnlyMarkedCreatable,
+} from './Utils';
 import type { Object3D } from '../scene/Object3D';
 import { logger } from './Logger';
 import { TypeAssert } from '../scene/tools/TypeAssert';
@@ -41,27 +47,29 @@ type ArrayOrSingle<T> = T | T[];
 
 export type SerializerablePartKeys<T> = PickSubTypeProperty<T, ArrayOrSingle<Serializerable>>;
 
-type SerializeResult = {
-    typeName?: string,
-    data: any
-} | any; // this is nonsense
+type SerializeResult =
+    | {
+          typeName?: string;
+          data: any;
+      }
+    | any; // this is nonsense
 
 interface CollectedBufferDescriptor {
-    type: string,
-    offset: number,
-    length: number,
-    index: number
+    type: string;
+    offset: number;
+    length: number;
+    index: number;
 }
 
 function isSerializerableRaw(item: Serializerable): item is SerializerableRaw {
     return item !== undefined && item !== null && (item as any).getSerializeData !== undefined;
 }
 
-function isObject(o: any): o is Object {
+function isObject(o: any): o is object {
     return typeof o === 'object' && o !== null; // js is awesome
 }
 
-export class Serializer<T extends Serializerable = any>{
+export class Serializer<T extends Serializerable = any> {
     serializedResource: { [index: string]: any } = {};
     buffer: ArrayBuffer[] = [];
     byteLengthAll = 0;
@@ -79,7 +87,7 @@ export class Serializer<T extends Serializerable = any>{
             type: data.constructor.name, // this is safe, browser builtin type cant be erased in compilation;
             offset,
             length: data.byteLength,
-            index
+            index,
         };
     }
 
@@ -104,9 +112,10 @@ export class Serializer<T extends Serializerable = any>{
             logger.warn(`<${key}> has been serialized before, it maybe a mistake`);
             return;
         }
-        if (isObject(valueToSer)) { // object type
-            if (valueToSer.getSerializeData !== undefined) {
-                this.serializeTarget[key] = valueToSer.getSerializeData();
+        if (isObject(valueToSer)) {
+            // object type
+            if ((valueToSer as any).getSerializeData !== undefined) {
+                this.serializeTarget[key] = (valueToSer as any).getSerializeData();
             } else {
                 const serCustomObj = (v: SerializerableDelegated) => {
                     if (isNumber(v)) {
@@ -114,20 +123,21 @@ export class Serializer<T extends Serializerable = any>{
                     }
 
                     if (v.serialize !== undefined) {
-
                         const serResult = this.serialize(v);
 
                         return serResult;
                     } else {
                         // should warn by type constraint
-                        logger.warn(`<${key}> need serialize impl, the type constructor is <${valueToSer.constructor.name}>`);
+                        logger.warn(
+                            `<${key}> need serialize impl, the type constructor is <${valueToSer.constructor.name}>`,
+                        );
                     }
                 };
 
                 if (Array.isArray(valueToSer)) {
                     this.serializeTarget[key] = valueToSer.map(v => serCustomObj(v));
                 } else {
-                    this.serializeTarget[key] = serCustomObj(valueToSer);
+                    this.serializeTarget[key] = serCustomObj(valueToSer as any);
                 }
             }
         } else {
@@ -164,7 +174,7 @@ export class Serializer<T extends Serializerable = any>{
                 restore();
                 return {
                     typeName: pre.typeName,
-                    data: uuid
+                    data: uuid,
                 };
             } else {
                 // or let's serialize it
@@ -173,7 +183,8 @@ export class Serializer<T extends Serializerable = any>{
         }
         s.serialize(this);
         uuid = this.serializeTargetUuid;
-        if (uuid !== null) { // new found reference type has serialized ok, so just return ref
+        if (uuid !== null) {
+            // new found reference type has serialized ok, so just return ref
             let typeName = s.constructor.name; // use ctor name as fallback
             if (s.className === undefined) {
                 logger.warn('SerializerableDelegatedAsReference should have className impl');
@@ -184,9 +195,10 @@ export class Serializer<T extends Serializerable = any>{
             restore();
             return {
                 typeName,
-                data: uuid
+                data: uuid,
             };
-        } else { // primitive type
+        } else {
+            // primitive type
             const result = this.serializeTarget;
             restore();
             return result;
@@ -253,7 +265,7 @@ export class Deserializer {
         if (isSerializerableRaw(container)) {
             const value = (container as ReadOnlyMarkedCreatable<any>).clone();
             value.setSerializeData(valueToDeSer);
-            this.deSerializeTarget[writeKey] = value;// trigger possible setter
+            this.deSerializeTarget[writeKey] = value; // trigger possible setter
             return;
         }
 
@@ -262,7 +274,9 @@ export class Deserializer {
                 return d;
             }
             if (d.typeName === undefined && !isObject(c)) {
-                logger.warn(`try to deserialize a none reference able object value, but container is not a object type`);
+                logger.warn(
+                    `try to deserialize a none reference able object value, but container is not a object type`,
+                );
                 return;
             }
             if (isSerializerableRaw(c)) {
@@ -277,7 +291,8 @@ export class Deserializer {
         if (isObject(valueToDeSer)) {
             if (Array.isArray(valueToDeSer)) {
                 const arr = valueToDeSer.map(d => deSerObj(d));
-                if (arr[0] !== undefined && TypeAssert.isObject3D(arr[0])) { // additional logic for scene tree build
+                if (arr[0] !== undefined && TypeAssert.isObject3D(arr[0])) {
+                    // additional logic for scene tree build
                     arr.forEach(node => (this.deSerializeTarget as Object3D).add(node));
                 } else {
                     this.deSerializeTarget[writeKey] = arr;
@@ -287,7 +302,7 @@ export class Deserializer {
                 if (result instanceof Promise) {
                     const tempTarget = this.deSerializeTarget;
                     this.deSerializeTarget[writeKey] = null;
-                    return result.then((c) => {
+                    return result.then(c => {
                         tempTarget[writeKey] = c;
                     });
                 } else {
@@ -327,12 +342,17 @@ export class Deserializer {
     readRawFromSource(id: string) {
         return this.rawData.resource[id].data;
     }
-    deserialize<T extends SerializerableDelegated & Partial<ClassNamePreserved>>(seredData: any, container?: T): T | Promise<T> {
+    deserialize<T extends SerializerableDelegated & Partial<ClassNamePreserved>>(
+        seredData: any,
+        container?: T,
+    ): T | Promise<T> {
         let realSeredData = seredData;
-        if (seredData.typeName !== undefined) { // oh this is a ref type
+        if (seredData.typeName !== undefined) {
+            // oh this is a ref type
             realSeredData = realSeredData.data;
 
-            if (typeof seredData.data === 'string') { // handle the root scene case
+            if (typeof seredData.data === 'string') {
+                // handle the root scene case
                 const rt = this.deSerializedResource.get(seredData.data);
                 if (rt !== undefined) {
                     // if we get a deserialized, just return
@@ -382,7 +402,8 @@ export class Deserializer {
         this.serializedData = perviousSerializedData;
         this.deSerializeTarget = perviousDeSerializeTarget;
 
-        if (seredData.typeName !== undefined) { // reference type
+        if (seredData.typeName !== undefined) {
+            // reference type
             this.deSerializedResource.set(seredData.data, container);
         }
         if (re instanceof Promise) {

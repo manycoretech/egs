@@ -68,7 +68,7 @@ export class AOPlugin extends PipelinePlugin {
         this.active = (isFrameStable && isCameraStable) || !effectConfig.isPerformanceSlow;
     }
 
-    updateGraphHash(_hasher: HashKeyBuilder) { }
+    updateGraphHash(_hasher: HashKeyBuilder) {}
 
     updateRenderGraph(graph: RenderGraph, context: PipelineContext) {
         const scene = this.scene;
@@ -80,14 +80,9 @@ export class AOPlugin extends PipelinePlugin {
         this.aoBlurYMaterial.axis = readonlyMath.vec2(0, 1);
         this.aoBlurYMaterial.cameraNear = (scene.camera as PerspectiveCamera).near;
         this.aoBlurYMaterial.cameraFar = (scene.camera as PerspectiveCamera).far;
-        const depthPass = pass('depth_pass')
-            .useDispatcher(this.depthDispatcher)
-            .draw(scene.default);
+        const depthPass = pass('depth_pass').useDispatcher(this.depthDispatcher).draw(scene.default);
 
-        const depthResult = target('depth_result_target')
-            .from([
-                depthPass
-            ]);
+        const depthResult = target('depth_result_target').from([depthPass]);
 
         if (context.renderingConfig.gpuDriven.enabled && graph.sceneCullingPass) {
             // reuse culling results in forward when driven enabled
@@ -100,41 +95,39 @@ export class AOPlugin extends PipelinePlugin {
                 .depend(graph.sceneCullingPass);
         }
 
-        const aoComputeResult = target('ao_compute_target', true, false)
-            .from([
-                pass('ao_compute_pass')
-                    .input('depthMap', depthResult)
-                    .before(renderer => {
-                        this.aoPassMaterial.cameraInverseProjectionMatrix = new Matrix4().getInverse(scene.camera.projectionMatrix).cloneReadonly();
-                        if (TypeAssert.isPerspectiveCamera(scene.camera)) {
-                            this.aoPassMaterial.projectionScale = renderer.renderer.renderer.getDrawingBufferSize().height / scene.camera.getPixelsOfDistOne(); // todo
-                        } else {
-                            this.aoPassMaterial.projectionScale = renderer.renderer.renderer.getDrawingBufferSize().height;
-                        }
-                    })
-                    .use(drawQuad(this.aoPassMaterial)),
-            ]);
+        const aoComputeResult = target('ao_compute_target', true, false).from([
+            pass('ao_compute_pass')
+                .input('depthMap', depthResult)
+                .before(renderer => {
+                    this.aoPassMaterial.cameraInverseProjectionMatrix = new Matrix4()
+                        .getInverse(scene.camera.projectionMatrix)
+                        .cloneReadonly();
+                    if (TypeAssert.isPerspectiveCamera(scene.camera)) {
+                        this.aoPassMaterial.projectionScale =
+                            renderer.renderer.renderer.getDrawingBufferSize().height /
+                            scene.camera.getPixelsOfDistOne(); // todo
+                    } else {
+                        this.aoPassMaterial.projectionScale = renderer.renderer.renderer.getDrawingBufferSize().height;
+                    }
+                })
+                .use(drawQuad(this.aoPassMaterial)),
+        ]);
 
-        const blurredX = target('blurred_x_target', true, false)
-            .from([
-                pass('blur_x_pass')
-                    .input('map', aoComputeResult)
-                    .input('depthMap', depthResult)
-                    .use(drawQuad(this.aoBlurXMaterial)),
-            ]);
-        const blurredY = target('blurred_y_target', true, false)
-            .from([
-                pass('blur_y_pass')
-                    .input('map', blurredX)
-                    .input('depthMap', depthResult)
-                    .use(drawQuad(this.aoBlurYMaterial)),
-            ]);
+        const blurredX = target('blurred_x_target', true, false).from([
+            pass('blur_x_pass')
+                .input('map', aoComputeResult)
+                .input('depthMap', depthResult)
+                .use(drawQuad(this.aoBlurXMaterial)),
+        ]);
+        const blurredY = target('blurred_y_target', true, false).from([
+            pass('blur_y_pass')
+                .input('map', blurredX)
+                .input('depthMap', depthResult)
+                .use(drawQuad(this.aoBlurYMaterial)),
+        ]);
 
         graph.addPass([
-            pass('ao_compose_pass')
-                .disableClear()
-                .input('tDiffuse', blurredY)
-                .use(drawQuad(this.aoComposeMaterial)),
+            pass('ao_compose_pass').disableClear().input('tDiffuse', blurredY).use(drawQuad(this.aoComposeMaterial)),
         ]);
     }
 
@@ -148,11 +141,15 @@ export class AOPlugin extends PipelinePlugin {
             },
             aoBias: {
                 get: () => this.aoPassMaterial.bias,
-                set: (v: number) => { this.aoPassMaterial.bias = v; },
+                set: (v: number) => {
+                    this.aoPassMaterial.bias = v;
+                },
             },
             aoRadius: {
                 get: () => this.aoPassMaterial.radius,
-                set: (v: number) => { this.aoPassMaterial.radius = v; },
+                set: (v: number) => {
+                    this.aoPassMaterial.radius = v;
+                },
             },
             blurKernelRadius: {
                 get: () => this.aoBlurXMaterial.radius,
@@ -170,7 +167,9 @@ export class AOPlugin extends PipelinePlugin {
             },
             aoIntensity: {
                 get: () => this.aoPassMaterial.intensity,
-                set: (v: number) => { this.aoPassMaterial.intensity = v; },
+                set: (v: number) => {
+                    this.aoPassMaterial.intensity = v;
+                },
             },
         };
     }

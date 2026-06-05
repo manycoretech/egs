@@ -1,4 +1,3 @@
-
 export function createShaderBlock(source: string) {
     return new ShaderBlock(source);
 }

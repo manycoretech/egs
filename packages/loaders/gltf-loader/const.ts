@@ -43,5 +43,7 @@ export const DEFAULT_MATERIAL = new MeshPhongMaterial();
 export const EMPTY_TEXTURE = Texture2D.createByMainLayerSource(
     new Uint8Array([233, 233, 233, 255]),
     WebGLPixelFormat.RGBA,
-    TextureDataType.UnsignedByteType, 1, 1
+    TextureDataType.UnsignedByteType,
+    1,
+    1,
 );

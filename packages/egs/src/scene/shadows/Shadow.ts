@@ -12,15 +12,15 @@ import type { Deserializer, Serializer } from '../../utils/Serialization';
 import type { RenderAttachment } from '../../elements/textures/RenderTarget';
 
 interface TargetLight extends Object3D {
-    target: Object3D
+    target: Object3D;
 }
 
 export abstract class Shadow<M> {
-    protected constructor(readonly light: Object3D) { }
+    protected constructor(readonly light: Object3D) {}
 
     abstract className(): string;
 
-    destroy() { }
+    destroy() {}
 
     static _IN_TEMPORAL = false;
     static ENABLE_TEMPORAL_EFFECT = false;
@@ -82,9 +82,7 @@ export abstract class Shadow<M> {
     }
 
     includeShadowMapCommon(builder: ShaderBuilder) {
-        builder
-            .addFragment(ShaderBlockPool.getShadowFrag)
-            .addFragDefine('#define USE_SHADOWMAP');
+        builder.addFragment(ShaderBlockPool.getShadowFrag).addFragDefine('#define USE_SHADOWMAP');
     }
 
     deserialize(ctx: Deserializer) {
@@ -126,9 +124,15 @@ export abstract class SingleProjectShadow<C extends Camera3D> extends Shadow<Ren
         if (Shadow._IN_TEMPORAL && Shadow.ENABLE_TEMPORAL_EFFECT) {
             const randx = Math.random() - 0.5;
             const randy = Math.random() - 0.5;
-            shadowCamera.position.x += Shadow.JITTER_SIZE * (randx * shadowCamera.matrixWorld._elements[0] + randy * shadowCamera.matrixWorld._elements[4]);
-            shadowCamera.position.y += Shadow.JITTER_SIZE * (randx * shadowCamera.matrixWorld._elements[1] + randy * shadowCamera.matrixWorld._elements[5]);
-            shadowCamera.position.z += Shadow.JITTER_SIZE * (randx * shadowCamera.matrixWorld._elements[2] + randy * shadowCamera.matrixWorld._elements[6]);
+            shadowCamera.position.x +=
+                Shadow.JITTER_SIZE *
+                (randx * shadowCamera.matrixWorld._elements[0] + randy * shadowCamera.matrixWorld._elements[4]);
+            shadowCamera.position.y +=
+                Shadow.JITTER_SIZE *
+                (randx * shadowCamera.matrixWorld._elements[1] + randy * shadowCamera.matrixWorld._elements[5]);
+            shadowCamera.position.z +=
+                Shadow.JITTER_SIZE *
+                (randx * shadowCamera.matrixWorld._elements[2] + randy * shadowCamera.matrixWorld._elements[6]);
         }
         shadowCamera.lookAt(light.target.position);
         shadowCamera.updateMatrixWorld();
@@ -140,12 +144,7 @@ export abstract class SingleProjectShadow<C extends Camera3D> extends Shadow<Ren
         }
         const shadowCamera = this.camera;
         const shadowMatrix = this.matrix;
-        shadowMatrix.set(
-            0.5, 0.0, 0.0, 0.5,
-            0.0, 0.5, 0.0, 0.5,
-            0.0, 0.0, 0.5, 0.5,
-            0.0, 0.0, 0.0, 1.0
-        );
+        shadowMatrix.set(0.5, 0.0, 0.0, 0.5, 0.0, 0.5, 0.0, 0.5, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0);
 
         shadowMatrix.multiply(shadowCamera.projectionMatrix);
         shadowMatrix.multiply(shadowCamera.matrixWorldInverse);

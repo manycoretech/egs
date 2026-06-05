@@ -52,13 +52,15 @@ export class TextureManager {
         if (!data) {
             const webglTexture = this.renderer.gl.createTexture()!;
             glState.bindTextureAndActiveForUploading(texture.bindableTarget, webglTexture);
-            const byteSize = texture.uploadWebGL(new WebGLTextureUploadCtx(
-                this.renderer.gl as WebGL2RenderingContext,
-                this.renderer.backend,
-                this.isWebGL1,
-                Capabilities.MAX_TEXTURE_SIZE,
-                true
-            ));
+            const byteSize = texture.uploadWebGL(
+                new WebGLTextureUploadCtx(
+                    this.renderer.gl as WebGL2RenderingContext,
+                    this.renderer.backend,
+                    this.isWebGL1,
+                    Capabilities.MAX_TEXTURE_SIZE,
+                    true,
+                ),
+            );
             data = { webglTexture, byteSize };
             this.webglTextureMap.set(texture, data);
             texture.once(TextureDisposeEvent, this.onTextureDispose);
@@ -70,13 +72,15 @@ export class TextureManager {
             }
         } else if (TypeAssert.isSourceTexture(texture)) {
             glState.bindTextureAndActiveForUploading(texture.bindableTarget, data.webglTexture);
-            texture.uploadWebGL(new WebGLTextureUploadCtx(
-                this.renderer.gl as WebGL2RenderingContext,
-                this.renderer.backend,
-                this.isWebGL1,
-                Capabilities.MAX_TEXTURE_SIZE,
-                false
-            ));
+            texture.uploadWebGL(
+                new WebGLTextureUploadCtx(
+                    this.renderer.gl as WebGL2RenderingContext,
+                    this.renderer.backend,
+                    this.isWebGL1,
+                    Capabilities.MAX_TEXTURE_SIZE,
+                    false,
+                ),
+            );
         }
         return data;
     }
@@ -97,7 +101,7 @@ export class TextureManager {
         return texture.webglTexture;
     }
 
-    private createRenderBuffer(attachment: RenderAttachment, ): RenderBufferAttachment {
+    private createRenderBuffer(attachment: RenderAttachment): RenderBufferAttachment {
         const data: RenderBufferAttachment = [];
         for (let i = 0; i < attachment.depthOrArrayLayers; i++) {
             const buffer = this.renderer.gl.createRenderbuffer()!;
@@ -105,10 +109,21 @@ export class TextureManager {
             this.renderer.gl.bindRenderbuffer(this.renderer.gl.RENDERBUFFER, buffer);
             if (attachment.sampleCount > 1 && this.renderer.backend !== RendererBackend.WEBGL_JS) {
                 const gl = this.renderer.gl as WebGL2RenderingContext;
-                gl.renderbufferStorageMultisample(this.renderer.gl.RENDERBUFFER, 4, attachment.glFormat.internal(this.renderer.backend), attachment.width, attachment.height);
+                gl.renderbufferStorageMultisample(
+                    this.renderer.gl.RENDERBUFFER,
+                    4,
+                    attachment.glFormat.internal(this.renderer.backend),
+                    attachment.width,
+                    attachment.height,
+                );
             } else {
-                this.renderer.gl.renderbufferStorage(this.renderer.gl.RENDERBUFFER, attachment.glFormat.internal(this.renderer.backend), attachment.width, attachment.height);
-            };
+                this.renderer.gl.renderbufferStorage(
+                    this.renderer.gl.RENDERBUFFER,
+                    attachment.glFormat.internal(this.renderer.backend),
+                    attachment.width,
+                    attachment.height,
+                );
+            }
         }
         this.renderer.gl.bindRenderbuffer(this.renderer.gl.RENDERBUFFER, null);
         return data;

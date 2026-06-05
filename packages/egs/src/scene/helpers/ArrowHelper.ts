@@ -26,7 +26,14 @@ export class ArrowHelper extends CombinedObjectGroup {
      * @param {number} headLength the height of head. Default is 0.2 * length.
      * @param {number} headWidth the radius of arrow's head. Default is 0.2 * headLength.
      */
-    constructor(dir?: Vector3, origin?: Vector3, length?: number, color?: number, headLength?: number, headWidth?: number) {
+    constructor(
+        dir?: Vector3,
+        origin?: Vector3,
+        length?: number,
+        color?: number,
+        headLength?: number,
+        headWidth?: number,
+    ) {
         super();
         if (dir === undefined) {
             dir = new Vector3(0, 0, 1);
@@ -56,7 +63,7 @@ export class ArrowHelper extends CombinedObjectGroup {
             radialSegments: 20,
             heightSegments: 1,
         });
-        transform(coneGeometry, new Matrix4().translate(0, - 0.5, 0));
+        transform(coneGeometry, new Matrix4().translate(0, -0.5, 0));
 
         this.position.copy(origin);
         const lineMat = new LineBasicMaterial();
@@ -80,10 +87,10 @@ export class ArrowHelper extends CombinedObjectGroup {
         // dir is assumed to be normalized
         if (dir.y > 0.99999) {
             this.quaternion.set(0, 0, 0, 1);
-        } else if (dir.y < - 0.99999) {
+        } else if (dir.y < -0.99999) {
             this.quaternion.set(1, 0, 0, 0);
         } else {
-            axis.set(dir.z, 0, - dir.x).normalize();
+            axis.set(dir.z, 0, -dir.x).normalize();
             const radians = Math.acos(dir.y);
             this.quaternion.setFromAxisAngle(axis, radians);
         }

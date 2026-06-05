@@ -1,6 +1,10 @@
 import { SingleProjectShadow } from './Shadow';
 import { OrthographicCamera } from '../cameras/OrthographicCamera';
-import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+    ShaderVaryingTypes,
+} from '../../renderer/shader/builders/ShaderBuilder';
 import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms';
 import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
 import { Vector3 } from '../../math/Vector3';
@@ -60,9 +64,7 @@ export class DirectionalShadow extends SingleProjectShadow<OrthographicCamera> {
 
     extendsShaderDeferred(builder: ShaderBuilder) {
         super.includeShadowMapCommon(builder);
-        builder
-            .addFragmentCustom(getCustomFrag(false))
-            .addFragment(ShaderBlockPool.InverseTransformDirection);
+        builder.addFragmentCustom(getCustomFrag(false)).addFragment(ShaderBlockPool.InverseTransformDirection);
     }
 
     updateUniformsImpl(program: WGLProgram, prefix: string) {

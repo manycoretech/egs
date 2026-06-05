@@ -5,20 +5,20 @@ import { DiscreteInterpolant } from './interpolants/DiscreteInterpolant';
 import { CubicInterpolant } from './interpolants/CubicInterpolant';
 import { QuaternionLinearInterpolant } from './interpolants/QuaternionLinearInterpolant';
 
-const TrackPathReg = /^(?:([^\[\]]+)\/)?([^\[\]]+)?(?:\.([^\[\]\.]+)(?:\[(.+)\])?)?\.([^\[\]\.]+)(?:\[(.+)\])?$/;
+const TrackPathReg = /^(?:([^[\]]+)\/)?([^[\]]+)?(?:\.([^[\].]+)(?:\[(.+)\])?)?\.([^[\].]+)(?:\[(.+)\])?$/;
 
 const SupportedScopeNames = ['Materials'] as const;
 const SupportedObjectNames = ['materials'] as const;
 const SupportedPropertyNames = ['translation', 'rotation', 'scale', 'uvRotation', 'uvOffset', 'uvScale'] as const;
 
 export interface TrackPath {
-    scope?: typeof SupportedScopeNames[number];
+    scope?: (typeof SupportedScopeNames)[number];
     nodeName?: string;
 
-    objectName?: typeof SupportedObjectNames[number];
+    objectName?: (typeof SupportedObjectNames)[number];
     objectIndex?: string;
 
-    propertyName: typeof SupportedPropertyNames[number];
+    propertyName: (typeof SupportedPropertyNames)[number];
     propertyIndex?: string;
 }
 
@@ -74,7 +74,11 @@ export function parseTrackPath(path: string): TrackPath | undefined {
     return result;
 }
 
-type Interpolant = typeof DiscreteInterpolant | typeof LinearInterpolant | typeof CubicInterpolant | typeof QuaternionLinearInterpolant;
+type Interpolant =
+    | typeof DiscreteInterpolant
+    | typeof LinearInterpolant
+    | typeof CubicInterpolant
+    | typeof QuaternionLinearInterpolant;
 export function createInterpolant(
     property: TrackPath['propertyName'],
     interpolation: InterpolationMode,
@@ -113,16 +117,21 @@ export function createInterpolant(
     return interpolant;
 }
 
-export function makeClipAdditive(targetClip: AnimationClip, referenceFrame: number = 0, referenceClip: AnimationClip = targetClip, fps: number = 30) {
-
-    if (fps <= 0) { fps = 30; }
+export function makeClipAdditive(
+    targetClip: AnimationClip,
+    referenceFrame: number = 0,
+    referenceClip: AnimationClip = targetClip,
+    fps: number = 30,
+) {
+    if (fps <= 0) {
+        fps = 30;
+    }
 
     const numTracks = referenceClip.tracks.length;
     const referenceTime = referenceFrame / fps;
 
     // Make each track's values relative to the values at the reference frame
     for (let i = 0; i < numTracks; ++i) {
-
         const referenceTrack = referenceClip.tracks[i];
 
         // Find the track in the target clip whose name and type matches the reference track
@@ -165,19 +174,15 @@ export function makeClipAdditive(targetClip: AnimationClip, referenceFrame: numb
 
         // Find the value to subtract out of the track
         if (referenceTime <= referenceTrack.times[0]) {
-
             // Reference frame is earlier than the first keyframe, so just use the first keyframe
             const startIndex = referenceOffset;
             const endIndex = referenceValueSize - referenceOffset;
             referenceValue = referenceTrack.values.slice(startIndex, endIndex);
-
         } else if (referenceTime >= referenceTrack.times[lastIndex]) {
-
             // Reference frame is after the last keyframe, so just use the last keyframe
             const startIndex = lastIndex * referenceValueSize + referenceOffset;
             const endIndex = startIndex + referenceValueSize - referenceOffset;
             referenceValue = referenceTrack.values.slice(startIndex, endIndex);
-
         }
         // todo referenceTime is between start and end
         if (referenceValue === undefined) {
@@ -196,7 +201,6 @@ export function makeClipAdditive(targetClip: AnimationClip, referenceFrame: numb
         for (let j = 0; j < numTimes; ++j) {
             const valueStart = j * targetValueSize + targetOffset;
             if (result.propertyName === 'rotation') {
-
                 // Multiply the conjugate for quaternion track types
                 multiplyQuaternionsFlat(
                     targetTrack.values,
@@ -204,11 +208,9 @@ export function makeClipAdditive(targetClip: AnimationClip, referenceFrame: numb
                     referenceValue,
                     0,
                     targetTrack.values,
-                    valueStart
+                    valueStart,
                 );
-
             } else {
-
                 const valueEnd = targetValueSize - targetOffset * 2;
                 // Subtract each value for all other numeric track types
                 for (let k = 0; k < valueEnd; ++k) {
@@ -222,12 +224,10 @@ export function makeClipAdditive(targetClip: AnimationClip, referenceFrame: numb
 }
 
 export function subClip(sourceClip: AnimationClip, startFrame: number, endFrame: number, fps = 30) {
-
     const clip = sourceClip;
     const tracks = [];
 
     for (let i = 0; i < clip.tracks.length; ++i) {
-
         const track = clip.tracks[i];
         const valueSize = getTrackValueSize(track.path);
 
@@ -235,20 +235,22 @@ export function subClip(sourceClip: AnimationClip, startFrame: number, endFrame:
         const values = [];
 
         for (let j = 0; j < track.times.length; ++j) {
-
             const frame = track.times[j] * fps;
 
-            if (frame < startFrame || frame >= endFrame) { continue; }
+            if (frame < startFrame || frame >= endFrame) {
+                continue;
+            }
 
             times.push(track.times[j]);
 
             for (let k = 0; k < valueSize; ++k) {
                 values.push(track.values[j * valueSize + k]);
             }
-
         }
 
-        if (times.length === 0) { continue; }
+        if (times.length === 0) {
+            continue;
+        }
 
         track.times = new (track.times.constructor as any)(times);
         track.values = new (track.times.constructor as any)(values);
@@ -301,8 +303,14 @@ function getTrackValueSize(path: string): number {
     return itemSize;
 }
 
-export function multiplyQuaternionsFlat(dst: any, dstOffset: any, src0: any, srcOffset0: any, src1: any, srcOffset1: any) {
-
+export function multiplyQuaternionsFlat(
+    dst: any,
+    dstOffset: any,
+    src0: any,
+    srcOffset0: any,
+    src1: any,
+    srcOffset1: any,
+) {
     const x0 = src0[srcOffset0];
     const y0 = src0[srcOffset0 + 1];
     const z0 = src0[srcOffset0 + 2];
@@ -319,6 +327,4 @@ export function multiplyQuaternionsFlat(dst: any, dstOffset: any, src0: any, src
     dst[dstOffset + 3] = w0 * w1 - x0 * x1 - y0 * y1 - z0 * z1;
 
     return dst;
-
 }
-

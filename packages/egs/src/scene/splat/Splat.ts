@@ -175,7 +175,7 @@ export abstract class Splat extends Object3D {
         remyDenseMinRatio: 0.2,
         remyDenseMaxRatio: 0.4,
         remyColorBlendRadius: 0,
-        remyColorBlendBase: new Vector4(0., 0.8, 0.48, 0.6),
+        remyColorBlendBase: new Vector4(0, 0.8, 0.48, 0.6),
         remyNormalRadius: 0,
         remyRingRadius: 0,
         remyRingWidth: 6,
@@ -217,7 +217,7 @@ export abstract class Splat extends Object3D {
         if (this.isRenderingStability === stable) {
             return;
         }
-        this.emit(SplatRenderingStabilityChangedEvent, this.isRenderingStability = stable);
+        this.emit(SplatRenderingStabilityChangedEvent, (this.isRenderingStability = stable));
     }
 
     /**

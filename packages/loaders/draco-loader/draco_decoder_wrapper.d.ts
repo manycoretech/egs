@@ -96,20 +96,20 @@ export interface DracoArray {
     GetValue(index: number): number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DracoFloat32Array extends DracoArray { }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DracoInt8Array extends DracoArray { }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DracoInt16Array extends DracoArray { }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DracoInt32Array extends DracoArray { }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DracoUInt8Array extends DracoArray { }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DracoUInt16Array extends DracoArray { }
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface DracoUInt32Array extends DracoArray { }
+// oxlint-disable-next-line typescript/no-empty-interface
+export interface DracoFloat32Array extends DracoArray {}
+// oxlint-disable-next-line typescript/no-empty-interface
+export interface DracoInt8Array extends DracoArray {}
+// oxlint-disable-next-line typescript/no-empty-interface
+export interface DracoInt16Array extends DracoArray {}
+// oxlint-disable-next-line typescript/no-empty-interface
+export interface DracoInt32Array extends DracoArray {}
+// oxlint-disable-next-line typescript/no-empty-interface
+export interface DracoUInt8Array extends DracoArray {}
+// oxlint-disable-next-line typescript/no-empty-interface
+export interface DracoUInt16Array extends DracoArray {}
+// oxlint-disable-next-line typescript/no-empty-interface
+export interface DracoUInt32Array extends DracoArray {}
 
 export interface Status {
     ok(): boolean;
@@ -121,14 +121,14 @@ export interface Attribute {
     normalized(): boolean;
 }
 
-export enum GeometryType { }
+export enum GeometryType {}
 
-export enum GeometryAttributeType { }
+export enum GeometryAttributeType {}
 
-export enum DataType { }
+export enum DataType {}
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Metadata { }
+// oxlint-disable-next-line typescript/no-empty-interface
+export interface Metadata {}
 
 export interface MetadataQuerier {
     HasEntry(metadata: Metadata, entryName: string): boolean;

@@ -42,7 +42,7 @@ export class AnimationMixer extends EventDispatcher {
                 return prev;
             }
         }
-        const action = new AnimationAction(root, clip, { propertyMixerMap, materialSet}, this);
+        const action = new AnimationAction(root, clip, { propertyMixerMap, materialSet }, this);
         actions.push(action);
 
         return action;
@@ -54,7 +54,7 @@ export class AnimationMixer extends EventDispatcher {
      */
     update(deltaTime: number) {
         const { actions } = this;
-        const accuIndex = this.accuIndex ^= 1;
+        const accuIndex = (this.accuIndex ^= 1);
         for (let i = 0; i < actions.length; i++) {
             const action = actions[i];
             if (!action.active) {
@@ -84,9 +84,9 @@ export class AnimationMixer extends EventDispatcher {
             const mixer = mixers[i];
             mixer.apply(this.accuIndex);
         }
-        this.materialSet.forEach((material) => {
+        this.materialSet.forEach(material => {
             if (material.metaData.uvTransformDirty) {
-                const {position, scale, rotation} = material.metaData;
+                const { position, scale, rotation } = material.metaData;
                 // TODO: to avoid creating new matrix
                 const uvTransform = new Matrix3();
                 uvTransform.setUVTransform(position.x, position.y, scale.x, scale.y, rotation, 0, 0);

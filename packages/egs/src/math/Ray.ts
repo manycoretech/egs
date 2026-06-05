@@ -23,8 +23,8 @@ export class Ray {
     direction: Vector3;
 
     constructor(origin?: Vector3, direction?: Vector3) {
-        this.origin = (origin !== undefined) ? origin : new Vector3();
-        this.direction = (direction !== undefined) ? direction : new Vector3();
+        this.origin = origin !== undefined ? origin : new Vector3();
+        this.direction = direction !== undefined ? direction : new Vector3();
     }
     /**
      * This must be normalized (with {@link Vector3.normalize| Vector3.normalize}) for the methods to operate properly.
@@ -115,7 +115,12 @@ export class Ray {
      * @param optionalPointOnRay (optional) if this is provided, it receives the point on this {@link Ray| Ray} that is closest to the segment.
      * @param optionalPointOnSegment - (optional) if this is provided, it receives the point on the line segment that is closest to this {@link Ray| Ray}.
      */
-    distanceSqToSegment(v0: Vector3, v1: Vector3, optionalPointOnRay?: Vector3, optionalPointOnSegment?: Vector3): number {
+    distanceSqToSegment(
+        v0: Vector3,
+        v1: Vector3,
+        optionalPointOnRay?: Vector3,
+        optionalPointOnSegment?: Vector3,
+    ): number {
         // from http://www.geometrictools.com/GTEngine/Include/Mathematics/GteDistRaySegment.h
         // It returns the min distance between the ray and the segment
         // defined by v0 and v1
@@ -149,38 +154,38 @@ export class Ray {
                     } else {
                         // region 1
                         s1 = segExtent;
-                        s0 = Math.max(0, - (a01 * s1 + b0));
-                        sqrDist = - s0 * s0 + s1 * (s1 + 2 * b1) + c;
+                        s0 = Math.max(0, -(a01 * s1 + b0));
+                        sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
                     }
                 } else {
                     // region 5
-                    s1 = - segExtent;
-                    s0 = Math.max(0, - (a01 * s1 + b0));
-                    sqrDist = - s0 * s0 + s1 * (s1 + 2 * b1) + c;
+                    s1 = -segExtent;
+                    s0 = Math.max(0, -(a01 * s1 + b0));
+                    sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
                 }
             } else {
-                if (s1 <= - extDet) {
+                if (s1 <= -extDet) {
                     // region 4
-                    s0 = Math.max(0, - (- a01 * segExtent + b0));
-                    s1 = (s0 > 0) ? - segExtent : Math.min(Math.max(- segExtent, - b1), segExtent);
-                    sqrDist = - s0 * s0 + s1 * (s1 + 2 * b1) + c;
+                    s0 = Math.max(0, -(-a01 * segExtent + b0));
+                    s1 = s0 > 0 ? -segExtent : Math.min(Math.max(-segExtent, -b1), segExtent);
+                    sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
                 } else if (s1 <= extDet) {
                     // region 3
                     s0 = 0;
-                    s1 = Math.min(Math.max(- segExtent, - b1), segExtent);
+                    s1 = Math.min(Math.max(-segExtent, -b1), segExtent);
                     sqrDist = s1 * (s1 + 2 * b1) + c;
                 } else {
                     // region 2
-                    s0 = Math.max(0, - (a01 * segExtent + b0));
-                    s1 = (s0 > 0) ? segExtent : Math.min(Math.max(- segExtent, - b1), segExtent);
-                    sqrDist = - s0 * s0 + s1 * (s1 + 2 * b1) + c;
+                    s0 = Math.max(0, -(a01 * segExtent + b0));
+                    s1 = s0 > 0 ? segExtent : Math.min(Math.max(-segExtent, -b1), segExtent);
+                    sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
                 }
             }
         } else {
             // Ray and segment are parallel.
-            s1 = (a01 > 0) ? - segExtent : segExtent;
-            s0 = Math.max(0, - (a01 * s1 + b0));
-            sqrDist = - s0 * s0 + s1 * (s1 + 2 * b1) + c;
+            s1 = a01 > 0 ? -segExtent : segExtent;
+            s0 = Math.max(0, -(a01 * s1 + b0));
+            sqrDist = -s0 * s0 + s1 * (s1 + 2 * b1) + c;
         }
         if (optionalPointOnRay) {
             optionalPointOnRay.copy(this.direction).multiplyScalar(s0).add(this.origin);
@@ -259,7 +264,7 @@ export class Ray {
      * @param sphere the {@link Sphere| Sphere} to intersect with
      */
     intersectsSphere(sphere: Sphere): boolean {
-        return this.distanceSqToPoint(sphere.center) <= (sphere.radius * sphere.radius);
+        return this.distanceSqToPoint(sphere.center) <= sphere.radius * sphere.radius;
     }
     /**
      * Get the distance from {@link origin| origin} to the {@link Plane| Plane}, or *null* if the {@link Ray| Ray} doesn't intersect the {@link Plane| Plane}.
@@ -275,7 +280,7 @@ export class Ray {
             // Null is preferable to undefined since undefined means.... it is undefined
             return null;
         }
-        const t = - (this.origin.dot(plane.normal) + plane.constant) / denominator;
+        const t = -(this.origin.dot(plane.normal) + plane.constant) / denominator;
         // Return if the ray never intersects the plane
         return t >= 0 ? t : null;
     }
@@ -338,7 +343,7 @@ export class Ray {
             tymin = (box.max.y - origin.y) * invdiry;
             tymax = (box.min.y - origin.y) * invdiry;
         }
-        if ((tmin > tymax) || (tymin > tmax)) {
+        if (tmin > tymax || tymin > tmax) {
             return null;
         }
         // These lines also handle the case where tmin or tmax is NaN
@@ -356,7 +361,7 @@ export class Ray {
             tzmin = (box.max.z - origin.z) * invdirz;
             tzmax = (box.min.z - origin.z) * invdirz;
         }
-        if ((tmin > tzmax) || (tzmin > tmax)) {
+        if (tmin > tzmax || tzmin > tmax) {
             return null;
         }
         if (tzmin > tmin || tmin !== tmin) {
@@ -400,7 +405,13 @@ export class Ray {
      * @param backfaceCulling whether to use backface culling
      * @param target the result will be copied into this Vector3.
      */
-    intersectTriangle(a: Vector3, b: Vector3, c: Vector3, backfaceCulling: boolean, target: Vector3): Nullable<Vector3> {
+    intersectTriangle(
+        a: Vector3,
+        b: Vector3,
+        c: Vector3,
+        backfaceCulling: boolean,
+        target: Vector3,
+    ): Nullable<Vector3> {
         // Compute the offset origin, edges, and normal.
         // let diff = new Vector3();
         // let edge1 = new Vector3();
@@ -424,8 +435,8 @@ export class Ray {
             }
             sign = 1;
         } else if (DdN < 0) {
-            sign = - 1;
-            DdN = - DdN;
+            sign = -1;
+            DdN = -DdN;
         } else {
             return null;
         }
@@ -448,7 +459,7 @@ export class Ray {
         }
 
         // Line intersects triangle, check if ray does.
-        const QdN = - sign * tmp1Vec3.dot(tmp4Vec3);
+        const QdN = -sign * tmp1Vec3.dot(tmp4Vec3);
         // t < 0, no intersection
         if (QdN < 0) {
             return null;

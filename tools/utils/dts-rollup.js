@@ -9,7 +9,8 @@ import { Extractor, ExtractorConfig } from '@microsoft/api-extractor';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const genericParams = '<T = any, T1 = any, T2 = any, T3 = any, T4 = any, T5 = any, T6 = any, T7 = any, T8 = any, T9 = any>';
+const genericParams =
+    '<T = any, T1 = any, T2 = any, T3 = any, T4 = any, T5 = any, T6 = any, T7 = any, T8 = any, T9 = any>';
 const identifierPattern = '[$A-Z_a-z][$0-9A-Z_a-z]*';
 const identifierRegExp = new RegExp(`^${identifierPattern}$`);
 
@@ -20,7 +21,6 @@ function isExternalModuleName(moduleName) {
 function isBundledPackageRootModuleName(moduleName, bundledPackages = []) {
     return bundledPackages.includes(moduleName);
 }
-
 
 function shouldStubExternalModuleName(moduleName, bundledPackages) {
     return isExternalModuleName(moduleName) && !isBundledPackageRootModuleName(moduleName, bundledPackages);
@@ -47,12 +47,8 @@ function resolvePackageInfo(projectRequire, packageName) {
     const packageJson = readJsonFile(packageJsonPath);
     const packageRoot = path.dirname(packageJsonPath);
     const declaration = packageJson.types ?? packageJson.typings;
-    const publishRoot = typeof packageJson.release?.publishRoot === 'string'
-        ? packageJson.release.publishRoot
-        : '.';
-    const declarationPath = declaration
-        ? resolvePackageDeclarationPath(packageRoot, publishRoot, declaration)
-        : null;
+    const publishRoot = typeof packageJson.release?.publishRoot === 'string' ? packageJson.release.publishRoot : '.';
+    const declarationPath = declaration ? resolvePackageDeclarationPath(packageRoot, publishRoot, declaration) : null;
 
     return {
         name: packageJson.name ?? packageName,
@@ -207,13 +203,20 @@ function collectExternalImports(ts, sourceFile, moduleStubs, bundledPackages) {
 
 function rewriteImportEqualsAliases(ts, content, aliases) {
     const aliasNames = [...aliases.keys()].map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
-    const aliasDeclarationRegExp = new RegExp(`^\\s*import\\s+(${aliasNames})\\s*=\\s*(${identifierPattern}(?:\\.${identifierPattern})+)\\s*;\\r?\\n?`, 'gm');
-    const contentWithoutAliasDeclarations = content.replace(
-        aliasDeclarationRegExp,
-        (line, aliasName, targetName) => aliases.get(aliasName) === targetName ? '' : line
+    const aliasDeclarationRegExp = new RegExp(
+        `^\\s*import\\s+(${aliasNames})\\s*=\\s*(${identifierPattern}(?:\\.${identifierPattern})+)\\s*;\\r?\\n?`,
+        'gm',
+    );
+    const contentWithoutAliasDeclarations = content.replace(aliasDeclarationRegExp, (line, aliasName, targetName) =>
+        aliases.get(aliasName) === targetName ? '' : line,
     );
 
-    const scanner = ts.createScanner(ts.ScriptTarget.Latest, true, ts.LanguageVariant.Standard, contentWithoutAliasDeclarations);
+    const scanner = ts.createScanner(
+        ts.ScriptTarget.Latest,
+        true,
+        ts.LanguageVariant.Standard,
+        contentWithoutAliasDeclarations,
+    );
     let output = '';
     let offset = 0;
 
@@ -233,9 +236,7 @@ function rewriteImportEqualsAliases(ts, content, aliases) {
         offset = end;
     }
 
-    return offset === 0
-        ? contentWithoutAliasDeclarations
-        : output + contentWithoutAliasDeclarations.slice(offset);
+    return offset === 0 ? contentWithoutAliasDeclarations : output + contentWithoutAliasDeclarations.slice(offset);
 }
 
 function rewriteIdentifierAliases(ts, content, aliases) {
@@ -327,7 +328,7 @@ function collectRenamedBundledDeclarationAliases(content, bundledPackageInfos) {
 
     for (const name of collectBundledSourceDeclarationNames(bundledPackageInfos)) {
         const renamedDeclarationRegExp = new RegExp(
-            `\\bdeclare\\s+(?:abstract\\s+)?(?:class|interface|type|enum|namespace|function|const|let|var)\\s+(${escapeRegExp(name)}_\\d+)\\b`
+            `\\bdeclare\\s+(?:abstract\\s+)?(?:class|interface|type|enum|namespace|function|const|let|var)\\s+(${escapeRegExp(name)}_\\d+)\\b`,
         );
         const match = content.match(renamedDeclarationRegExp);
 
@@ -340,10 +341,14 @@ function collectRenamedBundledDeclarationAliases(content, bundledPackageInfos) {
 }
 
 function normalizeBundledDeclarationText(sourceFile, node) {
-    return node.getFullText(sourceFile)
+    return node
+        .getFullText(sourceFile)
         .trimEnd()
         .replace(/^(\s*)export\s+declare\b/m, '$1declare')
-        .replace(/^(\s*)export\s+(?=(?:abstract\s+)?(?:class|interface|type|enum|namespace|function|const|let|var)\b)/m, '$1declare ');
+        .replace(
+            /^(\s*)export\s+(?=(?:abstract\s+)?(?:class|interface|type|enum|namespace|function|const|let|var)\b)/m,
+            '$1declare ',
+        );
 }
 
 function collectBundledDeclarationPatches(content, bundledPackageInfos) {
@@ -363,7 +368,9 @@ function collectBundledDeclarationPatches(content, bundledPackageInfos) {
                 continue;
             }
 
-            declarations.push(rewriteIdentifierAliases(ts, normalizeBundledDeclarationText(sourceFile, statement), renamedAliases));
+            declarations.push(
+                rewriteIdentifierAliases(ts, normalizeBundledDeclarationText(sourceFile, statement), renamedAliases),
+            );
 
             for (const name of names) {
                 declaredNames.add(name);
@@ -393,8 +400,9 @@ function fullyMergeBundledPackages(content, bundledPackageInfos) {
 
 function collectExternalModuleStubsAndNormalizeDeclarations(projectDir, bundledPackages) {
     const moduleStubs = new Map();
-    const dtsFiles = sync('./build/**/*.d.ts', { cwd: projectDir, nodir: true })
-        .filter(item => !toPosixPath(item).includes('/.api-extractor/'));
+    const dtsFiles = sync('./build/**/*.d.ts', { cwd: projectDir, nodir: true }).filter(
+        item => !toPosixPath(item).includes('/.api-extractor/'),
+    );
 
     for (const file of dtsFiles) {
         const filePath = path.resolve(projectDir, file);
@@ -480,10 +488,7 @@ function collectExternalModuleStubsAndNormalizeDeclarations(projectDir, bundledP
 }
 
 function renderModuleStub(moduleStub) {
-    const lines = [
-        '// Generated by egs-build for API Extractor only.',
-        ''
-    ];
+    const lines = ['// Generated by egs-build for API Extractor only.', ''];
 
     if (moduleStub.defaultExport) {
         lines.push('declare const _default: any;');
@@ -494,7 +499,9 @@ function renderModuleStub(moduleStub) {
         lines.push(`export class ${name}${genericParams} {}`);
     }
 
-    for (const [namespaceName, members] of [...moduleStub.namespaces.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+    for (const [namespaceName, members] of [...moduleStub.namespaces.entries()].sort(([a], [b]) =>
+        a.localeCompare(b),
+    )) {
         lines.push(`export namespace ${namespaceName} {`);
         for (const memberName of [...members].sort()) {
             lines.push(`    export class ${memberName}${genericParams} {}`);
@@ -522,7 +529,7 @@ function prepareApiExtractorTsconfig(projectDir, bundledPackageInfos) {
 
     for (const packageInfo of bundledPackageInfos) {
         externalModulePaths[packageInfo.name] = [
-            toPosixPath(path.relative(apiExtractorDir, packageInfo.declarationPath))
+            toPosixPath(path.relative(apiExtractorDir, packageInfo.declarationPath)),
         ];
     }
 
@@ -537,11 +544,9 @@ function prepareApiExtractorTsconfig(projectDir, bundledPackageInfos) {
             skipLibCheck: true,
             lib: ['ESNext', 'DOM'],
             types: [],
-            ignoreDeprecations: '6.0'
+            ignoreDeprecations: '6.0',
         },
-        files: [
-            '../index.d.ts'
-        ]
+        files: ['../index.d.ts'],
     };
 
     const tsconfigPath = path.resolve(apiExtractorDir, 'tsconfig.json');
@@ -574,15 +579,15 @@ export function rollup(projectDir, options) {
     if (!extractorResult.succeeded) {
         throw new Error(
             `API Extractor failed with ${extractorResult.errorCount} errors ` +
-            `and ${extractorResult.warningCount} warnings.`
+                `and ${extractorResult.warningCount} warnings.`,
         );
     }
 
     const rolledDts = extractorConfig.publicTrimmedFilePath;
-    let rollupDtsContent = fullyMergeBundledPackages(
-        fs.readFileSync(rolledDts, 'utf8'),
-        bundledPackageInfos
-    ).replace(/<ArrayBufferLike>/g, '');
+    let rollupDtsContent = fullyMergeBundledPackages(fs.readFileSync(rolledDts, 'utf8'), bundledPackageInfos).replace(
+        /<ArrayBufferLike>/g,
+        '',
+    );
     // post process to handle issue with https://github.com/microsoft/rushstack/issues/3616
     if (options?.typeOnlyExports && options.typeOnlyExports.length > 0) {
         const typeOnlyExports = [];
@@ -590,19 +595,18 @@ export function rollup(projectDir, options) {
             const exported = `export declare ${info.abstract ? 'abstract ' : ''}${info.type} ${info.name}`;
             if (rollupDtsContent.indexOf(exported) !== -1) {
                 typeOnlyExports.push(info.name);
-                rollupDtsContent = rollupDtsContent.replace(exported, `declare ${info.abstract ? 'abstract ' : ''}${info.type} ${info.name}`);
+                rollupDtsContent = rollupDtsContent.replace(
+                    exported,
+                    `declare ${info.abstract ? 'abstract ' : ''}${info.type} ${info.name}`,
+                );
             }
         }
         rollupDtsContent += `\nexport type {
     ${typeOnlyExports.join(',\n    ')}
-}\n`
+}\n`;
     }
     fs.rmSync(path.dirname(rolledDts), { recursive: true });
-    const removePatterns = [
-        './build/**/*.d.ts',
-        './build/**/*.d.ts.map',
-        './build/tsconfig.tsbuildinfo',
-    ];
+    const removePatterns = ['./build/**/*.d.ts', './build/**/*.d.ts.map', './build/tsconfig.tsbuildinfo'];
     for (const pattern of removePatterns) {
         const files = sync(pattern, { cwd: projectDir, nodir: true });
         for (const file of files) {

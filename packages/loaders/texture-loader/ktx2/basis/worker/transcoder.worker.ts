@@ -13,6 +13,6 @@ self.onmessage = async (event: MessageEvent) => {
         } catch (error) {
             const message = error.message ?? error;
             self.postMessage({ type: TaskType.Transcode, status: TaskStatus.Fail, data: message });
-        };
+        }
     }
 };

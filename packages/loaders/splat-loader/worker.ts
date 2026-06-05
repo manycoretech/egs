@@ -9,15 +9,21 @@ import type { ISplatData } from './splat/utils';
 import { KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, EszFile } from './file';
 import { type IFile, NUM_F_REST_TO_SH_DEGREE } from './file/utils';
 import type { SogMetadata } from './splat/SogSplatData';
-import type { SogMetadataV1,SogMetadataV2 } from './file/sog';
+import type { SogMetadataV1, SogMetadataV2 } from './file/sog';
 
 let writer: WritableStreamDefaultWriter<Uint8Array> | undefined;
 self.onmessage = async (event: ExtendableMessageEvent) => {
     try {
-        const message = event.data as { taskType: TaskType; };
+        const message = event.data as { taskType: TaskType };
         switch (message.taskType) {
             case TaskType.ParseSplat: {
-                const { type, packType, stream, contentLength, extras: { maxShDegree, maxTextureSize } } = (event.data as SendMessage<TaskType.ParseSplat>).payload;
+                const {
+                    type,
+                    packType,
+                    stream,
+                    contentLength,
+                    extras: { maxShDegree, maxTextureSize },
+                } = (event.data as SendMessage<TaskType.ParseSplat>).payload;
                 let splatData: SplatData;
                 switch (packType) {
                     case SplatPackType.Raw: {
@@ -77,7 +83,7 @@ self.onmessage = async (event: ExtendableMessageEvent) => {
                 }
                 if (packType === SplatPackType.Sog) {
                     await (file as SogFile).load(reader, contentLength);
-                    const { meta, refs } = (file as SogFile);
+                    const { meta, refs } = file as SogFile;
 
                     let splatMeta: SogMetadata;
                     if (meta.version === undefined) {
@@ -98,10 +104,12 @@ self.onmessage = async (event: ExtendableMessageEvent) => {
                                 mins: [m.sh0.mins[0], m.sh0.mins[1], m.sh0.mins[2], m.sh0.mins[3]],
                                 maxs: [m.sh0.maxs[0], m.sh0.maxs[1], m.sh0.maxs[2], m.sh0.maxs[3]],
                             },
-                            shN: m.shN ? {
-                                mins: m.shN.mins,
-                                maxs: m.shN.maxs,
-                            } : undefined,
+                            shN: m.shN
+                                ? {
+                                      mins: m.shN.mins,
+                                      maxs: m.shN.maxs,
+                                  }
+                                : undefined,
                         };
                     } else {
                         const m = meta as SogMetadataV2;
@@ -119,9 +127,11 @@ self.onmessage = async (event: ExtendableMessageEvent) => {
                             sh0: {
                                 codebook: m.sh0.codebook,
                             },
-                            shN: m.shN ? {
-                                codebook: m.shN.codebook,
-                            } : undefined,
+                            shN: m.shN
+                                ? {
+                                      codebook: m.shN.codebook,
+                                  }
+                                : undefined,
                         };
                     }
 
@@ -132,10 +142,7 @@ self.onmessage = async (event: ExtendableMessageEvent) => {
                         refs[meta.scales.files[0]],
                         refs[meta.quats.files[0]],
                         refs[meta.sh0.files[0]],
-                        ...(meta.shN ? [
-                            refs[meta.shN.files[0]],
-                            refs[meta.shN.files[1]],
-                        ] : []),
+                        ...(meta.shN ? [refs[meta.shN.files[0]], refs[meta.shN.files[1]]] : []),
                     );
                 } else {
                     await file.read(reader, contentLength, splatData);
@@ -165,7 +172,10 @@ self.onmessage = async (event: ExtendableMessageEvent) => {
             case TaskType.SortSplats: {
                 const { splatCounts, sorting, ordering } = (event.data as SendMessage<TaskType.SortSplats>).payload;
                 const activeSplats = sortSplats(splatCounts, sorting, ordering);
-                const payload: ReceiveMessage<TaskType.SortSplats> = { status: TaskStatus.Success, payload: { activeSplats, sorting, ordering } };
+                const payload: ReceiveMessage<TaskType.SortSplats> = {
+                    status: TaskStatus.Success,
+                    payload: { activeSplats, sorting, ordering },
+                };
                 postMessage(payload, [sorting.buffer, ordering.buffer]);
                 return;
             }

@@ -1,5 +1,11 @@
 import { pass, target, colorAttachment, depthAttachment } from '../../rendergraph/NodeMakers';
-import { PipelinePlugin, type IEffectConfig, type RenderingConfig, type PipelineContext, type DrivenCullingConfig } from './PipelinePlugin';
+import {
+    PipelinePlugin,
+    type IEffectConfig,
+    type RenderingConfig,
+    type PipelineContext,
+    type DrivenCullingConfig,
+} from './PipelinePlugin';
 import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
 import type { RenderGraph } from '../../rendergraph/RenderGraph';
 import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial';
@@ -14,7 +20,11 @@ import { Vector4 } from '../../math/Vector4';
 import { RenderObjectsType, filterBy } from '../../scene/tools/DrawcallList';
 import { drawQuad, type RendererAdaptor } from '../RendererAdaptor';
 import { BACKGROUND_SHADING_PASS_NAME } from './Background';
-import { MaterialDispatcher, checkInstance, MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher';
+import {
+    MaterialDispatcher,
+    checkInstance,
+    MaterialShadingWithDynamicShapeDispatcher,
+} from '../../renderer/MaterialDispatcher';
 import { OutlineShadingMode, type Drawable, OutlineRenderMode } from '../../scene/drawables/Drawable';
 import { TypeAssert } from '../../scene/tools/TypeAssert';
 import type { Material } from '../../elements/materials/Material';
@@ -66,7 +76,12 @@ export class ForwardDispatcher extends MaterialDispatcher {
     planarShadowMaxGroundThickness = 0;
     enableDynamicLights = false;
 
-    constructor(solidMaterial?: MeshBasicMaterial, oitMaterial?: OITMaterial, toonMaterial?: ToonMaterial, enableDynamicLights = false) {
+    constructor(
+        solidMaterial?: MeshBasicMaterial,
+        oitMaterial?: OITMaterial,
+        toonMaterial?: ToonMaterial,
+        enableDynamicLights = false,
+    ) {
         super(true);
         this.solidMaterial = solidMaterial ?? new MeshBasicMaterial();
         this.oitMaterial = oitMaterial ?? new OITMaterial();
@@ -90,11 +105,19 @@ export class ForwardDispatcher extends MaterialDispatcher {
         return box.getSize(tmpVec3).z <= this.planarShadowMaxGroundThickness;
     }
 
-    dispatch(renderer: Renderer, geometry: BufferGeometryBase, material: Material, drawable: Drawable): Nullable<WGLProgram> {
+    dispatch(
+        renderer: Renderer,
+        geometry: BufferGeometryBase,
+        material: Material,
+        drawable: Drawable,
+    ): Nullable<WGLProgram> {
         const registry = renderer.renderState.activeShaderComponentRegistry;
 
         // enable dynamic forward lights when too many lights.
-        if ((this.enableDynamicLights || registry.tooManyLightsForForward()) && registry.dynamicForwardLight.lights.size) {
+        if (
+            (this.enableDynamicLights || registry.tooManyLightsForForward()) &&
+            registry.dynamicForwardLight.lights.size
+        ) {
             registry.dynamicForwardLight.dirtyKey = Math.random();
             registry.dynamicForwardLight.collectDynamicForwardLightsByDrawable(drawable);
         }
@@ -102,7 +125,8 @@ export class ForwardDispatcher extends MaterialDispatcher {
         const isInstance = checkInstance(drawable, geometry);
         material.refreshInstanceInBuilding(isInstance);
 
-        const solidEnabled = this.solidEnabled &&
+        const solidEnabled =
+            this.solidEnabled &&
             drawable.outlineRenderMode !== OutlineRenderMode.Overlay &&
             drawable.outlineShadingMode !== OutlineShadingMode.Normal;
         const toonEnabled = this.toonEnabled && !solidEnabled && TypeAssert.isMeshPhongMaterial(material);
@@ -130,8 +154,16 @@ export class ForwardDispatcher extends MaterialDispatcher {
         if (!program) {
             const programCache = renderer.resourceManager.dynamicPrograms;
             const registry = renderer.renderState.activeShaderComponentRegistry;
-            const shaderKey: string = material.getShaderKey(registry) + (isInstance ? '0' : '1') +
-                this.className() + solidEnabled + this.solidLightMaterialEnabled + toonEnabled + oitEnabled + planarShadowEnabled + isPlanarShadowReceiver;
+            const shaderKey: string =
+                material.getShaderKey(registry) +
+                (isInstance ? '0' : '1') +
+                this.className() +
+                solidEnabled +
+                this.solidLightMaterialEnabled +
+                toonEnabled +
+                oitEnabled +
+                planarShadowEnabled +
+                isPlanarShadowReceiver;
             program = programCache.get(shaderKey);
             if (program === undefined) {
                 const builder = new ShaderBuilder();
@@ -157,7 +189,10 @@ export class ForwardDispatcher extends MaterialDispatcher {
                 if (planarShadowEnabled) {
                     builder
                         .addNewFragOutputChannel('occlusion', FragOutType.Float)
-                        .inject(ShaderInjectionTypes.frag_any, `occlusion = ${isPlanarShadowReceiver ? '0.0' : '1.0'};`);
+                        .inject(
+                            ShaderInjectionTypes.frag_any,
+                            `occlusion = ${isPlanarShadowReceiver ? '0.0' : '1.0'};`,
+                        );
                 }
                 program = new WGLProgram(renderer.renderState, builder.build(), null, shaderKey);
                 programCache.set(shaderKey, program.program ? program : null!);
@@ -247,10 +282,22 @@ export class PlanarShadowDispatcher extends MaterialShadingWithDynamicShapeDispa
         const y = this.lightDirection.y;
         const z = this.lightDirection.z;
         this.shadowMatrix.set(
-            dot - a * x, -b * x, -c * x, -d * x,
-            -a * y, dot - b * y, -c * y, -d * y,
-            -a * z, -b * z, dot - c * z, -d * z,
-            0, 0, 0, dot
+            dot - a * x,
+            -b * x,
+            -c * x,
+            -d * x,
+            -a * y,
+            dot - b * y,
+            -c * y,
+            -d * y,
+            -a * z,
+            -b * z,
+            dot - c * z,
+            -d * z,
+            0,
+            0,
+            0,
+            dot,
         );
     }
 }
@@ -263,12 +310,13 @@ function useCameraOverride(this: ShaderBuilder, useInstance: boolean = false): S
         .addGlobalUniform(BuiltInUniformTypes.viewMatrix);
 
     if (useInstance) {
-        this
-            .addInstanceAttribute('mcol0', WebGLShaderDataType.Vec3)
+        this.addInstanceAttribute('mcol0', WebGLShaderDataType.Vec3)
             .addInstanceAttribute('mcol1', WebGLShaderDataType.Vec3)
             .addInstanceAttribute('mcol2', WebGLShaderDataType.Vec3)
             .addInstanceAttribute('mcol3', WebGLShaderDataType.Vec3)
-            .inject(ShaderInjectionTypes.gl_Position, `
+            .inject(
+                ShaderInjectionTypes.gl_Position,
+                `
                 mat4 instanceMatrix = mat4(
                     vec4(mcol0, 0),
                     vec4(mcol1, 0),
@@ -278,15 +326,17 @@ function useCameraOverride(this: ShaderBuilder, useInstance: boolean = false): S
                 vec4 transform = instanceMatrix * vec4(position, 1.0);
                 mvPosition = viewMatrix * transform; // wired point: support correct clipping
                 gl_Position = projectionMatrix * viewMatrix * shadowMatrix * transform;
-            `);
+            `,
+            );
     } else {
-        this
-            .addGlobalUniform(BuiltInUniformTypes.modelMatrix)
-            .inject(ShaderInjectionTypes.gl_Position, `
+        this.addGlobalUniform(BuiltInUniformTypes.modelMatrix).inject(
+            ShaderInjectionTypes.gl_Position,
+            `
                 vec4 transform = modelMatrix * vec4(position, 1.0);
                 mvPosition = viewMatrix * transform; // ditto
                 gl_Position = projectionMatrix * viewMatrix * shadowMatrix * transform;
-            `);
+            `,
+        );
     }
 
     return this;
@@ -329,14 +379,16 @@ export class ForwardPlugin extends PipelinePlugin {
         const currentSceneId = scene.scene.sceneId;
         const staticFrameDirtyId = scene.scene.renderProxyManager.staticFrameDirtyId;
         return currentSceneId === this.sceneId && staticFrameDirtyId === this.frameSyncId;
-    };
+    }
     private copyMaterial = new CopyColorAndDepthMaterial();
 
     private _planarShadowEnabled = false;
     private _planarShadowActive: boolean = false;
     private _planarShadowDelay: boolean = false;
     private get planarShadowEnabled() {
-        return this._planarShadowEnabled && this.IS_ADVANCED_BACKEND && this._planarShadowActive && this._planarShadowDelay;
+        return (
+            this._planarShadowEnabled && this.IS_ADVANCED_BACKEND && this._planarShadowActive && this._planarShadowDelay
+        );
     }
     private set planarShadowEnabled(v: boolean) {
         this._planarShadowEnabled = v;
@@ -406,11 +458,13 @@ export class ForwardPlugin extends PipelinePlugin {
          * 2. frame and camera is stable or fps > 30.
          * 3. camera position z > 0.
          */
-        const planarShadowActive = this._planarShadowEnabled && !this.staticFrameCacheEnabled &&
+        const planarShadowActive =
+            this._planarShadowEnabled &&
+            !this.staticFrameCacheEnabled &&
             ((isFrameStable && isCameraStable) || !effectConfig.isPerformanceSlow) &&
             this.scene.adaptor.camera.getWorldPosition(tmpVec3).z > 0;
         // delay 500ms after active.
-        this._planarShadowDelay = planarShadowActive && (performance.now() - this.planarShadowLastActiveTime > 500);
+        this._planarShadowDelay = planarShadowActive && performance.now() - this.planarShadowLastActiveTime > 500;
         if (this._planarShadowEnabled && !this._planarShadowActive && planarShadowActive) {
             this.planarShadowMaterial.intensity = 0;
             this.planarShadowLastActiveTime = performance.now();
@@ -439,8 +493,7 @@ export class ForwardPlugin extends PipelinePlugin {
         const scene = this.scene;
 
         const background = graph.removePass(BACKGROUND_SHADING_PASS_NAME);
-        const staticContentTarget = target('static_content_target')
-            .keepContent();
+        const staticContentTarget = target('static_content_target').keepContent();
 
         const shadingPass = pass('static_opaque_shading_pass')
             .disableClear()
@@ -454,16 +507,11 @@ export class ForwardPlugin extends PipelinePlugin {
 
         if (config.MSAA) {
             staticContentTarget.disableStencil();
-            output = target('static_content_target_multisampled')
-                .disableStencil()
-                .enableMultiSample();
+            output = target('static_content_target_multisampled').disableStencil().enableMultiSample();
         }
 
         if (!this.hasStaticCacheFrame) {
-            output.from([
-                background,
-                shadingPass,
-            ]);
+            output.from([background, shadingPass]);
             if (config.MSAA) {
                 shadingPass.resolveTo(staticContentTarget, true, false);
             }
@@ -475,28 +523,18 @@ export class ForwardPlugin extends PipelinePlugin {
                 .input('tDiffuse', staticContentTarget)
                 .input('depth', staticContentTarget, 'depth')
                 .use(drawQuad(this.copyMaterial)),
-            pass('dynamic_opaque_shading_pass')
-                .disableClear()
-                .useDispatcher(dispatcher)
-                .draw(scene.dynamic),
+            pass('dynamic_opaque_shading_pass').disableClear().useDispatcher(dispatcher).draw(scene.dynamic),
         ];
     }
 
     private createPlanarShadowTarget(shadowPass: PassNode[]): RenderTargetNode {
-        let shadowPassResult = target('planar_shadow_origin_target', true, false)
-            .from(shadowPass);
-        shadowPassResult = target('planar_shadow_blurred_x_target', true, false)
-            .from([
-                pass('blur_x_pass')
-                    .input('tDiffuse', shadowPassResult)
-                    .use(drawQuad(this.blurXMaterial)),
-            ]);
-        shadowPassResult = target('planar_shadow_blurred_target', true, false)
-            .from([
-                pass('blur_y_pass')
-                    .input('tDiffuse', shadowPassResult)
-                    .use(drawQuad(this.blurYMaterial)),
-            ]);
+        let shadowPassResult = target('planar_shadow_origin_target', true, false).from(shadowPass);
+        shadowPassResult = target('planar_shadow_blurred_x_target', true, false).from([
+            pass('blur_x_pass').input('tDiffuse', shadowPassResult).use(drawQuad(this.blurXMaterial)),
+        ]);
+        shadowPassResult = target('planar_shadow_blurred_target', true, false).from([
+            pass('blur_y_pass').input('tDiffuse', shadowPassResult).use(drawQuad(this.blurYMaterial)),
+        ]);
         return shadowPassResult;
     }
 
@@ -507,16 +545,32 @@ export class ForwardPlugin extends PipelinePlugin {
         const shadowReceiver = pass('planar_shadow_receiver_pass')
             .disableClear()
             .useDispatcher(dispatcher)
-            .use(renderer => scene.default().render(renderer.renderer, RenderObjectsType.Opaque, PipelineFilters.planarShadowReceiver(this.planarShadowMaxGroundHeight, this.planarShadowMaxGroundThickness)));
+            .use(renderer =>
+                scene
+                    .default()
+                    .render(
+                        renderer.renderer,
+                        RenderObjectsType.Opaque,
+                        PipelineFilters.planarShadowReceiver(
+                            this.planarShadowMaxGroundHeight,
+                            this.planarShadowMaxGroundThickness,
+                        ),
+                    ),
+            );
 
         const shadowTarget = this.createPlanarShadowTarget([
             pass('planar_shadow_pass')
                 .setClearColor(new Vector4(1, 1, 1, 1))
                 .useDispatcher(this.planarShadowDispatcher)
                 .before(() => {
-                    this.planarShadowMaterial.intensity = Math.min(this.planarShadowMaterial.intensity + 0.02, this.planarShadowIntensity);
+                    this.planarShadowMaterial.intensity = Math.min(
+                        this.planarShadowMaterial.intensity + 0.02,
+                        this.planarShadowIntensity,
+                    );
                 })
-                .draw(filterBy(scene.default, () => PipelineFilters.planarShadowCaster(this.planarShadowMaxGroundHeight))),
+                .draw(
+                    filterBy(scene.default, () => PipelineFilters.planarShadowCaster(this.planarShadowMaxGroundHeight)),
+                ),
         ]);
         const shadowComposePass = pass('planar_shadow_compose_pass')
             .disableClear()
@@ -526,16 +580,35 @@ export class ForwardPlugin extends PipelinePlugin {
         const shadowExclude = pass('planar_shadow_exclude_pass')
             .disableClear()
             .useDispatcher(dispatcher)
-            .use(renderer => scene.default().render(renderer.renderer, RenderObjectsType.Opaque, PipelineFilters.planarShadowExclude(this.planarShadowMaxGroundHeight, this.planarShadowMaxGroundThickness)));
+            .use(renderer =>
+                scene
+                    .default()
+                    .render(
+                        renderer.renderer,
+                        RenderObjectsType.Opaque,
+                        PipelineFilters.planarShadowExclude(
+                            this.planarShadowMaxGroundHeight,
+                            this.planarShadowMaxGroundThickness,
+                        ),
+                    ),
+            );
 
         return [shadowReceiver, shadowComposePass, shadowExclude];
     }
 
     // order independent planar shadow pass
-    private createPlanarShadowPassV2(graph: RenderGraph,
-        drivenPass: PassNode, dispatcher: ForwardDispatcher | undefined, context: PipelineContext, depthPyramid: RenderTargetNode): PassNode[] {
+    private createPlanarShadowPassV2(
+        graph: RenderGraph,
+        drivenPass: PassNode,
+        dispatcher: ForwardDispatcher | undefined,
+        context: PipelineContext,
+        depthPyramid: RenderTargetNode,
+    ): PassNode[] {
         const scene = this.scene;
-        const { MSAA, gpuDriven: { enabled: drivenEnabled } } = context.renderingConfig;
+        const {
+            MSAA,
+            gpuDriven: { enabled: drivenEnabled },
+        } = context.renderingConfig;
 
         const background = graph.removePass(BACKGROUND_SHADING_PASS_NAME);
         const opaque = pass('default_opaque_shading_pass')
@@ -560,8 +633,9 @@ export class ForwardPlugin extends PipelinePlugin {
                 .before(() => {
                     this.drivenShadingMaterial.planarShadowOcclusion = true;
                     if (this.solidEnabled) {
-                        this.drivenShadingMaterial.shadingMode =
-                            this.solidLightMaterialEnabled ? DrivenShadingMode.OutlineSolidPhongShading : DrivenShadingMode.OutlineSolidShading;
+                        this.drivenShadingMaterial.shadingMode = this.solidLightMaterialEnabled
+                            ? DrivenShadingMode.OutlineSolidPhongShading
+                            : DrivenShadingMode.OutlineSolidShading;
                     } else if (this.toonEnabled) {
                         this.drivenShadingMaterial.shadingMode = DrivenShadingMode.ToonShading;
                     }
@@ -571,14 +645,13 @@ export class ForwardPlugin extends PipelinePlugin {
                     this.drivenShadingMaterial.shadingMode = DrivenShadingMode.PhongShading;
                 });
         }
-        const opaqueTarget = target('opaque_and_oc_target', false)
-            .modify(node => {
-                const color0 = colorAttachment('opaque_and_oc_target_color_0');
-                node.attach(color0, 0);
-                const color1 = colorAttachment('opaque_and_oc_target_color_1');
-                color1.format = TextureFormat.R8Unorm;
-                node.attach(color1, 1);
-            });
+        const opaqueTarget = target('opaque_and_oc_target', false).modify(node => {
+            const color0 = colorAttachment('opaque_and_oc_target_color_0');
+            node.attach(color0, 0);
+            const color1 = colorAttachment('opaque_and_oc_target_color_1');
+            color1.format = TextureFormat.R8Unorm;
+            node.attach(color1, 1);
+        });
 
         let opaqueOutputTarget = opaqueTarget;
 
@@ -603,15 +676,20 @@ export class ForwardPlugin extends PipelinePlugin {
                 .setClearColor(new Vector4(0, 0, 0, 0))
                 .enableClear(true, false)
                 .writeBuffers([1])
-                .use(() => { }),
+                .use(() => {}),
             ...opaquePasses,
         ]);
-        const planarShadowCaster = filterBy(scene.default, () => PipelineFilters.planarShadowCaster(this.planarShadowMaxGroundHeight));
+        const planarShadowCaster = filterBy(scene.default, () =>
+            PipelineFilters.planarShadowCaster(this.planarShadowMaxGroundHeight),
+        );
         const shadowPass = pass('planar_shadow_pass')
             .setClearColor(new Vector4(1, 1, 1, 1))
             .useDispatcher(this.planarShadowDispatcher)
             .before(() => {
-                this.planarShadowMaterial.intensity = Math.min(this.planarShadowMaterial.intensity + 0.02, this.planarShadowIntensity);
+                this.planarShadowMaterial.intensity = Math.min(
+                    this.planarShadowMaterial.intensity + 0.02,
+                    this.planarShadowIntensity,
+                );
             })
             .draw(planarShadowCaster);
         const shadowCullingPass = pass('planar_shadow_culling_pass')
@@ -660,7 +738,10 @@ export class ForwardPlugin extends PipelinePlugin {
         config: RenderingConfig,
     ): PassNode[] {
         const scene = this.scene;
-        const { MSAA, gpuDriven: { enabled: drivenEnabled } } = config;
+        const {
+            MSAA,
+            gpuDriven: { enabled: drivenEnabled },
+        } = config;
         const lastPass = opaquePassList[opaquePassList.length - 1];
         const opaqueTargetDepthAttachment = depthAttachment('opaque_target_depth');
         const opaqueTarget = target('opaque_target', true, false)
@@ -671,9 +752,7 @@ export class ForwardPlugin extends PipelinePlugin {
         let opaqueOutputTarget = opaqueTarget;
 
         if (MSAA) {
-            opaqueOutputTarget = target('opaque_target_msaa')
-                .disableStencil()
-                .enableMultiSample();
+            opaqueOutputTarget = target('opaque_target_msaa').disableStencil().enableMultiSample();
             lastPass?.resolveTo(opaqueTarget, true, true);
         }
 
@@ -701,8 +780,9 @@ export class ForwardPlugin extends PipelinePlugin {
                 .useDriven(this.drivenShadingMaterial)
                 .before(() => {
                     if (this.solidEnabled) {
-                        this.drivenShadingMaterial.shadingMode =
-                            this.solidLightMaterialEnabled ? DrivenShadingMode.OutlineSolidPhongShading : DrivenShadingMode.OutlineSolidShading;
+                        this.drivenShadingMaterial.shadingMode = this.solidLightMaterialEnabled
+                            ? DrivenShadingMode.OutlineSolidPhongShading
+                            : DrivenShadingMode.OutlineSolidShading;
                     } else if (this.toonEnabled) {
                         this.drivenShadingMaterial.shadingMode = DrivenShadingMode.ToonShading;
                     }
@@ -732,15 +812,15 @@ export class ForwardPlugin extends PipelinePlugin {
                 .input('tDiffuse', opaqueTarget)
                 .input('depth', opaqueTarget, 'depth')
                 .use(drawQuad(this.copyMaterial)),
-            pass('before_oit_pass')
-                .disableClear()
-                .useDispatcher(dispatcher)
-                .draw(scene.OIT),
+            pass('before_oit_pass').disableClear().useDispatcher(dispatcher).draw(scene.OIT),
             pass('mix_oit_pass')
                 .disableClear()
                 .input('accumColor', oitTarget, 0)
                 .input('accumAlpha', oitTarget, 1)
-                .useIf(() => drivenEnabled || scene.OIT().getRenderListLength(RenderObjectsType.OIT) > 0, drawQuad(this.mixOITMaterial)),
+                .useIf(
+                    () => drivenEnabled || scene.OIT().getRenderListLength(RenderObjectsType.OIT) > 0,
+                    drawQuad(this.mixOITMaterial),
+                ),
             pass('after_oit_pass')
                 .disableClear()
                 .useDispatcher(dispatcher)
@@ -759,29 +839,27 @@ export class ForwardPlugin extends PipelinePlugin {
         config: RenderingConfig,
     ): PassNode[] {
         const scene = this.scene;
-        const { gpuDriven: { enabled: drivenEnabled } } = config;
+        const {
+            gpuDriven: { enabled: drivenEnabled },
+        } = config;
         const oitTargetDepthAttachment = depthAttachment('oit_target_depth_multisampled');
         oitTargetDepthAttachment.multiSample = true;
         oitTargetDepthAttachment.enableStencil = false;
         const oitTargetColorAttachment = colorAttachment('oit_target_color_multisampled');
         oitTargetColorAttachment.multiSample = true;
 
-        const beforeOITTarget = target('before_oit_target', false, false)
-            .modify(node => {
-                node.attach(oitTargetDepthAttachment);
-                node.attach(oitTargetColorAttachment);
-                node.multiSample = true;
-            });
+        const beforeOITTarget = target('before_oit_target', false, false).modify(node => {
+            node.attach(oitTargetDepthAttachment);
+            node.attach(oitTargetColorAttachment);
+            node.multiSample = true;
+        });
 
         const oitOutputTarget = target('oit_target_resolved', true, true).disableStencil();
         graph.depthTarget = oitOutputTarget;
 
         beforeOITTarget.from([
             ...opaquePassList,
-            pass('before_oit_pass')
-                .disableClear()
-                .useDispatcher(dispatcher)
-                .draw(scene.OIT)
+            pass('before_oit_pass').disableClear().useDispatcher(dispatcher).draw(scene.OIT),
         ]);
 
         const oitAccumPass = pass('accum_oit_pass')
@@ -805,8 +883,9 @@ export class ForwardPlugin extends PipelinePlugin {
                 .useDriven(this.drivenShadingMaterial)
                 .before(() => {
                     if (this.solidEnabled) {
-                        this.drivenShadingMaterial.shadingMode =
-                            this.solidLightMaterialEnabled ? DrivenShadingMode.OutlineSolidPhongShading : DrivenShadingMode.OutlineSolidShading;
+                        this.drivenShadingMaterial.shadingMode = this.solidLightMaterialEnabled
+                            ? DrivenShadingMode.OutlineSolidPhongShading
+                            : DrivenShadingMode.OutlineSolidShading;
                     } else if (this.toonEnabled) {
                         this.drivenShadingMaterial.shadingMode = DrivenShadingMode.ToonShading;
                     }
@@ -833,12 +912,11 @@ export class ForwardPlugin extends PipelinePlugin {
             })
             .from(oitAccumPass);
 
-        const afterOITTarget = target('before_oit_target', false, false)
-            .modify(node => {
-                node.attach(oitTargetDepthAttachment);
-                node.attach(oitTargetColorAttachment);
-                node.multiSample = true;
-            });
+        const afterOITTarget = target('before_oit_target', false, false).modify(node => {
+            node.attach(oitTargetDepthAttachment);
+            node.attach(oitTargetColorAttachment);
+            node.multiSample = true;
+        });
 
         afterOITTarget.from([
             // MixOitMaterial will handle multisampled input.
@@ -846,7 +924,10 @@ export class ForwardPlugin extends PipelinePlugin {
                 .disableClear()
                 .input('accumColor', oitAccumTarget, 0)
                 .input('accumAlpha', oitAccumTarget, 1)
-                .useIf(() => drivenEnabled || scene.OIT().getRenderListLength(RenderObjectsType.OIT) > 0, drawQuad(this.mixOITMaterial)),
+                .useIf(
+                    () => drivenEnabled || scene.OIT().getRenderListLength(RenderObjectsType.OIT) > 0,
+                    drawQuad(this.mixOITMaterial),
+                ),
             pass('after_oit_pass')
                 .disableClear()
                 .useDispatcher(dispatcher)
@@ -859,7 +940,7 @@ export class ForwardPlugin extends PipelinePlugin {
                 .enableClear(false, true)
                 .input('tDiffuse', oitOutputTarget)
                 .input('depth', oitOutputTarget, 'depth')
-                .use(drawQuad(this.copyMaterial))
+                .use(drawQuad(this.copyMaterial)),
         ];
     }
 
@@ -868,8 +949,10 @@ export class ForwardPlugin extends PipelinePlugin {
         const { enabled: drivenEnabled } = context.renderingConfig.gpuDriven;
         const { planarShadowEnabled, solidEnabled, toonEnabled } = this;
         const planarShadowOrderIndependent = this.planarShadowOrderIndependent || drivenEnabled;
-        const dispatcher = (solidEnabled || toonEnabled ||
-            (planarShadowEnabled && planarShadowOrderIndependent)) ? this.dispatcher : undefined;
+        const dispatcher =
+            solidEnabled || toonEnabled || (planarShadowEnabled && planarShadowOrderIndependent)
+                ? this.dispatcher
+                : undefined;
         // force disable staticFrameCache when gpu driven enabled.
         const staticFrameCacheEnabled = this.staticFrameCacheEnabled && !drivenEnabled;
         // force enable oit when gpu driven enabled.
@@ -909,8 +992,9 @@ export class ForwardPlugin extends PipelinePlugin {
                     .useDriven(this.drivenShadingMaterial)
                     .before(() => {
                         if (solidEnabled) {
-                            this.drivenShadingMaterial.shadingMode =
-                                this.solidLightMaterialEnabled ? DrivenShadingMode.OutlineSolidPhongShading : DrivenShadingMode.OutlineSolidShading;
+                            this.drivenShadingMaterial.shadingMode = this.solidLightMaterialEnabled
+                                ? DrivenShadingMode.OutlineSolidPhongShading
+                                : DrivenShadingMode.OutlineSolidShading;
                         } else if (toonEnabled) {
                             this.drivenShadingMaterial.shadingMode = DrivenShadingMode.ToonShading;
                         }
@@ -930,9 +1014,21 @@ export class ForwardPlugin extends PipelinePlugin {
         let transparentPassList: PassNode[] = [];
         if (oitEnabled) {
             if (context.renderingConfig.MSAA && this.renderer.renderer.backend === RendererBackend.WEBGPU_WASM) {
-                transparentPassList = this.createMultisampledOitPass(graph, opaquePassList, drivenPass, dispatcher, context.renderingConfig);
+                transparentPassList = this.createMultisampledOitPass(
+                    graph,
+                    opaquePassList,
+                    drivenPass,
+                    dispatcher,
+                    context.renderingConfig,
+                );
             } else {
-                transparentPassList = this.createOitPass(graph, opaquePassList, drivenPass, dispatcher, context.renderingConfig);
+                transparentPassList = this.createOitPass(
+                    graph,
+                    opaquePassList,
+                    drivenPass,
+                    dispatcher,
+                    context.renderingConfig,
+                );
             }
             opaquePassList = [];
         } else if (opaquePassList.length) {
@@ -951,16 +1047,21 @@ export class ForwardPlugin extends PipelinePlugin {
                 .disableClear()
                 .useDispatcher(dispatcher)
                 .draw(scene.default);
-            defaultPass.before(() => { this.eventDispatcher.emit(BeforeScenePassEvent, defaultPass); });
-            defaultPass.after(() => { this.eventDispatcher.emit(AfterScenePassEvent, defaultPass); });
+            defaultPass.before(() => {
+                this.eventDispatcher.emit(BeforeScenePassEvent, defaultPass);
+            });
+            defaultPass.after(() => {
+                this.eventDispatcher.emit(AfterScenePassEvent, defaultPass);
+            });
             if (drivenEnabled) {
                 defaultPass
                     .depend(drivenPass)
                     .useDriven(this.drivenShadingMaterial)
                     .before(() => {
                         if (solidEnabled) {
-                            this.drivenShadingMaterial.shadingMode =
-                                this.solidLightMaterialEnabled ? DrivenShadingMode.OutlineSolidPhongShading : DrivenShadingMode.OutlineSolidShading;
+                            this.drivenShadingMaterial.shadingMode = this.solidLightMaterialEnabled
+                                ? DrivenShadingMode.OutlineSolidPhongShading
+                                : DrivenShadingMode.OutlineSolidShading;
                         } else if (toonEnabled) {
                             this.drivenShadingMaterial.shadingMode = DrivenShadingMode.ToonShading;
                         }
@@ -1112,7 +1213,9 @@ export class ForwardPlugin extends PipelinePlugin {
                 },
                 intensity: {
                     get: () => this.planarShadowIntensity,
-                    set: (v: number) => { this.planarShadowIntensity = v; },
+                    set: (v: number) => {
+                        this.planarShadowIntensity = v;
+                    },
                 },
                 blurKernelRadius: {
                     get: () => this.blurXMaterial.blurKernelRadius,
@@ -1123,11 +1226,15 @@ export class ForwardPlugin extends PipelinePlugin {
                 },
                 maxGroundThickness: {
                     get: () => this.planarShadowMaxGroundThickness,
-                    set: (v: number) => { this.planarShadowMaxGroundThickness = v; },
+                    set: (v: number) => {
+                        this.planarShadowMaxGroundThickness = v;
+                    },
                 },
                 maxGroundHeight: {
                     get: () => this.planarShadowMaxGroundHeight,
-                    set: (v: number) => { this.planarShadowMaxGroundHeight = v; },
+                    set: (v: number) => {
+                        this.planarShadowMaxGroundHeight = v;
+                    },
                 },
             },
         };

@@ -16,7 +16,7 @@ export enum TextureViewDimension {
     D2,
     D2Array,
     Cube,
-    D3
+    D3,
 }
 
 /**
@@ -123,81 +123,81 @@ export const CUBE_FACES = [
     0x8517, // WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Y
     0x8518, // WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Y
     0x8519, // WebGLRenderingContext.TEXTURE_CUBE_MAP_POSITIVE_Z
-    0x851A, // WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z
+    0x851a, // WebGLRenderingContext.TEXTURE_CUBE_MAP_NEGATIVE_Z
 ];
 
 const WebGLFormatEnums = {
     // internal
     R8: 0x8229,
-    R8_SNORM: 0x8F94,
-    R16F: 0x822D,
-    R32F: 0x822E,
+    R8_SNORM: 0x8f94,
+    R16F: 0x822d,
+    R32F: 0x822e,
     R8UI: 0x8232,
     R8I: 0x8231,
     R16UI: 0x8234,
     R16I: 0x8233,
     R32UI: 0x8236,
     R32I: 0x8235,
-    RG8: 0x822B,
-    RG8_SNORM: 0x8F95,
-    RG16F: 0x822F,
+    RG8: 0x822b,
+    RG8_SNORM: 0x8f95,
+    RG16F: 0x822f,
     RG32F: 0x8230,
     RG8UI: 0x8238,
     RG8I: 0x8237,
-    RG16UI: 0x823A,
+    RG16UI: 0x823a,
     RG16I: 0x8239,
-    RG32UI: 0x823C,
-    RG32I: 0x823B,
+    RG32UI: 0x823c,
+    RG32I: 0x823b,
     RGB8: 0x8051,
-    SRGB8: 0x8C41,
-    RGB565: 0x8D62,
-    RGB8_SNORM: 0x8F96,
-    R11F_G11F_B10F: 0x8C3A,
-    RGB9_E5: 0x8C3D,
-    RGB16F: 0x881B,
+    SRGB8: 0x8c41,
+    RGB565: 0x8d62,
+    RGB8_SNORM: 0x8f96,
+    R11F_G11F_B10F: 0x8c3a,
+    RGB9_E5: 0x8c3d,
+    RGB16F: 0x881b,
     RGB32F: 0x8815,
-    RGB8UI: 0x8D7D,
-    RGB8I: 0x8D8F,
-    RGB16UI: 0x8D77,
-    RGB16I: 0x8D89,
-    RGB32UI: 0x8D71,
-    RGB32I: 0x8D83,
+    RGB8UI: 0x8d7d,
+    RGB8I: 0x8d8f,
+    RGB16UI: 0x8d77,
+    RGB16I: 0x8d89,
+    RGB32UI: 0x8d71,
+    RGB32I: 0x8d83,
     RGBA8: 0x8058,
-    SRGB8_ALPHA8: 0x8C43,
-    RGBA8_SNORM: 0x8F97,
+    SRGB8_ALPHA8: 0x8c43,
+    RGBA8_SNORM: 0x8f97,
     RGB5_A1: 0x8057,
     RGBA4: 0x8056,
     RGB10_A2: 0x8059,
-    RGBA16F: 0x881A,
+    RGBA16F: 0x881a,
     RGBA32F: 0x8814,
-    RGBA8UI: 0x8D7C,
-    RGBA8I: 0x8D8E,
-    RGBA16UI: 0x8D76,
-    RGBA16I: 0x8D88,
-    RGBA32UI: 0x8D70,
-    RGBA32I: 0x8D82,
+    RGBA8UI: 0x8d7c,
+    RGBA8I: 0x8d8e,
+    RGBA16UI: 0x8d76,
+    RGBA16I: 0x8d88,
+    RGBA32UI: 0x8d70,
+    RGBA32I: 0x8d82,
     // depth/stencil internal
-    DEPTH_COMPONENT16: 0x81A5,
-    DEPTH_COMPONENT24: 0x81A6,
-    DEPTH_COMPONENT32F: 0x8CAC,
-    DEPTH24_STENCIL8: 0x88F0,
-    DEPTH32F_STENCIL8: 0x8CAD,
+    DEPTH_COMPONENT16: 0x81a5,
+    DEPTH_COMPONENT24: 0x81a6,
+    DEPTH_COMPONENT32F: 0x8cac,
+    DEPTH24_STENCIL8: 0x88f0,
+    DEPTH32F_STENCIL8: 0x8cad,
 
     // external
     RED: 0x1903,
-    RED_INTEGER: 0x8D94,
+    RED_INTEGER: 0x8d94,
     RG: 0x8227,
     RG_INTEGER: 0x8228,
     RGB: 0x1907,
-    RGB_INTEGER: 0x8D98,
+    RGB_INTEGER: 0x8d98,
     RGBA: 0x1908,
-    RGBA_INTEGER: 0x8D99,
+    RGBA_INTEGER: 0x8d99,
     ALPHA: 0x1906,
     LUMINANCE: 0x1909,
-    LUMINANCE_ALPHA: 0x190A,
+    LUMINANCE_ALPHA: 0x190a,
     // depth/stencil external
     DEPTH_COMPONENT: 0x1902,
-    DEPTH_STENCIL: 0x84F9,
+    DEPTH_STENCIL: 0x84f9,
 
     // data type
     BYTE: 0x1400,
@@ -210,55 +210,55 @@ const WebGLFormatEnums = {
     INT: 0x1404,
     UNSIGNED_INT: 0x1405,
     FLOAT: 0x1406,
-    HALF_FLOAT: 0x140B,
+    HALF_FLOAT: 0x140b,
     UNSIGNED_INT_2_10_10_10_REV: 0x8368,
-    UNSIGNED_INT_24_8: 0x84FA,
-    UNSIGNED_INT_10F_11F_11F_REV: 0x8C3B,
-    UNSIGNED_INT_5_9_9_9_REV: 0x8C3E,
-    FLOAT_32_UNSIGNED_INT_24_8_REV: 0x8DAD,
+    UNSIGNED_INT_24_8: 0x84fa,
+    UNSIGNED_INT_10F_11F_11F_REV: 0x8c3b,
+    UNSIGNED_INT_5_9_9_9_REV: 0x8c3e,
+    FLOAT_32_UNSIGNED_INT_24_8_REV: 0x8dad,
     // ext data type
-    HALF_FLOAT_OES: 0x8D61,
+    HALF_FLOAT_OES: 0x8d61,
 
     // ASTC
-    COMPRESSED_RGBA_ASTC_4x4_KHR: 0x93B0,
-    COMPRESSED_RGBA_ASTC_5x4_KHR: 0x93B1,
-    COMPRESSED_RGBA_ASTC_5x5_KHR: 0x93B2,
-    COMPRESSED_RGBA_ASTC_6x5_KHR: 0x93B3,
-    COMPRESSED_RGBA_ASTC_6x6_KHR: 0x93B4,
-    COMPRESSED_RGBA_ASTC_8x5_KHR: 0x93B5,
-    COMPRESSED_RGBA_ASTC_8x6_KHR: 0x93B6,
-    COMPRESSED_RGBA_ASTC_8x8_KHR: 0x93B7,
-    COMPRESSED_RGBA_ASTC_10x5_KHR: 0x93B8,
-    COMPRESSED_RGBA_ASTC_10x6_KHR: 0x93B9,
-    COMPRESSED_RGBA_ASTC_10x8_KHR: 0x93BA,
-    COMPRESSED_RGBA_ASTC_10x10_KHR: 0x93BB,
-    COMPRESSED_RGBA_ASTC_12x10_KHR: 0x93BC,
-    COMPRESSED_RGBA_ASTC_12x12_KHR: 0x93BD,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR: 0x93D0,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR: 0x93D1,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR: 0x93D2,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR: 0x93D3,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR: 0x93D4,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR: 0x93D5,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR: 0x93D6,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR: 0x93D7,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR: 0x93D8,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR: 0x93D9,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR: 0x93DA,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR: 0x93DB,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR: 0x93DC,
-    COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR: 0x93DD,
+    COMPRESSED_RGBA_ASTC_4x4_KHR: 0x93b0,
+    COMPRESSED_RGBA_ASTC_5x4_KHR: 0x93b1,
+    COMPRESSED_RGBA_ASTC_5x5_KHR: 0x93b2,
+    COMPRESSED_RGBA_ASTC_6x5_KHR: 0x93b3,
+    COMPRESSED_RGBA_ASTC_6x6_KHR: 0x93b4,
+    COMPRESSED_RGBA_ASTC_8x5_KHR: 0x93b5,
+    COMPRESSED_RGBA_ASTC_8x6_KHR: 0x93b6,
+    COMPRESSED_RGBA_ASTC_8x8_KHR: 0x93b7,
+    COMPRESSED_RGBA_ASTC_10x5_KHR: 0x93b8,
+    COMPRESSED_RGBA_ASTC_10x6_KHR: 0x93b9,
+    COMPRESSED_RGBA_ASTC_10x8_KHR: 0x93ba,
+    COMPRESSED_RGBA_ASTC_10x10_KHR: 0x93bb,
+    COMPRESSED_RGBA_ASTC_12x10_KHR: 0x93bc,
+    COMPRESSED_RGBA_ASTC_12x12_KHR: 0x93bd,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR: 0x93d0,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR: 0x93d1,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR: 0x93d2,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR: 0x93d3,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR: 0x93d4,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR: 0x93d5,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR: 0x93d6,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR: 0x93d7,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR: 0x93d8,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR: 0x93d9,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR: 0x93da,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR: 0x93db,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR: 0x93dc,
+    COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR: 0x93dd,
 
     // S3TC
-    COMPRESSED_RGBA_S3TC_DXT1_EXT: 0x83F1,
-    COMPRESSED_RGBA_S3TC_DXT3_EXT: 0x83F2,
-    COMPRESSED_RGBA_S3TC_DXT5_EXT: 0x83F3,
+    COMPRESSED_RGBA_S3TC_DXT1_EXT: 0x83f1,
+    COMPRESSED_RGBA_S3TC_DXT3_EXT: 0x83f2,
+    COMPRESSED_RGBA_S3TC_DXT5_EXT: 0x83f3,
 
     // BPTC
-    COMPRESSED_RGBA_BPTC_UNORM_EXT: 0x8E8C,
-    COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT: 0x8E8D,
-    COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT: 0x8E8E,
-    COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT: 0x8E8F,
+    COMPRESSED_RGBA_BPTC_UNORM_EXT: 0x8e8c,
+    COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT: 0x8e8d,
+    COMPRESSED_RGB_BPTC_SIGNED_FLOAT_EXT: 0x8e8e,
+    COMPRESSED_RGB_BPTC_UNSIGNED_FLOAT_EXT: 0x8e8f,
 
     // ETC
     COMPRESSED_R11_EAC: 0x9270,
@@ -276,12 +276,17 @@ const WebGLFormatEnums = {
 export class WebGLTextureFormat {
     private _cache: {
         [key: string]: {
-            internal: number,
-            external: number,
-            dataType: number,
-        }
+            internal: number;
+            external: number;
+            dataType: number;
+        };
     };
-    constructor(private _internal: number, private _external: number, private _dataType: number, readonly compressed: boolean) {
+    constructor(
+        private _internal: number,
+        private _external: number,
+        private _dataType: number,
+        readonly compressed: boolean,
+    ) {
         this._cache = {};
     }
 
@@ -323,7 +328,7 @@ export class WebGLTextureFormat {
             specified = {
                 internal: this.specifyInternal(backend),
                 external: this.specifyExternal(backend),
-                dataType: this.specifyDataType(backend)
+                dataType: this.specifyDataType(backend),
             };
             this._cache[backend] = specified;
         }
@@ -332,25 +337,25 @@ export class WebGLTextureFormat {
 }
 
 interface TextureCopyInfo {
-    blockCopySize: number,
-    blockDimensions: { x: number, y: number },
+    blockCopySize: number;
+    blockDimensions: { x: number; y: number };
 }
 
 interface TextureFormatMeta {
-    copyInfo: TextureCopyInfo,
-    glFormat: WebGLTextureFormat
+    copyInfo: TextureCopyInfo;
+    glFormat: WebGLTextureFormat;
 }
 
 const _metaCache: {
-    [key: string]: TextureFormatMeta
+    [key: string]: TextureFormatMeta;
 } = {};
 
 const DUMMY_META: TextureFormatMeta = {
     copyInfo: {
         blockCopySize: 0,
-        blockDimensions: { x: 0, y: 0 }
+        blockDimensions: { x: 0, y: 0 },
     },
-    glFormat: new WebGLTextureFormat(0, 0, 0, false)
+    glFormat: new WebGLTextureFormat(0, 0, 0, false),
 };
 
 export function formatMeta(format: TextureFormat) {
@@ -362,9 +367,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 1,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.R8, gl.RED, gl.UNSIGNED_BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.R8, gl.RED, gl.UNSIGNED_BYTE, false),
                 };
                 break;
             }
@@ -372,9 +377,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 1,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.R8_SNORM, gl.RED, gl.BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.R8_SNORM, gl.RED, gl.BYTE, false),
                 };
                 break;
             }
@@ -382,9 +387,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 1,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.R8UI, gl.RED_INTEGER, gl.UNSIGNED_BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.R8UI, gl.RED_INTEGER, gl.UNSIGNED_BYTE, false),
                 };
                 break;
             }
@@ -392,9 +397,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 1,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.R8I, gl.RED_INTEGER, gl.BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.R8I, gl.RED_INTEGER, gl.BYTE, false),
                 };
                 break;
             }
@@ -403,9 +408,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 2,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(0, 0, 0, false)
+                    glFormat: new WebGLTextureFormat(0, 0, 0, false),
                 };
                 break;
             }
@@ -413,9 +418,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 2,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.R16UI, gl.RED_INTEGER, gl.UNSIGNED_SHORT, false)
+                    glFormat: new WebGLTextureFormat(gl.R16UI, gl.RED_INTEGER, gl.UNSIGNED_SHORT, false),
                 };
                 break;
             }
@@ -423,9 +428,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 2,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.R16I, gl.RED_INTEGER, gl.SHORT, false)
+                    glFormat: new WebGLTextureFormat(gl.R16I, gl.RED_INTEGER, gl.SHORT, false),
                 };
                 break;
             }
@@ -433,9 +438,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 2,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.R16F, gl.RED, gl.HALF_FLOAT, false)
+                    glFormat: new WebGLTextureFormat(gl.R16F, gl.RED, gl.HALF_FLOAT, false),
                 };
                 break;
             }
@@ -443,9 +448,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.R32UI, gl.RED_INTEGER, gl.UNSIGNED_INT, false)
+                    glFormat: new WebGLTextureFormat(gl.R32UI, gl.RED_INTEGER, gl.UNSIGNED_INT, false),
                 };
                 break;
             }
@@ -453,9 +458,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.R32I, gl.RED_INTEGER, gl.INT, false)
+                    glFormat: new WebGLTextureFormat(gl.R32I, gl.RED_INTEGER, gl.INT, false),
                 };
                 break;
             }
@@ -463,9 +468,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.R32F, gl.RED, gl.FLOAT, false)
+                    glFormat: new WebGLTextureFormat(gl.R32F, gl.RED, gl.FLOAT, false),
                 };
                 break;
             }
@@ -473,9 +478,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 2,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RG8, gl.RG, gl.UNSIGNED_BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.RG8, gl.RG, gl.UNSIGNED_BYTE, false),
                 };
                 break;
             }
@@ -483,9 +488,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 2,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RG8_SNORM, gl.RG, gl.BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.RG8_SNORM, gl.RG, gl.BYTE, false),
                 };
                 break;
             }
@@ -493,9 +498,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 2,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RG8UI, gl.RG_INTEGER, gl.UNSIGNED_BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.RG8UI, gl.RG_INTEGER, gl.UNSIGNED_BYTE, false),
                 };
                 break;
             }
@@ -503,9 +508,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 2,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RG8I, gl.RG_INTEGER, gl.BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.RG8I, gl.RG_INTEGER, gl.BYTE, false),
                 };
                 break;
             }
@@ -514,9 +519,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(0, 0, 0, false)
+                    glFormat: new WebGLTextureFormat(0, 0, 0, false),
                 };
                 break;
             }
@@ -524,9 +529,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RG16I, gl.RG_INTEGER, gl.UNSIGNED_SHORT, false)
+                    glFormat: new WebGLTextureFormat(gl.RG16I, gl.RG_INTEGER, gl.UNSIGNED_SHORT, false),
                 };
                 break;
             }
@@ -534,9 +539,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RG16I, gl.RG_INTEGER, gl.SHORT, false)
+                    glFormat: new WebGLTextureFormat(gl.RG16I, gl.RG_INTEGER, gl.SHORT, false),
                 };
                 break;
             }
@@ -544,9 +549,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RG16F, gl.RG, gl.HALF_FLOAT, false)
+                    glFormat: new WebGLTextureFormat(gl.RG16F, gl.RG, gl.HALF_FLOAT, false),
                 };
                 break;
             }
@@ -554,9 +559,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 8,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RG32UI, gl.RG_INTEGER, gl.UNSIGNED_INT, false)
+                    glFormat: new WebGLTextureFormat(gl.RG32UI, gl.RG_INTEGER, gl.UNSIGNED_INT, false),
                 };
                 break;
             }
@@ -564,9 +569,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 8,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RG32I, gl.RG_INTEGER, gl.INT, false)
+                    glFormat: new WebGLTextureFormat(gl.RG32I, gl.RG_INTEGER, gl.INT, false),
                 };
                 break;
             }
@@ -574,9 +579,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 8,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RG32F, gl.RG, gl.FLOAT, false)
+                    glFormat: new WebGLTextureFormat(gl.RG32F, gl.RG, gl.FLOAT, false),
                 };
                 break;
             }
@@ -584,9 +589,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.RGBA8, gl.RGBA, gl.UNSIGNED_BYTE, false),
                 };
                 break;
             }
@@ -594,9 +599,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RGBA8_SNORM, gl.RGBA, gl.BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.RGBA8_SNORM, gl.RGBA, gl.BYTE, false),
                 };
                 break;
             }
@@ -604,9 +609,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RGBA8UI, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.RGBA8UI, gl.RGBA_INTEGER, gl.UNSIGNED_BYTE, false),
                 };
                 break;
             }
@@ -614,9 +619,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RGBA8I, gl.RGBA_INTEGER, gl.BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.RGBA8I, gl.RGBA_INTEGER, gl.BYTE, false),
                 };
                 break;
             }
@@ -624,9 +629,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.SRGB8_ALPHA8, gl.RGBA, gl.UNSIGNED_BYTE, false)
+                    glFormat: new WebGLTextureFormat(gl.SRGB8_ALPHA8, gl.RGBA, gl.UNSIGNED_BYTE, false),
                 };
                 break;
             }
@@ -634,9 +639,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RGB10_A2, gl.RGBA, gl.UNSIGNED_INT_2_10_10_10_REV, false)
+                    glFormat: new WebGLTextureFormat(gl.RGB10_A2, gl.RGBA, gl.UNSIGNED_INT_2_10_10_10_REV, false),
                 };
                 break;
             }
@@ -645,9 +650,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 8,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(0, 0, 0, false)
+                    glFormat: new WebGLTextureFormat(0, 0, 0, false),
                 };
                 break;
             }
@@ -655,9 +660,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 8,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RGBA16UI, gl.RGBA_INTEGER, gl.UNSIGNED_SHORT, false)
+                    glFormat: new WebGLTextureFormat(gl.RGBA16UI, gl.RGBA_INTEGER, gl.UNSIGNED_SHORT, false),
                 };
                 break;
             }
@@ -665,9 +670,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 8,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RGBA16I, gl.RGBA_INTEGER, gl.SHORT, false)
+                    glFormat: new WebGLTextureFormat(gl.RGBA16I, gl.RGBA_INTEGER, gl.SHORT, false),
                 };
                 break;
             }
@@ -675,9 +680,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 8,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RGBA16F, gl.RGBA, gl.HALF_FLOAT, false)
+                    glFormat: new WebGLTextureFormat(gl.RGBA16F, gl.RGBA, gl.HALF_FLOAT, false),
                 };
                 break;
             }
@@ -685,9 +690,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RGBA32UI, gl.RGBA_INTEGER, gl.UNSIGNED_INT, false)
+                    glFormat: new WebGLTextureFormat(gl.RGBA32UI, gl.RGBA_INTEGER, gl.UNSIGNED_INT, false),
                 };
                 break;
             }
@@ -695,9 +700,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RGBA32I, gl.RGBA_INTEGER, gl.INT, false)
+                    glFormat: new WebGLTextureFormat(gl.RGBA32I, gl.RGBA_INTEGER, gl.INT, false),
                 };
                 break;
             }
@@ -705,9 +710,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.RGBA32F, gl.RGBA, gl.FLOAT, false)
+                    glFormat: new WebGLTextureFormat(gl.RGBA32F, gl.RGBA, gl.FLOAT, false),
                 };
                 break;
             }
@@ -716,10 +721,10 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
                     // unsupported in webgl
-                    glFormat: new WebGLTextureFormat(0, 0, 0, false)
+                    glFormat: new WebGLTextureFormat(0, 0, 0, false),
                 };
                 break;
             }
@@ -727,9 +732,14 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 2,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.DEPTH_COMPONENT16, gl.DEPTH_COMPONENT, gl.UNSIGNED_SHORT, false)
+                    glFormat: new WebGLTextureFormat(
+                        gl.DEPTH_COMPONENT16,
+                        gl.DEPTH_COMPONENT,
+                        gl.UNSIGNED_SHORT,
+                        false,
+                    ),
                 };
                 break;
             }
@@ -737,9 +747,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.DEPTH_COMPONENT24, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, false)
+                    glFormat: new WebGLTextureFormat(gl.DEPTH_COMPONENT24, gl.DEPTH_COMPONENT, gl.UNSIGNED_INT, false),
                 };
                 break;
             }
@@ -747,9 +757,14 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 4,
-                        blockDimensions: { x: 1, y: 1 }
+                        blockDimensions: { x: 1, y: 1 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.DEPTH24_STENCIL8, gl.DEPTH_STENCIL, gl.UNSIGNED_INT_24_8, false)
+                    glFormat: new WebGLTextureFormat(
+                        gl.DEPTH24_STENCIL8,
+                        gl.DEPTH_STENCIL,
+                        gl.UNSIGNED_INT_24_8,
+                        false,
+                    ),
                 };
                 break;
             }
@@ -757,9 +772,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 4, y: 4 }
+                        blockDimensions: { x: 4, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_4x4_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_4x4_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -767,9 +782,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 4, y: 4 }
+                        blockDimensions: { x: 4, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_4x4_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -777,9 +792,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 5, y: 4 }
+                        blockDimensions: { x: 5, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_5x4_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_5x4_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -787,9 +802,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 5, y: 4 }
+                        blockDimensions: { x: 5, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_5x4_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -797,9 +812,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 5, y: 5 }
+                        blockDimensions: { x: 5, y: 5 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_5x5_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_5x5_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -807,9 +822,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 5, y: 5 }
+                        blockDimensions: { x: 5, y: 5 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_5x5_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -817,9 +832,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 6, y: 5 }
+                        blockDimensions: { x: 6, y: 5 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_6x5_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_6x5_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -827,9 +842,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 6, y: 5 }
+                        blockDimensions: { x: 6, y: 5 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_6x5_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -837,9 +852,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 6, y: 6 }
+                        blockDimensions: { x: 6, y: 6 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_6x6_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_6x6_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -847,9 +862,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 6, y: 6 }
+                        blockDimensions: { x: 6, y: 6 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_6x6_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -857,9 +872,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 8, y: 5 }
+                        blockDimensions: { x: 8, y: 5 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_8x5_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_8x5_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -867,9 +882,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 8, y: 5 }
+                        blockDimensions: { x: 8, y: 5 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_8x5_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -877,9 +892,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 8, y: 6 }
+                        blockDimensions: { x: 8, y: 6 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_8x6_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_8x6_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -887,9 +902,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 8, y: 6 }
+                        blockDimensions: { x: 8, y: 6 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_8x6_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -897,9 +912,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 8, y: 8 }
+                        blockDimensions: { x: 8, y: 8 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_8x8_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_8x8_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -907,9 +922,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 8, y: 8 }
+                        blockDimensions: { x: 8, y: 8 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_8x8_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -917,9 +932,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 10, y: 5 }
+                        blockDimensions: { x: 10, y: 5 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_10x5_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_10x5_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -927,9 +942,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 10, y: 5 }
+                        blockDimensions: { x: 10, y: 5 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_10x5_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -937,9 +952,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 10, y: 6 }
+                        blockDimensions: { x: 10, y: 6 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_10x6_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_10x6_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -947,9 +962,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 10, y: 6 }
+                        blockDimensions: { x: 10, y: 6 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_10x6_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -957,9 +972,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 10, y: 8 }
+                        blockDimensions: { x: 10, y: 8 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_10x8_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_10x8_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -967,9 +982,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 10, y: 8 }
+                        blockDimensions: { x: 10, y: 8 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_10x8_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -977,9 +992,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 10, y: 10 }
+                        blockDimensions: { x: 10, y: 10 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_10x10_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_10x10_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -987,9 +1002,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 10, y: 10 }
+                        blockDimensions: { x: 10, y: 10 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_10x10_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -997,9 +1012,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 12, y: 10 }
+                        blockDimensions: { x: 12, y: 10 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_12x10_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_12x10_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -1007,9 +1022,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 12, y: 10 }
+                        blockDimensions: { x: 12, y: 10 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_12x10_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -1017,9 +1032,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 12, y: 12 }
+                        blockDimensions: { x: 12, y: 12 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_12x12_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_ASTC_12x12_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -1027,9 +1042,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 12, y: 12 }
+                        blockDimensions: { x: 12, y: 12 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ASTC_12x12_KHR, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -1037,9 +1052,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 8,
-                        blockDimensions: { x: 4, y: 4 }
+                        blockDimensions: { x: 4, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_S3TC_DXT1_EXT, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_S3TC_DXT1_EXT, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -1047,9 +1062,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 4, y: 4 }
+                        blockDimensions: { x: 4, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_S3TC_DXT3_EXT, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_S3TC_DXT3_EXT, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -1057,9 +1072,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 4, y: 4 }
+                        blockDimensions: { x: 4, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_S3TC_DXT5_EXT, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_S3TC_DXT5_EXT, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -1067,9 +1082,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 4, y: 4 }
+                        blockDimensions: { x: 4, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_BPTC_UNORM_EXT, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA_BPTC_UNORM_EXT, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -1077,9 +1092,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 4, y: 4 }
+                        blockDimensions: { x: 4, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB_ALPHA_BPTC_UNORM_EXT, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -1088,9 +1103,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 8,
-                        blockDimensions: { x: 4, y: 4 }
+                        blockDimensions: { x: 4, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGB8_ETC2, gl.RGB, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGB8_ETC2, gl.RGB, 0, true),
                 };
                 break;
             }
@@ -1098,9 +1113,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 8,
-                        blockDimensions: { x: 4, y: 4 }
+                        blockDimensions: { x: 4, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ETC2, gl.RGB, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ETC2, gl.RGB, 0, true),
                 };
                 break;
             }
@@ -1108,9 +1123,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 4, y: 4 }
+                        blockDimensions: { x: 4, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA8_ETC2_EAC, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_RGBA8_ETC2_EAC, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -1118,9 +1133,9 @@ export function formatMeta(format: TextureFormat) {
                 meta = {
                     copyInfo: {
                         blockCopySize: 16,
-                        blockDimensions: { x: 4, y: 4 }
+                        blockDimensions: { x: 4, y: 4 },
                     },
-                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC, gl.RGBA, 0, true)
+                    glFormat: new WebGLTextureFormat(gl.COMPRESSED_SRGB8_ALPHA8_ETC2_EAC, gl.RGBA, 0, true),
                 };
                 break;
             }
@@ -1144,10 +1159,14 @@ export function textureCopyInfo(format: TextureFormat) {
 
 export function getBindableTarget(viewDimension: TextureViewDimension): number {
     switch (viewDimension) {
-        case TextureViewDimension.D2: return 0x0DE1; // WebGL2RenderingContext.TEXTURE_2D;
-        case TextureViewDimension.Cube: return 0x8513; // WebGL2RenderingContext.TEXTURE_CUBE_MAP;
-        case TextureViewDimension.D2Array: return 0x8C1A; // WebGL2RenderingContext.TEXTURE_2D_ARRAY;
-        case TextureViewDimension.D3: return 0x806F; // WebGL2RenderingContext.TEXTURE_3D;
+        case TextureViewDimension.D2:
+            return 0x0de1; // WebGL2RenderingContext.TEXTURE_2D;
+        case TextureViewDimension.Cube:
+            return 0x8513; // WebGL2RenderingContext.TEXTURE_CUBE_MAP;
+        case TextureViewDimension.D2Array:
+            return 0x8c1a; // WebGL2RenderingContext.TEXTURE_2D_ARRAY;
+        case TextureViewDimension.D3:
+            return 0x806f; // WebGL2RenderingContext.TEXTURE_3D;
     }
 }
 
@@ -1167,7 +1186,8 @@ export function getDepthFormat(enableStencil: boolean, backend: RendererBackend)
         return TextureFormat.Depth24PlusStencil8;
     } else {
         // for wasm use depth24plus
-        return backend === RendererBackend.WEBGL2_JS || backend === RendererBackend.WEBGL_JS ? TextureFormat.Depth16Unorm
+        return backend === RendererBackend.WEBGL2_JS || backend === RendererBackend.WEBGL_JS
+            ? TextureFormat.Depth16Unorm
             : TextureFormat.Depth24Plus;
     }
 }
@@ -1180,11 +1200,18 @@ export function maxMipLevels(width: number, height: number, depthOrArrayLayers: 
     }
 }
 
-export function mipLevelSize(level: number, width: number, height: number, depthOrArrayLayers: number, dimension: TextureDimension) {
+export function mipLevelSize(
+    level: number,
+    width: number,
+    height: number,
+    depthOrArrayLayers: number,
+    dimension: TextureDimension,
+) {
     return {
         width: Math.max(1, width >>> level),
         height: Math.max(1, height >>> level),
-        depthOrArrayLayers: dimension === TextureDimension.D2 ? depthOrArrayLayers : Math.max(1, depthOrArrayLayers >>> level)
+        depthOrArrayLayers:
+            dimension === TextureDimension.D2 ? depthOrArrayLayers : Math.max(1, depthOrArrayLayers >>> level),
     };
 }
 
@@ -1194,7 +1221,7 @@ export function textureCopyFootprint(width: number, height: number, copyInfo: Te
 
     return {
         bytesPerRow: blockWidth * copyInfo.blockCopySize,
-        rowsPerImage: blockHeight
+        rowsPerImage: blockHeight,
     };
 }
 

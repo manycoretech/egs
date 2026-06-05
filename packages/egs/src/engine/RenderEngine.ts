@@ -1,6 +1,11 @@
 import { logger } from '../utils/Logger';
 import { type IRenderer, RendererState, type RendererParameters } from '../renderer/IRenderer';
-import { ContextLostEvent, ContextLostRestoreFailedEvent, MemoryGrowFailed, type CtxLostInfo } from '../renderer/IRenderer';
+import {
+    ContextLostEvent,
+    ContextLostRestoreFailedEvent,
+    MemoryGrowFailed,
+    type CtxLostInfo,
+} from '../renderer/IRenderer';
 import type { Camera3D } from '../scene/cameras/Camera3D';
 import type { Scene3D } from '../scene/Scene3D';
 import { EventDispatcher, EventType } from '../utils/EventDispatcher';
@@ -10,8 +15,13 @@ import { SnapshotRenderer as DeprecatedSnapshotRenderer } from '../snapshot/Snap
 import { SnapshotRenderer } from '../snapshot/SnapshotRendererV2';
 import { SceneAdaptor } from '../fx/SceneAdaptor';
 import { ContentBridge } from '../ContentAPI';
-import { ToggleWebGPUEvent, WebGPUUnstable, WebGPUValidationFailed, type ToggleWebWebGpuPayload } from '../Bridge/utils';
-import type { RenderingConfig,DrivenCullingConfig } from '../fx/plugins/PipelinePlugin';
+import {
+    ToggleWebGPUEvent,
+    WebGPUUnstable,
+    WebGPUValidationFailed,
+    type ToggleWebWebGpuPayload,
+} from '../Bridge/utils';
+import type { RenderingConfig, DrivenCullingConfig } from '../fx/plugins/PipelinePlugin';
 import type { PostPipeline } from '../fx/Pipeline';
 import type { Vector4 } from '../math/Vector4';
 import { Application } from '../Application';
@@ -38,7 +48,7 @@ export class RenderEngine extends EventDispatcher {
     snapshotRenderer: SnapshotRenderer;
     deprecatedSnapshotRenderer: DeprecatedSnapshotRenderer;
     lastRenderedFrameId = -1;
-    private isRefreshRenderables = true;    // enable this to skip lazy rendering
+    private isRefreshRenderables = true; // enable this to skip lazy rendering
     private _renderPixelRatio: number = 1;
 
     private lastRestoreTimeStamp = 0; // prevent endless lost and restore
@@ -72,7 +82,7 @@ export class RenderEngine extends EventDispatcher {
             premultipliedAlpha: false,
             powerPreference: 'high-performance',
         };
-    };
+    }
 
     get width() {
         return this.renderer.getSize().width;
@@ -146,7 +156,12 @@ export class RenderEngine extends EventDispatcher {
             return false;
         }
 
-        const isFrameStable = !(scene.isAnythingChanged || isCameraChange || this.isRefreshRenderables || this.forceFrameIsUnstable);
+        const isFrameStable = !(
+            scene.isAnythingChanged ||
+            isCameraChange ||
+            this.isRefreshRenderables ||
+            this.forceFrameIsUnstable
+        );
         const adaptor = new SceneAdaptor(scene, camera);
         pipeline.updateEffect(adaptor, isFrameStable, isCameraStable, renderingConfig, drivenCullingConfig);
 
@@ -239,7 +254,9 @@ export class RenderEngine extends EventDispatcher {
 
     private onCtxLost = (ctxLostInfo: CtxLostInfo) => {
         if (!ctxLostInfo.manual) {
-            logger.warn('Context Lost, try restoring \n' + this.renderer.getGPUInfo() + '\n' + JSON.stringify(ctxLostInfo));
+            logger.warn(
+                'Context Lost, try restoring \n' + this.renderer.getGPUInfo() + '\n' + JSON.stringify(ctxLostInfo),
+            );
         }
         this.emit(ContextLostEvent, ctxLostInfo);
     };
@@ -265,15 +282,18 @@ export class RenderEngine extends EventDispatcher {
         this._sumOfTime += durationFromLast;
         this.lastRestoreTimeStamp = currentTimeStamp;
 
-        if (this._sumOfTime >= 10000) { // 长时间lost频率统计，至少统计10s以上
-            if (this._countOfFailed / this._sumOfTime > 0.0004) { // lost频率
+        if (this._sumOfTime >= 10000) {
+            // 长时间lost频率统计，至少统计10s以上
+            if (this._countOfFailed / this._sumOfTime > 0.0004) {
+                // lost频率
                 this.emit(ContextLostRestoreFailedEvent);
                 this._restoreFailed = true;
                 return;
             }
             this._sumOfTime = 0;
             this._countOfFailed = 0;
-        } else if (this._countOfFailed > 4) { // 短时间lost次数，10s内已经lost至少5次
+        } else if (this._countOfFailed > 4) {
+            // 短时间lost次数，10s内已经lost至少5次
             this.emit(ContextLostRestoreFailedEvent);
             this._restoreFailed = true;
             return;

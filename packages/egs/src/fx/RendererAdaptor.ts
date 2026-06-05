@@ -17,19 +17,19 @@ export function drawPoint(m: Material, n: number = 128): RenderSource {
         config: renderer => {
             return quadPoints.config(renderer.renderer);
         },
-        render: (renderer) => {
+        render: renderer => {
             quadPoints.setMaterial(m);
             quadPoints.setGeometry(n);
-            renderer.activeResources.forEach((input, name) => (m as any)[name] = input);
+            renderer.activeResources.forEach((input, name) => ((m as any)[name] = input));
             quadPoints.render(renderer.renderer);
-        }
+        },
     };
 }
 
 const quadGetter = singleton(() => new Quad());
 function renderQuad(renderer: RendererAdaptor, m: Material, quad: Quad) {
     quad.setMaterial(m);
-    renderer.activeResources.forEach((input, name) => (m as any)[name] = input);
+    renderer.activeResources.forEach((input, name) => ((m as any)[name] = input));
     quad.render(renderer.renderer);
 }
 
@@ -38,9 +38,9 @@ export function drawQuadDynamic(getMaterial: () => Material, getQuad: () => Quad
         config: renderer => {
             return getQuad().config(renderer.renderer);
         },
-        render: (renderer) => {
+        render: renderer => {
             renderQuad(renderer, getMaterial(), getQuad());
-        }
+        },
     };
 }
 
@@ -49,9 +49,9 @@ export function drawQuad(m: Material, quad: Quad = quadGetter()): RenderSource {
         config: renderer => {
             return quad.config(renderer.renderer);
         },
-        render: (renderer) => {
+        render: renderer => {
             renderQuad(renderer, m, quad);
-        }
+        },
     };
 }
 

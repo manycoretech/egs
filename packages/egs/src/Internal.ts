@@ -1,10 +1,24 @@
 export { logger } from './utils/Logger';
-export { MaterialShadingWithDynamicShapeDispatcher, DefaultMaterialDispatcher, MaterialDispatcher } from './renderer/MaterialDispatcher';
-export { ForwardDispatcher, PlanarShadowDispatcher, BeforeScenePassEvent, AfterScenePassEvent } from './fx/plugins/Forward';
+export {
+    MaterialShadingWithDynamicShapeDispatcher,
+    DefaultMaterialDispatcher,
+    MaterialDispatcher,
+} from './renderer/MaterialDispatcher';
+export {
+    ForwardDispatcher,
+    PlanarShadowDispatcher,
+    BeforeScenePassEvent,
+    AfterScenePassEvent,
+} from './fx/plugins/Forward';
 export { ShadowMode, PipelineFilters } from './fx/PipelineAPI';
 export type { PipelineAPI, IPipelineFilter } from './fx/PipelineAPI';
 export { EncodeDispatcher } from './fx/plugins/Outline';
-export { RenderObjectsType, DrawableList, ProjectedDrawcallList, DrawcallListClassifyList } from './scene/tools/DrawcallList';
+export {
+    RenderObjectsType,
+    DrawableList,
+    ProjectedDrawcallList,
+    DrawcallListClassifyList,
+} from './scene/tools/DrawcallList';
 export type { DrawcallListClassifyType } from './scene/tools/DrawcallList';
 export { InstancedBufferGeometry } from './elements/geometries/containers/InstancedBufferGeometry';
 export { SpriteBufferGeometry } from './elements/geometries/containers/SpriteBufferGeometry';
@@ -16,7 +30,7 @@ export { RenderTarget, RenderAttachment } from './elements/textures/RenderTarget
 export type { Nullable, TypedArray, IRange } from './utils/Utils';
 export { RendererState, RenderCtxInfo, MemoryGrowFailed } from './renderer/IRenderer';
 export type { IRenderer, RendererStatus, RendererParameters } from './renderer/IRenderer';
-export { registerGlobal3DRendererOverride, resetGlobal3DRendererOverride, } from './renderer/RendererOverride';
+export { registerGlobal3DRendererOverride, resetGlobal3DRendererOverride } from './renderer/RendererOverride';
 export { EnvMapMaterial } from './elements/materials/mesh/EnvMapMaterial';
 export { GradientMaterial } from './elements/materials/mesh/GradientMaterial';
 export { GroundMaterial } from './elements/materials/mesh/GroundMaterial';
@@ -29,7 +43,12 @@ export { DirectionalShadow } from './scene/shadows/DirectionalShadow';
 export { PointShadow } from './scene/shadows/PointShadow';
 export { SpotShadow } from './scene/shadows/SpotShadow';
 export { BlurPassMaterial } from './elements/materials/quad/BlurPassMaterial';
-export { MixColorAndDepthMaterial, CopyColorAndDepthMaterial, CopyDepthMaterial, CopyMaterial } from './elements/materials/quad/CopyMaterial';
+export {
+    MixColorAndDepthMaterial,
+    CopyColorAndDepthMaterial,
+    CopyDepthMaterial,
+    CopyMaterial,
+} from './elements/materials/quad/CopyMaterial';
 export { MixOITMaterial } from './elements/materials/quad/MixOITMaterial';
 export { MixPlanarShadowMaterial } from './elements/materials/quad/MixPlanarShadowMaterial';
 export { HighLightBlendPassMaterial } from './elements/materials/quad/HighLightBlendPassMaterial';
@@ -47,20 +66,31 @@ export { FilterMaterial } from './elements/materials/quad/FilterMaterial';
 export { ToonMaterial } from './elements/materials/mesh/ToonMaterial';
 export { OITMaterial } from './elements/materials/mesh/OITMaterial';
 export {
-    ExposedCopyMaterial, ExposedToneMappingMaterial,
-    DialuxLuminanceMaterial, DialuxWhiteBalanceExposureMaterial,
-    HistogramComputeMaterial, AvgLuminanceMaterial
+    ExposedCopyMaterial,
+    ExposedToneMappingMaterial,
+    DialuxLuminanceMaterial,
+    DialuxWhiteBalanceExposureMaterial,
+    HistogramComputeMaterial,
+    AvgLuminanceMaterial,
 } from './elements/materials/quad/ExposedCopyMaterial';
 export { ToneMappingMaterial } from './elements/materials/quad/ToneMappingMaterial';
 export { BackgroundLikeMaterial } from './elements/materials/base';
 export {
-    DeferredDrawAmbientLightMaterial, DeferredDrawDirectionalLightMaterial,
-    DeferredDrawDiskAreaLightMaterial, DeferredDrawPointLightMaterial,
-    DeferredDrawRectAreaLightMaterial, DeferredDrawSpotLightMaterial
+    DeferredDrawAmbientLightMaterial,
+    DeferredDrawDirectionalLightMaterial,
+    DeferredDrawDiskAreaLightMaterial,
+    DeferredDrawPointLightMaterial,
+    DeferredDrawRectAreaLightMaterial,
+    DeferredDrawSpotLightMaterial,
 } from './fx/plugins/Deferred';
 
 export { registerPipelineContentAPI, removePipelineContentAPI } from './fx/PipelineAPI';
-export { registerContentAPI, unregisterContentAPI, registerManagedContentAPI, removeManagedContentAPI } from './ContentAPI';
+export {
+    registerContentAPI,
+    unregisterContentAPI,
+    registerManagedContentAPI,
+    removeManagedContentAPI,
+} from './ContentAPI';
 export type { ContentManagedAPI, ContentAPI, WorldRebuildConfig } from './ContentAPI';
 export { LegacySourceTexture } from './elements/textures/Texture';
 export { textureCopyInfo, textureCopyFootprint } from './elements/textures/types';
@@ -77,7 +107,11 @@ export { ToggleWebGPUEvent, WebGPUUnstable, WebGPUValidationFailed } from './Bri
 export { IterableWeakMap, IterableWeakSet } from './utils/WeakCollections';
 export { DeferredDispatcher } from './renderer/MaterialDispatcher';
 export { setupWebGLCapabilities } from './renderer/webgl/WGLCapabilities';
-export { setupWebGPUCapabilities, Capabilities, setupWebGPUCompressedTextureCapabilities } from './renderer/Capabilities';
+export {
+    setupWebGPUCapabilities,
+    Capabilities,
+    setupWebGPUCompressedTextureCapabilities,
+} from './renderer/Capabilities';
 export { setSortSplats, SplattingRenderMode } from './fx/plugins/Splatting';
 export { CompressedSplat } from './scene/splat/CompressedSplat';
 export { SuperCompressedSplat } from './scene/splat/SuperCompressedSplat';
@@ -104,10 +138,10 @@ let parseObjects = deprecatedParseObjects;
 let deepCloneObject3D = deprecatedDeepCloneObject3D;
 let downloadStringAsFile = deprecatedDownloadStringAsFile;
 export function injectSerialize(inject: {
-    serializeObject3D: typeof serializeObject3D,
-    parseObjects: typeof parseObjects,
-    deepCloneObject3D: typeof deepCloneObject3D,
-    downloadStringAsFile: typeof downloadStringAsFile,
+    serializeObject3D: typeof serializeObject3D;
+    parseObjects: typeof parseObjects;
+    deepCloneObject3D: typeof deepCloneObject3D;
+    downloadStringAsFile: typeof downloadStringAsFile;
 }) {
     serializeObject3D = inject.serializeObject3D;
     parseObjects = inject.parseObjects;

@@ -15,7 +15,7 @@ import { Vector3 } from '../../../math/Vector3';
 export enum FilterTarget {
     All,
     Foreground,
-    Background
+    Background,
 }
 
 export class FilterMaterial extends PassQuadMaterialBase {
@@ -71,8 +71,7 @@ export class FilterMaterial extends PassQuadMaterialBase {
         }
 
         if (this.lut !== null) {
-            b.addUniform('lut', WebGLShaderDataType.Sampler2D)
-                .addFragmentCustom(lookup);
+            b.addUniform('lut', WebGLShaderDataType.Sampler2D).addFragmentCustom(lookup);
         }
 
         if (this.depth !== null) {
@@ -87,32 +86,56 @@ export class FilterMaterial extends PassQuadMaterialBase {
             .addUniform('tint', WebGLShaderDataType.Float)
             .addUniform('hue', WebGLShaderDataType.Float)
             .addUniform('colorBalance', WebGLShaderDataType.Vec3)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 vec4 res = texture2D(tDiffuse, vUv);
-                ${this.depth !== null && this.target !== FilterTarget.All ? `
+                ${
+                    this.depth !== null && this.target !== FilterTarget.All
+                        ? `
                     vec4 d = texture2D(depth, vUv);
                     if (d.x ${this.target === FilterTarget.Foreground ? '==' : '!='} 1.) {
                         gl_FragColor = res;
                         return;
                     }
-                ` : ``}
+                `
+                        : ``
+                }
 
                 vec3 color = res.rgb;
-                ${!!this.temperature ? `
+                ${
+                    !!this.temperature
+                        ? `
                     vec3 temperatureFilter = temperature > 0.0 ? vec3(1.06, 0.93, 0.82) : vec3(0.99, 1.02, 1.25);
                     color = saturate(mix(color, color * temperatureFilter, abs(temperature)));
-                ` : ``}
-                ${!!this.tint ? `
+                `
+                        : ``
+                }
+                ${
+                    !!this.tint
+                        ? `
                     vec3 tintFilter = tint > 0.0 ? vec3(1.05, 0.90, 1.05) : vec3(0.90, 1.10, 0.90);
                     color = saturate(mix(color, color * tintFilter, abs(tint)));
-                ` : ``}
-                ${!!this.brightness ? `
+                `
+                        : ``
+                }
+                ${
+                    !!this.brightness
+                        ? `
                     color = saturate(color + brightness);
-                ` : ``}
-                ${!!this.contrast ? `
+                `
+                        : ``
+                }
+                ${
+                    !!this.contrast
+                        ? `
                     color = saturate((color - 0.5) / (1.0 + contrast * (contrast > 0.0 ? -1.0 : 1.0)) + 0.5);
-                ` : ``}
-                ${!!this.saturation ? `
+                `
+                        : ``
+                }
+                ${
+                    !!this.saturation
+                        ? `
                     float rgbMax = max(max(color.r, color.g), color.b);
                     float rgbMin = min(min(color.r, color.g), color.b);
                     float delta = rgbMax - rgbMin;
@@ -137,9 +160,13 @@ export class FilterMaterial extends PassQuadMaterialBase {
                         }
                     }
                     color = saturate(color);
-                ` : ``}
+                `
+                        : ``
+                }
 
-                ${!!this.hue ? `
+                ${
+                    !!this.hue
+                        ? `
                     float s = sin(-hue);
                     float c = cos(-hue);
                     color = (color * c) + (color * s) *
@@ -150,22 +177,33 @@ export class FilterMaterial extends PassQuadMaterialBase {
                         ) +
                         dot(vec3(0.299, 0.587, 0.114), color) * (1.0 - c);
                     color = saturate(color);
-                ` : ''}
+                `
+                        : ''
+                }
 
                 // colorBalance
                 color = saturate(color + colorBalance / 255.);
 
-                ${this.lut !== null ? `
+                ${
+                    this.lut !== null
+                        ? `
                     color.rgb = saturate(lookup(color));
-                ` : ``}
+                `
+                        : ``
+                }
 
                 gl_FragColor = vec4(color, res.a);
 
-                ${this.texture !== null ? `
+                ${
+                    this.texture !== null
+                        ? `
                     vec4 tex = texture2D(map, vUv);
                     gl_FragColor = gl_FragColor * tex;
-                ` : ``}
-            `);
+                `
+                        : ``
+                }
+            `,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {

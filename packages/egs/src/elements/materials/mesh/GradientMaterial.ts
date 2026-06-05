@@ -1,4 +1,8 @@
-import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderVaryingTypes,
+    ShaderInjectionTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
@@ -8,7 +12,6 @@ import { materialProperty } from '../../../ContentAPI';
 import { BackgroundLikeMaterial } from '../base';
 
 export class GradientMaterial extends BackgroundLikeMaterial {
-
     @materialProperty()
     skyColor = readonlyMath.color(0.458, 0.701, 0.864); // sky color
     @materialProperty()
@@ -48,11 +51,13 @@ export class GradientMaterial extends BackgroundLikeMaterial {
             .addUniform('offset', WebGLShaderDataType.Float)
             .addVarying(ShaderVaryingTypes.worldPosition)
             .addFragment(GradientFrag)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 vec3 direction = normalize(vWorldPosition - origin);
                 gl_FragColor = vec4(skyShade(direction), 1.0);
-            `);
-
+            `,
+            );
     }
 
     copy() {

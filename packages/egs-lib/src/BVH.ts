@@ -118,11 +118,7 @@ export class BVH<TPrimitive> {
             const x = centers[i3 + 0];
             const y = centers[i3 + 1];
             const z = centers[i3 + 2];
-            mortons[i] = morton3D(
-                ((x - minX) * scaleX) | 0,
-                ((y - minY) * scaleY) | 0,
-                ((z - minZ) * scaleZ) | 0,
-            );
+            mortons[i] = morton3D(((x - minX) * scaleX) | 0, ((y - minY) * scaleY) | 0, ((z - minZ) * scaleZ) | 0);
         }
         radixSort(mortons, sorted);
 

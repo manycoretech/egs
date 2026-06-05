@@ -28,10 +28,12 @@ export class Cone {
     sinTheta: number;
     cosTheta: number;
     constructor(tip?: Vector3, fov?: number, direction?: Vector3, aspect?: number) {
-        this.update((tip !== undefined) ? tip : new Vector3(0, 0, 0),
-            (fov !== undefined) ? fov : Math.PI / 6,
-            (direction !== undefined) ? direction : new Vector3(0, 0, 0),
-            (aspect !== undefined) ? aspect : 1);
+        this.update(
+            tip !== undefined ? tip : new Vector3(0, 0, 0),
+            fov !== undefined ? fov : Math.PI / 6,
+            direction !== undefined ? direction : new Vector3(0, 0, 0),
+            aspect !== undefined ? aspect : 1,
+        );
         return this;
     }
     /**

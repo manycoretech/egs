@@ -61,5 +61,4 @@ export abstract class LightableMaterial extends ScenePopLODMaterial {
     generateShaderKey(r: ShaderComponentRegistry): string {
         return super.generateShaderKey(r) + this.getLightSystem(r).lightAndShadowHashKey() + this.flatShadingNormal;
     }
-
 }

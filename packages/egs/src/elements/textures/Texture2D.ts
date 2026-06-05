@@ -5,8 +5,15 @@ import { TextureDataType } from '../../utils/Constants';
 import type { Deserializer, Serializer } from '../../utils/Serialization';
 import { type TypedArray, singleton } from '../../utils/Utils';
 import {
-    getFormatByteSize, LegacySourceTexture, type SourceTextureLayerWebGLUploadResult,
-    type SourceTextureWebGLUploadResult, TextureMipmapGroup, type WebGLTextureUploadCtx, createImgByUrl, getInternalFormat, type WebGLUploadable
+    getFormatByteSize,
+    LegacySourceTexture,
+    type SourceTextureLayerWebGLUploadResult,
+    type SourceTextureWebGLUploadResult,
+    TextureMipmapGroup,
+    type WebGLTextureUploadCtx,
+    createImgByUrl,
+    getInternalFormat,
+    type WebGLUploadable,
 } from './Texture';
 import { ContentBridge } from '../../ContentAPI';
 import { TextureDimension, TextureViewDimension } from './types';
@@ -43,7 +50,12 @@ export abstract class Texture2DLayer implements WebGLUploadable {
     /**
      * @internal
      */
-    abstract uploadWebGL(ctx: WebGLTextureUploadCtx, target: number, level: number, needPOT: boolean): SourceTextureLayerWebGLUploadResult;
+    abstract uploadWebGL(
+        ctx: WebGLTextureUploadCtx,
+        target: number,
+        level: number,
+        needPOT: boolean,
+    ): SourceTextureLayerWebGLUploadResult;
 }
 
 const MAX_TEXTURE_SIZE = 8192;
@@ -57,10 +69,18 @@ function resizeTextureSource(source: Texture2DLayerSource, width: number, height
     const ctx = canvas.getContext('2d')!;
     canvas.width = width;
     canvas.height = height;
-    if (source instanceof HTMLImageElement || source instanceof HTMLCanvasElement || source instanceof HTMLVideoElement || source instanceof OffscreenCanvas || source instanceof ImageBitmap || isVideoFrame(source)) {
+    if (
+        source instanceof HTMLImageElement ||
+        source instanceof HTMLCanvasElement ||
+        source instanceof HTMLVideoElement ||
+        source instanceof OffscreenCanvas ||
+        source instanceof ImageBitmap ||
+        isVideoFrame(source)
+    ) {
         ctx.drawImage(source, 0, 0, width, height);
     } else {
-        const imageData = source instanceof ImageData ? source : new ImageData(Uint8ClampedArray.from(source), width, height);
+        const imageData =
+            source instanceof ImageData ? source : new ImageData(Uint8ClampedArray.from(source), width, height);
         const sourceCanvas = document.createElement('canvas');
         sourceCanvas.width = width;
         sourceCanvas.height = height;
@@ -87,7 +107,13 @@ export class Texture2DCommonLayer extends Texture2DLayer {
         let source_width = 2;
         let source_height = 2;
         let canResize = false;
-        if (source instanceof HTMLImageElement || source instanceof HTMLCanvasElement || source instanceof OffscreenCanvas || source instanceof ImageData || source instanceof ImageBitmap) {
+        if (
+            source instanceof HTMLImageElement ||
+            source instanceof HTMLCanvasElement ||
+            source instanceof OffscreenCanvas ||
+            source instanceof ImageData ||
+            source instanceof ImageBitmap
+        ) {
             source_width = source.width;
             source_height = source.height;
             canResize = true;
@@ -109,7 +135,7 @@ export class Texture2DCommonLayer extends Texture2DLayer {
         }
         let new_w = source_width;
         let new_h = source_height;
-        const needResize = (source_width > MAX_TEXTURE_SIZE || source_height > MAX_TEXTURE_SIZE);
+        const needResize = source_width > MAX_TEXTURE_SIZE || source_height > MAX_TEXTURE_SIZE;
 
         if (canResize && (needResize || isHTMLSource)) {
             if (needResize) {
@@ -153,8 +179,11 @@ export class Texture2DCommonLayer extends Texture2DLayer {
             if (source.complete) {
                 resolve(new Texture2DCommonLayer(source));
             }
-            source.addEventListener('load', () => resolve(new Texture2DCommonLayer(source)), { capture: true, passive: true });
-            source.addEventListener('error', (event) => reject(event), { capture: true, passive: true });
+            source.addEventListener('load', () => resolve(new Texture2DCommonLayer(source)), {
+                capture: true,
+                passive: true,
+            });
+            source.addEventListener('error', event => reject(event), { capture: true, passive: true });
         });
     }
     setFormat(format: WebGLPixelFormat) {
@@ -170,7 +199,12 @@ export class Texture2DCommonLayer extends Texture2DLayer {
     /**
      * @internal
      */
-    uploadWebGL(ctx: WebGLTextureUploadCtx, target: number, level: number, needPOT: boolean): SourceTextureLayerWebGLUploadResult {
+    uploadWebGL(
+        ctx: WebGLTextureUploadCtx,
+        target: number,
+        level: number,
+        needPOT: boolean,
+    ): SourceTextureLayerWebGLUploadResult {
         const texelCount = this.width * this.height;
         const texelByte = getFormatByteSize(this.format, this.type);
         let need_resize = false;
@@ -197,18 +231,42 @@ export class Texture2DCommonLayer extends Texture2DLayer {
         //  Ok => return canvas.upload_content
         //  Err => fall-through
         if (need_resize) {
-            ctx.gl.texImage2D(target, level, internalFormat, this.format, this.type,
-                resizeTextureSource(this.source, new_w, new_h));
+            ctx.gl.texImage2D(
+                target,
+                level,
+                internalFormat,
+                this.format,
+                this.type,
+                resizeTextureSource(this.source, new_w, new_h),
+            );
             return {
                 is_pot: _Math.isPowerOfTwo(new_w) && _Math.isPowerOfTwo(new_h),
                 byteSize: new_w * new_h * texelByte,
             };
         }
 
-        if (this.source instanceof HTMLImageElement || this.source instanceof HTMLCanvasElement || this.source instanceof HTMLVideoElement || this.source instanceof OffscreenCanvas || this.source instanceof ImageData || this.source instanceof ImageBitmap || isVideoFrame(this.source)) {
+        if (
+            this.source instanceof HTMLImageElement ||
+            this.source instanceof HTMLCanvasElement ||
+            this.source instanceof HTMLVideoElement ||
+            this.source instanceof OffscreenCanvas ||
+            this.source instanceof ImageData ||
+            this.source instanceof ImageBitmap ||
+            isVideoFrame(this.source)
+        ) {
             ctx.gl.texImage2D(target, level, internalFormat, this.format, this.type, this.source);
         } else {
-            ctx.gl.texImage2D(target, level, internalFormat, this.width, this.height, 0, this.format, this.type, this.source);
+            ctx.gl.texImage2D(
+                target,
+                level,
+                internalFormat,
+                this.width,
+                this.height,
+                0,
+                this.format,
+                this.type,
+                this.source,
+            );
         }
         return {
             is_pot,
@@ -233,11 +291,15 @@ export class Texture2DCommonLayer extends Texture2DLayer {
     }
 }
 
-const defaultTexture2D = singleton(() => Texture2D.createByMainLayerSource(
-    new Uint8Array([233, 233, 233, 255]),
-    WebGLPixelFormat.RGBA,
-    TextureDataType.UnsignedByteType, 1, 1
-));
+const defaultTexture2D = singleton(() =>
+    Texture2D.createByMainLayerSource(
+        new Uint8Array([233, 233, 233, 255]),
+        WebGLPixelFormat.RGBA,
+        TextureDataType.UnsignedByteType,
+        1,
+        1,
+    ),
+);
 
 export class Texture2D extends LegacySourceTexture {
     static get default() {
@@ -278,21 +340,25 @@ export class Texture2D extends LegacySourceTexture {
         source: Texture2DLayerSource,
         format: WebGLPixelFormat = WebGLPixelFormat.RGBA,
         type: TextureDataType = TextureDataType.UnsignedByteType,
-        width?: number, height?: number, isHTMLSource?: boolean
+        width?: number,
+        height?: number,
+        isHTMLSource?: boolean,
     ) {
         return new Texture2D(
             TextureMipmapGroup.create(
-                Texture2DCommonLayer.create(source, width, height, isHTMLSource)
-                    .setFormat(format)
-                    .setType(type)
-            )
+                Texture2DCommonLayer.create(source, width, height, isHTMLSource).setFormat(format).setType(type),
+            ),
         );
     }
 
     /**
      * @internal
      */
-    uploadWebGLImpl(ctx: WebGLTextureUploadCtx, disableCustomMipmap: boolean, needPOT: boolean): SourceTextureWebGLUploadResult {
+    uploadWebGLImpl(
+        ctx: WebGLTextureUploadCtx,
+        disableCustomMipmap: boolean,
+        needPOT: boolean,
+    ): SourceTextureWebGLUploadResult {
         return this.source.uploadWebGL(ctx, ctx.gl.TEXTURE_2D, disableCustomMipmap, needPOT);
     }
 
@@ -313,7 +379,10 @@ export class Texture2D extends LegacySourceTexture {
 
     serialize(ctx: Serializer<any>) {
         super.serialize(ctx);
-        ctx.putRaw('source', this.source.mipmaps.map(m => m.ser()));
+        ctx.putRaw(
+            'source',
+            this.source.mipmaps.map(m => m.ser()),
+        );
     }
 
     async deserialize(ctx: Deserializer) {
@@ -328,18 +397,26 @@ export class Texture2D extends LegacySourceTexture {
         } else {
             const urls = ctx.readRaw('source') as string[];
             if (urls) {
-                this.source.mipmaps = await Promise.all<Texture2DCommonLayer>(urls.map(url => {
-                    const image = createImgByUrl(url);
-                    return Texture2DCommonLayer.createAsync(image);
-                }));
+                this.source.mipmaps = await Promise.all<Texture2DCommonLayer>(
+                    urls.map(url => {
+                        const image = createImgByUrl(url);
+                        return Texture2DCommonLayer.createAsync(image);
+                    }),
+                );
             }
         }
         this.source.syncData(this);
-
     }
 }
 
-export type Texture2DLayerSource = HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | OffscreenCanvas | ImageData | ImageBitmap | TypedArray;
+export type Texture2DLayerSource =
+    | HTMLImageElement
+    | HTMLCanvasElement
+    | HTMLVideoElement
+    | OffscreenCanvas
+    | ImageData
+    | ImageBitmap
+    | TypedArray;
 
 let defaultTextureInitialized = false;
 export function initDefaultTexture() {

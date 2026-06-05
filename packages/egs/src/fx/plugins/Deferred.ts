@@ -8,7 +8,12 @@ import { DeferredDispatcher, DynamicForwardLightsDispatcher } from '../../render
 import { PassQuadMaterialBase } from '../../elements/materials/quad/PassMaterialBase';
 import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
 import { directionalLightInclude, DirectionalLight } from '../../scene/lights/DirectionalLight';
-import { AreaBlinnPhong, DiskAreaBlinnPhong, MeshPhongMaterial, RectAreaBlinnPhong } from '../../elements/materials/mesh/MeshPhongMaterial';
+import {
+    AreaBlinnPhong,
+    DiskAreaBlinnPhong,
+    MeshPhongMaterial,
+    RectAreaBlinnPhong,
+} from '../../elements/materials/mesh/MeshPhongMaterial';
 import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
 import { Vector4 } from '../../math/Vector4';
 import { CopyMaterial, CopyDepthMaterial, CopyColorAndDepthMaterial } from '../../elements/materials/quad/CopyMaterial';
@@ -20,8 +25,12 @@ import type { RenderTarget } from '../../elements/textures/RenderTarget';
 import { DiskAreaLight } from '../../scene/lights/DiskAreaLight';
 import type { Matrix4, ReadonlyMatrix4 } from '../../math/Matrix4';
 import {
-    DialuxLuminanceMaterial, DialuxWhiteBalanceExposureMaterial, ExposedCopyMaterial, ExposedToneMappingMaterial,
-    HistogramComputeMaterial, AvgLuminanceMaterial
+    DialuxLuminanceMaterial,
+    DialuxWhiteBalanceExposureMaterial,
+    ExposedCopyMaterial,
+    ExposedToneMappingMaterial,
+    HistogramComputeMaterial,
+    AvgLuminanceMaterial,
 } from '../../elements/materials/quad/ExposedCopyMaterial';
 import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock';
 import { PipelineFilters } from '../PipelineAPI';
@@ -57,7 +66,7 @@ interface DeferredCameraUniforms {
     projectionInverseMatrix?: ReadonlyMatrix4;
     far?: number;
     near?: number;
-    isCubeView?: boolean,
+    isCubeView?: boolean;
 }
 
 function updateDeferredCameraUniforms(material: DeferredCameraUniforms, camera: Camera3D, isCubeView: boolean = false) {
@@ -176,8 +185,8 @@ export class DeferredPlugin extends PipelinePlugin {
         this.dispatcher.destroy();
     }
 
-    updateFrameSize() { }
-    updateEffect() { }
+    updateFrameSize() {}
+    updateEffect() {}
 
     updateGraphHash(hasher: HashKeyBuilder) {
         hasher
@@ -187,11 +196,7 @@ export class DeferredPlugin extends PipelinePlugin {
             .bool(this.drivenEnabled);
     }
 
-    private createOitPass(
-        graph: RenderGraph,
-        opaquePassList: PassNode[],
-        drivenPass: PassNode,
-    ): PassNode[] {
+    private createOitPass(graph: RenderGraph, opaquePassList: PassNode[], drivenPass: PassNode): PassNode[] {
         const scene = this.scene;
         const background = graph.removePass(BACKGROUND_SHADING_PASS_NAME);
         opaquePassList = [...(background ? [background] : []), ...opaquePassList];
@@ -210,7 +215,17 @@ export class DeferredPlugin extends PipelinePlugin {
             .setClearColor(new Vector4(0, 0, 0, 1))
             .useDispatcher(this.forwardDispatcher)
             .useDriven(this.drivenShadingMaterial)
-            .useIf(() => !this.enablePseudoColor, renderer => scene.OIT().render(renderer.renderer, RenderObjectsType.OIT, PipelineFilters.isDeferTransparent(this.enablePseudoColor)))
+            .useIf(
+                () => !this.enablePseudoColor,
+                renderer =>
+                    scene
+                        .OIT()
+                        .render(
+                            renderer.renderer,
+                            RenderObjectsType.OIT,
+                            PipelineFilters.isDeferTransparent(this.enablePseudoColor),
+                        ),
+            )
             .before(() => {
                 this.drivenShadingMaterial.oitEncode = true;
                 this.drivenShadingMaterial.shadingMode = DrivenShadingMode.PhongShading;
@@ -241,10 +256,7 @@ export class DeferredPlugin extends PipelinePlugin {
                 .input('tDiffuse', opaqueTarget)
                 .input('depth', opaqueTarget, 'depth')
                 .use(drawQuad(this.copyMaterial)),
-            pass('before_oit_pass')
-                .disableClear()
-                .useDispatcher(this.dynamicLightsDispatcher)
-                .draw(scene.OIT),
+            pass('before_oit_pass').disableClear().useDispatcher(this.dynamicLightsDispatcher).draw(scene.OIT),
             pass('mix_oit_pass')
                 .disableClear()
                 .input('accumColor', oitTarget, 0)
@@ -277,7 +289,9 @@ export class DeferredPlugin extends PipelinePlugin {
         const defer_scene_pass = pass('mrt-opaque-pass')
             .useDispatcher(this.dispatcher)
             .use((renderer, target: RenderTarget) => {
-                scene.default().render(renderer.renderer, renderObjectsType, PipelineFilters.isDeferPhong(this.enablePseudoColor));
+                scene
+                    .default()
+                    .render(renderer.renderer, renderObjectsType, PipelineFilters.isDeferPhong(this.enablePseudoColor));
                 this.result.normal = target.colors[0];
                 this.result.color = target.colors[1];
                 this.result.other = target.colors[2];
@@ -285,12 +299,13 @@ export class DeferredPlugin extends PipelinePlugin {
             });
 
         if (drivenEnabled) {
-            defer_scene_pass.useDriven(this.drivenShadingMaterial)
+            defer_scene_pass
+                .useDriven(this.drivenShadingMaterial)
                 .before(() => {
                     this.drivenShadingMaterial.shadingMode = DrivenShadingMode.DeferredEncode;
                     this.drivenShadingMaterial.decodeSrgb = this._decodeSrgb;
                 })
-                .after(() => this.drivenShadingMaterial.shadingMode = DrivenShadingMode.PhongShading);
+                .after(() => (this.drivenShadingMaterial.shadingMode = DrivenShadingMode.PhongShading));
         }
 
         const mrt = target('deferred-mrt', false)
@@ -307,7 +322,7 @@ export class DeferredPlugin extends PipelinePlugin {
             .from([
                 pass('clear')
                     .setClearColor(new Vector4(0, 0, 0, 0))
-                    .use(() => { }),
+                    .use(() => {}),
                 when(drivenEnabled, drivenPass),
                 defer_scene_pass,
             ]);
@@ -334,65 +349,109 @@ export class DeferredPlugin extends PipelinePlugin {
                     if (lights.directionalLights.length) {
                         this.deferredDirectionalLightMaterial.setProjInverse(matrixProjInverse);
                         updateDeferredCameraUniforms(this.deferredDirectionalLightMaterial, camera);
-                        this.deferredQuad.renderDeferredWithMaterial(adp.renderer, scene.scene, lights.directionalLights, this.deferredDirectionalLightMaterial, (l: DirectionalLight) => {
-                            l.viewMatrix.copy(matrixWorldInverse);
-                            l.invViewMatrix.copy(matrixViewInverse);
-                            if (this.deferredDirectionalLightMaterial.light && this.deferredDirectionalLightMaterial.light.shadow.enabled !== l.shadow.enabled) {
-                                this.deferredDirectionalLightMaterial.notifyRecompileShader();
-                            }
-                            this.deferredDirectionalLightMaterial.light = l;
-                        });
+                        this.deferredQuad.renderDeferredWithMaterial(
+                            adp.renderer,
+                            scene.scene,
+                            lights.directionalLights,
+                            this.deferredDirectionalLightMaterial,
+                            (l: DirectionalLight) => {
+                                l.viewMatrix.copy(matrixWorldInverse);
+                                l.invViewMatrix.copy(matrixViewInverse);
+                                if (
+                                    this.deferredDirectionalLightMaterial.light &&
+                                    this.deferredDirectionalLightMaterial.light.shadow.enabled !== l.shadow.enabled
+                                ) {
+                                    this.deferredDirectionalLightMaterial.notifyRecompileShader();
+                                }
+                                this.deferredDirectionalLightMaterial.light = l;
+                            },
+                        );
                     }
 
                     if (lights.spotLights.length) {
                         this.deferredSpotLightMaterial.setProjInverse(matrixProjInverse);
                         updateDeferredCameraUniforms(this.deferredSpotLightMaterial, camera);
-                        this.deferredQuad.renderDeferredWithMaterial(adp.renderer, scene.scene, lights.spotLights, this.deferredSpotLightMaterial, (l: SpotLight) => {
-                            l.viewMatrix.copy(matrixWorldInverse);
-                            l.invViewMatrix.copy(matrixViewInverse);
-                            if (this.deferredSpotLightMaterial.light && this.deferredSpotLightMaterial.light.shadow.enabled !== l.shadow.enabled) {
-                                this.deferredSpotLightMaterial.notifyRecompileShader();
-                            }
-                            this.deferredSpotLightMaterial.light = l;
-                        });
+                        this.deferredQuad.renderDeferredWithMaterial(
+                            adp.renderer,
+                            scene.scene,
+                            lights.spotLights,
+                            this.deferredSpotLightMaterial,
+                            (l: SpotLight) => {
+                                l.viewMatrix.copy(matrixWorldInverse);
+                                l.invViewMatrix.copy(matrixViewInverse);
+                                if (
+                                    this.deferredSpotLightMaterial.light &&
+                                    this.deferredSpotLightMaterial.light.shadow.enabled !== l.shadow.enabled
+                                ) {
+                                    this.deferredSpotLightMaterial.notifyRecompileShader();
+                                }
+                                this.deferredSpotLightMaterial.light = l;
+                            },
+                        );
                     }
 
                     if (lights.pointLights.length) {
                         this.deferredPointLightMaterial.setProjInverse(matrixProjInverse);
                         updateDeferredCameraUniforms(this.deferredPointLightMaterial, camera);
-                        this.deferredQuad.renderDeferredWithMaterial(adp.renderer, scene.scene, lights.pointLights, this.deferredPointLightMaterial, (l: PointLight) => {
-                            l.viewMatrix.copy(matrixWorldInverse);
-                            l.invViewMatrix.copy(matrixViewInverse);
-                            if (this.deferredPointLightMaterial.light && this.deferredPointLightMaterial.light.shadow.enabled !== l.shadow.enabled) {
-                                this.deferredPointLightMaterial.notifyRecompileShader();
-                            }
-                            this.deferredPointLightMaterial.light = l;
-                        });
+                        this.deferredQuad.renderDeferredWithMaterial(
+                            adp.renderer,
+                            scene.scene,
+                            lights.pointLights,
+                            this.deferredPointLightMaterial,
+                            (l: PointLight) => {
+                                l.viewMatrix.copy(matrixWorldInverse);
+                                l.invViewMatrix.copy(matrixViewInverse);
+                                if (
+                                    this.deferredPointLightMaterial.light &&
+                                    this.deferredPointLightMaterial.light.shadow.enabled !== l.shadow.enabled
+                                ) {
+                                    this.deferredPointLightMaterial.notifyRecompileShader();
+                                }
+                                this.deferredPointLightMaterial.light = l;
+                            },
+                        );
                     }
 
                     if (lights.rectAreaLights.length) {
                         this.deferredRectAreaLightMaterial.setProjInverse(matrixProjInverse);
                         updateDeferredCameraUniforms(this.deferredRectAreaLightMaterial, camera);
-                        this.deferredQuad.renderDeferredWithMaterial(adp.renderer, scene.scene, lights.rectAreaLights, this.deferredRectAreaLightMaterial, (l: RectAreaLight) => {
-                            this.deferredRectAreaLightMaterial.light = l;
-                        });
+                        this.deferredQuad.renderDeferredWithMaterial(
+                            adp.renderer,
+                            scene.scene,
+                            lights.rectAreaLights,
+                            this.deferredRectAreaLightMaterial,
+                            (l: RectAreaLight) => {
+                                this.deferredRectAreaLightMaterial.light = l;
+                            },
+                        );
                     }
 
                     if (lights.diskAreaLights.length) {
                         this.deferredDiskAreaLightMaterial.setProjInverse(matrixProjInverse);
                         updateDeferredCameraUniforms(this.deferredDiskAreaLightMaterial, camera);
-                        this.deferredQuad.renderDeferredWithMaterial(adp.renderer, scene.scene, lights.diskAreaLights, this.deferredDiskAreaLightMaterial, (l: DiskAreaLight) => {
-                            this.deferredDiskAreaLightMaterial.light = l;
-                        });
+                        this.deferredQuad.renderDeferredWithMaterial(
+                            adp.renderer,
+                            scene.scene,
+                            lights.diskAreaLights,
+                            this.deferredDiskAreaLightMaterial,
+                            (l: DiskAreaLight) => {
+                                this.deferredDiskAreaLightMaterial.light = l;
+                            },
+                        );
                     }
 
                     if (lights.ambientLight) {
                         this.deferredAmbientLightMaterial.setProjInverse(matrixProjInverse);
                         updateDeferredCameraUniforms(this.deferredAmbientLightMaterial, camera);
                         this.deferredAmbientLightMaterial.light = lights.ambientLight;
-                        this.deferredQuad.renderDeferredWithMaterial(adp.renderer, scene.scene, [lights.ambientLight], this.deferredAmbientLightMaterial);
+                        this.deferredQuad.renderDeferredWithMaterial(
+                            adp.renderer,
+                            scene.scene,
+                            [lights.ambientLight],
+                            this.deferredAmbientLightMaterial,
+                        );
                     }
-                }
+                },
             });
 
         const lights = target('deferred-lights', false, false)
@@ -405,21 +464,19 @@ export class DeferredPlugin extends PipelinePlugin {
 
         let result: RenderTargetNode;
         if (this.enablePseudoColor) {
-            result = target('deferred-result', true, false)
-                .from([
-                    pass('pseudo_color_compute')
-                        .setClearColor(new Vector4(0, 0, 0, 0))
-                        .input('hdr', lights)
-                        .use(drawQuad(this.pseudoColorMaterial)),
-                ]);
+            result = target('deferred-result', true, false).from([
+                pass('pseudo_color_compute')
+                    .setClearColor(new Vector4(0, 0, 0, 0))
+                    .input('hdr', lights)
+                    .use(drawQuad(this.pseudoColorMaterial)),
+            ]);
         } else if (this.enableWhiteBalance) {
-            result = target('deferred-result', true, false)
-                .from([
-                    pass('deferred-result-pass')
-                        .setClearColor(new Vector4(0, 0, 0, 0))
-                        .input('hdr', lights)
-                        .use(drawQuad(this.dialuxWhiteBalanceExposure)),
-                ]);
+            result = target('deferred-result', true, false).from([
+                pass('deferred-result-pass')
+                    .setClearColor(new Vector4(0, 0, 0, 0))
+                    .input('hdr', lights)
+                    .use(drawQuad(this.dialuxWhiteBalanceExposure)),
+            ]);
         } else {
             const avgLuminanceTarget = target('deferred-luminance-target', false, false)
                 .modify(node => {
@@ -431,8 +488,8 @@ export class DeferredPlugin extends PipelinePlugin {
                 .from([
                     pass('pre-create-target-pass')
                         .disableClear()
-                        .use(() => { }),
-                ]);;
+                        .use(() => {}),
+                ]);
 
             if (this.isAutoExposedEnabled) {
                 // pass1: compute luminance texture
@@ -442,11 +499,7 @@ export class DeferredPlugin extends PipelinePlugin {
                         color.format = TextureFormat.Rgba16Float;
                         node.attach(color);
                     })
-                    .from([
-                        pass('deferred-copy-exposed')
-                            .input('tDiffuse', lights)
-                            .use(drawQuad(this.exposedCopier)),
-                    ]);
+                    .from([pass('deferred-copy-exposed').input('tDiffuse', lights).use(drawQuad(this.exposedCopier))]);
 
                 // pass2: generate histogram
                 const histogramTarget = target('deferred-histogram', false, false)
@@ -464,40 +517,34 @@ export class DeferredPlugin extends PipelinePlugin {
                     ]);
 
                 // pass3: accumulate exposure
-                avgLuminanceTarget
-                    .from([
-                        pass('deferred-average-luminance')
-                            .setClearColor(new Vector4(1, 1, 1, 1))
-                            .input('tDiffuse', histogramTarget)
-                            .use(drawQuad(this.avgLuminanceMaterial)),
-                    ]);
+                avgLuminanceTarget.from([
+                    pass('deferred-average-luminance')
+                        .setClearColor(new Vector4(1, 1, 1, 1))
+                        .input('tDiffuse', histogramTarget)
+                        .use(drawQuad(this.avgLuminanceMaterial)),
+                ]);
             }
 
             // pass4: compute exposed ldr color
-            result = target('deferred-result', true, false)
-                .from([
-                    pass('deferred-result-pass')
-                        .setClearColor(new Vector4(0, 0, 0, 0))
-                        .before(() => {
-                            this.exposedToneMappingCopier.keyMinuend = this.keyMinuend;
-                            this.exposedToneMappingCopier.enableAutoExposure = this.isAutoExposedEnabled;
-                        })
-                        .input('luminanceTexture', avgLuminanceTarget)
-                        .input('tDiffuse', lights)
-                        .use(drawQuad(this.exposedToneMappingCopier)),
-                ]);
+            result = target('deferred-result', true, false).from([
+                pass('deferred-result-pass')
+                    .setClearColor(new Vector4(0, 0, 0, 0))
+                    .before(() => {
+                        this.exposedToneMappingCopier.keyMinuend = this.keyMinuend;
+                        this.exposedToneMappingCopier.enableAutoExposure = this.isAutoExposedEnabled;
+                    })
+                    .input('luminanceTexture', avgLuminanceTarget)
+                    .input('tDiffuse', lights)
+                    .use(drawQuad(this.exposedToneMappingCopier)),
+            ]);
         }
         const passList: PassNode[] = [];
 
         let opaquePassList = disableClear([
-            pass('deferred_copy')
-                .input('tDiffuse', result)
-                .use(drawQuad(this.copier)),
-            pass('deferred_copy_depth')
-                .input('depth', mrt, 'depth')
-                .use(drawQuad(this.depthCopier)),
-            pass('deferred_forward')
-                .draw(filterBy(scene.default, PipelineFilters.isNotDeferPhong))]);
+            pass('deferred_copy').input('tDiffuse', result).use(drawQuad(this.copier)),
+            pass('deferred_copy_depth').input('depth', mrt, 'depth').use(drawQuad(this.depthCopier)),
+            pass('deferred_forward').draw(filterBy(scene.default, PipelineFilters.isNotDeferPhong)),
+        ]);
         // transparent pass
         let transparentPassList: PassNode[] = [];
         if (drivenEnabled) {
@@ -523,13 +570,13 @@ export class DeferredPlugin extends PipelinePlugin {
                 get: () => this._enabled,
                 set: (v: boolean) => {
                     this._enabled = v;
-                }
+                },
             },
             enableWhiteBalance: {
                 get: () => this.enableWhiteBalance,
                 set: (v: boolean) => {
                     this.enableWhiteBalance = v;
-                }
+                },
             },
             enablePseudoColor: {
                 get: () => this.enablePseudoColor,
@@ -603,8 +650,8 @@ export class DeferredPlugin extends PipelinePlugin {
                 get: () => this.decodeSrgb,
                 set: (v: boolean) => {
                     this.decodeSrgb = v;
-                }
-            }
+                },
+            },
         };
     }
 }
@@ -744,7 +791,9 @@ export class DeferredDrawAmbientLightMaterial extends DeferredLightBase<AmbientL
         return 'DeferredDrawAmbientLightMaterial';
     }
 
-    buildLightShadow() { return ''; }
+    buildLightShadow() {
+        return '';
+    }
 
     buildLightComputeImpl() {
         return `
@@ -781,9 +830,13 @@ export class DeferredDrawDirectionalLightMaterial extends DeferredLightBase<Dire
         return `
         IncidentLight directLight;
         getDirectionalDirectLightIrradiance( directionalLight, geometry, directLight );
-        ${this.light.shadow.enabled ? `
+        ${
+            this.light.shadow.enabled
+                ? `
         directLight.color *= getDirectionalShadow(directionalShadowMap, directionalLightShadowsInfo.shadowMapSize, directionalLightShadowsInfo.shadowBias, directionalLightShadowsInfo.shadowRadius, directionalShadowCoord, directionalLightShadowsInfo.shadowIntensity);
-        `: ''}
+        `
+                : ''
+        }
         ${MeshPhongMaterial.constructMaterialFromGBufferForLight()}
         RE_Direct(directLight, geometry, material, reflectedLight);
         `;
@@ -812,8 +865,8 @@ export class DeferredDrawDirectionalLightMaterial extends DeferredLightBase<Dire
         builder
             .addFragment(directionalLightInclude)
             .addFragmentCustom(DirectionalLight.getHeader(false))
-            .when(this.light.shadow.enabled, (builder) => builder.addUniform('viewMatrix', WebGLShaderDataType.Mat4))
-            .when(this.light.shadow.enabled, (builder) => builder.addUniform('invViewMatrix', WebGLShaderDataType.Mat4))
+            .when(this.light.shadow.enabled, builder => builder.addUniform('viewMatrix', WebGLShaderDataType.Mat4))
+            .when(this.light.shadow.enabled, builder => builder.addUniform('invViewMatrix', WebGLShaderDataType.Mat4))
             .inject(ShaderInjectionTypes.gl_FragColor, this.buildLightCompute());
     }
 
@@ -839,7 +892,9 @@ export class DeferredDrawPointLightMaterial extends DeferredLightBase<PointLight
         if (!directLight.visible) {
             discard;
         }
-        ${this.light.shadow.enabled ? `
+        ${
+            this.light.shadow.enabled
+                ? `
             float depthValue;
             vec3 origin = (pointShadowWorldCoord.xyz - pointLight.worldPosition);
             vec3 originAbs = abs(origin);
@@ -859,7 +914,9 @@ export class DeferredDrawPointLightMaterial extends DeferredLightBase<PointLight
                                 pointShadowWorldCoord - vec4(pointLight.worldPosition, 0.0),
                                 depthValue,
                                 pointLightShadowsInfo.shadowIntensity);
-        `: ''}
+        `
+                : ''
+        }
          ${MeshPhongMaterial.constructMaterialFromGBufferForLight()}
         RE_Direct(directLight, geometry, material, reflectedLight);
         `;
@@ -886,14 +943,16 @@ export class DeferredDrawPointLightMaterial extends DeferredLightBase<PointLight
         if (this.light.shadow.enabled) {
             this.light.shadow.extendsShaderDeferred(builder);
         }
-        const IESLightEffect = Capabilities.IS_WEBGL2 ? ShaderBlockPool.IESLightEffect : ShaderBlockPool.IESLightEffectMock;
+        const IESLightEffect = Capabilities.IS_WEBGL2
+            ? ShaderBlockPool.IESLightEffect
+            : ShaderBlockPool.IESLightEffectMock;
         builder
             .addFragment(punctualLightIntensityToIrradianceFactor)
             .addFragment(IESLightEffect)
             .addFragment(PointLight.getShaderInclude())
             .addFragmentCustom(PointLight.getHeader(false))
             .addUniform('invViewMatrix', WebGLShaderDataType.Mat4)
-            .when(this.light.shadow.enabled, (builder) => builder.addUniform('viewMatrix', WebGLShaderDataType.Mat4))
+            .when(this.light.shadow.enabled, builder => builder.addUniform('viewMatrix', WebGLShaderDataType.Mat4))
             .inject(ShaderInjectionTypes.gl_FragColor, this.buildLightCompute());
     }
 
@@ -922,9 +981,13 @@ export class DeferredDrawSpotLightMaterial extends DeferredLightBase<SpotLight> 
             discard;
         }
 
-        ${this.light.shadow.enabled ? `
+        ${
+            this.light.shadow.enabled
+                ? `
         directLight.color *= getShadow(spotShadowMap, spotLightShadowsInfo.shadowMapSize, spotLightShadowsInfo.shadowBias, spotLightShadowsInfo.shadowRadius, spotShadowCoord, spotLightShadowsInfo.shadowIntensity);
-        `: ``}
+        `
+                : ``
+        }
 
         // late material reconstruct
         ${MeshPhongMaterial.constructMaterialFromGBufferForLight()}
@@ -945,7 +1008,6 @@ export class DeferredDrawSpotLightMaterial extends DeferredLightBase<SpotLight> 
         } else {
             return '';
         }
-
     }
 
     extendShaderShading(builder: ShaderBuilder, _: ShaderComponentRegistry) {
@@ -953,13 +1015,15 @@ export class DeferredDrawSpotLightMaterial extends DeferredLightBase<SpotLight> 
         if (this.light.shadow.enabled) {
             this.light.shadow.extendsShaderDeferred(builder);
         }
-        const IESLightEffect = Capabilities.IS_WEBGL2 ? ShaderBlockPool.IESLightEffect : ShaderBlockPool.IESLightEffectMock;
+        const IESLightEffect = Capabilities.IS_WEBGL2
+            ? ShaderBlockPool.IESLightEffect
+            : ShaderBlockPool.IESLightEffectMock;
         builder
             .addFragment(punctualLightIntensityToIrradianceFactor)
             .addFragment(IESLightEffect)
             .addFragment(spotLightInclude)
             .addFragmentCustom(SpotLight.getHeader(false))
-            .when(this.light.shadow.enabled, (builder) => builder.addUniform('viewMatrix', WebGLShaderDataType.Mat4))
+            .when(this.light.shadow.enabled, builder => builder.addUniform('viewMatrix', WebGLShaderDataType.Mat4))
             .addUniform('invViewMatrix', WebGLShaderDataType.Mat4)
             .inject(ShaderInjectionTypes.gl_FragColor, this.buildLightCompute());
     }
@@ -982,7 +1046,9 @@ export class DeferredDrawDiskAreaLightMaterial extends DeferredLightBase<DiskAre
         `;
     }
 
-    buildLightShadow() { return ''; }
+    buildLightShadow() {
+        return '';
+    }
 
     extendShaderShading(builder: ShaderBuilder, r: ShaderComponentRegistry) {
         super.extendShaderShading(builder, r);
@@ -993,7 +1059,8 @@ export class DeferredDrawDiskAreaLightMaterial extends DeferredLightBase<DiskAre
             .addFragmentCustom(DiskAreaLight.getHeader(false))
             .inject(ShaderInjectionTypes.gl_FragColor, this.buildLightCompute())
             .when(r.light.diskAreaLights.length > 0, b =>
-                b.addFragment(AreaBlinnPhong).addFragment(DiskAreaBlinnPhong));
+                b.addFragment(AreaBlinnPhong).addFragment(DiskAreaBlinnPhong),
+            );
     }
 
     updateShadingUniforms(program: WGLProgram, _: ShaderComponentRegistry) {
@@ -1013,7 +1080,9 @@ export class DeferredDrawRectAreaLightMaterial extends DeferredLightBase<RectAre
         `;
     }
 
-    buildLightShadow() { return ''; }
+    buildLightShadow() {
+        return '';
+    }
 
     extendShaderShading(builder: ShaderBuilder, r: ShaderComponentRegistry) {
         super.extendShaderShading(builder, r);
@@ -1024,7 +1093,8 @@ export class DeferredDrawRectAreaLightMaterial extends DeferredLightBase<RectAre
             .addFragmentCustom(RectAreaLight.getHeader(false))
             .inject(ShaderInjectionTypes.gl_FragColor, this.buildLightCompute())
             .when(r.light.rectAreaLights.length > 0, b =>
-                b.addFragment(AreaBlinnPhong).addFragment(RectAreaBlinnPhong));
+                b.addFragment(AreaBlinnPhong).addFragment(RectAreaBlinnPhong),
+            );
     }
 
     updateShadingUniforms(program: WGLProgram, _: ShaderComponentRegistry) {

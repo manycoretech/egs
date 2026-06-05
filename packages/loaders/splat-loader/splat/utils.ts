@@ -19,10 +19,20 @@ export interface ISplatData {
 }
 
 export interface ISingleSplat {
-    x: number, y: number, z: number,
-    sx: number, sy: number, sz: number,
-    qx: number, qy: number, qz: number, qw: number,
-    r: number, g: number, b: number, a: number,
+    x: number;
+    y: number;
+    z: number;
+    sx: number;
+    sy: number;
+    sz: number;
+    qx: number;
+    qy: number;
+    qz: number;
+    qw: number;
+    r: number;
+    g: number;
+    b: number;
+    a: number;
 }
 
 export const SH_MAPS: Record<number, number> = {
@@ -32,7 +42,7 @@ export const SH_MAPS: Record<number, number> = {
     3: 45,
 };
 
-export function computeTextureSize(counts: number, maxTextureSize: number): { w: number, h: number, d: number } {
+export function computeTextureSize(counts: number, maxTextureSize: number): { w: number; h: number; d: number } {
     if (counts === 0) {
         return { w: 0, h: 0, d: 0 };
     }
@@ -79,7 +89,7 @@ export function toHalf(f: number): number {
 
     const halfFrac = frac >> 13;
     return halfSign | (newExp << 10) | halfFrac;
-};
+}
 
 export function fromHalf(h: number): number {
     const sign = (h >> 15) & 0x1;
@@ -119,7 +129,11 @@ export function fromHalf(h: number): number {
 }
 
 class Vector3 {
-    constructor(public x: number, public y: number, public z: number) { }
+    constructor(
+        public x: number,
+        public y: number,
+        public z: number,
+    ) {}
 
     set(x: number, y: number, z: number): this {
         this.x = x;
@@ -146,7 +160,12 @@ class Vector3 {
 }
 
 export class Quaternion {
-    constructor(public x: number, public y: number, public z: number, public w: number) { }
+    constructor(
+        public x: number,
+        public y: number,
+        public z: number,
+        public w: number,
+    ) {}
 
     set(x: number, y: number, z: number, w: number): this {
         this.x = x;
@@ -157,9 +176,7 @@ export class Quaternion {
     }
 
     normalize(): this {
-        const length = Math.sqrt(
-            this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w,
-        );
+        const length = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
         if (length === 0) {
             return this;
         }
@@ -181,9 +198,7 @@ export function encodeQuatOct(x: number, y: number, z: number, w: number): numbe
         q.set(-q.x, -q.y, -q.z, -q.w);
     }
     const theta = 2 * Math.acos(q.w);
-    const xyz_norm = Math.sqrt(
-        q.x * q.x + q.y * q.y + q.z * q.z,
-    );
+    const xyz_norm = Math.sqrt(q.x * q.x + q.y * q.y + q.z * q.z);
     const axis = xyz_norm < 1e-6 ? tempVec.set(1, 0, 0) : tempVec.set(q.x, q.y, q.z).divideScalar(xyz_norm);
 
     const sum = Math.abs(axis.x) + Math.abs(axis.y) + Math.abs(axis.z);
@@ -198,7 +213,7 @@ export function encodeQuatOct(x: number, y: number, z: number, w: number): numbe
     tempArr[1] = p_y;
     tempArr[2] = theta / Math.PI;
     return tempArr;
-};
+}
 
 export function decodeQuatOct(u: number, v: number, angle: number): number[] {
     let f_x = u;

@@ -14,7 +14,7 @@ export abstract class SceneMaterial extends Material {
         // SceneMaterial
         return 'c';
     }
-    updateShapeUniforms(_1: WGLProgram, _: ShaderComponentRegistry) { }
+    updateShapeUniforms(_1: WGLProgram, _: ShaderComponentRegistry) {}
 }
 
 /**
@@ -55,7 +55,9 @@ export abstract class ScenePopLODMaterial extends SceneClipMaterial {
     pop: Nullable<PopShaderComponent> = new PopShaderComponent();
     extendShaderShape(builder: ShaderBuilder, r: ShaderComponentRegistry) {
         super.extendShaderShape(builder, r);
-        if (this.pop !== null) { this.pop.extendShaderShape(builder); }
+        if (this.pop !== null) {
+            this.pop.extendShaderShape(builder);
+        }
     }
 
     computeShapeKey(r: ShaderComponentRegistry) {

@@ -22,9 +22,7 @@ export class PseudoColorMaterial extends PassQuadMaterialBase {
     }
 
     generateShaderKey(r: ShaderComponentRegistry) {
-        return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
-            .raw(this.version)
-            .getKey();
+        return super.generateShaderKey(r) + HashKeyBuilder.getInstance().raw(this.version).getKey();
     }
 
     updateShadingUniforms(program: WGLProgram) {
@@ -47,7 +45,9 @@ export class PseudoColorMaterial extends PassQuadMaterialBase {
             .addUniform('counts', WebGLShaderDataType.Int)
             .addUniformArray('colors', WebGLShaderDataType.Float, this.colors.length)
             .addUniformArray('gradations', WebGLShaderDataType.Float, this.gradations.length)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 vec4 luminance = texture2D(hdr, vUv).rgba;
                 float grey = dot(luminance.rgb, vec3(0.2126, 0.7152, 0.0722)) * 378.0;
                 int hex = 0;
@@ -71,6 +71,7 @@ export class PseudoColorMaterial extends PassQuadMaterialBase {
                 int b = hex - (r << 16) - (g << 8);
 
                 gl_FragColor = vec4(float(r) / 256.0, float(g) / 256.0, float(b) / 256.0, luminance.a);
-            `);
+            `,
+            );
     }
 }

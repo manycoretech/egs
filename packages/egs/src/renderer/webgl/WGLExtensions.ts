@@ -24,7 +24,7 @@ export enum WebGLExtEnums {
     WEBGL_compressed_texture_etc1 = 'WEBGL_compressed_texture_etc1',
     WEBGL_compressed_texture_etc = 'WEBGL_compressed_texture_etc',
     WEBGL_compressed_texture_pvrtc = 'WEBGL_compressed_texture_pvrtc',
-    EXT_texture_compression_bptc = 'EXT_texture_compression_bptc'
+    EXT_texture_compression_bptc = 'EXT_texture_compression_bptc',
 }
 
 const EXTENSION_LIST = Object.keys(WebGLExtEnums);

@@ -1,7 +1,11 @@
 import type { DAGNode } from './DAGNode';
 import { PassNode, type PassExecuteCtx } from './PassNode';
 import type { MaterialDispatcher } from '../../renderer/MaterialDispatcher';
-import { type DrawableList, type DrawcallListClassifyType, DrawcallListClassifyList } from '../../scene/tools/DrawcallList';
+import {
+    type DrawableList,
+    type DrawcallListClassifyType,
+    DrawcallListClassifyList,
+} from '../../scene/tools/DrawcallList';
 import type { CubeCamera } from '../../scene/cameras/CubeCamera';
 import { RenderTargetNode } from './RenderTargetNode';
 import type { RenderTarget } from '../../elements/textures/RenderTarget';
@@ -33,9 +37,8 @@ export class CubePassNode {
         classifyType: DrawcallListClassifyType = DrawcallListClassifyList.default,
     ) {
         this.passes.forEach((p, i) => {
-            p.useIfAndDisableClear(
-                shouldRender,
-                r => r.render(content().project(camera().cameras[i], undefined, undefined, classifyType)),
+            p.useIfAndDisableClear(shouldRender, r =>
+                r.render(content().project(camera().cameras[i], undefined, undefined, classifyType)),
             );
         });
         return this;
@@ -60,8 +63,9 @@ export class CubeRenderTargetNode {
     target: RenderTargetNode;
 
     constructor(name: string) {
-        this.target = new RenderTargetNode(name + '_cube_target')
-            .modify(node => node.dimension = TextureViewDimension.Cube);
+        this.target = new RenderTargetNode(name + '_cube_target').modify(
+            node => (node.dimension = TextureViewDimension.Cube),
+        );
         this.target.depthOrArrayLayers = 6;
     }
 
@@ -81,9 +85,7 @@ export class CubeRenderTargetNode {
     }
 
     from(cubePass: CubePassNode) {
-        cubePass.traverse((pass, i) => this.target.from([
-            pass.before(r => (r.target as RenderTarget).layer = i),
-        ]));
+        cubePass.traverse((pass, i) => this.target.from([pass.before(r => ((r.target as RenderTarget).layer = i))]));
         return this;
     }
 }

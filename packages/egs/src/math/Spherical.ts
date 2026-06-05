@@ -20,9 +20,9 @@ export class Spherical {
     theta: number;
 
     constructor(radius?: number, phi?: number, theta?: number) {
-        this.radius = (radius !== undefined) ? radius : 1.0;
-        this.phi = (phi !== undefined) ? phi : 0; // polar angle
-        this.theta = (theta !== undefined) ? theta : 0; // azimuthal angle
+        this.radius = radius !== undefined ? radius : 1.0;
+        this.phi = phi !== undefined ? phi : 0; // polar angle
+        this.theta = theta !== undefined ? theta : 0; // azimuthal angle
     }
     /**
      * Sets values of this spherical's {@link radius| radius}, {@link phi| phi} and {@link theta| theta} properties.
@@ -72,7 +72,7 @@ export class Spherical {
             this.phi = 0;
         } else {
             this.theta = Math.atan2(x, z);
-            this.phi = Math.acos(_Math.clamp(y / this.radius, - 1, 1));
+            this.phi = Math.acos(_Math.clamp(y / this.radius, -1, 1));
         }
         return this;
     }

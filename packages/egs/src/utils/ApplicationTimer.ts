@@ -21,7 +21,9 @@ class ApplicationTimer {
         if (this.firstRenderStart < 0) {
             this.firstRenderStart = time;
             const delta = this.firstRenderStart - this.startupTime;
-            logger.info(`First render began, app startup: ${this.startupTime}ms, render start: ${this.firstRenderStart}ms, delta: ${delta}ms`);
+            logger.info(
+                `First render began, app startup: ${this.startupTime}ms, render start: ${this.firstRenderStart}ms, delta: ${delta}ms`,
+            );
             if (this.timeoutHandle) {
                 clearTimeout(this.timeoutHandle);
             }

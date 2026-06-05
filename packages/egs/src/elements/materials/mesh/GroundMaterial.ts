@@ -1,4 +1,9 @@
-import { type ShaderBuilder, ShaderExtensionTypes, ShaderVaryingTypes, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderExtensionTypes,
+    ShaderVaryingTypes,
+    ShaderInjectionTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
@@ -13,11 +18,11 @@ import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPo
 
 export class GroundMaterial extends SceneMaterial {
     @materialProperty()
-    groundColor = readonlyMath.color(0.7, 0.7, 0.7);    // Ground floor's color
+    groundColor = readonlyMath.color(0.7, 0.7, 0.7); // Ground floor's color
     @materialProperty()
     quat = readonlyMath.vec4(0, 0, 0, 1);
     @materialProperty()
-    private _isGroundColorEnabled: number = 0;              // isGround floor color enabled
+    private _isGroundColorEnabled: number = 0; // isGround floor color enabled
     get isGroundColorEnabled() {
         return this._isGroundColorEnabled > 0;
     }
@@ -25,16 +30,16 @@ export class GroundMaterial extends SceneMaterial {
         this._isGroundColorEnabled = v ? 1 : 0;
     }
     @materialProperty()
-    groundIntensity = 1.5;               // ground intensity
+    groundIntensity = 1.5; // ground intensity
 
     @materialProperty()
-    gridGapSizeA = 500;                  // Tile A's gap size
+    gridGapSizeA = 500; // Tile A's gap size
     @materialProperty()
-    offsetA = readonlyMath.vec2(0, 0);         // Tile A's offset
+    offsetA = readonlyMath.vec2(0, 0); // Tile A's offset
     @materialProperty()
-    colorA = readonlyMath.color(1.0, 1.0, 1.0);   // Tile A's color
+    colorA = readonlyMath.color(1.0, 1.0, 1.0); // Tile A's color
     private _lineWidthA = 1;
-    private lineFactorA = 1;                     // not expose, for precomputing, related for linewidth
+    private lineFactorA = 1; // not expose, for precomputing, related for linewidth
     get lineWidthA() {
         return this._lineWidthA;
     }
@@ -45,13 +50,13 @@ export class GroundMaterial extends SceneMaterial {
     }
 
     @materialProperty()
-    gridGapSizeB = 5000;                 // Tile B's gap size
+    gridGapSizeB = 5000; // Tile B's gap size
     @materialProperty()
-    offsetB = readonlyMath.vec2(0, 0);         // Tile B's offset
+    offsetB = readonlyMath.vec2(0, 0); // Tile B's offset
     @materialProperty()
-    colorB = readonlyMath.color(1.0, 1.0, 1.0);   // Tile B's color
+    colorB = readonlyMath.color(1.0, 1.0, 1.0); // Tile B's color
     private _lineWidthB = 1;
-    private lineFactorB = 1;                     // not expose, for precomputing, related for linewidth
+    private lineFactorB = 1; // not expose, for precomputing, related for linewidth
     get lineWidthB() {
         return this._lineWidthB;
     }
@@ -107,7 +112,9 @@ export class GroundMaterial extends SceneMaterial {
             .inject(ShaderInjectionTypes.vary_any, 'depth = gl_Position.z;')
             .addFragment(ShaderBlockPool.QuaternionFunctions)
             .addFragment(GroundFrag)
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
             vec3 viewPosition = applyQuat(groundRotation, vWorldPosition);
             vec4 gridA = vec4(colorA, grid(viewPosition, gridGapSizeA, offsetA, lineFactorA));
             vec4 gridB = vec4(colorB, grid(viewPosition, gridGapSizeB, offsetB, lineFactorB));
@@ -115,7 +122,8 @@ export class GroundMaterial extends SceneMaterial {
             vec4 res1 = mixColorByOpacity(grid, ground(viewPosition));
             vec4 res2 = grid * grid.w + vec4(groundColor, 1.0) * (1.0 - grid.w);
             gl_FragColor = res1 * (1.0 - groundColorEnabled) + res2 * groundColorEnabled;
-            `);
+            `,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {

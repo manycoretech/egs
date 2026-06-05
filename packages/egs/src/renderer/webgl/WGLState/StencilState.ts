@@ -23,7 +23,7 @@ export class StencilState {
         this.currentStencilZPass = null;
         this.currentStencilClear = null;
         this.setClear(0);
-        this.setFunc(gl.ALWAYS, 0, 2 ^ 32 - 1);
+        this.setFunc(gl.ALWAYS, 0, 2 ^ (32 - 1));
     }
 
     setMask(stencilMask: number): void {
@@ -34,9 +34,11 @@ export class StencilState {
     }
 
     setFunc(stencilFunc: StencilFunc, stencilRef: number, stencilMask: number): void {
-        if (this.currentStencilFunc !== stencilFunc ||
+        if (
+            this.currentStencilFunc !== stencilFunc ||
             this.currentStencilRef !== stencilRef ||
-            this.currentStencilFuncMask !== stencilMask) {
+            this.currentStencilFuncMask !== stencilMask
+        ) {
             this.gl.stencilFunc(stencilFunc, stencilRef, stencilMask);
             this.currentStencilFunc = stencilFunc;
             this.currentStencilRef = stencilRef;
@@ -45,9 +47,11 @@ export class StencilState {
     }
 
     setOp(stencilFail: StencilOp, stencilZFail: number, stencilZPass: number): void {
-        if (this.currentStencilFail !== stencilFail ||
+        if (
+            this.currentStencilFail !== stencilFail ||
             this.currentStencilZFail !== stencilZFail ||
-            this.currentStencilZPass !== stencilZPass) {
+            this.currentStencilZPass !== stencilZPass
+        ) {
             this.gl.stencilOp(stencilFail, stencilZFail, stencilZPass);
             this.currentStencilFail = stencilFail;
             this.currentStencilZFail = stencilZFail;

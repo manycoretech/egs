@@ -65,7 +65,12 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
 
         for (let i = 0; i < splat.extrasTex.length; i++) {
             builder
-                .addUniform(`extraTex${i}`, isUSamplerType(splat.extrasTex[i].glFormat.dataType(RendererBackend.WEBGL2_JS)) ? WebGLShaderDataType.USampler2D : WebGLShaderDataType.Sampler2D)
+                .addUniform(
+                    `extraTex${i}`,
+                    isUSamplerType(splat.extrasTex[i].glFormat.dataType(RendererBackend.WEBGL2_JS))
+                        ? WebGLShaderDataType.USampler2D
+                        : WebGLShaderDataType.Sampler2D,
+                )
                 .addUniform(`extraTex${i}_width`, WebGLShaderDataType.UInt);
         }
         for (let i = 0; i < splat.extrasUBO.length; i++) {
@@ -115,7 +120,9 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
                 }
             `)
             .addFragmentCustom(splat.createUnpackSplatShader())
-            .inject(ShaderInjectionTypes.gl_FragColor, `
+            .inject(
+                ShaderInjectionTypes.gl_FragColor,
+                `
                 ivec2 fragCoord = ivec2(gl_FragCoord);
                 int splatIndex_i = fragCoord.y * resolution.x + fragCoord.x - offset;
                 if (splatIndex_i < 0 || splatIndex_i >= targetCounts) {
@@ -132,13 +139,17 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
 
                 uint splatIndex = uint(splatIndex_i + targetOffset);
                 uint state = 1u;
-                ${enableState ? `
+                ${
+                    enableState
+                        ? `
                     state = texelFetch(stateTex, ivec2(splatIndex % stateTexWidth, splatIndex / stateTexWidth), 0).r;
                     if ((state & 1u) != 0u) {
                         return;
                     }
                     state |= 1u;
-                ` : ''}
+                `
+                        : ''
+                }
 
                 Splat splat;
                 unpackSplat(splatIndex, splat);
@@ -150,7 +161,9 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
                 }
 
                 mat4 mMatrix = modelMatrix;
-                ${enableGroupTransform ? `
+                ${
+                    enableGroupTransform
+                        ? `
                     uint paletteIdx = texelFetch(groupTex, ivec2(splatIndex % groupTexWidth, splatIndex / groupTexWidth), 0).r;
                     mat4 transform;
                     transform[0] = texelFetch(groupTransformTex, ivec2(0, paletteIdx), 0);
@@ -158,7 +171,9 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
                     transform[2] = texelFetch(groupTransformTex, ivec2(2, paletteIdx), 0);
                     transform[3] = vec4(0.0, 0.0, 0.0, 1.0);
                     mMatrix = mMatrix * transpose(transform);
-                ` : ''}
+                `
+                        : ''
+                }
 
                 ${createEffectShader(effect)}
 
@@ -185,13 +200,18 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
                     0u
                 );
                 pc_fragColor_1 = vec4(center, float(state));
-                ${outputColorAttachment ? `
+                ${
+                    outputColorAttachment
+                        ? `
                     pc_fragColor_2 = splat.color;
-                ` : `
+                `
+                        : `
                     uvec4 uColor = uvec4(round(saturate(splat.color) * 255.0));
                     pc_fragColor_0.w = uColor.r | (uColor.g << 8u) | (uColor.b << 16u) | (uColor.a << 24u);
-                `}
-            `);
+                `
+                }
+            `,
+            );
     }
 
     updateShadingUniforms(program: WGLProgram) {
@@ -373,7 +393,9 @@ function createEffectShader(effect: SplatEffectConfig): string {
     }
 
     return `
-        ${effect.pulseEnabled ? `
+        ${
+            effect.pulseEnabled
+                ? `
             float hash_id = hash(float(splatIndex));
             if (hash_id < pulseSparseThreshold) {
                 return;
@@ -389,9 +411,13 @@ function createEffectShader(effect: SplatEffectConfig): string {
             float scaleFactor = pulseSize * (1.0 + h * pulseSizeVariance);
             splat.scales = vec3(pulse * scaleFactor);
             splat.color *= pulseColorBoost;
-        ` : ''}
+        `
+                : ''
+        }
 
-        ${effect.ringEnabled ? `
+        ${
+            effect.ringEnabled
+                ? `
             float distanceToReference = length(splat.center - ringOrigin);
             if ((distanceToReference <= ringRadius) != ringInnerRegionVisible) {
                 return;
@@ -400,9 +426,13 @@ function createEffectShader(effect: SplatEffectConfig): string {
             float ringFactor = 1.0 - smoothstep(0.0, ringWidth, distanceFromRing);
             vec3 finalColor = mix(splat.color.rgb, ringColor, ringFactor * 0.8);
             splat.color.rgb = finalColor;
-        ` : ''}
+        `
+                : ''
+        }
 
-        ${effect.spreadEnabled ? `
+        ${
+            effect.spreadEnabled
+                ? `
             float distance = length((splat.center - spreadOrigin).xy);
             float t_main = saturate(spreadRadius - distance);
             vec3 scale_main = mix(vec3(0.0), splat.scales, t_main);
@@ -411,9 +441,13 @@ function createEffectShader(effect: SplatEffectConfig): string {
             splat.scales = max(scale_main, scale_pre);
             float t_col = saturate(spreadColorBlendRadius - distance);
             splat.color = mix(spreadColorBlendBase, splat.color, t_col);
-        ` : ''}
+        `
+                : ''
+        }
 
-        ${effect.remyEnabled ? `
+        ${
+            effect.remyEnabled
+                ? `
             float hash_id = hash(float(splatIndex));
             float distance = length(splat.center - remyOrigin);
             vec3 scale = splat.scales;
@@ -450,9 +484,13 @@ function createEffectShader(effect: SplatEffectConfig): string {
 
             splat.scales = scale;
             splat.color = color;
-        ` : ''}
+        `
+                : ''
+        }
 
-        ${effect.magicEnabled ? `
+        ${
+            effect.magicEnabled
+                ? `
             float hash_id = hash(float(splatIndex));
             float distance = length(splat.center - magicOrigin);
             float distanceXY = length(splat.center.xy - magicOrigin.xy);
@@ -484,10 +522,16 @@ function createEffectShader(effect: SplatEffectConfig): string {
             splat.center = mix(effectCenter, splat.center, resetMask);
             splat.scales = mix(effectScale, splat.scales, resetMask);
             splat.color = mix(effectColor, splat.color, resetMask);
-        ` : ''}
+        `
+                : ''
+        }
 
-        ${effect.overrideEnabled ? `
+        ${
+            effect.overrideEnabled
+                ? `
             splat.color = overrideColor;
-        ` : ''}
+        `
+                : ''
+        }
     `;
 }

@@ -1,5 +1,9 @@
 import { Shadow } from './Shadow';
-import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+    ShaderVaryingTypes,
+} from '../../renderer/shader/builders/ShaderBuilder';
 import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms';
 import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
 import { Vector3 } from '../../math/Vector3';
@@ -18,13 +22,21 @@ import type { Texture2D } from '../../elements/textures/Texture2D';
 import type { TextureV2 } from '../../elements/textures/TextureV2';
 
 const cubeDirections = [
-    new Vector3(1, 0, 0), new Vector3(- 1, 0, 0), new Vector3(0, 1, 0),
-    new Vector3(0, -1, 0), new Vector3(0, 0, 1), new Vector3(0, 0, -1)
+    new Vector3(1, 0, 0),
+    new Vector3(-1, 0, 0),
+    new Vector3(0, 1, 0),
+    new Vector3(0, -1, 0),
+    new Vector3(0, 0, 1),
+    new Vector3(0, 0, -1),
 ];
 
 const cubeUps = [
-    new Vector3(0, -1, 0), new Vector3(0, -1, 0), new Vector3(0, 0, 1),
-    new Vector3(0, 0, -1), new Vector3(0, -1, 0), new Vector3(0, -1, 0)
+    new Vector3(0, -1, 0),
+    new Vector3(0, -1, 0),
+    new Vector3(0, 0, 1),
+    new Vector3(0, 0, -1),
+    new Vector3(0, -1, 0),
+    new Vector3(0, -1, 0),
 ];
 
 export class PointShadow<T extends TextureV2 | Texture2D = Texture2D> extends Shadow<RenderAttachment> {

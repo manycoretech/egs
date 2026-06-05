@@ -8,30 +8,32 @@ import type { Nullable } from '../../../utils/Utils';
 export interface MergeDrawcallSource<
     T extends Drawable,
     M extends Material,
-    G extends BufferGeometry = BufferGeometry
-    > {
-    drawable: T,
-    geometry: G,
-    groupIndex: number,
-    material: M,
+    G extends BufferGeometry = BufferGeometry,
+> {
+    drawable: T;
+    geometry: G;
+    groupIndex: number;
+    material: M;
 }
 
 export abstract class DrawcallMerger<
     T extends Drawable,
     M extends Material,
-    G extends BufferGeometry = BufferGeometry
-    >{
+    G extends BufferGeometry = BufferGeometry,
+> {
     protected inputs: Array<{
-        drawable: T,
-        materials: M[],
-        geometry: G
+        drawable: T;
+        materials: M[];
+        geometry: G;
     }>;
 
     protected mergeGroup: Array<Array<MergeDrawcallSource<T, M, G>>> = [];
 
     protected results: T[] = [];
 
-    extraCheck(_inputs: Drawable[]) { return true; }
+    extraCheck(_inputs: Drawable[]) {
+        return true;
+    }
     abstract downcastInputDrawable(input: Drawable): input is T;
     abstract downcastInputMaterial(input: Material): input is M;
     abstract downcastInputGeometry(input: GeometryBase): input is G;
@@ -178,7 +180,7 @@ export abstract class DrawcallMerger<
         });
         this.afterMerge();
         const result = this.results.slice();
-        this.reset();// cleanup remained result
+        this.reset(); // cleanup remained result
         return result;
     }
 
@@ -186,12 +188,13 @@ export abstract class DrawcallMerger<
     abstract decideNextDrawcall(drawcall: MergeDrawcallSource<T, M, G>): void;
 
     abstract mergeImpl(group: Array<MergeDrawcallSource<T, M, G>>): Nullable<T> | T[];
-    afterMerge() { }
-    earlyReturn(_group: Array<Array<MergeDrawcallSource<T, M, G>>>): boolean { return false; }
+    afterMerge() {}
+    earlyReturn(_group: Array<Array<MergeDrawcallSource<T, M, G>>>): boolean {
+        return false;
+    }
     reset() {
         this.inputs = [];
         this.results = [];
         this.mergeGroup = [];
     }
-
 }

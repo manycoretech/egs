@@ -7,26 +7,34 @@ export class CubeCamera {
     cameras: PerspectiveCamera[];
 
     static cubeDirections = [
-        new Vector3(1, 0, 0), new Vector3(- 1, 0, 0), new Vector3(0, 1, 0),
-        new Vector3(0, -1, 0), new Vector3(0, 0, 1), new Vector3(0, 0, -1)
+        new Vector3(1, 0, 0),
+        new Vector3(-1, 0, 0),
+        new Vector3(0, 1, 0),
+        new Vector3(0, -1, 0),
+        new Vector3(0, 0, 1),
+        new Vector3(0, 0, -1),
     ];
 
     static cubeUps = [
-        new Vector3(0, -1, 0), new Vector3(0, -1, 0), new Vector3(0, 0, 1),
-        new Vector3(0, 0, -1), new Vector3(0, -1, 0), new Vector3(0, -1, 0)
+        new Vector3(0, -1, 0),
+        new Vector3(0, -1, 0),
+        new Vector3(0, 0, 1),
+        new Vector3(0, 0, -1),
+        new Vector3(0, -1, 0),
+        new Vector3(0, -1, 0),
     ];
 
     constructor(fov: number = 90, aspect: number = 1, near: number = 5, far: number = 10000) {
         this.cameras = [];
 
         const cameraPX = new PerspectiveCamera(fov, aspect, near, far);
-        cameraPX.up.set(0, - 1, 0);
+        cameraPX.up.set(0, -1, 0);
         cameraPX.lookAt(new Vector3(1, 0, 0));
         this.cameras.push(cameraPX);
 
         const cameraNX = new PerspectiveCamera(fov, aspect, near, far);
-        cameraNX.up.set(0, - 1, 0);
-        cameraNX.lookAt(new Vector3(- 1, 0, 0));
+        cameraNX.up.set(0, -1, 0);
+        cameraNX.lookAt(new Vector3(-1, 0, 0));
         this.cameras.push(cameraNX);
 
         const cameraPY = new PerspectiveCamera(fov, aspect, near, far);
@@ -35,20 +43,19 @@ export class CubeCamera {
         this.cameras.push(cameraPY);
 
         const cameraNY = new PerspectiveCamera(fov, aspect, near, far);
-        cameraNY.up.set(0, 0, - 1);
-        cameraNY.lookAt(new Vector3(0, - 1, 0));
+        cameraNY.up.set(0, 0, -1);
+        cameraNY.lookAt(new Vector3(0, -1, 0));
         this.cameras.push(cameraNY);
 
         const cameraPZ = new PerspectiveCamera(fov, aspect, near, far);
-        cameraPZ.up.set(0, - 1, 0);
+        cameraPZ.up.set(0, -1, 0);
         cameraPZ.lookAt(new Vector3(0, 0, 1));
         this.cameras.push(cameraPZ);
 
         const cameraNZ = new PerspectiveCamera(fov, aspect, near, far);
-        cameraNZ.up.set(0, - 1, 0);
-        cameraNZ.lookAt(new Vector3(0, 0, - 1));
+        cameraNZ.up.set(0, -1, 0);
+        cameraNZ.lookAt(new Vector3(0, 0, -1));
         this.cameras.push(cameraNZ);
-
     }
 
     update(worldMatrix: Matrix4) {

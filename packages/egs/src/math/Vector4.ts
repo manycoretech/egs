@@ -37,7 +37,7 @@ export class Vector4 {
         this.x = _x || 0;
         this.y = _y || 0;
         this.z = _z || 0;
-        this.w = (_w !== undefined) ? _w : 1;
+        this.w = _w !== undefined ? _w : 1;
     }
     /**
      * @internal
@@ -108,13 +108,17 @@ export class Vector4 {
      */
     setComponent(index: number, value: number): Vector4 {
         switch (index) {
-            case 0: this.x = value;
+            case 0:
+                this.x = value;
                 break;
-            case 1: this.y = value;
+            case 1:
+                this.y = value;
                 break;
-            case 2: this.z = value;
+            case 2:
+                this.z = value;
                 break;
-            case 3: this.w = value;
+            case 3:
+                this.w = value;
                 break;
             default:
                 throw new Error('index is out of range: ' + index);
@@ -158,7 +162,7 @@ export class Vector4 {
         this.x = v.x;
         this.y = v.y;
         this.z = v.z;
-        this.w = (v.w !== undefined) ? v.w : 1;
+        this.w = v.w !== undefined ? v.w : 1;
         return this;
     }
     /**
@@ -358,20 +362,20 @@ export class Vector4 {
      * The components of this vector are rounded towards zero (up if negative, down if positive) to an integer value.
      */
     roundToZero(): Vector4 {
-        this.x = (this.x < 0) ? Math.ceil(this.x) : Math.floor(this.x);
-        this.y = (this.y < 0) ? Math.ceil(this.y) : Math.floor(this.y);
-        this.z = (this.z < 0) ? Math.ceil(this.z) : Math.floor(this.z);
-        this.w = (this.w < 0) ? Math.ceil(this.w) : Math.floor(this.w);
+        this.x = this.x < 0 ? Math.ceil(this.x) : Math.floor(this.x);
+        this.y = this.y < 0 ? Math.ceil(this.y) : Math.floor(this.y);
+        this.z = this.z < 0 ? Math.ceil(this.z) : Math.floor(this.z);
+        this.w = this.w < 0 ? Math.ceil(this.w) : Math.floor(this.w);
         return this;
     }
     /**
      * Inverts this vector - i.e. sets x = -x, y = -y, z = -z and w = -w.
      */
     negate(): Vector4 {
-        this.x = - this.x;
-        this.y = - this.y;
-        this.z = - this.z;
-        this.w = - this.w;
+        this.x = -this.x;
+        this.y = -this.y;
+        this.z = -this.z;
+        this.w = -this.w;
         return this;
     }
     /**
@@ -441,7 +445,7 @@ export class Vector4 {
      * Checks for strict equality of this vector and {@link Vector4| v}.
      */
     equals(v: Vector4): boolean {
-        return ((v.x === this.x) && (v.y === this.y) && (v.z === this.z) && (v.w === this.w));
+        return v.x === this.x && v.y === this.y && v.z === this.z && v.w === this.w;
     }
     /**
      * Sets the {@link x| x}, {@link y| y} and {@link z| z} components of this vector to the quaternion's axis and {@link w| w} to the angle.
@@ -473,27 +477,32 @@ export class Vector4 {
         let angle: number;
         let x: number;
         let y: number;
-        let z: number;                      // variables for result
-        const epsilon = 0.01;               // margin to allow for rounding errors
-        const epsilon2 = 0.1;               // margin to distinguish between 0 and 180 degrees
+        let z: number; // variables for result
+        const epsilon = 0.01; // margin to allow for rounding errors
+        const epsilon2 = 0.1; // margin to distinguish between 0 and 180 degrees
         const te = m._elements;
 
-        const m11 = te[0], m12 = te[4], m13 = te[8],
-            m21 = te[1], m22 = te[5], m23 = te[9],
-            m31 = te[2], m32 = te[6], m33 = te[10];
+        const m11 = te[0],
+            m12 = te[4],
+            m13 = te[8],
+            m21 = te[1],
+            m22 = te[5],
+            m23 = te[9],
+            m31 = te[2],
+            m32 = te[6],
+            m33 = te[10];
 
-        if ((Math.abs(m12 - m21) < epsilon) &&
-            (Math.abs(m13 - m31) < epsilon) &&
-            (Math.abs(m23 - m32) < epsilon)) {
+        if (Math.abs(m12 - m21) < epsilon && Math.abs(m13 - m31) < epsilon && Math.abs(m23 - m32) < epsilon) {
             // singularity found
             // first check for identity matrix which must have +1 for all terms
             // in leading diagonal and zero in other terms
 
-            if ((Math.abs(m12 + m21) < epsilon2) &&
-                (Math.abs(m13 + m31) < epsilon2) &&
-                (Math.abs(m23 + m32) < epsilon2) &&
-                (Math.abs(m11 + m22 + m33 - 3) < epsilon2)) {
-
+            if (
+                Math.abs(m12 + m21) < epsilon2 &&
+                Math.abs(m13 + m31) < epsilon2 &&
+                Math.abs(m23 + m32) < epsilon2 &&
+                Math.abs(m11 + m22 + m33 - 3) < epsilon2
+            ) {
                 // this singularity is identity matrix so angle = 0
                 this.set(1, 0, 0, 0);
                 return this; // zero angle, arbitrary axis
@@ -509,7 +518,7 @@ export class Vector4 {
             const xz = (m13 + m31) / 4;
             const yz = (m23 + m32) / 4;
 
-            if ((xx > yy) && (xx > zz)) {
+            if (xx > yy && xx > zz) {
                 // m11 is the largest diagonal term
                 if (xx < epsilon) {
                     x = 0;
@@ -526,7 +535,6 @@ export class Vector4 {
                     x = 0.707106781;
                     y = 0;
                     z = 0.707106781;
-
                 } else {
                     y = Math.sqrt(yy);
                     x = xy / y;
@@ -549,9 +557,7 @@ export class Vector4 {
         }
 
         // as we have reached here there are no singularities so we can handle normally
-        let s = Math.sqrt((m32 - m23) * (m32 - m23) +
-            (m13 - m31) * (m13 - m31) +
-            (m21 - m12) * (m21 - m12)); // used to normalize
+        let s = Math.sqrt((m32 - m23) * (m32 - m23) + (m13 - m31) * (m13 - m31) + (m21 - m12) * (m21 - m12)); // used to normalize
 
         if (Math.abs(s) < 0.001) {
             s = 1;
@@ -624,9 +630,10 @@ export class Vector4 {
 /**
  * Readonly view of the public Vector4 API.
  */
-export type ReadonlyVector4 = PickReadonly<Vector4,
-    'x' | 'y' | 'z' | 'w' | 'dot' | 'lengthSq' |
-    'length' | 'manhattanLength' | 'getNumberCount' | 'equals' | 'toArray'>;
+export type ReadonlyVector4 = PickReadonly<
+    Vector4,
+    'x' | 'y' | 'z' | 'w' | 'dot' | 'lengthSq' | 'length' | 'manhattanLength' | 'getNumberCount' | 'equals' | 'toArray'
+>;
 
 const tempMin = new Vector4();
 const tempMax = new Vector4();

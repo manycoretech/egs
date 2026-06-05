@@ -76,27 +76,23 @@ export class CubicInterpolant extends Interpolant<number> {
     }
 
     protected interpolate(i1: number, t0: number, t: number, t1: number) {
-        const {
-            result, values, stride,
-            offsetPrev: oP, offsetNext: oN, weightPrev: wP, weightNext: wN,
-        } = this;
+        const { result, values, stride, offsetPrev: oP, offsetNext: oN, weightPrev: wP, weightNext: wN } = this;
 
         const o1 = i1 * stride;
         const o0 = o1 - stride;
-        const p = (t - t0) / (t1 - t0), pp = p * p, ppp = pp * p;
+        const p = (t - t0) / (t1 - t0),
+            pp = p * p,
+            ppp = pp * p;
 
         // evaluate polynomials
-        const sP = - wP * ppp + 2 * wP * pp - wP * p;
-        const s0 = (1 + wP) * ppp + (- 1.5 - 2 * wP) * pp + (- 0.5 + wP) * p + 1;
-        const s1 = (- 1 - wN) * ppp + (1.5 + wN) * pp + 0.5 * p;
+        const sP = -wP * ppp + 2 * wP * pp - wP * p;
+        const s0 = (1 + wP) * ppp + (-1.5 - 2 * wP) * pp + (-0.5 + wP) * p + 1;
+        const s1 = (-1 - wN) * ppp + (1.5 + wN) * pp + 0.5 * p;
         const sN = wN * ppp - wN * pp;
 
         // combine data linearly
         for (let i = 0; i < stride; i++) {
-            result[i] = sP * values[oP + i] +
-                s0 * values[o0 + i] +
-                s1 * values[o1 + i] +
-                sN * values[oN + i];
+            result[i] = sP * values[oP + i] + s0 * values[o0 + i] + s1 * values[o1 + i] + sN * values[oN + i];
         }
     }
 }

@@ -13,7 +13,7 @@ import { SceneMaterial } from '../base';
 export enum DepthPackingStrategies {
     BasicDepthPacking = 0,
     RGBADepthPacking = 1,
-    NDC_DepthPacking = 2
+    NDC_DepthPacking = 2,
 }
 
 /**
@@ -28,21 +28,17 @@ export class MeshDepthMaterial extends SceneMaterial {
     }
 
     extendShaderShading(b: ShaderBuilder) {
-        b
-            .addVaryingCustom('clipSpacePosition', WebGLShaderDataType.Vec4)
+        b.addVaryingCustom('clipSpacePosition', WebGLShaderDataType.Vec4)
             .inject(ShaderInjectionTypes.vary_any, 'clipSpacePosition = projectionMatrix * mvPosition;')
-            .when(this.depthPacking === DepthPackingStrategies.RGBADepthPacking,
-                b => b.addFragment(PackDepthToRGBA))
+            .when(this.depthPacking === DepthPackingStrategies.RGBADepthPacking, b => b.addFragment(PackDepthToRGBA))
             .inject(ShaderInjectionTypes.gl_FragColor, makeDepth(this.depthPacking));
     }
 
     generateShaderKey(r: ShaderComponentRegistry) {
-        return super.generateShaderKey(r) + HashKeyBuilder.getInstance()
-            .raw(this.depthPacking)
-            .getKey();
+        return super.generateShaderKey(r) + HashKeyBuilder.getInstance().raw(this.depthPacking).getKey();
     }
 
-    updateShadingUniforms(_: WGLProgram) { }
+    updateShadingUniforms(_: WGLProgram) {}
 
     clone() {
         return new MeshDepthMaterial().copy(this);
@@ -66,9 +62,12 @@ function makeDepth(s: DepthPackingStrategies) {
     float fragCoordZ = (((far-near) * ndc_depth) + near + far) / 2.0;
     `;
     switch (s) {
-        case DepthPackingStrategies.BasicDepthPacking: return header + `gl_FragColor = vec4(vec3(fragCoordZ), 1.0);`;
-        case DepthPackingStrategies.RGBADepthPacking: return header + `gl_FragColor = packDepthToRGBA(fragCoordZ);`;
-        case DepthPackingStrategies.NDC_DepthPacking: return header + `gl_FragColor = vec4(vec3(ndc_depth), 1.0);`;
+        case DepthPackingStrategies.BasicDepthPacking:
+            return header + `gl_FragColor = vec4(vec3(fragCoordZ), 1.0);`;
+        case DepthPackingStrategies.RGBADepthPacking:
+            return header + `gl_FragColor = packDepthToRGBA(fragCoordZ);`;
+        case DepthPackingStrategies.NDC_DepthPacking:
+            return header + `gl_FragColor = vec4(vec3(ndc_depth), 1.0);`;
     }
 }
 

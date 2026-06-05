@@ -47,7 +47,7 @@ export interface Intersection {
      * for indexed geometry, it related to index buffer
      * for non-index geometry, it is related to position buffer
      */
-    primitiveIndex: number
+    primitiveIndex: number;
     // only exist when hit points
     distanceToRay?: number;
     /**

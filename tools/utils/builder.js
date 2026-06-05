@@ -12,13 +12,7 @@ export function build(cp, release, typeOnly) {
 
     $(`pnpm tsc -b ${typeOnly ? '--emitDeclarationOnly' : ''}`);
 
-    const movePatterns = [
-        './package.json',
-        './README.md',
-        './CHANGELOG.md',
-        './LICENSE',
-        ...(cp ?? []),
-    ];
+    const movePatterns = ['./package.json', './README.md', './CHANGELOG.md', './LICENSE', ...(cp ?? [])];
     for (let i = 0; i < movePatterns.length; i++) {
         const files = sync(movePatterns[i]);
         files.forEach(item => {
@@ -31,9 +25,14 @@ export function build(cp, release, typeOnly) {
     console.log(chalk.bold.green('[build]: copy file finished.'));
 
     if (release) {
-        const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'))
-        rollup(process.cwd(), packageJson.typeOnlyExports ? {
-            typeOnlyExports: packageJson.typeOnlyExports
-        } : undefined);
+        const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
+        rollup(
+            process.cwd(),
+            packageJson.typeOnlyExports
+                ? {
+                      typeOnlyExports: packageJson.typeOnlyExports,
+                  }
+                : undefined,
+        );
     }
 }

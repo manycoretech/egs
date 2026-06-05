@@ -9,7 +9,7 @@ export interface PlaneShapeParameter {
 }
 
 export function plane(param: Partial<PlaneShapeParameter>): BufferGeometry {
-    return new PlaneBufferGeometry(...Object.values(param) as any);
+    return new PlaneBufferGeometry(...(Object.values(param) as any));
 }
 
 class PlaneBufferGeometry extends BufferGeometry {
@@ -33,7 +33,7 @@ class PlaneBufferGeometry extends BufferGeometry {
             width,
             height,
             widthSegments,
-            heightSegments
+            heightSegments,
         };
 
         const width_half = width / 2;
@@ -58,10 +58,10 @@ class PlaneBufferGeometry extends BufferGeometry {
             const y = iy * segment_height - height_half;
             for (ix = 0; ix < gridX1; ix++) {
                 const x = ix * segment_width - width_half;
-                vertices.push(x, - y, 0);
+                vertices.push(x, -y, 0);
                 normals.push(0, 0, 1);
                 uvs.push(ix / gridX);
-                uvs.push(1 - (iy / gridY));
+                uvs.push(1 - iy / gridY);
             }
         }
 
@@ -70,8 +70,8 @@ class PlaneBufferGeometry extends BufferGeometry {
             for (ix = 0; ix < gridX; ix++) {
                 const a = ix + gridX1 * iy;
                 const b = ix + gridX1 * (iy + 1);
-                const c = (ix + 1) + gridX1 * (iy + 1);
-                const d = (ix + 1) + gridX1 * iy;
+                const c = ix + 1 + gridX1 * (iy + 1);
+                const d = ix + 1 + gridX1 * iy;
 
                 // faces
                 indices.push(a, b, d);

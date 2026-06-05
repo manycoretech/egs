@@ -1,6 +1,5 @@
-
 export function setFlags(current: number, flag: number, enabled: boolean) {
-    return enabled ? (current | flag) : (current & (~flag));
+    return enabled ? current | flag : current & ~flag;
 }
 
 export function enableFlags(current: number, flag: number) {
@@ -8,7 +7,7 @@ export function enableFlags(current: number, flag: number) {
 }
 
 export function disableFlags(current: number, flag: number) {
-    return current & (~flag);
+    return current & ~flag;
 }
 
 export function intersectFlags(a: number, b: number) {

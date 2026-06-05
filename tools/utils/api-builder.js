@@ -3,7 +3,7 @@ import { EOL } from 'node:os';
 import { resolve, parse, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SyntaxKind, createProgram } from 'typescript';
-import { format } from 'prettier';
+import { format } from 'oxfmt';
 
 const __dirname = parse(fileURLToPath(import.meta.url)).dir;
 const templateRoot = resolve(__dirname, './template');
@@ -13,9 +13,8 @@ const configKeys = {
     type: 'type',
     onlyThrowUsefulError: 'onlyThrowUsefulError',
     invalidParameterEnabled: 'invalidParameterEnabled',
-    invalidParameter: 'invalidParameter'
-}
-
+    invalidParameter: 'invalidParameter',
+};
 
 function generateOnlyThrowUsefulError(content) {
     return `try {
@@ -30,7 +29,7 @@ function generateOnlyThrowUsefulError(content) {
 function generateParameterCheck(parameters, template, enabledCheck) {
     const check = `if (${parameters.map(p => template.replace(/\$value/g, p.name)).join(' || ')}) {
         return;
-    }`
+    }`;
     return enabledCheck ? `if (${enabledCheck}) { ${check} }` : check;
 }
 
@@ -42,14 +41,14 @@ function generateArrayCall(target, method) {
     return `const _l = ${target}.length;
     for (let _i = 0; _i < _l; _i++) {
         ${generateCall(`${target}[_i]`, method, false)}
-    }`
+    }`;
 }
 
 function generateMethodBody(method, config) {
     const content = `
      ${method.parameters.length && config.invalidParameter ? generateParameterCheck(method.parameters, config.invalidParameter, config.invalidParameterEnabled) : ''}
      ${config.type === 'array' ? generateArrayCall(config.target, method) : generateCall(config.target, method, true)}
-    `
+    `;
     return config.onlyThrowUsefulError ? generateOnlyThrowUsefulError(content) : content;
 }
 
@@ -66,9 +65,11 @@ function parseConfig(entry, template) {
             case configKeys.invalidParameterEnabled:
             case configKeys.invalidParameter:
             case configKeys.type:
-                config[data[0]] = data[1]; break;
+                config[data[0]] = data[1];
+                break;
             case configKeys.onlyThrowUsefulError:
-                config.onlyThrowUsefulError = true; break;
+                config.onlyThrowUsefulError = true;
+                break;
         }
     }
     return config;
@@ -82,12 +83,12 @@ function parseInterface(entry, sourceFile, parsedInterface) {
         if (ch.kind === SyntaxKind.InterfaceDeclaration && ch.name.escapedText === entry) {
             let inherits = [];
             let parsed = {
-                members: []
+                members: [],
             };
             parsedInterface[entry] = parsed;
             if (ch.heritageClauses) {
                 for (const inherit of ch.heritageClauses) {
-                    inherits.push(parseInterface(inherit.types[0].expression.escapedText, sourceFile, parsedInterface))
+                    inherits.push(parseInterface(inherit.types[0].expression.escapedText, sourceFile, parsedInterface));
                 }
             }
             for (const inherit of inherits) {
@@ -100,14 +101,14 @@ function parseInterface(entry, sourceFile, parsedInterface) {
                     const method = {
                         name: member.name.escapedText,
                         typeParameters: member.typeParameters?.map(t => t.getFullText(sourceFile)) ?? [],
-                        parameters: []
+                        parameters: [],
                     };
                     for (const parameter of member.parameters) {
                         method.parameters.push({
                             name: parameter.name.escapedText,
                             optional: !!parameter.questionToken,
-                            type: parameter.type.getText(sourceFile).trim()
-                        })
+                            type: parameter.type.getText(sourceFile).trim(),
+                        });
                     }
                     parsed.members.push(method);
                 }
@@ -117,41 +118,41 @@ function parseInterface(entry, sourceFile, parsedInterface) {
     return parsedInterface[entry];
 }
 
-
 function generate(target, entries) {
     const pathInfo = parse(target);
-    const implName = `${pathInfo.name}.impl`
+    const implName = `${pathInfo.name}.impl`;
     let template = readFileSync(join(templateRoot, `${implName}.template`), { encoding: 'utf-8' });
     const program = createProgram([target], {});
     const sourceFile = program.getSourceFile(target);
-    const prettierOptions = {
+    const oxcOptions = {
         printWidth: 120,
         tabWidth: 4,
         singleQuote: true,
         quoteProps: 'as-needed',
         trailingComma: 'all',
         arrowParens: 'avoid',
-        endOfLine: 'auto',
-        parser: 'typescript',
+        endOfLine: 'lf',
     };
     const parsedInterface = {};
     for (const entry of entries) {
         const config = parseConfig(entry, template);
         const data = parseInterface(entry, sourceFile, parsedInterface);
         const content = `{
-        ${data.members.map(method => {
-            return `${method.name}${method.typeParameters.length > 0 ? `<${method.typeParameters.join(', ')}>` : ''}(${method.parameters.map(p => `${p.name}${p.optional ? '?' : ''}: ${p.type}`).join(', ')}) {
+        ${data.members
+            .map(method => {
+                return `${method.name}${method.typeParameters.length > 0 ? `<${method.typeParameters.join(', ')}>` : ''}(${method.parameters.map(p => `${p.name}${p.optional ? '?' : ''}: ${p.type}`).join(', ')}) {
                     ${generateMethodBody(method, config)}
-                },`
-        }).join(EOL)}
+                },`;
+            })
+            .join(EOL)}
     };
-    `
+    `;
         template = template.replace(config.pattern, content);
     }
 
-    format(template, prettierOptions).then(data => {
-        writeFileSync(join(pathInfo.dir, `${implName}.ts`), data);
-    })
+    format('api.impl.ts', template, oxcOptions).then(result => {
+        writeFileSync(join(pathInfo.dir, `${implName}.ts`), result.code);
+    });
 }
 
 const _generate = generate;

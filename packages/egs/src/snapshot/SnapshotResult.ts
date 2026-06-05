@@ -15,8 +15,8 @@ export enum SnapshotResultResultType {
  * Camera matrices captured with a snapshot result.
  */
 export interface SnapshotCameraInfo {
-    projectionMatrix: Matrix4,
-    worldMatrix: Matrix4
+    projectionMatrix: Matrix4;
+    worldMatrix: Matrix4;
 }
 /**
  * Result object returned from snapshot rendering.
@@ -25,13 +25,18 @@ export class SnapshotResult {
     type: SnapshotResultResultType = SnapshotResultResultType.Success;
     reason?: any;
 
-    constructor(public data: Uint8Array, public size: Size, public cameraInfo: SnapshotCameraInfo, public worldBox?: Box3) { }
+    constructor(
+        public data: Uint8Array,
+        public size: Size,
+        public cameraInfo: SnapshotCameraInfo,
+        public worldBox?: Box3,
+    ) {}
 
     static exception(type: SnapshotResultResultType, reason?: any) {
         const result = new SnapshotResult(
             new Uint8Array([0, 0, 0, 0]),
             { width: 1, height: 1 },
-            { projectionMatrix: new Matrix4(), worldMatrix: new Matrix4() }
+            { projectionMatrix: new Matrix4(), worldMatrix: new Matrix4() },
         );
         result.type = type;
         result.reason = reason;
@@ -39,8 +44,12 @@ export class SnapshotResult {
     }
 
     flipY() {
-        const { data, size: { width: w, height: h } } = this;
-        const middleAxle = Math.floor(h / 2), rowAisles = w * 4;
+        const {
+            data,
+            size: { width: w, height: h },
+        } = this;
+        const middleAxle = Math.floor(h / 2),
+            rowAisles = w * 4;
 
         for (let curRow = 0; curRow < middleAxle; curRow++) {
             let aisleStart = curRow * rowAisles,

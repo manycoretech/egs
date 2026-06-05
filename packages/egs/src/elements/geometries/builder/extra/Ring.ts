@@ -14,7 +14,14 @@ export interface RingParameter {
 }
 
 export function ring(params: Partial<RingParameter>): BufferGeometry {
-    return new RingBufferGeometry(params.innerRadius, params.outerRadius, params.thetaSegments, params.phiSegments, params.thetaStart, params.thetaLength);
+    return new RingBufferGeometry(
+        params.innerRadius,
+        params.outerRadius,
+        params.thetaSegments,
+        params.phiSegments,
+        params.thetaStart,
+        params.thetaLength,
+    );
 }
 
 export class RingBufferGeometry extends BufferGeometry {
@@ -34,7 +41,14 @@ export class RingBufferGeometry extends BufferGeometry {
      * @param thetaStart Starting angle. Default is 0.
      * @param thetaLength Central angle. Default is Math.PI * 2.
      */
-    constructor(innerRadius: number = 0.5, outerRadius: number = 1, thetaSegments: number = 8, phiSegments: number = 1, thetaStart: number = 0, thetaLength: number = Math.PI * 2) {
+    constructor(
+        innerRadius: number = 0.5,
+        outerRadius: number = 1,
+        thetaSegments: number = 8,
+        phiSegments: number = 1,
+        thetaStart: number = 0,
+        thetaLength: number = Math.PI * 2,
+    ) {
         super();
 
         this.parameters = {
@@ -43,7 +57,7 @@ export class RingBufferGeometry extends BufferGeometry {
             thetaSegments,
             phiSegments,
             thetaStart,
-            thetaLength
+            thetaLength,
         };
 
         thetaSegments = Math.max(3, thetaSegments);
@@ -58,7 +72,7 @@ export class RingBufferGeometry extends BufferGeometry {
         // some helper variables
         let segment: number;
         let radius = innerRadius;
-        const radiusStep = ((outerRadius - innerRadius) / phiSegments);
+        const radiusStep = (outerRadius - innerRadius) / phiSegments;
         const vertex = new Vector3();
         const uv = new Vector2();
         let j: number;
@@ -68,7 +82,7 @@ export class RingBufferGeometry extends BufferGeometry {
         for (j = 0; j <= phiSegments; j++) {
             for (i = 0; i <= thetaSegments; i++) {
                 // values are generate from the inside of the ring to the outside
-                segment = thetaStart + i / thetaSegments * thetaLength;
+                segment = thetaStart + (i / thetaSegments) * thetaLength;
                 // vertex
                 vertex.x = radius * Math.cos(segment);
                 vertex.y = radius * Math.sin(segment);

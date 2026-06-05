@@ -37,7 +37,7 @@ export class LatheBufferGeometry extends BufferGeometry {
             points,
             segments,
             phiStart,
-            phiLength
+            phiLength,
         };
 
         segments = Math.floor(segments);
@@ -60,7 +60,7 @@ export class LatheBufferGeometry extends BufferGeometry {
             const phi = phiStart + i * inverseSegments * phiLength;
             const sin = Math.sin(phi);
             const cos = Math.cos(phi);
-            for (j = 0; j <= (points.length - 1); j++) {
+            for (j = 0; j <= points.length - 1; j++) {
                 // vertex
                 vertex.x = points[j].x * sin;
                 vertex.y = points[j].y;
@@ -76,7 +76,7 @@ export class LatheBufferGeometry extends BufferGeometry {
 
         // indices
         for (i = 0; i < segments; i++) {
-            for (j = 0; j < (points.length - 1); j++) {
+            for (j = 0; j < points.length - 1; j++) {
                 base = j + i * points.length;
                 const a = base;
                 const b = base + points.length;
@@ -107,7 +107,7 @@ export class LatheBufferGeometry extends BufferGeometry {
             // this is the buffer offset for the last line of vertices
             base = segments * points.length * 3;
 
-            for (i = 0, j = 0; i < points.length; i++ , j += 3) {
+            for (i = 0, j = 0; i < points.length; i++, j += 3) {
                 // select the normal of the vertex in the first line
                 n1.x = normals[j + 0];
                 n1.y = normals[j + 1];

@@ -1,4 +1,3 @@
-
 import { logger } from '../../utils/Logger';
 import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
 import type { Texture } from '../../elements/textures/Texture';
@@ -49,9 +48,14 @@ export class RenderState {
         return slot;
     }
 
-    setupVBOs(bufferGeometry: BufferGeometryBase, program: WGLProgram, needUpdateAttribute?: string[], updateIndex: boolean = true): void {
+    setupVBOs(
+        bufferGeometry: BufferGeometryBase,
+        program: WGLProgram,
+        needUpdateAttribute?: string[],
+        updateIndex: boolean = true,
+    ): void {
         const programAttributes = program.getAttributesInfo();
-        for (const name of (needUpdateAttribute ?? Object.keys(programAttributes))) {
+        for (const name of needUpdateAttribute ?? Object.keys(programAttributes)) {
             const programAttribute = programAttributes[name];
             if (programAttribute === -1) {
                 continue; // gl_InstanceID, gl_VertexID
@@ -101,13 +105,13 @@ export class RenderState {
                 const geometryAttributes = bufferGeometry.getAttributes();
                 for (const name of Object.keys(programAttributes)) {
                     const geometryAttribute = geometryAttributes[name];
-                    if (geometryAttribute && (bindMap[name] !== geometryAttribute.uuid)) {
+                    if (geometryAttribute && bindMap[name] !== geometryAttribute.uuid) {
                         needUpdateAttribute.push(name);
                         bindMap[name] = geometryAttribute.uuid;
                     }
                 }
                 let updateIndex = false;
-                if (bufferGeometry.index && (bindMap.index !== bufferGeometry.index.uuid)) {
+                if (bufferGeometry.index && bindMap.index !== bufferGeometry.index.uuid) {
                     updateIndex = true;
                     bindMap.index = bufferGeometry.index.uuid;
                 }

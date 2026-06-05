@@ -22,9 +22,9 @@ export class Triangle {
     c: Vector3;
 
     constructor(a?: Vector3, b?: Vector3, c?: Vector3) {
-        this.a = (a !== undefined) ? a : new Vector3();
-        this.b = (b !== undefined) ? b : new Vector3();
-        this.c = (c !== undefined) ? c : new Vector3();
+        this.a = a !== undefined ? a : new Vector3();
+        this.b = b !== undefined ? b : new Vector3();
+        this.c = c !== undefined ? c : new Vector3();
     }
     /**
      * Calculate the {@link https://en.wikipedia.org/wiki/Normal_(geometry)| normal vector} of the triangle.
@@ -53,13 +53,13 @@ export class Triangle {
         const dot02 = tmp1Vec3.dot(tmp3Vec3);
         const dot11 = tmp2Vec3.dot(tmp2Vec3);
         const dot12 = tmp2Vec3.dot(tmp3Vec3);
-        const denom = (dot00 * dot11 - dot01 * dot01);
+        const denom = dot00 * dot11 - dot01 * dot01;
 
         // collinear or singular triangle
         if (denom === 0) {
             // arbitrary location outside of triangle?
             // not sure if this is the best idea, maybe should be returning undefined
-            return target.set(- 2, - 1, - 1);
+            return target.set(-2, -1, -1);
         }
         const invDenom = 1 / denom;
         const u = (dot11 * dot02 - dot01 * dot12) * invDenom;
@@ -72,13 +72,22 @@ export class Triangle {
      */
     static containsPoint(point: Vector3, a: Vector3, b: Vector3, c: Vector3): boolean {
         Triangle.getBarycoord(point, a, b, c, tmp1Vec3);
-        return (tmp1Vec3.x >= 0) && (tmp1Vec3.y >= 0) && ((tmp1Vec3.x + tmp1Vec3.y) <= 1);
+        return tmp1Vec3.x >= 0 && tmp1Vec3.y >= 0 && tmp1Vec3.x + tmp1Vec3.y <= 1;
     }
     /**
      * Calculate the uv value of given point by a,b,c and their uv.
      * @param target the result will be stored here.
      */
-    static getUV(point: Vector3, a: Vector3, b: Vector3, c: Vector3, uv1: Vector2, uv2: Vector2, uv3: Vector2, target: Vector2): Vector2 {
+    static getUV(
+        point: Vector3,
+        a: Vector3,
+        b: Vector3,
+        c: Vector3,
+        uv1: Vector2,
+        uv2: Vector2,
+        uv3: Vector2,
+        target: Vector2,
+    ): Vector2 {
         this.getBarycoord(point, a, b, c, tmp1Vec3);
         target.set(0, 0);
         target.addScaledVector(uv1, tmp1Vec3.x);
@@ -137,7 +146,10 @@ export class Triangle {
      * @param target the result will be copied into this Vector3.
      */
     getMidpoint(target: Vector3): Vector3 {
-        return target.addVectors(this.a, this.b).add(this.c).multiplyScalar(1 / 3);
+        return target
+            .addVectors(this.a, this.b)
+            .add(this.c)
+            .multiplyScalar(1 / 3);
     }
     /**
      * Calculate the {@link https://en.wikipedia.org/wiki/Normal_(geometry)| normal vector } of the triangle.
@@ -235,9 +247,9 @@ export class Triangle {
         }
 
         const va = d3 * d6 - d5 * d4;
-        if (va <= 0 && (d4 - d3) >= 0 && (d5 - d6) >= 0) {
+        if (va <= 0 && d4 - d3 >= 0 && d5 - d6 >= 0) {
             tmp3Vec3.subVectors(c, b);
-            w = (d4 - d3) / ((d4 - d3) + (d5 - d6));
+            w = (d4 - d3) / (d4 - d3 + (d5 - d6));
             // edge region of BC; barycentric coords (0, 1-w, w)
             return target.copy(b).addScaledVector(tmp3Vec3, w); // edge region of BC
         }

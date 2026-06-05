@@ -41,7 +41,7 @@ const DEFAULT_EXEC_OPTIONS = {
     cwd: process.cwd(),
     env: process.env,
     ioPrefix: '',
-    pipe: true
+    pipe: true,
 };
 function writeOutput(data, ioPrefix, stream, writeStartPrefix) {
     const r = data.split(splitRegex);
@@ -87,8 +87,7 @@ function bindAndPromisify(p, ioPrefix, pipe) {
                     if (code === 0) {
                         resolve();
                         return;
-                    }
-                    else {
+                    } else {
                         reject(new Error(`Process exited with code ${code}`));
                         return;
                     }
@@ -97,8 +96,7 @@ function bindAndPromisify(p, ioPrefix, pipe) {
                     reject(new Error(`Process exited with signal ${signal}`));
                     return;
                 }
-            }
-            finally {
+            } finally {
                 cleanUp();
             }
         }
@@ -136,7 +134,7 @@ function bindAndPromisify(p, ioPrefix, pipe) {
         }
         workers.push({
             process: p,
-            piped: pipe
+            piped: pipe,
         });
     });
 }
@@ -147,7 +145,11 @@ export function execCommand(command, options = DEFAULT_EXEC_OPTIONS) {
     });
     return {
         process,
-        promise: bindAndPromisify(process, options.ioPrefix ?? DEFAULT_EXEC_OPTIONS.ioPrefix, options.pipe ?? DEFAULT_EXEC_OPTIONS.pipe),
+        promise: bindAndPromisify(
+            process,
+            options.ioPrefix ?? DEFAULT_EXEC_OPTIONS.ioPrefix,
+            options.pipe ?? DEFAULT_EXEC_OPTIONS.pipe,
+        ),
     };
 }
 export function echoAndExecCommand(command, options = DEFAULT_EXEC_OPTIONS) {
@@ -156,7 +158,7 @@ export function echoAndExecCommand(command, options = DEFAULT_EXEC_OPTIONS) {
 }
 const DEFAULT_SPAWN_OPTIONS = {
     ...DEFAULT_EXEC_OPTIONS,
-    shell: false
+    shell: false,
 };
 export function spawnProcess(command, args, options = DEFAULT_SPAWN_OPTIONS) {
     const process = child_process.spawn(command, args, {
@@ -166,7 +168,11 @@ export function spawnProcess(command, args, options = DEFAULT_SPAWN_OPTIONS) {
     });
     return {
         process,
-        promise: bindAndPromisify(process, options.ioPrefix ?? DEFAULT_SPAWN_OPTIONS.ioPrefix, options.pipe ?? DEFAULT_SPAWN_OPTIONS.pipe),
+        promise: bindAndPromisify(
+            process,
+            options.ioPrefix ?? DEFAULT_SPAWN_OPTIONS.ioPrefix,
+            options.pipe ?? DEFAULT_SPAWN_OPTIONS.pipe,
+        ),
     };
 }
 export function echoAndSpawnProcess(command, args, options = DEFAULT_SPAWN_OPTIONS) {

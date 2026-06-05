@@ -22,7 +22,7 @@ export abstract class ShaderComponent implements SerializerableDelegated {
     // any ability could hold uniform params to inject in shader
     // and logic related with it. modify the shader in this function
     abstract extendShaderShading(builder: ShaderBuilder): void;
-    extendShaderShape(_builder: ShaderBuilder): void { }
+    extendShaderShape(_builder: ShaderBuilder): void {}
 
     // any ability could hold uniform params, update to webgl in this function
     updateShapeUniforms?(program: WGLProgram): void;
@@ -39,14 +39,14 @@ export abstract class ShaderComponent implements SerializerableDelegated {
     abstract copy(other: ShaderComponent): any;
     abstract clone(): any;
 
-    constructor() { }
+    constructor() {}
 }
 
 // Any class inherits this class means the class will use some parameters components
 // inside a shader which will be shared around different shaders such as light stuff.
 export abstract class SharedShaderComponent extends ShaderComponent {
-    serialize(_: Serializer<any>): void { }
-    deserialize(_: Deserializer): void | Promise<void> { }
+    serialize(_: Serializer<any>): void {}
+    deserialize(_: Deserializer): void | Promise<void> {}
 
     referenceSet: Set<Material> = new Set();
 
@@ -95,8 +95,8 @@ export interface ShaderInputDescriptor {
 }
 
 export interface VaryArrayDescriptor {
-    des: ShaderInputDescriptor,
-    length: number
+    des: ShaderInputDescriptor;
+    length: number;
 }
 
 export interface UniformArrayDescriptor {

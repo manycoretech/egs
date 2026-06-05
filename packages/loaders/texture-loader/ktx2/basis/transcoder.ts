@@ -15,19 +15,20 @@ function init() {
 
     // const wasmBinary = (await import('./wasm/basis_transcoder.wasm')).default;
 
-    BasisModule = {
-    };
+    BasisModule = {};
 
     p = Promise.all([
         import('./wasm/basis_transcoder.wasm'),
         // @ts-ignore
-        import('./wasm/basis_transcoder')
-    ]).then(m => {
-        BasisModule.wasmBinary = m[0].default;
-        return m[1].default(BasisModule);
-    }).then(_ => {
-        BasisModule.initializeBasis();
-    });
+        import('./wasm/basis_transcoder'),
+    ])
+        .then(m => {
+            BasisModule.wasmBinary = m[0].default;
+            return m[1].default(BasisModule);
+        })
+        .then(_ => {
+            BasisModule.initializeBasis();
+        });
     return p;
 }
 
@@ -37,7 +38,7 @@ export async function rebuildWasm(): Promise<void> {
         await init();
         console.log('KTX2BasisTranscoder: rebuild success', BasisModule.HEAP8.byteLength);
         return;
-    };
+    }
 }
 
 export interface TranscodeOptions {
@@ -45,7 +46,11 @@ export interface TranscodeOptions {
     noETC1SChromaFiltering?: boolean;
 }
 
-export async function transcode(buffer: Uint8Array, supportedTypes: CompressTextureType[], options?: TranscodeOptions): Promise<TranscodeResult> {
+export async function transcode(
+    buffer: Uint8Array,
+    supportedTypes: CompressTextureType[],
+    options?: TranscodeOptions,
+): Promise<TranscodeResult> {
     if (!wasmInitializingOrReady) {
         init();
     }
@@ -68,11 +73,13 @@ export async function transcode(buffer: Uint8Array, supportedTypes: CompressText
             width: file.getWidth(),
             height: file.getHeight(),
             format: config.ldr.to[hasAlpha ? 1 : 0],
-            buffer: undefined! // will assign later...
+            buffer: undefined!, // will assign later...
         };
 
         if (result.width % 4 !== 0 || result.height % 4 !== 0) {
-            throw new Error(`EGS.KTX2Loader.transcode: width, height should be multiple-of-four, source size: (${result.width}, ${result.height})`);
+            throw new Error(
+                `EGS.KTX2Loader.transcode: width, height should be multiple-of-four, source size: (${result.width}, ${result.height})`,
+            );
         }
 
         const transcoder = config.ldr.transcoder[hasAlpha ? 1 : 0];
@@ -91,7 +98,7 @@ export async function transcode(buffer: Uint8Array, supportedTypes: CompressText
             const size = file.getImageTranscodedSizeInBytes(i, 0, 0, transcoder);
             mipmapInfo.push({
                 byteOffset: totalSize,
-                byteLength: size
+                byteLength: size,
             });
             totalSize += size;
         }

@@ -1,4 +1,3 @@
-
 import { LineSegments } from '../drawables/LineSegments';
 import { Color } from '../../math/Color';
 import { BufferGeometry, type LineList } from '../../elements/geometries/containers/BufferGeometry';
@@ -27,18 +26,20 @@ export class GridHelper extends LineSegments<LineBasicMaterial> {
         const vertices: number[] = [];
         const colors: number[] = [];
 
-        for (let i = 0, j = 0, k = - halfSize; i <= divisions; i++ , k += step) {
-
-            vertices.push(- halfSize, 0, k, halfSize, 0, k);
-            vertices.push(k, 0, - halfSize, k, 0, halfSize);
+        for (let i = 0, j = 0, k = -halfSize; i <= divisions; i++, k += step) {
+            vertices.push(-halfSize, 0, k, halfSize, 0, k);
+            vertices.push(k, 0, -halfSize, k, 0, halfSize);
 
             const color = i === center ? color1 : color2;
 
-            color.toArray(colors, j); j += 3;
-            color.toArray(colors, j); j += 3;
-            color.toArray(colors, j); j += 3;
-            color.toArray(colors, j); j += 3;
-
+            color.toArray(colors, j);
+            j += 3;
+            color.toArray(colors, j);
+            j += 3;
+            color.toArray(colors, j);
+            j += 3;
+            color.toArray(colors, j);
+            j += 3;
         }
 
         const geometry = new BufferGeometry<LineList>();

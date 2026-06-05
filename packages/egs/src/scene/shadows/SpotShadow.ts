@@ -1,5 +1,9 @@
 import { SingleProjectShadow } from './Shadow';
-import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../../renderer/shader/builders/ShaderBuilder';
+import {
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+    ShaderVaryingTypes,
+} from '../../renderer/shader/builders/ShaderBuilder';
 import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms';
 import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
 import { Vector3 } from '../../math/Vector3';
@@ -63,9 +67,7 @@ export class SpotShadow<T extends TextureV2 | Texture2D = Texture2D> extends Sin
 
     extendsShaderDeferred(builder: ShaderBuilder) {
         super.includeShadowMapCommon(builder);
-        builder
-            .addFragmentCustom(getCustomFrag(false))
-            .addFragment(ShaderBlockPool.InverseTransformDirection);
+        builder.addFragmentCustom(getCustomFrag(false)).addFragment(ShaderBlockPool.InverseTransformDirection);
     }
 
     updateSpotNearFar(fullList: DrawableList, light: SpotLight) {
@@ -89,8 +91,10 @@ export class SpotShadow<T extends TextureV2 | Texture2D = Texture2D> extends Sin
 
         // calculate by ourself
         if (this.isAutoComputeNearFar) {
-            const angle = Math.acos(this.camera.matrixWorld._elements[10]) + this.camera.fov * Math.PI / 180 / 2;
-            let dis = Math.cos(this.camera.fov * Math.PI / 180 / 2) * this.camera.matrixWorld._elements[14] / Math.cos(angle);
+            const angle = Math.acos(this.camera.matrixWorld._elements[10]) + (this.camera.fov * Math.PI) / 180 / 2;
+            let dis =
+                (Math.cos((this.camera.fov * Math.PI) / 180 / 2) * this.camera.matrixWorld._elements[14]) /
+                Math.cos(angle);
             if (dis < this.camera.near) {
                 dis = this.camera.near + 30000;
             }
@@ -110,7 +114,9 @@ export class SpotShadow<T extends TextureV2 | Texture2D = Texture2D> extends Sin
         if (light.isRotationModeOn) {
             light.updateWorldMatrix(true, false);
             // Multiply by 2000 to avoid excessive jitter
-            light.target.position.setFromMatrixPosition(light.matrixWorld).sub((light as SpotLight).getDirection().multiplyScalar(2000));
+            light.target.position
+                .setFromMatrixPosition(light.matrixWorld)
+                .sub((light as SpotLight).getDirection().multiplyScalar(2000));
         }
         super.updateCameraAndShadowMatrices(light);
 

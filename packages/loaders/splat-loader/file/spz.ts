@@ -1,5 +1,15 @@
 import { ZSTDDecoder } from 'zstddec';
-import { type ISingleSplat, type IData, type IFile, SH_MAPS, SH_C0, BufferReader, fromHalf, clamp, StreamChunkDecoder } from './utils';
+import {
+    type ISingleSplat,
+    type IData,
+    type IFile,
+    SH_MAPS,
+    SH_C0,
+    BufferReader,
+    fromHalf,
+    clamp,
+    StreamChunkDecoder,
+} from './utils';
 
 const SPZ_MAGIC = 0x5053474e; // NGSP = Niantic gaussian splat
 const SPZ_VERSION = 3;
@@ -143,11 +153,11 @@ export class SpzFile implements IFile {
                                 if (j === largest) {
                                     continue;
                                 }
-                                const mag = temp & 0x1FF;
+                                const mag = temp & 0x1ff;
                                 const sign = (temp >>> 9) & 1;
                                 temp >>>= 10;
 
-                                const v = Math.SQRT1_2 * (mag / 0x1FF) * (sign ? -1 : 1);
+                                const v = Math.SQRT1_2 * (mag / 0x1ff) * (sign ? -1 : 1);
                                 rotation[j] = v;
                                 sum += v * v;
                             }
@@ -226,10 +236,20 @@ export class SpzFile implements IFile {
         }
 
         const single: ISingleSplat = {
-            x: 0, y: 0, z: 0,
-            sx: 0, sy: 0, sz: 0,
-            qx: 0, qy: 0, qz: 0, qw: 0,
-            r: 0, g: 0, b: 0, a: 0,
+            x: 0,
+            y: 0,
+            z: 0,
+            sx: 0,
+            sy: 0,
+            sz: 0,
+            qx: 0,
+            qy: 0,
+            qz: 0,
+            qw: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
             shN: new Array(shCounts),
         };
 
@@ -407,10 +427,18 @@ export class SpzFile implements IFile {
                     const o = j * ItemSize;
                     for (let k = 0; k < ItemSize; k++) {
                         if (k < 9) {
-                            chunk[o + k] = clamp(Math.floor((Math.round(shN[k] * 128) + 128 + SH_SCALE1 / 2) / SH_SCALE1) * SH_SCALE1, 0, 255);
+                            chunk[o + k] = clamp(
+                                Math.floor((Math.round(shN[k] * 128) + 128 + SH_SCALE1 / 2) / SH_SCALE1) * SH_SCALE1,
+                                0,
+                                255,
+                            );
                             continue;
                         }
-                        chunk[o + k] = clamp(Math.floor((Math.round(shN[k] * 128) + 128 + SH_SCALE2 / 2) / SH_SCALE2) * SH_SCALE2, 0, 255);
+                        chunk[o + k] = clamp(
+                            Math.floor((Math.round(shN[k] * 128) + 128 + SH_SCALE2 / 2) / SH_SCALE2) * SH_SCALE2,
+                            0,
+                            255,
+                        );
                     }
                 }
 
@@ -434,7 +462,14 @@ function readUint64(view: DataView, offset: number) {
     return value;
 }
 
-function createSpzHeader(version: number, counts: number, shDegree: number, fractionalBits: number, flags: number, extra: number) {
+function createSpzHeader(
+    version: number,
+    counts: number,
+    shDegree: number,
+    fractionalBits: number,
+    flags: number,
+    extra: number,
+) {
     const header = new DataView(new ArrayBuffer(16));
     header.setUint32(0, SPZ_MAGIC, true);
     header.setUint32(4, version, true);

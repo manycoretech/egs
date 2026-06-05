@@ -2,8 +2,14 @@ import { logger } from '../../utils/Logger';
 import { _Math } from '../../math/Math';
 import type { TypedArray } from '../../utils/Utils';
 import {
-    getFormatByteSize, LegacySourceTexture, type SourceTextureLayerWebGLUploadResult,
-    type SourceTextureWebGLUploadResult, TextureMipmapGroup, type WebGLTextureUploadCtx, getInternalFormat, type WebGLUploadable
+    getFormatByteSize,
+    LegacySourceTexture,
+    type SourceTextureLayerWebGLUploadResult,
+    type SourceTextureWebGLUploadResult,
+    TextureMipmapGroup,
+    type WebGLTextureUploadCtx,
+    getInternalFormat,
+    type WebGLUploadable,
 } from './Texture';
 import { ContentBridge } from '../../ContentAPI';
 import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants';
@@ -30,15 +36,14 @@ export class Texture3D extends LegacySourceTexture {
         source: Texture3DLayerSource,
         format: WebGLPixelFormat = WebGLPixelFormat.RGBA,
         type: TextureDataType = TextureDataType.UnsignedByteType,
-        width: number, height: number, depth: number
+        width: number,
+        height: number,
+        depth: number,
     ) {
         return new Texture3D(
             TextureMipmapGroup.create(
-                Texture3DLayer.create(source)
-                    .setSize(width, height, depth)
-                    .setFormat(format)
-                    .setType(type)
-            )
+                Texture3DLayer.create(source).setSize(width, height, depth).setFormat(format).setType(type),
+            ),
         );
     }
 
@@ -49,7 +54,11 @@ export class Texture3D extends LegacySourceTexture {
     /**
      * @internal
      */
-    uploadWebGLImpl(ctx: WebGLTextureUploadCtx, disableCustomMipmap: boolean, needPOT: boolean): SourceTextureWebGLUploadResult {
+    uploadWebGLImpl(
+        ctx: WebGLTextureUploadCtx,
+        disableCustomMipmap: boolean,
+        needPOT: boolean,
+    ): SourceTextureWebGLUploadResult {
         return this.source.uploadWebGL(ctx, ctx.gl.TEXTURE_3D, disableCustomMipmap, needPOT);
     }
 
@@ -116,13 +125,25 @@ export class Texture3DLayer implements WebGLUploadable {
      */
     uploadWebGL(ctx: WebGLTextureUploadCtx, target: number, level: number): SourceTextureLayerWebGLUploadResult {
         if (ctx.backend !== RendererBackend.WEBGL_JS) {
-            ctx.gl.texImage3D(target, level, getInternalFormat(ctx.gl, this.format, this.type), this.width, this.height, this.depth, 0, this.format, this.type, this.source);
+            ctx.gl.texImage3D(
+                target,
+                level,
+                getInternalFormat(ctx.gl, this.format, this.type),
+                this.width,
+                this.height,
+                this.depth,
+                0,
+                this.format,
+                this.type,
+                this.source,
+            );
         } else {
             logger.unsupported('Unsupported 3d tex in webgl1');
         }
         const texelCount = this.width * this.height * this.depth;
         const texelByte = getFormatByteSize(this.format, this.type);
-        const is_pot = _Math.isPowerOfTwo(this.width) && _Math.isPowerOfTwo(this.height) && _Math.isPowerOfTwo(this.depth);
+        const is_pot =
+            _Math.isPowerOfTwo(this.width) && _Math.isPowerOfTwo(this.height) && _Math.isPowerOfTwo(this.depth);
         return {
             is_pot,
             byteSize: texelCount * texelByte,
@@ -139,8 +160,10 @@ export class Texture3DLayer implements WebGLUploadable {
         let texelCount = 0;
 
         for (let i = 0, j = 1; i < levels; i++, j *= 2) {
-            texelCount += Math.max(Math.floor(width / j), 1) * Math.max(Math.floor(height / j), 1)
-                * Math.max(Math.floor(depth / j), 1);
+            texelCount +=
+                Math.max(Math.floor(width / j), 1) *
+                Math.max(Math.floor(height / j), 1) *
+                Math.max(Math.floor(depth / j), 1);
         }
 
         return texelCount * texelByte;

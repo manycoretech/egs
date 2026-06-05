@@ -1,5 +1,14 @@
 import { unzipSync } from 'fflate';
-import { decodeImage, extractFromRootDir, type IData, type IFile, type ISingleSplat, isUrl, SH_C0, SH_MAPS } from './utils';
+import {
+    decodeImage,
+    extractFromRootDir,
+    type IData,
+    type IFile,
+    type ISingleSplat,
+    isUrl,
+    SH_C0,
+    SH_MAPS,
+} from './utils';
 
 interface Metadata {
     version: number;
@@ -20,7 +29,8 @@ interface Metadata {
 }
 
 const TEMP_ROT: number[] = new Array(4);
-const PERM_TABLE = [  // original quat idx ---> actual storage idx
+const PERM_TABLE = [
+    // original quat idx ---> actual storage idx
     [0, 1, 2, 3],
     [3, 1, 2, 0],
     [1, 3, 2, 0],
@@ -29,7 +39,7 @@ const PERM_TABLE = [  // original quat idx ---> actual storage idx
 const COLOR_SCALE = SH_C0 / 0.15;
 function logTransform(value: number) {
     return Math.sign(value) * Math.log(Math.abs(value) + 1);
-};
+}
 
 export class EszFile implements IFile {
     private counts: number = 0;
@@ -47,7 +57,7 @@ export class EszFile implements IFile {
      */
     refs: Record<string, Uint8Array> = {};
 
-    private cached: Array<{ width: number, height: number, data: Uint8Array }>;
+    private cached: Array<{ width: number; height: number; data: Uint8Array }>;
 
     async load(stream: ReadableStream<Uint8Array>, contentLength: number) {
         const buffer = new Uint8Array(contentLength);
@@ -68,7 +78,7 @@ export class EszFile implements IFile {
             throw new Error('SOG meta.json not found in the zip archive.');
         }
 
-        const meta = this.meta = JSON.parse(new TextDecoder().decode(metaBuffer)) as Metadata;
+        const meta = (this.meta = JSON.parse(new TextDecoder().decode(metaBuffer)) as Metadata);
         this.version = meta.version;
         this.counts = meta.counts;
         this.shDegree = meta.shDegree;
@@ -77,7 +87,9 @@ export class EszFile implements IFile {
     private async loadTexture(path: string) {
         let buffer: Uint8Array | undefined = this.refs[path];
         if (!buffer && isUrl(path)) {
-            buffer = await fetch(path).then(res => res.arrayBuffer()).then(buf => new Uint8Array(buf));
+            buffer = await fetch(path)
+                .then(res => res.arrayBuffer())
+                .then(buf => new Uint8Array(buf));
         }
         if (!buffer) {
             throw new Error(`Cannot load texture: ${path}`);
@@ -90,11 +102,11 @@ export class EszFile implements IFile {
 
         const offset = await data.initBlock(this.counts, this.shDegree);
         const { resources } = this.meta;
-        this.cached = await Promise.all([
-            resources.means_l, resources.means_u,
-            resources.scales, resources.quats,
-            resources.sh0, resources.shN,
-        ].filter(path => !!path).map(path => this.loadTexture(path!)));
+        this.cached = await Promise.all(
+            [resources.means_l, resources.means_u, resources.scales, resources.quats, resources.sh0, resources.shN]
+                .filter(path => !!path)
+                .map(path => this.loadTexture(path!)),
+        );
 
         const setFn = data.set.bind(data) as IData['set'];
         const setShFn = data.setShN.bind(data) as IData['setShN'];
@@ -107,7 +119,12 @@ export class EszFile implements IFile {
             COLOR_LUT[i] = (i / 255 - 0.5) * COLOR_SCALE + 0.5;
         }
 
-        const { meta: { box }, counts, shDegree, cached } = this;
+        const {
+            meta: { box },
+            counts,
+            shDegree,
+            cached,
+        } = this;
         const [means_l, means_u, scales, quats, color, shN] = cached.map(v => v.data);
 
         const { min, max } = box;
@@ -122,10 +139,20 @@ export class EszFile implements IFile {
         const rangeZ = (maxZ - minZ) / 65535;
 
         const single: ISingleSplat = {
-            x: 0, y: 0, z: 0,
-            sx: 0, sy: 0, sz: 0,
-            qx: 0, qy: 0, qz: 0, qw: 0,
-            r: 0, g: 0, b: 0, a: 0,
+            x: 0,
+            y: 0,
+            z: 0,
+            sx: 0,
+            sy: 0,
+            sz: 0,
+            qx: 0,
+            qy: 0,
+            qz: 0,
+            qw: 0,
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
             shN: [],
         };
         for (let i = 0; i < counts; i++) {
@@ -145,7 +172,9 @@ export class EszFile implements IFile {
             TEMP_ROT[0] = (quats[i4 + 0] / 255 - 0.5) * Math.SQRT2;
             TEMP_ROT[1] = (quats[i4 + 1] / 255 - 0.5) * Math.SQRT2;
             TEMP_ROT[2] = (quats[i4 + 2] / 255 - 0.5) * Math.SQRT2;
-            TEMP_ROT[3] = Math.sqrt(Math.max(0, 1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2]));
+            TEMP_ROT[3] = Math.sqrt(
+                Math.max(0, 1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2]),
+            );
             const PERM = PERM_TABLE[quats[i4 + 3] - 252];
             single.qx = TEMP_ROT[PERM[0]];
             single.qy = TEMP_ROT[PERM[1]];

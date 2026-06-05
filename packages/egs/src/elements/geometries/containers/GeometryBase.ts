@@ -13,8 +13,10 @@ let geometryId = 0; // Geometry uses even numbers as Id
  * This class is a base class of every Geometry and BufferGeometry.
  * All of Geometry and BufferGeometry must implement the abstract function for engine in order to correctly accelerate render.
  */
-export abstract class GeometryBase extends ElementEventDispatcher
-    implements SerializerableDelegatedAsReference, ElementsWithGPUResource {
+export abstract class GeometryBase
+    extends ElementEventDispatcher
+    implements SerializerableDelegatedAsReference, ElementsWithGPUResource
+{
     id = (geometryId += 2);
 
     protected boundingBox: Nullable<Box3> = null;

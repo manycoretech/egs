@@ -4,11 +4,11 @@ import { textDecoder } from './const';
 const BINARY_HEADER_MAGIC = 'glTF';
 const HEADER_LENGTH = 12;
 const CHUNK_TYPES = {
-    JSON: 0x4E4F534A,
-    BIN: 0x004E4942,
+    JSON: 0x4e4f534a,
+    BIN: 0x004e4942,
 } as const;
 
-function parseGLB(data: ArrayBuffer): { content: GLTF, body: ArrayBuffer | undefined } {
+function parseGLB(data: ArrayBuffer): { content: GLTF; body: ArrayBuffer | undefined } {
     const headerView = new DataView(data, 0, HEADER_LENGTH);
     const header = {
         magic: textDecoder.decode(new Uint8Array(data.slice(0, 4))),
@@ -54,7 +54,7 @@ function parseGLB(data: ArrayBuffer): { content: GLTF, body: ArrayBuffer | undef
     return { content, body };
 }
 
-export function parseGLTF(data: ArrayBuffer | string): { data: GLTF, binaryBuffer: ArrayBuffer | undefined } {
+export function parseGLTF(data: ArrayBuffer | string): { data: GLTF; binaryBuffer: ArrayBuffer | undefined } {
     let json: GLTF;
     let binaryBuffer: ArrayBuffer | undefined;
     if (typeof data === 'string') {

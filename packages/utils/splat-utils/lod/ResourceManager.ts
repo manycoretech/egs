@@ -1,6 +1,13 @@
 import { deferred } from '@qunhe/egs-lib';
 import { type SourceTexture, type Splat, __INTERNAL__ } from '@qunhe/egs';
-import { type SplatData, SplatPackType, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from '@qunhe/egs-splat-loader';
+import {
+    type SplatData,
+    SplatPackType,
+    RawSplatData,
+    CompressedSplatData,
+    SuperCompressedSplatData,
+    SogSplatData,
+} from '@qunhe/egs-splat-loader';
 import { createSourceTextureFromSampler, createSourceTextureFromImageSource } from '../SplatData';
 
 interface ResourceData {
@@ -17,13 +24,9 @@ export class ResourceManager {
     private loadResource: LoadResourceFn;
     private permanentFiles: number[];
     private resources: string[];
-    private resourceCache: Array<{ isProtected: boolean, refs: number, data: Promise<ResourceData> } | undefined> = [];
+    private resourceCache: Array<{ isProtected: boolean; refs: number; data: Promise<ResourceData> } | undefined> = [];
 
-    constructor(
-        resources: string[],
-        permanentFiles: number[],
-        loadResource: LoadResourceFn,
-    ) {
+    constructor(resources: string[], permanentFiles: number[], loadResource: LoadResourceFn) {
         this.resources = resources;
         this.permanentFiles = permanentFiles;
         this.loadResource = loadResource;
@@ -102,7 +105,8 @@ export class ResourceManager {
                 splat = new __INTERNAL__.CompressedSplat(
                     counts,
                     shDegree,
-                    textures[0], textures[1],
+                    textures[0],
+                    textures[1],
                     shDegree >= 1 ? textures[2] : undefined,
                     shDegree >= 2 ? textures[3] : undefined,
                     shDegree >= 3 ? textures[4] : undefined,
@@ -123,8 +127,13 @@ export class ResourceManager {
                 const [meansL, meansU, scales, quats, sh0, shNLabels, shNCentroids] = textures;
                 splat = new __INTERNAL__.SogSplat(
                     extras[0],
-                    meansL, meansU, quats, scales,
-                    sh0, shNLabels, shNCentroids,
+                    meansL,
+                    meansU,
+                    quats,
+                    scales,
+                    sh0,
+                    shNLabels,
+                    shNCentroids,
                 );
                 break;
             }

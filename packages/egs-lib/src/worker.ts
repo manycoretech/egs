@@ -10,14 +10,14 @@ const WorkerFlags = {
 } as const;
 
 export type WebWorker = Worker & {
-    readonly alive: boolean,
-    readonly permanent: boolean,
-    release(): void
+    readonly alive: boolean;
+    readonly permanent: boolean;
+    release(): void;
 };
 
 type InternalWebWorker = WebWorker & {
     pool: FactoryWorkerPool;
-    flags: number
+    flags: number;
 };
 
 const workerProperties = {
@@ -26,14 +26,14 @@ const workerProperties = {
             return hasFlags(this.flags, WorkerFlags.ALIVE);
         },
         enumerable: true,
-        configurable: false
+        configurable: false,
     },
     permanent: {
         get(this: InternalWebWorker) {
             return hasFlags(this.flags, WorkerFlags.PERMANENT);
         },
         enumerable: true,
-        configurable: false
+        configurable: false,
     },
     release: {
         value(this: InternalWebWorker) {
@@ -43,7 +43,7 @@ const workerProperties = {
         },
         enumerable: false,
         configurable: false,
-    }
+    },
 };
 
 export class FactoryWorkerPool {
@@ -57,9 +57,7 @@ export class FactoryWorkerPool {
         readonly maxWorkerCount = 1,
         readonly permanentWorkers = 0,
         readonly cleanupTimeout = 30000, // 30s
-    ) {
-
-    }
+    ) {}
 
     private createWorker() {
         const worker = this.workerFactory() as InternalWebWorker;

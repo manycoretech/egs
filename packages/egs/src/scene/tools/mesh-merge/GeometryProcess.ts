@@ -1,4 +1,4 @@
-import type { BufferGroup,IndexBufferAttribute } from '../../../elements/geometries/containers/BufferGeometry';
+import type { BufferGroup, IndexBufferAttribute } from '../../../elements/geometries/containers/BufferGeometry';
 import { BufferAttribute } from '../../../elements/attributes/BufferAttribute';
 import { Vector3 } from '../../../math/Vector3';
 import { Vector2 } from '../../../math/Vector2';
@@ -13,19 +13,21 @@ const vx = new Vector3();
 const vn = new Vector3();
 const vt = new Vector2();
 
-export function expandAttributeBySharedIndex(geometry: PopBufferGeometry): undefined | {
-    index: IndexBufferAttribute,
-    position: BufferAttribute,
-    normal: BufferAttribute,
-    uv: BufferAttribute,
-} {
+export function expandAttributeBySharedIndex(geometry: PopBufferGeometry):
+    | undefined
+    | {
+          index: IndexBufferAttribute;
+          position: BufferAttribute;
+          normal: BufferAttribute;
+          uv: BufferAttribute;
+      } {
     const groups = geometry.getGroups();
     const index = geometry.index;
     const position = geometry.position;
     const normal = geometry.getAttribute('normal')!;
     const texcoord = geometry.getAttribute('uv')!;
 
-    if (usedMap === undefined || usedMap.length < (position.count)) {
+    if (usedMap === undefined || usedMap.length < position.count) {
         usedMap = new Uint16Array(position.count);
     }
 
@@ -97,7 +99,10 @@ export function expandAttributeBySharedIndex(geometry: PopBufferGeometry): undef
     };
 }
 
-function getMaterialGroup(groups: ReadonlyArray<Readonly<BufferGroup>>, materialIndex: number): BufferGroup | undefined {
+function getMaterialGroup(
+    groups: ReadonlyArray<Readonly<BufferGroup>>,
+    materialIndex: number,
+): BufferGroup | undefined {
     for (let i = 0; i < groups.length; ++i) {
         const group = groups[i];
         if (group.materialIndex === materialIndex) {
@@ -108,7 +113,10 @@ function getMaterialGroup(groups: ReadonlyArray<Readonly<BufferGroup>>, material
 }
 
 const vec3 = new Vector3();
-export function generateTransformedUVAttribute(geometry: PopBufferGeometry, materials: ReadonlyArray<MeshPhongMaterial>): Float32Array {
+export function generateTransformedUVAttribute(
+    geometry: PopBufferGeometry,
+    materials: ReadonlyArray<MeshPhongMaterial>,
+): Float32Array {
     let needTransform = false;
     for (let i = 0; i < materials.length; ++i) {
         const material = materials[i];
@@ -148,7 +156,6 @@ export function generateTransformedUVAttribute(geometry: PopBufferGeometry, mate
                 newUVs[offset] = vec3.x;
                 newUVs[offset + 1] = vec3.y;
             }
-
         }
     }
 

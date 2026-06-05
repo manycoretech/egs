@@ -10,7 +10,7 @@ class CubicPoly {
     private init(x0: number, x1: number, t0: number, t1: number): void {
         this.c0 = x0;
         this.c1 = t0;
-        this.c2 = - 3 * x0 + 3 * x1 - 2 * t0 - t1;
+        this.c2 = -3 * x0 + 3 * x1 - 2 * t0 - t1;
         this.c3 = 2 * x0 - 2 * x1 + t0 + t1;
     }
 
@@ -18,7 +18,15 @@ class CubicPoly {
         this.init(x1, x2, tension * (x2 - x0), tension * (x3 - x1));
     }
 
-    initNonuniformCatmullRom(x0: number, x1: number, x2: number, x3: number, dt0: number, dt1: number, dt2: number): void {
+    initNonuniformCatmullRom(
+        x0: number,
+        x1: number,
+        x2: number,
+        x3: number,
+        dt0: number,
+        dt1: number,
+        dt2: number,
+    ): void {
         // compute tangents when parameterized in [t1,t2]
         let t1 = (x1 - x0) / dt0 - (x2 - x0) / (dt0 + dt1) + (x2 - x1) / dt1;
         let t2 = (x2 - x1) / dt1 - (x3 - x1) / (dt1 + dt2) + (x3 - x2) / dt2;
@@ -139,11 +147,7 @@ export class CatmullRomCurve3D extends Curve<Vector3> {
             pz.initCatmullRom(p0.z, p1.z, p2.z, p3.z, this.tension);
         }
 
-        point.set(
-            px.calc(weight),
-            py.calc(weight),
-            pz.calc(weight)
-        );
+        point.set(px.calc(weight), py.calc(weight), pz.calc(weight));
         return point;
     }
 

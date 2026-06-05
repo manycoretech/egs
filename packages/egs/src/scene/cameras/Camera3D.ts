@@ -117,7 +117,7 @@ export abstract class Camera3D extends Object3D {
     getWorldDirection(target: Vector3) {
         this.updateMatrixWorld(true);
         const e = this.matrixWorld._elements;
-        return target.set(- e[8], - e[9], - e[10]).normalize();
+        return target.set(-e[8], -e[9], -e[10]).normalize();
     }
     /**
      * Update the camera's {@link Object3D.matrixWorld| matrixWorld } and {@link matrixWorldInverse| matrixWorldInverse }.
@@ -155,7 +155,7 @@ export abstract class Camera3D extends Object3D {
     /**
      * Update the projection matrix base on different type of camera. And a modification also can be applied on the projection.
      */
-    abstract updateProjectionMatrix(jitter?: { offset: Vector2, canvas_size: Vector2 }): void;
+    abstract updateProjectionMatrix(jitter?: { offset: Vector2; canvas_size: Vector2 }): void;
 
     private _jitter: ReadonlyVector2 = readonlyMath.vec2(0, 0);
     updateJitter(jitter: ReadonlyVector2) {
@@ -185,7 +185,7 @@ export abstract class Camera3D extends Object3D {
      * return a function that compute pixelsPerUnit
      */
     pixelsPerUnitCreator(viewHeight: number): (distance: number) => number {
-        return (distance) => this.pixelsPerUnit(distance, viewHeight);
+        return distance => this.pixelsPerUnit(distance, viewHeight);
     }
 
     /**

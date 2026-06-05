@@ -65,11 +65,12 @@ export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
             .addUniform('targetOffset', WebGLShaderDataType.Int)
             .addUniform('targetCounts', WebGLShaderDataType.Int)
             .addUniform('colorTex', WebGLShaderDataType.Sampler2D)
-            .when(splat.shDegree > 0, builder => builder
-                .addUniform('centerTex', WebGLShaderDataType.Sampler2D)
-                .addUniform('viewTranslate', WebGLShaderDataType.Vec3)
-                .addUniform('modelMatrix', WebGLShaderDataType.Mat4)
-                .addFragmentCustom(createSHShader(this))
+            .when(splat.shDegree > 0, builder =>
+                builder
+                    .addUniform('centerTex', WebGLShaderDataType.Sampler2D)
+                    .addUniform('viewTranslate', WebGLShaderDataType.Vec3)
+                    .addUniform('modelMatrix', WebGLShaderDataType.Mat4)
+                    .addFragmentCustom(createSHShader(this)),
             )
             .inject(ShaderInjectionTypes.gl_FragColor, createFragShader(this));
     }
@@ -121,13 +122,19 @@ function createSHShader(material: SplatPrecalculateMaterial): string {
 
             ${splat.createUnpackSHShader()}
 
-            ${renderShDegree > 0 ? `
+            ${
+                renderShDegree > 0
+                    ? `
                 vec3 sh1 = sh1_0 * (-k1 * viewDir.y)
                     + sh1_1 * (k1 * viewDir.z)
                     + sh1_2 * (-k1 * viewDir.x);
                 color += sh1;
-            ` : ''}
-            ${renderShDegree > 1 ? `
+            `
+                    : ''
+            }
+            ${
+                renderShDegree > 1
+                    ? `
                 float xx = viewDir.x * viewDir.x;
                 float yy = viewDir.y * viewDir.y;
                 float zz = viewDir.z * viewDir.z;
@@ -140,8 +147,12 @@ function createSHShader(material: SplatPrecalculateMaterial): string {
                     + sh2_3 * (-k2_0 * zx)
                     + sh2_4 * (k2_2 * (xx - yy));
                 color += sh2;
-            ` : ''}
-            ${renderShDegree > 2 ? `
+            `
+                    : ''
+            }
+            ${
+                renderShDegree > 2
+                    ? `
                 vec3 sh3 = sh3_0 * (-k3_0 * viewDir.y * (3.0 * xx - yy))
                     + sh3_1 * (k3_1 * xy * viewDir.z)
                     + sh3_2 * (-k3_2 * viewDir.y * (4.0 * zz - xx - yy))
@@ -150,7 +161,9 @@ function createSHShader(material: SplatPrecalculateMaterial): string {
                     + sh3_5 * (k3_4 * viewDir.z * (xx - yy))
                     + sh3_6 * (-k3_0 * viewDir.x * (xx - 3.0 * yy));
                 color += sh3;
-            ` : ''}
+            `
+                    : ''
+            }
 
             return color;
         }
@@ -167,11 +180,15 @@ function createFragShader(material: SplatPrecalculateMaterial): string {
         }
 
         vec4 color = texelFetch(colorTex, fragCoord, 0);
-        ${splat.shDegree > 0 ? `
+        ${
+            splat.shDegree > 0
+                ? `
             vec3 center = texelFetch(centerTex, fragCoord, 0).xyz;
             vec3 normal = normalize(transpose(mat3(modelMatrix)) * (center - viewTranslate));
             color.rgb += evaluateSH(uint(splatIndex + targetOffset), normal);
-        ` : ''}
+        `
+                : ''
+        }
         uvec4 uColor = uvec4(round(saturate(color) * 255.0));
         gl_FragColor = uvec4(0u, 0u, 0u, uColor.r | (uColor.g << 8u) | (uColor.b << 16u) | (uColor.a << 24u));
     `;

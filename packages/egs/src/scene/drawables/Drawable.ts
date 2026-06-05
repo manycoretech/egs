@@ -1,5 +1,9 @@
 import { logger } from '../../utils/Logger';
-import { type BufferGeometryBase, type BufferRange, BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
+import {
+    type BufferGeometryBase,
+    type BufferRange,
+    BufferGeometry,
+} from '../../elements/geometries/containers/BufferGeometry';
 import type { GeometryBase } from '../../elements/geometries/containers/GeometryBase';
 import type { Material } from '../../elements/materials/Material';
 import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial';
@@ -66,14 +70,18 @@ export type RenderHook = (
     geometry: GeometryBase,
     material: Material,
     object: Drawable,
-    group: Nullable<BufferRange>) => void;
+    group: Nullable<BufferRange>,
+) => void;
 
 /**
  * This is a base class of Mesh, Line, Point and Sprite.
  * This class has attributes which make the engine know the changed data and apply optimization.
  * Only drawable node of scene can be seen on screen.
  */
-export class Drawable<M extends Material = Material, G extends BufferGeometryBase = BufferGeometryBase> extends Object3D {
+export class Drawable<
+    M extends Material = Material,
+    G extends BufferGeometryBase = BufferGeometryBase,
+> extends Object3D {
     /**
      * This value allows the default rendering order of scene graph objects to be overridden although opaque and transparent objects remain sorted independently.
      * When this property is set for an instance of {@link Group| Group }, all descendants objects will be sorted and rendered together.
@@ -91,10 +99,10 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
 
     private _outlineMode = OutlineMode.Disabled;
     /**
-    * Mark this drawable should be rendered in outline style
-    * if you set outlinePipelineMode & outlineShadingMode, get this value maybe not as expected.
-    * @deprecated use `outlineShadingMode` and `outlineRenderMode` instead
-    */
+     * Mark this drawable should be rendered in outline style
+     * if you set outlinePipelineMode & outlineShadingMode, get this value maybe not as expected.
+     * @deprecated use `outlineShadingMode` and `outlineRenderMode` instead
+     */
     get outlineMode(): OutlineMode {
         return this._outlineMode;
     }
@@ -168,13 +176,13 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
     overlayLayers: number = 0;
 
     /**
-    * Mark this drawable can cast shadow
-    */
+     * Mark this drawable can cast shadow
+     */
     @drawableState()
     castShadow = false;
     /**
-    * Mark this drawable can cast shadow
-    */
+     * Mark this drawable can cast shadow
+     */
     @drawableState()
     castPlanarShadow = false;
     /**
@@ -229,9 +237,9 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
      */
     onBeforeRender: Nullable<RenderHook> = null;
     /**
-    * @internal
-    * @deprecated
-    */
+     * @internal
+     * @deprecated
+     */
     hasDynamicShapeMaterial = false;
 
     private _isAlwaysDynamic = false;
@@ -279,7 +287,8 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
 
     constructor(
         geometry: G = new BufferGeometry() as any as G,
-        material: M | M[] = new MeshBasicMaterial() as any as M) {
+        material: M | M[] = new MeshBasicMaterial() as any as M,
+    ) {
         super();
         this._geometry = geometry;
         ContentBridge.drawableInit(this);
@@ -320,11 +329,11 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
     }
 
     /**
-    * Add a new material into this object.
-    * If use this method, please make sure that the {@link material| material } has set to Array.
-    * @param {Material} material a new material which is set.
-    * @param {number} index the target position in the Array.
-    */
+     * Add a new material into this object.
+     * If use this method, please make sure that the {@link material| material } has set to Array.
+     * @param {Material} material a new material which is set.
+     * @param {number} index the target position in the Array.
+     */
     setMaterial(material: M, index: number) {
         ContentBridge.drawableSetMaterial(this, material, index);
         this._material[index] = material;
@@ -457,10 +466,10 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
             this.localMatrixNeedUpdate = false;
         }
     }
-    private viewIndependentOverrideScale = new Vector3(1., 1., 1.);
+    private viewIndependentOverrideScale = new Vector3(1, 1, 1);
 
     _clearViewIndependentOverrideScale() {
-        if (this._enableViewIndependentScale && this.viewIndependentOverrideScale.x !== 1.) {
+        if (this._enableViewIndependentScale && this.viewIndependentOverrideScale.x !== 1) {
             this.localMatrixNeedUpdate = true;
         }
         this.viewIndependentOverrideScale.set(1, 1, 1);
@@ -487,7 +496,7 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
         }
     }
 
-    protected raycastJsImpl(_raycaster: Raycaster, _intersects: Intersection[]) { }
+    protected raycastJsImpl(_raycaster: Raycaster, _intersects: Intersection[]) {}
 
     /**
      * Clean render data for optimization.
@@ -599,16 +608,15 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
     /**
      * @internal
      */
-    appendDrawcall(
-        transparent: Drawcall[],
-        opaque: Drawcall[],
-    ) {
+    appendDrawcall(transparent: Drawcall[], opaque: Drawcall[]) {
         const renderMaterial = this.renderMaterial;
         const renderGeometry = this.renderGeometry;
         const groups = renderGeometry.getGroups();
 
-        if ((!this.shouldUseGeometryGroupsWhenOnlyHasOneMaterial && this._material.length === 1)
-            || (groups.length === 0 && this._material.length >= 1)) {
+        if (
+            (!this.shouldUseGeometryGroupsWhenOnlyHasOneMaterial && this._material.length === 1) ||
+            (groups.length === 0 && this._material.length >= 1)
+        ) {
             this.addDrawcall(this._material[0], null, transparent, opaque);
             return;
         }
@@ -649,7 +657,12 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
         super.serialize(ctx);
         ctx.put('material', '_material');
         ctx.puts<Drawable>([
-            'geometry', 'drawMode', 'renderOrder', 'shouldUseGeometryGroupsWhenOnlyHasOneMaterial', 'castPlanarShadow', 'castShadow'
+            'geometry',
+            'drawMode',
+            'renderOrder',
+            'shouldUseGeometryGroupsWhenOnlyHasOneMaterial',
+            'castPlanarShadow',
+            'castShadow',
         ]);
     }
 
@@ -666,7 +679,12 @@ export class Drawable<M extends Material = Material, G extends BufferGeometryBas
         super.deserialize(ctx);
         ctx.read('material', '__material');
         ctx.reads<Drawable>([
-            'geometry', 'drawMode', 'renderOrder', 'shouldUseGeometryGroupsWhenOnlyHasOneMaterial', 'castPlanarShadow', 'castShadow'
+            'geometry',
+            'drawMode',
+            'renderOrder',
+            'shouldUseGeometryGroupsWhenOnlyHasOneMaterial',
+            'castPlanarShadow',
+            'castShadow',
         ]);
         this.updateBoundings();
     }

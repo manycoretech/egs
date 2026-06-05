@@ -48,8 +48,12 @@ function preTestAndCollect(obj: Drawable): void {
     }
 }
 // pre-filter not possible hit item and sort;
-function getTestIntersectionList(raycaster: Raycaster, camera: Camera3D,
-    viewer: Viewer, intersectTestList?: Drawable[]): PreTestItem[] {
+function getTestIntersectionList(
+    raycaster: Raycaster,
+    camera: Camera3D,
+    viewer: Viewer,
+    intersectTestList?: Drawable[],
+): PreTestItem[] {
     preTestList = [];
     currentRayCaster = raycaster;
     currentCamera = camera;
@@ -77,7 +81,8 @@ function testAndFindFirst(raycaster: Raycaster, intersectTestList: PreTestItem[]
         const oldIntersectCount = resultIntersects.length;
         currentIntersectionTest.obj.raycast(raycaster, resultIntersects);
 
-        if (i === intersectTestList.length - 1) { // last one
+        if (i === intersectTestList.length - 1) {
+            // last one
             nextBoxNearest = currentMeshNearest;
         } else {
             nextBoxNearest = intersectTestList[i + 1].nearDistance;

@@ -1,5 +1,16 @@
 import { Texture, type WebGLTextureUploadCtx } from './Texture';
-import { type TextureFormat, type WebGLTextureFormat, type TextureDimension, TextureViewDimension, maxMipLevels, formatMeta, textureByteSize, textureCopyInfo, mipLevelSize, CUBE_FACES } from './types';
+import {
+    type TextureFormat,
+    type WebGLTextureFormat,
+    type TextureDimension,
+    TextureViewDimension,
+    maxMipLevels,
+    formatMeta,
+    textureByteSize,
+    textureCopyInfo,
+    mipLevelSize,
+    CUBE_FACES,
+} from './types';
 import { _Math } from '../../math/Math';
 import { logger } from '../../utils/Logger';
 
@@ -16,8 +27,8 @@ export abstract class TextureV2 extends Texture {
     readonly levels: number;
     readonly mipmaps: boolean;
     /**
-    * @internal
-    */
+     * @internal
+     */
     readonly glFormat: WebGLTextureFormat;
     readonly byteSize: number;
     /**
@@ -26,9 +37,15 @@ export abstract class TextureV2 extends Texture {
     readonly isPot: boolean;
 
     constructor(
-        dimension: TextureDimension, viewDimension: TextureViewDimension,
-        format: TextureFormat, width: number, height: number, depthOrArrayLayers: number,
-        sampleCount: number, mipmaps: boolean, isInternal: boolean
+        dimension: TextureDimension,
+        viewDimension: TextureViewDimension,
+        format: TextureFormat,
+        width: number,
+        height: number,
+        depthOrArrayLayers: number,
+        sampleCount: number,
+        mipmaps: boolean,
+        isInternal: boolean,
     ) {
         super(dimension, viewDimension, isInternal);
         this.format = format;
@@ -41,7 +58,9 @@ export abstract class TextureV2 extends Texture {
 
         const meta = formatMeta(format);
         this.glFormat = meta.glFormat;
-        this.byteSize = Math.round(textureByteSize(width, height, meta.copyInfo) * depthOrArrayLayers * sampleCount * (mipmaps ? 1.5 : 1));
+        this.byteSize = Math.round(
+            textureByteSize(width, height, meta.copyInfo) * depthOrArrayLayers * sampleCount * (mipmaps ? 1.5 : 1),
+        );
         this.isPot = _Math.isPowerOfTwo(width) && _Math.isPowerOfTwo(height);
     }
 
@@ -49,8 +68,7 @@ export abstract class TextureV2 extends Texture {
      * @internal
      */
     get isLayeredTexture() {
-        return this.viewDimension === TextureViewDimension.D2Array ||
-            this.viewDimension === TextureViewDimension.D3;
+        return this.viewDimension === TextureViewDimension.D2Array || this.viewDimension === TextureViewDimension.D3;
     }
 
     /**
@@ -120,7 +138,9 @@ export abstract class TextureV2 extends Texture {
             // texture allocate for WebGL1
             // same function as texStorage2D
             if (this.isLayeredTexture) {
-                logger.unsupported('WebGL1 does not support layered texture(Texture3D/Texture2DArray), allocation failed.');
+                logger.unsupported(
+                    'WebGL1 does not support layered texture(Texture3D/Texture2DArray), allocation failed.',
+                );
                 return false;
             }
 
@@ -137,15 +157,27 @@ export abstract class TextureV2 extends Texture {
                 for (let j = 0; j < this.depthOrArrayLayers; j++) {
                     const target = this.isCube ? CUBE_FACES[j] : this.bindableTarget;
                     if (!this.glFormat.compressed) {
-                        gl.texImage2D(target, i, this.glFormat.internal(backend),
-                            mipmapSize.width, mipmapSize.height, 0,
-                            this.glFormat.external(backend), this.glFormat.dataType(backend),
-                            null);
+                        gl.texImage2D(
+                            target,
+                            i,
+                            this.glFormat.internal(backend),
+                            mipmapSize.width,
+                            mipmapSize.height,
+                            0,
+                            this.glFormat.external(backend),
+                            this.glFormat.dataType(backend),
+                            null,
+                        );
                     } else {
                         const bufferSize = textureByteSize(mipmapSize.width, mipmapSize.height, copyInfo);
-                        gl.compressedTexImage2D(target, i, this.glFormat.internal(backend),
-                            mipmapSize.width, mipmapSize.height, 0,
-                            dummyBuffer!.subarray(0, bufferSize)
+                        gl.compressedTexImage2D(
+                            target,
+                            i,
+                            this.glFormat.internal(backend),
+                            mipmapSize.width,
+                            mipmapSize.height,
+                            0,
+                            dummyBuffer!.subarray(0, bufferSize),
                         );
                     }
                 }
@@ -167,8 +199,7 @@ Object.defineProperty(TextureV2.prototype, 'isMipmapDisabled', {
     get(this: TextureV2) {
         return !this.mipmaps;
     },
-    set(this: TextureV2, _value: boolean) {
-    },
+    set(this: TextureV2, _value: boolean) {},
     enumerable: true,
-    configurable: true
+    configurable: true,
 });

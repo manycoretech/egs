@@ -11,7 +11,10 @@ export class SpriteBufferGeometry extends BufferGeometry {
 
     constructor() {
         super();
-        const position = new BufferAttribute(new Float32Array([- 0.5, - 0.5, 0, 0.5, - 0.5, 0, 0.5, 0.5, 0, - 0.5, 0.5, 0]), 3);
+        const position = new BufferAttribute(
+            new Float32Array([-0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, -0.5, 0.5, 0]),
+            3,
+        );
         const uv = new BufferAttribute(new Float32Array([0, 0, 1, 0, 1, 1, 0, 1]), 2);
         this.setIndex([0, 1, 2, 0, 2, 3]);
         this.setAttribute('position', position);

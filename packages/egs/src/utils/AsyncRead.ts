@@ -5,8 +5,8 @@ const TASK_POLL_INTERVAL = 10;
 
 interface Task {
     gl: WebGL2RenderingContext;
-    sync: WebGLSync,
-    deferred: Deferred<void>
+    sync: WebGLSync;
+    deferred: Deferred<void>;
 }
 
 let tasks: Task[] = [];
@@ -43,14 +43,22 @@ function scheduleTask(gl: WebGL2RenderingContext, sync: WebGLSync): Task {
     const task = {
         gl,
         sync,
-        deferred: deferred<void>()
+        deferred: deferred<void>(),
     };
     tasks.push(task);
     taskInterval();
     return task;
 }
 
-export async function getBufferSubDataAsync(gl: WebGL2RenderingContext, target: number, buffer: WebGLBuffer, srcByteOffset: number, dstBuffer: TypedArray, dstOffset?: number, length?: number) {
+export async function getBufferSubDataAsync(
+    gl: WebGL2RenderingContext,
+    target: number,
+    buffer: WebGLBuffer,
+    srcByteOffset: number,
+    dstBuffer: TypedArray,
+    dstOffset?: number,
+    length?: number,
+) {
     const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0)!;
     gl.flush();
 

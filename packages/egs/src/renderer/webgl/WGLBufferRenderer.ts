@@ -48,7 +48,9 @@ export class WGLBufferRenderer {
             (this.gl as WebGL2RenderingContext).drawArraysInstanced(this.mode, start, count, geometry.instancedCount);
         } else {
             if (this.instanceExtension === null || this.instanceExtension === undefined) {
-                logger.unsupported('WGLIndexedBufferRenderer: using InstancedBufferGeometry but hardware does not support extension ANGLE_instanced_arrays.');
+                logger.unsupported(
+                    'WGLIndexedBufferRenderer: using InstancedBufferGeometry but hardware does not support extension ANGLE_instanced_arrays.',
+                );
                 return;
             }
             this.instanceExtension.drawArraysInstancedANGLE(this.mode, start, count, geometry.instancedCount);
@@ -58,7 +60,7 @@ export class WGLBufferRenderer {
         this.infoRender.vertices += count * geometry.instancedCount;
 
         if (this.mode === this.gl.TRIANGLES) {
-            this.infoRender.faces += geometry.instancedCount * count / 3;
+            this.infoRender.faces += (geometry.instancedCount * count) / 3;
         }
     }
 }
