@@ -287,6 +287,7 @@ export class SplattingPlugin extends PipelinePlugin {
             prevSortCameraLayer,
             orderLayout,
             reorderMaterial,
+            packCameraRelativeEnabled,
             packCameraRelativeOrigin,
             packCameraRelativeUpdateDistanceThreshold,
             packQueue,
@@ -367,6 +368,7 @@ export class SplattingPlugin extends PipelinePlugin {
         }
         camera.matrixWorld.getPosition(tempVec0);
         const packCameraRelativeCenterIsDirty =
+            packCameraRelativeEnabled &&
             tempVec0.sub(packCameraRelativeOrigin).length() > packCameraRelativeUpdateDistanceThreshold;
         for (let i = 0; i < splats.length; i++) {
             const splat = splats[i];

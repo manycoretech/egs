@@ -1,5 +1,10 @@
 # EGS 发布说明 Release Notes
 
+## 1.2.90
+
+1. 修复
+    - 修复`packCameraRelativeCenterIsDirty`状态异常
+
 ## 1.2.89
 
 1. 新功能
