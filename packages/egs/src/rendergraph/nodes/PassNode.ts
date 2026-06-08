@@ -180,6 +180,11 @@ export class PassNode extends ExecuteNode<PassExecuteCtx> {
         return this;
     }
 
+    modify(fn: (node: PassNode) => void) {
+        fn(this);
+        return this;
+    }
+
     updateResource(getResource: (node: ResourceNode) => Texture) {
         this.inputs.forEach((node, name) => {
             this.resources.set(name, getResource(node));

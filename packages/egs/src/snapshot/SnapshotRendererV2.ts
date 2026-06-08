@@ -687,7 +687,7 @@ export class SnapshotRenderer {
 
     private async prerender(ctx: SnapshotCtx) {
         const { drawableList, scene, camera, size } = ctx;
-        if (!scene.splatManager.splatCounts) {
+        if (!scene.splatManager.totalCount) {
             return;
         }
         const splat = scene.splatManager.splats[0];
@@ -820,7 +820,7 @@ export class SnapshotRenderer {
             }
 
             const ctx: SnapshotCtx = { drawableList, scene, camera: renderCamera, size, freeables };
-            if (ctx.scene.splatManager.splatCounts) {
+            if (ctx.scene.splatManager.totalCount) {
                 await this.prerender(ctx);
             }
             const target = this.inner_render(ctx);

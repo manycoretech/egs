@@ -1,3 +1,4 @@
+import { logger } from '@qunhe/egs-lib';
 import type { Vector4 } from '../../math/Vector4';
 import { PipelinePlugin } from './PipelinePlugin';
 import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
@@ -18,7 +19,7 @@ import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
 import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
 import { Capabilities } from '../../renderer/Capabilities';
 import { SplatKernelHighlightMaterial } from '../../elements/materials/mesh/SplatKernelHighlightMaterial';
-import { SplatRepackMaterial } from '../../elements/materials/quad/SplatRepackMaterial';
+import { SplatPackSortedLayoutMaterial } from '../../elements/materials/quad/SplatPackSortedLayoutMaterial';
 import { SplatReorderMaterial } from '../../elements/materials/quad/SplatReorderMaterial';
 import { Matrix4 } from '../../math/Matrix4';
 import { Layers } from '../../scene/tools/Layers';
@@ -32,10 +33,17 @@ import { TextureFormat, TextureDimension, TextureViewDimension } from '../../ele
 import { SourceTexture } from '../../elements/textures/SourceTexture';
 
 let sortSplats: (
-    splatCounts: number,
-    sorting: Uint16Array,
+    count: number,
+    sorting: Uint16Array | Uint32Array,
     order: Uint32Array,
-) => Promise<{ activeSplats: number; sorting: Uint16Array; ordering: Uint32Array }>;
+) => Promise<{ activeCount: number; sorting: Uint16Array | Uint32Array; ordering: Uint32Array }> = async function (
+    _count: number,
+    sorting: Uint16Array | Uint32Array,
+    order: Uint32Array,
+) {
+    logger.error(`sortSplats is not registered.`);
+    return { activeCount: 0, sorting, ordering: order.fill(0) };
+};
 export function setSortSplats(fn: typeof sortSplats) {
     sortSplats = fn;
 }
@@ -47,7 +55,6 @@ export enum SplattingRenderMode {
 
 interface SplatCache {
     version: number;
-    matrix: Matrix4;
     modelViewMatrix: Matrix4;
 }
 
@@ -69,6 +76,9 @@ export class SplattingPlugin extends PipelinePlugin {
     private packMaterial = new SplatPackMaterial();
     private packQuad = drawQuad(this.packMaterial);
     private packHighPrecisionEnabled: boolean = false;
+    private packCameraRelativeEnabled: boolean = true;
+    private packCameraRelativeUpdateDistanceThreshold: number = 10;
+    private packCameraRelativeOrigin: Vector3 = new Vector3(0, 0, 0);
     private packAttachSize: Size = { width: 1, height: 1 };
 
     private precalculateEnabled: boolean = true;
@@ -76,15 +86,20 @@ export class SplattingPlugin extends PipelinePlugin {
     private precalculateMaterial = new SplatPrecalculateMaterial();
     private precalculateQuad = drawQuad(this.precalculateMaterial);
 
-    private repackEnabled: boolean = false;
-    private repackIsDirty: boolean = false;
-    private repackAttachSize: Size = { width: 1, height: 1 };
-    private repackMaterial = new SplatRepackMaterial();
-    private repackQuat = drawQuad(this.repackMaterial);
+    private packSortedLayoutEnabled: boolean = false;
+    private packSortedLayoutIsDirty: boolean = false;
+    private packSortedLayoutAttachSize: Size = { width: 1, height: 1 };
+    private packSortedLayoutMaterial = new SplatPackSortedLayoutMaterial();
+    private packSortedLayoutQuat = drawQuad(this.packSortedLayoutMaterial);
 
     private isSortDirty: boolean = false;
     private isSorting: boolean = false;
-    private sortMinDuration: number = 0;
+    private sortMinIntervalMs: number = 0;
+    private sortHighPrecisionEnabled: boolean = false;
+    private sortSplatDistance: number = 0.1;
+    private sortSplatCoorient: number = 0.99999;
+    private sortCameraDistance: number = 1;
+    private sortCameraCoorient: number = 0.99;
     private sortLastTime: number = -Infinity;
     private sortPingPongTarget = pingpong('sorted_splats_target');
     private sortMaterial = new SplatSortMaterial();
@@ -92,6 +107,7 @@ export class SplattingPlugin extends PipelinePlugin {
 
     private reorderMaterial = new SplatReorderMaterial();
     private reorderQuad = drawQuad(this.reorderMaterial);
+    private reorderIsDirty: boolean = false;
 
     private splattingMesh = new Mesh();
     private splattingGeometry = new InstancedBufferGeometry();
@@ -99,7 +115,7 @@ export class SplattingPlugin extends PipelinePlugin {
     private splattingRenderMode: SplattingRenderMode = SplattingRenderMode.Default;
 
     private compositeEnabled: boolean = false;
-    private compositeHighPrecisionAttachEnabled: boolean = false;
+    private compositeHighPrecisionEnabled: boolean = false;
     private copyMaterial = new CopyMaterial({ transparent: false });
     private toneMappingEnabled: boolean = false;
     private toneMappingMaterial = new ToneMappingMaterial();
@@ -115,7 +131,7 @@ export class SplattingPlugin extends PipelinePlugin {
     }
 
     get enabled() {
-        return this._enabled && this.scene.adaptor.scene.splatManager.splatCounts > 0;
+        return this._enabled && this.scene.adaptor.scene.splatManager.totalCount > 0;
     }
     set enabled(v: boolean) {
         this._enabled = v;
@@ -150,15 +166,16 @@ export class SplattingPlugin extends PipelinePlugin {
             .setLevelData(new Uint32Array([0]), 0);
         this.highlightKernelMesh.drawMode = DrawMode.Points;
         this.highlightKernelGeometry.setAttribute('position', new BufferAttribute(new Float32Array([0, 0, 0]), 3));
+        this.toneMappingMaterial.inputTransfer = ColorTransfer.SrgbToLinear;
     }
 
     private sortCurrentVersion: number = 0;
     private sortLastVersion: number = 0;
     private sortingBuffer?: Uint32Array;
     private sortTaskRunning: boolean = false;
-    private pendingSortTask?: { counts: number; target: RenderTarget; splats: Splat[] };
+    private pendingSortTask?: { count: number; target: RenderTarget; splats: Splat[]; highPrecision: boolean };
     private orderBuffer?: Uint32Array;
-    private orderLayout: Array<{ id: number; counts: number }> = [];
+    private orderLayout: Array<{ id: number; count: number }> = [];
     private async flushSortTask() {
         // this.pendingSortTask maybe undefined because of async
         if (this.sortCurrentVersion === this.sortLastVersion || this.sortTaskRunning || !this.pendingSortTask) {
@@ -170,32 +187,37 @@ export class SplattingPlugin extends PipelinePlugin {
         this.sortPingPongTarget.tick();
 
         const { renderer, reorderMaterial, sortLastVersion } = this;
-        const { counts, target, splats } = this.pendingSortTask;
-        const orderLayout: Array<{ id: number; counts: number }> = [];
+        const { count, target, splats, highPrecision } = this.pendingSortTask;
+        const orderLayout: Array<{ id: number; count: number }> = [];
         for (let i = 0; i < splats.length; i++) {
             const splat = splats[i];
-            orderLayout[i] = { id: splat.id, counts: splat.counts };
+            orderLayout[i] = { id: splat.id, count: splat.counts };
         }
 
         const { width, height } = target;
-        const pixelCounts = width * height;
+        const pixelCount = width * height;
         let sorting = this.sortingBuffer;
-        if (!sorting || pixelCounts > sorting.length) {
-            sorting = new Uint32Array(pixelCounts);
+        if (!sorting || pixelCount > sorting.length) {
+            sorting = new Uint32Array(pixelCount);
         }
         await renderer.renderer.readPixelsAsync(target, { x: 0, y: 0, width, height }, sorting);
 
         let orderBuffer = this.orderBuffer;
-        if (!orderBuffer || counts > orderBuffer.length) {
-            const width = Math.min(Math.ceil(Math.sqrt(counts) / 2) * 2, Capabilities.MAX_TEXTURE_SIZE);
-            const height = Math.ceil(counts / width);
+        if (!orderBuffer || count > orderBuffer.length) {
+            const width = Math.min(Math.ceil(Math.sqrt(count) / 2) * 2, Capabilities.MAX_TEXTURE_SIZE);
+            const height = Math.ceil(count / width);
             orderBuffer = new Uint32Array(width * height);
         }
         const {
-            activeSplats,
+            activeCount,
             sorting: backSorting,
             ordering,
-        } = await sortSplats(counts, new Uint16Array(sorting.buffer), orderBuffer);
+        } = await sortSplats(
+            count,
+            highPrecision ? new Uint32Array(sorting.buffer) : new Uint16Array(sorting.buffer),
+            orderBuffer,
+        );
+
         this.sortingBuffer = new Uint32Array(backSorting.buffer);
         const prevOrderTex = reorderMaterial.orderTex;
         if (prevOrderTex) {
@@ -203,13 +225,13 @@ export class SplattingPlugin extends PipelinePlugin {
             this.orderBuffer = prevOrderTex.getLevelLayerSource(0) as Uint32Array;
         }
 
-        this.splattingGeometry.instancedCount = Math.ceil(activeSplats / SPLAT_BLOCK_COUNT);
-        this.splattingMaterial.activeSplats =
-            this.repackMaterial.activeSplats =
+        this.splattingGeometry.instancedCount = Math.ceil(activeCount / SPLAT_BLOCK_COUNT);
+        this.splattingMaterial.count =
+            this.packSortedLayoutMaterial.count =
             this.highlightKernelGeometry.instancedCount =
-                activeSplats;
-        const w = Math.max(1, Math.min(Math.ceil(Math.sqrt(activeSplats) / 2) * 2, Capabilities.MAX_TEXTURE_SIZE));
-        const h = Math.max(1, Math.ceil(activeSplats / w));
+                activeCount;
+        const w = Math.max(1, Math.min(Math.ceil(Math.sqrt(activeCount) / 2) * 2, Capabilities.MAX_TEXTURE_SIZE));
+        const h = Math.max(1, Math.ceil(activeCount / w));
         reorderMaterial.orderTex = new SourceTexture(
             TextureDimension.D2,
             TextureViewDimension.D2,
@@ -231,7 +253,8 @@ export class SplattingPlugin extends PipelinePlugin {
         }
 
         this.sortTaskRunning = false;
-        this.repackIsDirty = true;
+        this.reorderIsDirty = true;
+        this.packSortedLayoutIsDirty = true;
         this.sortCurrentVersion = sortLastVersion;
         if (this.sortCurrentVersion >= this.sortLastVersion) {
             this.isSorting = false;
@@ -240,22 +263,19 @@ export class SplattingPlugin extends PipelinePlugin {
         this.flushSortTask();
     }
 
-    private addSortTask(counts: number, target: RenderTarget, splats: Splat[]) {
-        this.pendingSortTask = { counts, target, splats };
+    private addSortTask(count: number, target: RenderTarget, splats: Splat[]) {
+        this.pendingSortTask = { count, target, splats, highPrecision: this.sortHighPrecisionEnabled };
         this.sortLastVersion++;
     }
 
     destroy() {}
 
-    private sortSplatDistance: number = 0.1;
-    private sortSplatCoorient: number = 0.99999;
-    private sortCameraDistance: number = 1;
-    private sortCameraCoorient: number = 0.99;
     private prevSceneVersion: number = 0;
     private prevSplatCache = new Map<number, SplatCache>(); // <objectId, SplatCache>
     private prevSortCameraMatrix?: Matrix4;
     private prevSortCameraLayer: Layers = new Layers();
     updateEffect(sceneAdaptor: SceneAdaptor) {
+        this.forceUpdate = true;
         const {
             forceUpdate,
             sortSplatDistance,
@@ -268,6 +288,8 @@ export class SplattingPlugin extends PipelinePlugin {
             prevSortCameraLayer,
             orderLayout,
             reorderMaterial,
+            packCameraRelativeOrigin,
+            packCameraRelativeUpdateDistanceThreshold,
             packQueue,
             precalculateQueue,
         } = this;
@@ -285,19 +307,15 @@ export class SplattingPlugin extends PipelinePlugin {
         let orderIdx = 0;
         let reorderIdx = 0;
         for (; orderIdx < orderLayout.length; orderIdx++) {
-            const { id, counts } = orderLayout[orderIdx];
+            const { id, count } = orderLayout[orderIdx];
             const isDeleted = id !== splats[reorderIdx]?.id;
-            reorderLayout[orderIdx] = {
-                start,
-                end: start + counts,
-                offset: isDeleted ? 1 << 30 : -offset,
-            };
+            reorderLayout[orderIdx] = { start, end: start + count, offset: isDeleted ? 1 << 30 : -offset };
             if (isDeleted) {
-                offset += counts;
+                offset += count;
             } else {
                 reorderIdx++;
             }
-            start += counts;
+            start += count;
         }
 
         {
@@ -320,7 +338,7 @@ export class SplattingPlugin extends PipelinePlugin {
             }
             reorderData.push({ start, end, offset });
 
-            reorderMaterial.counts = reorderData.length;
+            reorderMaterial.count = reorderData.length;
             for (let i = 0; i < reorderData.length; i++) {
                 const item = reorderData[i];
                 reorderMaterial.startArr[i] = item.start;
@@ -335,11 +353,7 @@ export class SplattingPlugin extends PipelinePlugin {
             const key = splat.id;
             if (!prevSplats.delete(key)) {
                 splat.updateMatrixWorld();
-                prevSplatCache.set(key, {
-                    version: splat.version,
-                    matrix: splat.matrixWorld.clone(),
-                    modelViewMatrix: splat.matrixWorld.clone(),
-                });
+                prevSplatCache.set(key, { version: splat.version, modelViewMatrix: splat.matrixWorld.clone() });
             }
         }
         Array.from(prevSplats).forEach(v => prevSplatCache.delete(v));
@@ -352,7 +366,9 @@ export class SplattingPlugin extends PipelinePlugin {
         if (isCameraLayerDirty) {
             prevSortCameraLayer.mask = camera.netLayer.mask;
         }
-
+        camera.matrixWorld.getPosition(tempVec0);
+        const packCameraRelativeCenterIsDirty =
+            tempVec0.sub(packCameraRelativeOrigin).length() > packCameraRelativeUpdateDistanceThreshold;
         for (let i = 0; i < splats.length; i++) {
             const splat = splats[i];
             const cache = prevSplatCache.get(splat.id)!;
@@ -361,19 +377,18 @@ export class SplattingPlugin extends PipelinePlugin {
                 isSceneDirty ||
                 isCameraLayerDirty ||
                 cache.version !== splat.version ||
-                !splat.matrixWorld.equals(cache.matrix);
+                packCameraRelativeCenterIsDirty;
             if (!isDirty) {
                 continue;
             }
             cache.version = splat.version;
-            cache.matrix.copy(splat.matrixWorld);
             packQueue.add(i);
         }
 
         const cameraInverseMatrix = camera.matrixWorldInverse;
         for (let i = 0; i < splats.length; i++) {
             const splat = splats[i];
-            tempMat.copy(splat.matrixWorld).multiply(cameraInverseMatrix);
+            tempMat.multiplyMatrices(cameraInverseMatrix, splat.matrixWorld);
             const cache = prevSplatCache.get(splat.id)!;
             let isDirty = packQueue.has(i);
             if (!isDirty) {
@@ -402,23 +417,29 @@ export class SplattingPlugin extends PipelinePlugin {
             this.prevSortCameraMatrix = camera.matrixWorld.clone();
         }
         this.isSortDirty = this.isSortDirty || isSortDirty;
-
+        this.reorderIsDirty = this.reorderIsDirty || isSceneDirty;
         this.forceUpdate = false;
     }
 
-    updateFrameSize() {}
+    updateFrameSize() {
+        this.reorderIsDirty = true;
+        this.packAttachSize.width = 1;
+        this.packAttachSize.height = 1;
+        this.packSortedLayoutAttachSize.width = 1;
+        this.packSortedLayoutAttachSize.height = 1;
+    }
 
     updateGraphHash(hasher: HashKeyBuilder) {
         hasher
             .bool(this.enabled)
             .bool(this.packHighPrecisionEnabled)
             .bool(this.precalculateEnabled)
-            .bool(this.repackEnabled)
+            .bool(this.packSortedLayoutEnabled)
             .bool(this.sortPingPongTarget.evenTick)
             .bool(this.compositeEnabled)
-            .bool(this.compositeHighPrecisionAttachEnabled)
-            .bool(this.highlightKernelEnabled)
-            .bool(this.toneMappingEnabled);
+            .bool(this.compositeHighPrecisionEnabled)
+            .bool(this.toneMappingEnabled)
+            .bool(this.highlightKernelEnabled);
     }
 
     updateRenderGraph(graph: RenderGraph) {
@@ -428,18 +449,20 @@ export class SplattingPlugin extends PipelinePlugin {
             packMaterial,
             packQuad,
             packAttachSize,
+            packCameraRelativeOrigin,
             precalculateEnabled,
             precalculateMaterial,
             precalculateQuad,
             sortMaterial,
             sortQuad,
             sortPingPongTarget,
-            repackEnabled,
-            repackMaterial,
-            repackQuat,
-            repackAttachSize,
+            reorderQuad,
+            packSortedLayoutEnabled,
+            packSortedLayoutMaterial,
+            packSortedLayoutQuat,
+            packSortedLayoutAttachSize,
             compositeEnabled,
-            compositeHighPrecisionAttachEnabled,
+            compositeHighPrecisionEnabled,
             toneMappingEnabled,
             highlightKernelEnabled,
         } = this;
@@ -450,8 +473,8 @@ export class SplattingPlugin extends PipelinePlugin {
             des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
         });
 
-        const resizeFN = () => {
-            const pixels = splatManager.splatCounts;
+        const resourceSizeFN = () => {
+            const pixels = splatManager.totalCount;
             const width = Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(pixels))), Capabilities.MAX_TEXTURE_SIZE);
             if (width > packAttachSize.width) {
                 packAttachSize.width = width;
@@ -463,14 +486,22 @@ export class SplattingPlugin extends PipelinePlugin {
         };
 
         const packTarget = target('pack_splat_target', false, false)
-            .attach(packedSplatsCovAttachment)
             .attach(
                 colorAttachment('pack_splat_center_attachment').modify(des => {
                     des.format = packHighPrecisionEnabled ? TextureFormat.Rgba32Float : TextureFormat.Rgba16Float;
                     des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
                 }),
             )
+            .attach(packedSplatsCovAttachment)
             .modify(node => {
+                if (packHighPrecisionEnabled) {
+                    node.attach(
+                        colorAttachment('pack_splat_cov_ext_attachment').modify(des => {
+                            des.format = TextureFormat.Rgba32Uint;
+                            des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
+                        }),
+                    );
+                }
                 if (precalculateEnabled) {
                     node.attach(
                         colorAttachment('pack_splat_color_attachment').modify(des => {
@@ -483,18 +514,24 @@ export class SplattingPlugin extends PipelinePlugin {
                 }
             })
             .keepContent()
-            .resize(resizeFN)
+            .resize(resourceSizeFN)
             .from([
-                pass('packing_splat_pass')
+                pass('pack_splat_pass')
                     .disableClear()
                     .use((renderer, target) => {
                         if (!this.packQueue.size) {
                             return;
                         }
+                        if (this.packCameraRelativeEnabled) {
+                            scene.camera.matrixWorld.getPosition(packCameraRelativeOrigin);
+                        } else {
+                            packCameraRelativeOrigin.set(0, 0, 0);
+                        }
 
                         const { width, height } = target!;
                         packMaterial.layer.copy(scene.camera.netLayer);
                         packMaterial.resolution.set(width, height);
+                        packMaterial.origin.copy(packCameraRelativeOrigin);
 
                         const splats = splatManager.splats;
                         let start: number = 0;
@@ -521,24 +558,28 @@ export class SplattingPlugin extends PipelinePlugin {
                             }
                             start = end;
                         }
-                        this.repackIsDirty = true;
+                        this.packSortedLayoutIsDirty = true;
                         this.packQueue.clear();
                     }),
             ]);
 
         let precalculateTarget = packTarget;
         if (precalculateEnabled) {
-            precalculateTarget = target('precalculate_shN_target', false, false)
+            precalculateTarget = target('precalculate_target', false, false)
                 .attach(packedSplatsCovAttachment)
                 .keepContent()
-                .resize(resizeFN)
+                .resize(resourceSizeFN)
                 .from([
-                    pass('precalculate_shN_pass')
+                    pass('precalculate_pass')
                         .disableClear()
-                        .input('centerTex', packTarget, 1)
-                        .input('colorTex', packTarget, 2)
+                        .input('centerTex', packTarget, 0)
+                        .input('colorTex', packTarget, packHighPrecisionEnabled ? 3 : 2)
                         .use((renderer, target) => {
-                            if (this.repackEnabled ? !this.repackIsDirty : !this.precalculateQueue.size) {
+                            if (
+                                this.packSortedLayoutEnabled
+                                    ? !this.packSortedLayoutIsDirty
+                                    : !this.precalculateQueue.size
+                            ) {
                                 return;
                             }
                             const { width, height } = target!;
@@ -554,6 +595,8 @@ export class SplattingPlugin extends PipelinePlugin {
                                 }
 
                                 precalculateMaterial.update(scene.camera, splat);
+                                precalculateMaterial.origin.sub(packCameraRelativeOrigin);
+
                                 const end = start + splat.counts;
                                 const xOffset = start % width;
                                 const yOffset = Math.floor(start / width);
@@ -580,52 +623,77 @@ export class SplattingPlugin extends PipelinePlugin {
                 const orderTex = this.reorderMaterial.orderTex;
                 return { width: orderTex.width, height: orderTex.height };
             })
-            .from([pass('reorder_pass').disableClear().use(this.reorderQuad)]);
+            .from([
+                pass('reorder_pass')
+                    .disableClear()
+                    .use(renderer => {
+                        if (!this.reorderIsDirty) {
+                            return;
+                        }
+                        this.reorderIsDirty = false;
+                        reorderQuad.render(renderer);
+                    }),
+            ]);
 
         let resourceTarget = packTarget;
-        if (repackEnabled) {
-            resourceTarget = target('repack_splat_target', false, false)
+        if (packSortedLayoutEnabled) {
+            resourceTarget = target('pack_sorted_layout_target', false, false)
                 .attach(
-                    colorAttachment('repack_splat_cov_attachment').modify(des => {
-                        des.format = TextureFormat.Rgba32Uint;
-                        des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
-                    }),
-                )
-                .attach(
-                    colorAttachment('repack_splat_center_attachment').modify(des => {
+                    colorAttachment('pack_sorted_layout_center_attachment').modify(des => {
                         des.format = packHighPrecisionEnabled ? TextureFormat.Rgba32Float : TextureFormat.Rgba16Float;
                         des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
                     }),
                 )
+                .attach(
+                    colorAttachment('pack_sorted_layout_cov_attachment').modify(des => {
+                        des.format = TextureFormat.Rgba32Uint;
+                        des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
+                    }),
+                )
+                .modify(node => {
+                    if (packHighPrecisionEnabled) {
+                        node.attach(
+                            colorAttachment('pack_sorted_layout_cov_ext_attachment').modify(des => {
+                                des.format = TextureFormat.Rgba32Uint;
+                                des.sampler.magFilter = des.sampler.minFilter = SamplerFilter.Nearest;
+                            }),
+                        );
+                    }
+                })
                 .keepContent()
                 .resize(() => {
-                    const pixels = this.splattingMaterial.activeSplats;
+                    const pixels = this.packSortedLayoutMaterial.count;
                     const width = Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(pixels))), Capabilities.MAX_TEXTURE_SIZE);
-                    if (width > repackAttachSize.width) {
-                        repackAttachSize.width = width;
-                        repackAttachSize.height = 1;
+                    if (width > packSortedLayoutAttachSize.width) {
+                        packSortedLayoutAttachSize.width = width;
+                        packSortedLayoutAttachSize.height = 1;
                     }
-                    const height = Math.ceil(pixels / repackAttachSize.width);
-                    repackAttachSize.height = Math.max(height, repackAttachSize.height);
-                    return repackAttachSize;
+                    const height = Math.ceil(pixels / packSortedLayoutAttachSize.width);
+                    packSortedLayoutAttachSize.height = Math.max(height, packSortedLayoutAttachSize.height);
+                    return packSortedLayoutAttachSize;
                 })
                 .from([
-                    pass('repacking_splat_pass')
+                    pass('pack_sorted_layout_pass')
                         .depend(precalculateTarget)
                         .disableClear()
                         .input('orderTex', reorderTarget)
-                        .input('covTex', packTarget, 0)
-                        .input('centerTex', packTarget, 1)
+                        .input('centerTex', packTarget, 0)
+                        .input('covTex', packTarget, 1)
+                        .modify(node => {
+                            if (packHighPrecisionEnabled) {
+                                node.input('covExtTex', packTarget, 2);
+                            }
+                        })
                         .use((renderer, target) => {
-                            if (!this.repackIsDirty) {
+                            if (!this.packSortedLayoutIsDirty) {
                                 return;
                             }
+                            this.packSortedLayoutIsDirty = false;
                             const { width, height } = target!;
-                            const m = repackMaterial;
+                            const m = packSortedLayoutMaterial;
                             m.resolution.set(width, height);
                             renderer.activeResources.forEach((input, name) => ((m as any)[name] = input));
-                            repackQuat.render(renderer);
-                            this.repackIsDirty = false;
+                            packSortedLayoutQuat.render(renderer);
                         }),
                 ]);
         }
@@ -633,7 +701,7 @@ export class SplattingPlugin extends PipelinePlugin {
         const sortTarget = sortPingPongTarget
             .ping()
             .resize(() => {
-                const pixels = Math.ceil(splatManager.splatCounts / 2);
+                const pixels = Math.ceil(splatManager.totalCount / (this.sortHighPrecisionEnabled ? 1 : 2));
                 const width = Math.min(Math.ceil(Math.sqrt(pixels) / 2) * 2, Capabilities.MAX_TEXTURE_SIZE);
                 const height = Math.ceil(pixels / width);
                 return { width, height };
@@ -641,18 +709,19 @@ export class SplattingPlugin extends PipelinePlugin {
             .from([
                 pass('sort_splat_pass')
                     .disableClear()
-                    .input('centerTex', packTarget, 1)
+                    .input('centerTex', packTarget, 0)
                     .use((renderer, target) => {
-                        if (!this.isSortDirty || performance.now() - this.sortLastTime < this.sortMinDuration) {
+                        if (!this.isSortDirty || performance.now() - this.sortLastTime < this.sortMinIntervalMs) {
                             return;
                         }
                         const { width, height } = target!;
-                        const splatCounts = splatManager.splatCounts;
+                        const count = splatManager.totalCount;
                         sortMaterial.update(scene.camera);
+                        sortMaterial.origin.sub(packCameraRelativeOrigin);
                         sortMaterial.resolution.set(width, height);
-                        sortMaterial.splatCounts = splatCounts;
+                        sortMaterial.count = count;
                         sortQuad.render(renderer);
-                        this.addSortTask(splatCounts, target!, splatManager.splats);
+                        this.addSortTask(count, target!, splatManager.splats);
                         this.flushSortTask();
                         this.sortLastTime = performance.now();
                         this.isSortDirty = false;
@@ -665,10 +734,16 @@ export class SplattingPlugin extends PipelinePlugin {
                 .depend(sortTarget)
                 .disableClear()
                 .input('orderTex', reorderTarget)
-                .input('covTex', resourceTarget, 0)
-                .input('centerTex', resourceTarget, 1)
+                .input('centerTex', resourceTarget, 0)
+                .input('covTex', resourceTarget, 1)
+                .modify(node => {
+                    if (packHighPrecisionEnabled) {
+                        node.input('covExtTex', resourceTarget, 2);
+                    }
+                })
                 .use(renderer => {
                     const m = this.splattingMaterial;
+                    m.origin.copy(packCameraRelativeOrigin);
                     renderer.activeResources.forEach((input, name) => ((m as any)[name] = input));
                     renderer.renderer.renderDrawcall(
                         this.splattingGeometry,
@@ -686,7 +761,7 @@ export class SplattingPlugin extends PipelinePlugin {
                 .attach(
                     colorAttachment('splatting_color_attachment').modify(des => {
                         des.format =
-                            toneMappingEnabled || compositeHighPrecisionAttachEnabled
+                            toneMappingEnabled || compositeHighPrecisionEnabled
                                 ? TextureFormat.Rgba16Float
                                 : TextureFormat.Rgba8Unorm;
                     }),
@@ -714,7 +789,7 @@ export class SplattingPlugin extends PipelinePlugin {
                 pass('highlight_kernel_pass')
                     .disableClear()
                     .input('orderTex', reorderTarget)
-                    .input('centerTex', packTarget, 1)
+                    .input('centerTex', packTarget, 0)
                     .use(renderer => {
                         const m = this.highlightKernelMaterial;
                         renderer.activeResources.forEach((input, name) => ((m as any)[name] = input));
@@ -737,89 +812,134 @@ export class SplattingPlugin extends PipelinePlugin {
                     this._enabled = v;
                 },
             },
-            precalculateEnabled: {
-                get: () => this.precalculateEnabled,
-                set: (v: boolean) => {
-                    this.precalculateEnabled = this.packMaterial.outputColorAttachment = v;
-                    this.forceUpdate = true;
+            pack: {
+                highPrecisionEnabled: {
+                    get: () => this.packHighPrecisionEnabled,
+                    set: (v: boolean) => {
+                        this.forceUpdate = true;
+                        this.packHighPrecisionEnabled =
+                            this.packSortedLayoutMaterial.highPrecisionEnabled =
+                            this.packMaterial.highPrecisionEnabled =
+                            this.precalculateMaterial.highPrecisionEnabled =
+                            this.splattingMaterial.highPrecisionEnabled =
+                                v;
+                        this.packSortedLayoutMaterial.notifyRecompileShader();
+                        this.packMaterial.notifyRecompileShader();
+                        this.precalculateMaterial.setColorWriteMasks(false, false, v, true);
+                        this.precalculateMaterial.notifyRecompileShader();
+                        this.splattingMaterial.notifyRecompileShader();
+                    },
+                },
+                precalculateEnabled: {
+                    get: () => this.precalculateEnabled,
+                    set: (v: boolean) => {
+                        this.forceUpdate = true;
+                        this.precalculateEnabled = this.packMaterial.outputColorAttachment = v;
+                    },
+                },
+                cameraRelativeEnabled: {
+                    get: () => this.packCameraRelativeEnabled,
+                    set: (v: boolean) => {
+                        this.forceUpdate = true;
+                        this.packCameraRelativeEnabled = v;
+                    },
+                },
+                cameraRelativeUpdateDistanceThreshold: {
+                    get: () => this.packCameraRelativeUpdateDistanceThreshold,
+                    set: (v: number) => {
+                        this.packCameraRelativeUpdateDistanceThreshold = v;
+                    },
+                },
+                sortedLayoutEnabled: {
+                    get: () => this.packSortedLayoutEnabled,
+                    set: (v: boolean) => {
+                        this.packSortedLayoutIsDirty = true;
+                        this.packSortedLayoutEnabled = this.splattingMaterial.sortedLayoutEnabled = v;
+                        this.splattingMaterial.notifyRecompileShader();
+                    },
                 },
             },
-            repackEnabled: {
-                get: () => this.repackEnabled,
-                set: (v: boolean) => {
-                    this.repackEnabled = v;
-                    this.repackIsDirty = true;
-                    this.splattingMaterial.repackEnabled = v;
-                    this.splattingMaterial.notifyRecompileShader();
+            raster: {
+                mode: {
+                    get: () => this.splattingRenderMode,
+                    set: (v: SplattingRenderMode) => {
+                        this.splattingRenderMode = v;
+                        const { splattingMaterial } = this;
+                        if (v === SplattingRenderMode.Default) {
+                            splattingMaterial.depthWrite = false;
+                            splattingMaterial.transparent = true;
+                            splattingMaterial.shadingPickIdEnabled = false;
+                        } else if (v === SplattingRenderMode.PickingId) {
+                            splattingMaterial.depthWrite = true;
+                            splattingMaterial.transparent = false;
+                            splattingMaterial.shadingPickIdEnabled = true;
+                        }
+                        splattingMaterial.notifyRecompileShader();
+                    },
                 },
-            },
-            packHighPrecisionEnabled: {
-                get: () => this.packHighPrecisionEnabled,
-                set: (v: boolean) => {
-                    this.packHighPrecisionEnabled = v;
-                    this.forceUpdate = true;
+                preBlurAmount: {
+                    get: () => this.splattingMaterial.preBlurAmount,
+                    set: (v: number) => {
+                        this.splattingMaterial.preBlurAmount = v;
+                    },
                 },
-            },
-            preBlurAmount: {
-                get: () => this.splattingMaterial.preBlurAmount,
-                set: (v: number) => {
-                    this.splattingMaterial.preBlurAmount = v;
+                blurAmount: {
+                    get: () => this.splattingMaterial.blurAmount,
+                    set: (v: number) => {
+                        this.splattingMaterial.blurAmount = v;
+                    },
                 },
-            },
-            blurAmount: {
-                get: () => this.splattingMaterial.blurAmount,
-                set: (v: number) => {
-                    this.splattingMaterial.blurAmount = v;
+                focalAdjustment: {
+                    get: () => this.splattingMaterial.focalAdjustment,
+                    set: (v: number) => {
+                        this.splattingMaterial.focalAdjustment = v;
+                    },
                 },
-            },
-            focalAdjustment: {
-                get: () => this.splattingMaterial.focalAdjustment,
-                set: (v: number) => {
-                    this.splattingMaterial.focalAdjustment = v;
+                maxStdDev: {
+                    get: () => this.splattingMaterial.maxStdDev,
+                    set: (v: number) => {
+                        this.splattingMaterial.maxStdDev = Math.max(0, Math.min(v, Math.sqrt(8)));
+                    },
                 },
-            },
-            maxStdDev: {
-                get: () => this.splattingMaterial.maxStdDev,
-                set: (v: number) => {
-                    this.splattingMaterial.maxStdDev = Math.max(0, Math.min(v, Math.sqrt(8)));
+                maxPixelRadius: {
+                    get: () => this.splattingMaterial.maxPixelRadius,
+                    set: (v: number) => {
+                        this.splattingMaterial.maxPixelRadius = v;
+                    },
                 },
-            },
-            maxPixelRadius: {
-                get: () => this.splattingMaterial.maxPixelRadius,
-                set: (v: number) => {
-                    this.splattingMaterial.maxPixelRadius = v;
+                detailCullingThreshold: {
+                    get: () => this.splattingMaterial.detailCullingThreshold,
+                    set: (v: number) => {
+                        this.splattingMaterial.detailCullingThreshold = v;
+                    },
                 },
-            },
-            detailCullingThreshold: {
-                get: () => this.splattingMaterial.detailCullingThreshold,
-                set: (v: number) => {
-                    this.splattingMaterial.detailCullingThreshold = v;
+                normalizedFalloff: {
+                    get: () => this.splattingMaterial.normalizedFalloff,
+                    set: (v: boolean) => {
+                        this.splattingMaterial.normalizedFalloff = v;
+                        this.splattingMaterial.notifyRecompileShader();
+                    },
                 },
-            },
-            normalizedFalloff: {
-                get: () => this.splattingMaterial.normalizedFalloff,
-                set: (v: boolean) => {
-                    this.splattingMaterial.normalizedFalloff = v;
-                    this.splattingMaterial.notifyRecompileShader();
-                },
-            },
-            selectedColor: {
-                get: () => this.splattingMaterial.selectedColor.clone(),
-                set: (v: Vector4) => {
-                    this.splattingMaterial.selectedColor.copy(v);
+                selectedColor: {
+                    get: () => this.splattingMaterial.selectedColor.clone(),
+                    set: (v: Vector4) => {
+                        this.splattingMaterial.selectedColor.copy(v);
+                    },
                 },
             },
             sort: {
-                sortRadial: {
-                    get: () => this.sortMaterial.sortRadial,
+                highPrecisionEnabled: {
+                    get: () => this.sortHighPrecisionEnabled,
                     set: (v: boolean) => {
-                        this.sortMaterial.sortRadial = v;
+                        this.isSortDirty = true;
+                        this.sortHighPrecisionEnabled = this.sortMaterial.highPrecisionEnabled = v;
+                        this.sortMaterial.notifyRecompileShader();
                     },
                 },
-                sortMinDuration: {
-                    get: () => this.sortMinDuration,
+                minIntervalMs: {
+                    get: () => this.sortMinIntervalMs,
                     set: (v: number) => {
-                        this.sortMinDuration = v;
+                        this.sortMinIntervalMs = v;
                     },
                 },
                 sortSplatDistance: {
@@ -846,6 +966,12 @@ export class SplattingPlugin extends PipelinePlugin {
                         this.sortCameraCoorient = v;
                     },
                 },
+                depthBias: {
+                    get: () => this.sortMaterial.depthBias,
+                    set: (v: number) => {
+                        this.sortMaterial.depthBias = v;
+                    },
+                },
             },
             composite: {
                 enabled: {
@@ -854,10 +980,10 @@ export class SplattingPlugin extends PipelinePlugin {
                         this.compositeEnabled = v;
                     },
                 },
-                highPrecisionAttachEnabled: {
-                    get: () => this.compositeHighPrecisionAttachEnabled,
+                highPrecisionEnabled: {
+                    get: () => this.compositeHighPrecisionEnabled,
                     set: (v: boolean) => {
-                        this.compositeHighPrecisionAttachEnabled = v;
+                        this.compositeHighPrecisionEnabled = v;
                     },
                 },
             },
@@ -866,12 +992,6 @@ export class SplattingPlugin extends PipelinePlugin {
                     get: () => this.toneMappingEnabled,
                     set: (v: boolean) => {
                         this.toneMappingEnabled = v;
-                        if (v) {
-                            this.splattingMaterial.colorTransfer = ColorTransfer.SrgbToLinear;
-                        } else {
-                            this.splattingMaterial.colorTransfer = ColorTransfer.Linear;
-                        }
-                        this.splattingMaterial.notifyRecompileShader();
                     },
                 },
                 toneMapping: {
@@ -905,25 +1025,6 @@ export class SplattingPlugin extends PipelinePlugin {
                     get: () => this.highlightKernelMaterial.color.getHex(),
                     set: (v: number) => {
                         this.highlightKernelMaterial.color.setHex(v);
-                    },
-                },
-            },
-            __INTERNAL__: {
-                renderMode: {
-                    get: () => this.splattingRenderMode,
-                    set: (v: SplattingRenderMode) => {
-                        this.splattingRenderMode = v;
-                        const { splattingMaterial } = this;
-                        if (v === SplattingRenderMode.Default) {
-                            splattingMaterial.depthWrite = false;
-                            splattingMaterial.transparent = true;
-                            splattingMaterial.shadingPickIdEnabled = false;
-                        } else if (v === SplattingRenderMode.PickingId) {
-                            splattingMaterial.depthWrite = true;
-                            splattingMaterial.transparent = false;
-                            splattingMaterial.shadingPickIdEnabled = true;
-                        }
-                        splattingMaterial.notifyRecompileShader();
                     },
                 },
             },

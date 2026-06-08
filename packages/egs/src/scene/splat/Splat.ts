@@ -108,7 +108,7 @@ export abstract class Splat extends Object3D {
     counts: number;
     shDegree: number;
 
-    autoFreeResourceOnGpuPacked: boolean = true;
+    autoFreeResourceOnGpuPacked: boolean = false;
     maxShDegree: number = 3;
 
     /**

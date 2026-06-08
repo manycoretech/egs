@@ -119,10 +119,10 @@ export async function parseSplatData(
     return promise;
 }
 
-async function sortSplats(splatCounts: number, sorting: Uint16Array, ordering: Uint32Array) {
+async function sortSplats(count: number, sorting: Uint16Array | Uint32Array, ordering: Uint32Array) {
     const { promise, resolve, reject } = deferred<{
-        activeSplats: number;
-        sorting: Uint16Array;
+        activeCount: number;
+        sorting: Uint16Array | Uint32Array;
         ordering: Uint32Array;
     }>();
     const worker = await poll.getWorker();
@@ -138,7 +138,7 @@ async function sortSplats(splatCounts: number, sorting: Uint16Array, ordering: U
 
     const payload: SendMessage<TaskType.SortSplats> = {
         taskType: TaskType.SortSplats,
-        payload: { splatCounts, sorting, ordering },
+        payload: { count, sorting, ordering },
     };
     worker.postMessage(payload, [sorting.buffer, ordering.buffer]);
 

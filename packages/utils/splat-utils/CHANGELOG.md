@@ -1,8 +1,9 @@
 # changelog
 
-## DEV
+## 1.0.6
 
 - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`，迁移至`OXC`
+- `combineSplatData` 支持传入目标 `SplatData`。
 
 ## 1.0.5
 

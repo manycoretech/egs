@@ -129,28 +129,24 @@ export class SogSplat extends Splat {
                 vec4 pixel_3 = texelFetch(extraTex3, coord, 0);
                 ${
                     meta.version === 1
-                        ? `
-                    splat.scales = exp(mix(scalesMin, scalesMax, pixel_3.xyz));
-                `
-                        : `
-                    splat.scales = exp(resolveCodebook(pixel_3.xyz, scalesCodebook));
-                `
+                        ? `splat.scales = exp(mix(scalesMin, scalesMax, pixel_3.xyz));`
+                        : `splat.scales = exp(resolveCodebook(pixel_3.xyz, scalesCodebook));`
                 }
                 vec4 pixel_4 = texelFetch(extraTex4, coord, 0);
                 ${
                     meta.version === 1
                         ? `
-                    splat.color = vec4(
-                        SH_C0 * mix(colorsMin.xyz, colorsMax.xyz, pixel_4.xyz) + 0.5,
-                        1. / (1. + exp(-mix(colorsMin.w, colorsMax.w, pixel_4.w)))
-                    );
-                `
+                            splat.color = vec4(
+                                SH_C0 * mix(colorsMin.xyz, colorsMax.xyz, pixel_4.xyz) + 0.5,
+                                1. / (1. + exp(-mix(colorsMin.w, colorsMax.w, pixel_4.w)))
+                            );
+                        `
                         : `
-                    splat.color = vec4(
-                        SH_C0 * resolveCodebook(pixel_4.xyz, colorsCodebook) + 0.5,
-                        pixel_4.w
-                    );
-                `
+                            splat.color = vec4(
+                                SH_C0 * resolveCodebook(pixel_4.xyz, colorsCodebook) + 0.5,
+                                pixel_4.w
+                            );
+                        `
                 }
             }
         `;

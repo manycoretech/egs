@@ -346,8 +346,7 @@ export function modifySplatData(source: SplatData, modifyData: ISplatModifyData)
     }
 }
 
-export function combineSplatData(source: SplatData[]): SplatData {
-    const target = new RawSplatData();
+export function combineSplatData(source: SplatData[], target: SplatData = new RawSplatData()): SplatData {
     target.init(
         source.reduce<number>((p, c) => p + c.counts, 0),
         Math.max(...source.map(v => v.shDegree)),

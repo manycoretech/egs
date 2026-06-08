@@ -3,7 +3,7 @@ import type { Splat } from './Splat';
 export class SplatManager {
     private _splats = new Set<Splat>();
     private _sceneVersion: number = 0;
-    private _splatCounts: number = 0;
+    private _count: number = 0;
 
     get splats(): Splat[] {
         return Array.from(this._splats);
@@ -13,8 +13,8 @@ export class SplatManager {
         return this._sceneVersion;
     }
 
-    get splatCounts() {
-        return this._splatCounts;
+    get totalCount() {
+        return this._count;
     }
 
     has(splat: Splat) {
@@ -24,12 +24,12 @@ export class SplatManager {
     add(splat: Splat) {
         this._sceneVersion++;
         this._splats.add(splat);
-        this._splatCounts += splat.counts;
+        this._count += splat.counts;
     }
 
     remove(splat: Splat) {
         this._sceneVersion++;
         this._splats.delete(splat);
-        this._splatCounts -= splat.counts;
+        this._count -= splat.counts;
     }
 }

@@ -11,7 +11,7 @@ export class SplatReorderMaterial extends PassQuadMaterialBase {
 
     @materialProperty()
     orderTex: SourceTexture;
-    counts: number = 0;
+    count: number = 0;
     startArr: number[] = new Array(256).fill(0);
     endArr: number[] = new Array(256).fill(0);
     offsetArr: number[] = new Array(256).fill(0);
@@ -31,7 +31,7 @@ export class SplatReorderMaterial extends PassQuadMaterialBase {
         builder
             .setFragOutputChannel([{ name: 'pc_fragColor_0', type: FragOutType.UVec4 }])
             .addUniform('orderTex', WebGLShaderDataType.USampler2D)
-            .addUniform('counts', WebGLShaderDataType.Int)
+            .addUniform('count', WebGLShaderDataType.Int)
             .addUniformArray('startArr', WebGLShaderDataType.Int, startArr.length)
             .addUniformArray('endArr', WebGLShaderDataType.Int, endArr.length)
             .addUniformArray('offsetArr', WebGLShaderDataType.Int, offsetArr.length)
@@ -40,7 +40,7 @@ export class SplatReorderMaterial extends PassQuadMaterialBase {
                 `
                 ivec2 fragCoord = ivec2(gl_FragCoord.xy);
                 int order = int(texelFetch(orderTex, fragCoord, 0).r);
-                for (int i = 0; i < counts; i++) {
+                for (int i = 0; i < count; i++) {
                     int cond = int(order >= startArr[i]) * int(order < endArr[i]);
                     order += cond * offsetArr[i];
                 }
@@ -51,7 +51,7 @@ export class SplatReorderMaterial extends PassQuadMaterialBase {
 
     updateShadingUniforms(program: WGLProgram) {
         program.setTexture2D('orderTex', this.orderTex);
-        program.setUniform('counts', this.counts);
+        program.setUniform('count', this.count);
         program.setUniform('startArr[0]', this.startArr);
         program.setUniform('endArr[0]', this.endArr);
         program.setUniform('offsetArr[0]', this.offsetArr);

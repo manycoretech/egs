@@ -36,14 +36,12 @@ export interface IMessage extends IBasicMessage {
         receive: ISplatData;
     };
     [TaskType.PostStreamChunk]: {
-        send: {
-            chunk: Uint8Array | undefined;
-        };
+        send: { chunk: Uint8Array | undefined };
         receive: undefined;
     };
     [TaskType.SortSplats]: {
-        send: { splatCounts: number; sorting: Uint16Array; ordering: Uint32Array };
-        receive: { activeSplats: number; sorting: Uint16Array; ordering: Uint32Array };
+        send: { count: number; sorting: Uint16Array | Uint32Array; ordering: Uint32Array };
+        receive: { activeCount: number; sorting: Uint16Array | Uint32Array; ordering: Uint32Array };
     };
 }
 

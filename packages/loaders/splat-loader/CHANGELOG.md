@@ -1,9 +1,12 @@
 # changelog
 
-## DEV
+## 1.0.4
 
 - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`，迁移至`OXC`
 - `Worker`改进为`module`
+- 排序 worker 支持 16-bit / 32-bit sort key
+- 新增 32-bit radix sort 路径，用于高精度 splat 排序
+- 排序接口字段统一为 `count` / `activeCount`
 
 ## 1.0.3
 

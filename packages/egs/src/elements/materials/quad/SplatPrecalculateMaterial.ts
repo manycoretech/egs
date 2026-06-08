@@ -13,6 +13,8 @@ import type { TextureV2 } from '../../textures/TextureV2';
 export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
     transparent = false;
 
+    highPrecisionEnabled: boolean = false;
+
     resolution: Vector2 = new Vector2(0, 0);
     offset: number = 0;
     targetOffset: number = 0;
@@ -21,7 +23,7 @@ export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
     centerTex: TextureV2;
     colorTex: TextureV2;
     current: Splat;
-    viewTranslate: Vector3 = new Vector3();
+    origin: Vector3 = new Vector3();
 
     constructor() {
         super();
@@ -32,7 +34,7 @@ export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
         this.targetOffset = splat.offset;
         this.targetCounts = splat.counts;
         this.current = splat;
-        camera.matrixWorld.getPosition(this.viewTranslate);
+        camera.matrixWorld.getPosition(this.origin);
         this.notifyRecompileShader();
     }
 
@@ -44,6 +46,7 @@ export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
         const splat = this.current;
         return HashKeyBuilder.getInstance()
             .raw(this.className())
+            .bool(this.highPrecisionEnabled)
             .raw(splat.PackType)
             .raw(splat.shDegree)
             .raw(splat.maxShDegree)
@@ -68,7 +71,7 @@ export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
             .when(splat.shDegree > 0, builder =>
                 builder
                     .addUniform('centerTex', WebGLShaderDataType.Sampler2D)
-                    .addUniform('viewTranslate', WebGLShaderDataType.Vec3)
+                    .addUniform('origin', WebGLShaderDataType.Vec3)
                     .addUniform('modelMatrix', WebGLShaderDataType.Mat4)
                     .addFragmentCustom(createSHShader(this)),
             )
@@ -84,7 +87,7 @@ export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
         program.setTexture2D('colorTex', this.colorTex);
         if (splat.shDegree > 0) {
             program.setTexture2D('centerTex', this.centerTex);
-            program.setUniform('viewTranslate', this.viewTranslate);
+            program.setUniform('origin', this.origin);
             program.setUniform('modelMatrix', splat.matrixWorld);
         }
         const { extrasTex } = splat;
@@ -98,6 +101,7 @@ export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
 function createSHShader(material: SplatPrecalculateMaterial): string {
     const splat = material.current;
     const renderShDegree = Math.min(splat.shDegree, splat.maxShDegree);
+
     return `
         ivec2 shTexCoord(uint index, uint width) {
             return ivec2(index % width, index / width);
@@ -125,43 +129,43 @@ function createSHShader(material: SplatPrecalculateMaterial): string {
             ${
                 renderShDegree > 0
                     ? `
-                vec3 sh1 = sh1_0 * (-k1 * viewDir.y)
-                    + sh1_1 * (k1 * viewDir.z)
-                    + sh1_2 * (-k1 * viewDir.x);
-                color += sh1;
-            `
+                        vec3 sh1 = sh1_0 * (-k1 * viewDir.y)
+                            + sh1_1 * (k1 * viewDir.z)
+                            + sh1_2 * (-k1 * viewDir.x);
+                        color += sh1;
+                    `
                     : ''
             }
             ${
                 renderShDegree > 1
                     ? `
-                float xx = viewDir.x * viewDir.x;
-                float yy = viewDir.y * viewDir.y;
-                float zz = viewDir.z * viewDir.z;
-                float xy = viewDir.x * viewDir.y;
-                float yz = viewDir.y * viewDir.z;
-                float zx = viewDir.z * viewDir.x;
-                vec3 sh2 = sh2_0 * (k2_0 * xy)
-                    + sh2_1 * (-k2_0 * yz)
-                    + sh2_2 * (k2_1 * (2.0 * zz - xx - yy))
-                    + sh2_3 * (-k2_0 * zx)
-                    + sh2_4 * (k2_2 * (xx - yy));
-                color += sh2;
-            `
+                        float xx = viewDir.x * viewDir.x;
+                        float yy = viewDir.y * viewDir.y;
+                        float zz = viewDir.z * viewDir.z;
+                        float xy = viewDir.x * viewDir.y;
+                        float yz = viewDir.y * viewDir.z;
+                        float zx = viewDir.z * viewDir.x;
+                        vec3 sh2 = sh2_0 * (k2_0 * xy)
+                            + sh2_1 * (-k2_0 * yz)
+                            + sh2_2 * (k2_1 * (2.0 * zz - xx - yy))
+                            + sh2_3 * (-k2_0 * zx)
+                            + sh2_4 * (k2_2 * (xx - yy));
+                        color += sh2;
+                    `
                     : ''
             }
             ${
                 renderShDegree > 2
                     ? `
-                vec3 sh3 = sh3_0 * (-k3_0 * viewDir.y * (3.0 * xx - yy))
-                    + sh3_1 * (k3_1 * xy * viewDir.z)
-                    + sh3_2 * (-k3_2 * viewDir.y * (4.0 * zz - xx - yy))
-                    + sh3_3 * (k3_3 * viewDir.z * (2.0 * zz - 3.0 * xx - 3.0 * yy))
-                    + sh3_4 * (-k3_2 * viewDir.x * (4.0 * zz - xx - yy))
-                    + sh3_5 * (k3_4 * viewDir.z * (xx - yy))
-                    + sh3_6 * (-k3_0 * viewDir.x * (xx - 3.0 * yy));
-                color += sh3;
-            `
+                        vec3 sh3 = sh3_0 * (-k3_0 * viewDir.y * (3.0 * xx - yy))
+                            + sh3_1 * (k3_1 * xy * viewDir.z)
+                            + sh3_2 * (-k3_2 * viewDir.y * (4.0 * zz - xx - yy))
+                            + sh3_3 * (k3_3 * viewDir.z * (2.0 * zz - 3.0 * xx - 3.0 * yy))
+                            + sh3_4 * (-k3_2 * viewDir.x * (4.0 * zz - xx - yy))
+                            + sh3_5 * (k3_4 * viewDir.z * (xx - yy))
+                            + sh3_6 * (-k3_0 * viewDir.x * (xx - 3.0 * yy));
+                        color += sh3;
+                    `
                     : ''
             }
 
@@ -171,7 +175,7 @@ function createSHShader(material: SplatPrecalculateMaterial): string {
 }
 
 function createFragShader(material: SplatPrecalculateMaterial): string {
-    const splat = material.current;
+    const { current: splat, highPrecisionEnabled } = material;
     return `
         ivec2 fragCoord = ivec2(gl_FragCoord);
         int splatIndex = fragCoord.y * resolution.x + fragCoord.x - offset;
@@ -183,13 +187,19 @@ function createFragShader(material: SplatPrecalculateMaterial): string {
         ${
             splat.shDegree > 0
                 ? `
-            vec3 center = texelFetch(centerTex, fragCoord, 0).xyz;
-            vec3 normal = normalize(transpose(mat3(modelMatrix)) * (center - viewTranslate));
-            color.rgb += evaluateSH(uint(splatIndex + targetOffset), normal);
-        `
+                    vec3 center = texelFetch(centerTex, fragCoord, 0).xyz;
+                    vec3 normal = normalize(transpose(mat3(modelMatrix)) * (center - origin));
+                    color.rgb += evaluateSH(uint(splatIndex + targetOffset), normal);
+                `
                 : ''
         }
-        uvec4 uColor = uvec4(round(saturate(color) * 255.0));
-        gl_FragColor = uvec4(0u, 0u, 0u, uColor.r | (uColor.g << 8u) | (uColor.b << 16u) | (uColor.a << 24u));
+        ${
+            highPrecisionEnabled
+                ? `gl_FragColor = uvec4(0u, 0u, packHalf2x16(color.rg), packHalf2x16(color.ba));`
+                : `
+                    uvec4 uColor = uvec4(round(saturate(color) * 255.0));
+                    gl_FragColor = uvec4(0u, 0u, 0u, uColor.r | (uColor.g << 8u) | (uColor.b << 16u) | (uColor.a << 24u));
+                `
+        }
     `;
 }

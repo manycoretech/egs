@@ -1,11 +1,13 @@
 # EGS 发布说明 Release Notes
 
-## DEV
+## 1.2.89
 
 1. 新功能
     - `TextureFormat`添加枚举
         - 在`WebGL`环境内不一定可用
     - `PanoEnvMapMaterial`和`PanoSelectionMaterial`支持`SourceTexture`
+    - splat 渲染管线新增高精度 pack/sort 支持，改善大坐标场景下的渲染精度
+    - splat 渲染管线新增 camera-relative packing，减少 packed center 精度损失
 2. 修复
     - `SourceTexture`移除`internal`标记
     - 现在会及时提交贴图更新命令
@@ -19,6 +21,8 @@
     - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`，迁移至`OXC`
     - 使`MeshPhongMaterial`和`SpriteMaterial`的类型可以被推导
     - 移除`require`
+    - 重构 `Splatting` 配置结构，拆分为 `pack`、`raster`、`sort`、`composite` 等分组
+    - 调整 splat 相关默认参数
 
 ## 1.2.88
 

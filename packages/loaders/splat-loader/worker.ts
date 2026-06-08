@@ -3,7 +3,7 @@
 declare let self: ServiceWorkerGlobalScope;
 
 import { TaskType, type SendMessage, TaskStatus, type ReceiveMessage } from './WorkerMessage';
-import { SplatFileType, sortSplats, SplatPackType } from './utils';
+import { SplatFileType, sortSplats, SplatPackType, sort32Splats } from './utils';
 import { type SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
 import type { ISplatData } from './splat/utils';
 import { KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, EszFile } from './file';
@@ -170,11 +170,14 @@ self.onmessage = async (event: ExtendableMessageEvent) => {
                 return;
             }
             case TaskType.SortSplats: {
-                const { splatCounts, sorting, ordering } = (event.data as SendMessage<TaskType.SortSplats>).payload;
-                const activeSplats = sortSplats(splatCounts, sorting, ordering);
+                const { count, sorting, ordering } = (event.data as SendMessage<TaskType.SortSplats>).payload;
+                const activeCount =
+                    sorting instanceof Uint32Array
+                        ? sort32Splats(count, sorting, ordering)
+                        : sortSplats(count, sorting, ordering);
                 const payload: ReceiveMessage<TaskType.SortSplats> = {
                     status: TaskStatus.Success,
-                    payload: { activeSplats, sorting, ordering },
+                    payload: { activeCount, sorting, ordering },
                 };
                 postMessage(payload, [sorting.buffer, ordering.buffer]);
                 return;
