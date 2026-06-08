@@ -275,7 +275,6 @@ export class SplattingPlugin extends PipelinePlugin {
     private prevSortCameraMatrix?: Matrix4;
     private prevSortCameraLayer: Layers = new Layers();
     updateEffect(sceneAdaptor: SceneAdaptor) {
-        this.forceUpdate = true;
         const {
             forceUpdate,
             sortSplatDistance,
