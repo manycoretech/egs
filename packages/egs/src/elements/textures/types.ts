@@ -966,7 +966,7 @@ export function formatMeta(format: TextureFormat) {
                         blockDimensions: { x: 1, y: 1 },
                     },
                     sampleType: {
-                        all: TextureSampleType.Depth,
+                        all: TextureSampleType.None,
                         'depth-only': TextureSampleType.Depth,
                         'stencil-only': TextureSampleType.Uint,
                     },
