@@ -194,7 +194,7 @@ export class Renderer extends EventDispatcher implements IRenderer {
 
         this.extensions = new WGLExtensions(this.gl);
         setupWebGLCapabilities(this.gl, this.parameters, this.extensions);
-        this.wglState = new WGLState(this.gl, this.extensions);
+        this.wglState = new WGLState(this.gl, this.extensions, this.backend);
         this.wglState.setViewport(this._currentViewport);
         this.wglState.setScissor(this._currentScissor);
         this.renderState = new RenderState(this.gl, this.wglState);
@@ -565,7 +565,7 @@ export class Renderer extends EventDispatcher implements IRenderer {
             wglState.depthState.setMask(true);
             wglState.stencilState.setMask(0xffffffff);
             wglState.setColorClear(clearColor.r, clearColor.g, clearColor.b, clearAlpha);
-            wglState.clear(clearFlags.color, clearFlags.depth, clearFlags.stencil);
+            wglState.clear(clearFlags.color, clearFlags.depth, clearFlags.stencil, target, drawBuffers);
         }
         // clear clear flags
         clearFlags.color = clearFlags.depth = clearFlags.stencil = false;

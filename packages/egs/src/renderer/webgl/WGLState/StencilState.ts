@@ -9,7 +9,7 @@ export class StencilState {
     private currentStencilFail: Nullable<number>;
     private currentStencilZFail: Nullable<number>;
     private currentStencilZPass: Nullable<number>;
-    private currentStencilClear: Nullable<number>;
+    currentStencilClear: Nullable<number>;
     private gl: WebGLRenderingContext | WebGL2RenderingContext;
 
     constructor(gl: WebGLRenderingContext | WebGL2RenderingContext) {

@@ -19,6 +19,12 @@ import {
 import { BlendState } from './BlendState';
 import type { MaterialState } from '../../../elements/materials/Material';
 import type { WGLExtensions } from '../WGLExtensions';
+import type { RenderTarget } from '../../../elements/textures/RenderTarget';
+import { RendererBackend } from '../../IRenderer';
+import { formatMeta, TextureSampleType } from '../../../elements/textures/types';
+
+const DEFAULT_DRAW_BUFFERS = [36064]; // WebGLRenderingContext.COLOR_ATTACHMENT0
+const COLOR_KEYS = ['x', 'y', 'z', 'w'] as const;
 
 // WGLState contains functions to control the switch and record of states in WebGL/WebGL2,
 // Such as depth_test, blend_mode, view_port, cull_face and so on.
@@ -40,10 +46,23 @@ export class WGLState {
 
     private currentScissor = new Vector4();
     private currentViewport = new Vector4();
+    private clearValues = {
+        depth: new Float32Array([1]),
+        stencil: new Uint32Array([0]),
+        colorF: new Float32Array([0, 0, 0, 0]),
+        colorI: new Int32Array([0, 0, 0, 0]),
+        colorU: new Uint32Array([0, 0, 0, 0]),
+    };
     readonly gl: WebGLRenderingContext | WebGL2RenderingContext;
+    readonly isWebGL2: boolean;
 
-    constructor(gl: WebGLRenderingContext | WebGL2RenderingContext, extensions: WGLExtensions) {
+    constructor(
+        gl: WebGLRenderingContext | WebGL2RenderingContext,
+        extensions: WGLExtensions,
+        backend: RendererBackend,
+    ) {
         this.gl = gl;
+        this.isWebGL2 = backend === RendererBackend.WEBGL2_JS;
         this.textureState = new TextureState(gl);
         this.attributeState = new AttributeState(gl, extensions);
         this.colorState = new ColorState(gl);
@@ -299,19 +318,70 @@ export class WGLState {
         }
     }
 
-    clear(color: boolean = true, depth: boolean = true, stencil: boolean = true): void {
-        let bits = 0;
-        if (color) {
-            bits |= this.gl.COLOR_BUFFER_BIT;
+    clear(
+        color: boolean = true,
+        depth: boolean = true,
+        stencil: boolean = true,
+        renderTarget?: RenderTarget,
+        drawBuffers: number[] = DEFAULT_DRAW_BUFFERS,
+    ): void {
+        if (!renderTarget || !this.isWebGL2) {
+            let bits = 0;
+            if (color) {
+                bits |= this.gl.COLOR_BUFFER_BIT;
+            }
+            if (depth) {
+                this.setDepthMask(true);
+                bits |= this.gl.DEPTH_BUFFER_BIT;
+            }
+            if (stencil) {
+                bits |= this.gl.STENCIL_BUFFER_BIT;
+            }
+            this.gl.clear(bits);
         }
-        if (depth) {
-            this.setDepthMask(true);
-            bits |= this.gl.DEPTH_BUFFER_BIT;
+        const gl = this.gl as WebGL2RenderingContext;
+        if (renderTarget && (color || depth || stencil)) {
+            // sync values
+            this.clearValues.depth[0] = this.depthState.currentDepthClear ?? 1;
+            this.clearValues.stencil[0] = this.stencilState.currentStencilClear ?? 0;
+            for (let i = 0; i < 4; i++) {
+                this.clearValues.colorF[i] = this.colorState.currentColorClear[COLOR_KEYS[i]];
+                this.clearValues.colorI[i] = this.colorState.currentColorClear[COLOR_KEYS[i]];
+                this.clearValues.colorU[i] = this.colorState.currentColorClear[COLOR_KEYS[i]];
+            }
+
+            if (depth || stencil) {
+                if (depth && stencil) {
+                    gl.clearBufferfi(gl.DEPTH_STENCIL, 0, this.clearValues.depth[0], this.clearValues.stencil[0]);
+                } else if (depth) {
+                    gl.clearBufferfv(gl.DEPTH, 0, this.clearValues.depth);
+                } else {
+                    gl.clearBufferuiv(gl.STENCIL, 0, this.clearValues.stencil);
+                }
+            }
+            if (color) {
+                for (let i = 0; i < renderTarget.colors.length; i++) {
+                    if (drawBuffers[i] !== gl.NONE) {
+                        switch (formatMeta(renderTarget.colors[i].format).sampleType.all) {
+                            case TextureSampleType.Float: {
+                                gl.clearBufferfv(gl.COLOR, i, this.clearValues.colorF);
+                                break;
+                            }
+                            case TextureSampleType.Uint: {
+                                gl.clearBufferuiv(gl.COLOR, i, this.clearValues.colorU);
+                                break;
+                            }
+                            case TextureSampleType.Sint: {
+                                gl.clearBufferiv(gl.COLOR, i, this.clearValues.colorI);
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }
         }
-        if (stencil) {
-            bits |= this.gl.STENCIL_BUFFER_BIT;
-        }
-        this.gl.clear(bits);
     }
 
     reset(): void {

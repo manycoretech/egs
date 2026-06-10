@@ -6,6 +6,7 @@
     - 新增`Splatting.pack.forceUnstableEnabled`配置，用于强制触发完整渲染流程
 2. 修复
     - 修复开启`cameraRelativeEnabled`以后`SplatHighlightKernel`高亮发生偏移
+    - 在启用`MRT`时`clear`生效不正确的问题
 3. 优化
     - 优化贴图尺寸计算，提升单个`Splat`对象场景时渲染性能
 

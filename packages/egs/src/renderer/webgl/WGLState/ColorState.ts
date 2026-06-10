@@ -3,7 +3,7 @@ import { Vector4 } from '../../../math/Vector4';
 export class ColorState {
     private color = new Vector4();
     private currentColorMask: [boolean, boolean, boolean, boolean] = [true, true, true, true];
-    private currentColorClear = new Vector4(-1, 0, 0, 0); // Initialize with invalid state
+    currentColorClear = new Vector4(-1, 0, 0, 0); // Initialize with invalid state
     readonly gl: WebGLRenderingContext | WebGL2RenderingContext;
 
     constructor(gl: WebGLRenderingContext | WebGL2RenderingContext) {

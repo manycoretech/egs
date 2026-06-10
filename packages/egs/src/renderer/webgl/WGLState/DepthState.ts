@@ -5,7 +5,7 @@ export class DepthState {
     readonly gl: WebGLRenderingContext | WebGL2RenderingContext;
     private currentDepthMask: Nullable<boolean>;
     private currentDepthFunc: Nullable<number>;
-    private currentDepthClear: Nullable<number>;
+    currentDepthClear: Nullable<number>;
 
     constructor(gl: WebGLRenderingContext | WebGL2RenderingContext) {
         this.gl = gl;
