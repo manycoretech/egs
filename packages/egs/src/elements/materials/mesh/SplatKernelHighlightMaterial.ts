@@ -6,12 +6,14 @@ import { Color } from '../../../math/Color';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
 import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
 import type { TextureV2 } from '../../textures/TextureV2';
+import { Vector3 } from '../../../math/Vector3';
 
 export class SplatKernelHighlightMaterial extends Material {
     depthTest = false;
 
     size = 2;
     color = new Color(0, 0, 1);
+    origin: Vector3 = new Vector3(0, 0, 0);
     centerTex: TextureV2;
     orderTex: TextureV2;
 
@@ -31,6 +33,7 @@ export class SplatKernelHighlightMaterial extends Material {
             .addGlobalUniform(BuiltInUniformTypes.viewMatrix)
             .addUniform('size', WebGLShaderDataType.Float)
             .addUniform('color', WebGLShaderDataType.Vec3)
+            .addUniform('origin', WebGLShaderDataType.Vec3)
             .addUniform('centerTex', WebGLShaderDataType.Sampler2D)
             .addUniform('packedTexWidth', WebGLShaderDataType.UInt)
             .addUniform('orderTex', WebGLShaderDataType.USampler2D)
@@ -43,6 +46,7 @@ export class SplatKernelHighlightMaterial extends Material {
 
     updateShadingUniforms(program: WGLProgram, _registry: ShaderComponentRegistry) {
         program.setUniform('size', this.size);
+        program.setUniform('origin', this.origin);
         program.setUniform('color', this.color);
         program.setTexture2D('centerTex', this.centerTex);
         program.setUniform('packedTexWidth', this.centerTex.width);
@@ -60,7 +64,7 @@ const VERTEX_SHADER = `
 uint orderIndex = uint(gl_InstanceID);
 uint splatIndex = texelFetch(orderTex, ivec2(orderIndex % orderTexWidth, orderIndex / orderTexWidth), 0).r;
 ivec2 texCoord = ivec2(splatIndex % packedTexWidth, splatIndex / packedTexWidth);
-vec3 center = texelFetch(centerTex, texCoord, 0).xyz;
+vec3 center = texelFetch(centerTex, texCoord, 0).xyz + origin;
 vColor = color;
 gl_Position = projectionMatrix * viewMatrix * vec4(center, 1.0);
 `;

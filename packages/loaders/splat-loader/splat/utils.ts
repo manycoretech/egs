@@ -46,7 +46,7 @@ export function computeTextureSize(counts: number, maxTextureSize: number): { w:
     if (counts === 0) {
         return { w: 0, h: 0, d: 0 };
     }
-    const width = Math.min(Math.ceil(Math.sqrt(counts) / 2) * 2, maxTextureSize);
+    const width = Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(counts))), maxTextureSize);
     const height = Math.min(Math.ceil(counts / width), maxTextureSize);
     const depth = Math.ceil(counts / (width * height));
     return { w: width, h: height, d: depth };

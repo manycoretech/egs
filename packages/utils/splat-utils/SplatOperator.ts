@@ -253,9 +253,8 @@ export class SplatOperator {
         if (splat.stateTex) {
             return;
         }
-        const MAX_TEXTURE_SIZE = WGLCapabilities.MAX_TEXTURE_SIZE;
         const pixels = splat.counts;
-        const width = Math.min(Math.ceil(Math.sqrt(pixels) / 2) * 2, MAX_TEXTURE_SIZE);
+        const width = Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(pixels))), WGLCapabilities.MAX_TEXTURE_SIZE);
         const height = Math.ceil(pixels / width);
         splat.stateTex = new SourceTexture(
             TextureDimension.D2,

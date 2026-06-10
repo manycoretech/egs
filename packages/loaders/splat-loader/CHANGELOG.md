@@ -1,5 +1,9 @@
 # changelog
 
+## DEV
+
+- 优化贴图尺寸计算
+
 ## 1.0.4
 
 - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`，迁移至`OXC`

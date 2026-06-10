@@ -75,6 +75,7 @@ export class SplattingPlugin extends PipelinePlugin {
     private packQueue = new Set<number>();
     private packMaterial = new SplatPackMaterial();
     private packQuad = drawQuad(this.packMaterial);
+    private packForceUnstableEnabled: boolean = false;
     private packHighPrecisionEnabled: boolean = false;
     private packCameraRelativeEnabled: boolean = true;
     private packCameraRelativeUpdateDistanceThreshold: number = 10;
@@ -88,7 +89,6 @@ export class SplattingPlugin extends PipelinePlugin {
 
     private packSortedLayoutEnabled: boolean = false;
     private packSortedLayoutIsDirty: boolean = false;
-    private packSortedLayoutAttachSize: Size = { width: 1, height: 1 };
     private packSortedLayoutMaterial = new SplatPackSortedLayoutMaterial();
     private packSortedLayoutQuat = drawQuad(this.packSortedLayoutMaterial);
 
@@ -204,7 +204,7 @@ export class SplattingPlugin extends PipelinePlugin {
 
         let orderBuffer = this.orderBuffer;
         if (!orderBuffer || count > orderBuffer.length) {
-            const width = Math.min(Math.ceil(Math.sqrt(count) / 2) * 2, Capabilities.MAX_TEXTURE_SIZE);
+            const width = Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(count))), Capabilities.MAX_TEXTURE_SIZE);
             const height = Math.ceil(count / width);
             orderBuffer = new Uint32Array(width * height);
         }
@@ -230,7 +230,7 @@ export class SplattingPlugin extends PipelinePlugin {
             this.packSortedLayoutMaterial.count =
             this.highlightKernelGeometry.instancedCount =
                 activeCount;
-        const w = Math.max(1, Math.min(Math.ceil(Math.sqrt(activeCount) / 2) * 2, Capabilities.MAX_TEXTURE_SIZE));
+        const w = Math.max(1, Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(count))), Capabilities.MAX_TEXTURE_SIZE));
         const h = Math.max(1, Math.ceil(activeCount / w));
         reorderMaterial.orderTex = new SourceTexture(
             TextureDimension.D2,
@@ -287,6 +287,7 @@ export class SplattingPlugin extends PipelinePlugin {
             prevSortCameraLayer,
             orderLayout,
             reorderMaterial,
+            packForceUnstableEnabled,
             packCameraRelativeEnabled,
             packCameraRelativeOrigin,
             packCameraRelativeUpdateDistanceThreshold,
@@ -374,6 +375,7 @@ export class SplattingPlugin extends PipelinePlugin {
             const splat = splats[i];
             const cache = prevSplatCache.get(splat.id)!;
             const isDirty =
+                packForceUnstableEnabled ||
                 forceUpdate ||
                 isSceneDirty ||
                 isCameraLayerDirty ||
@@ -418,7 +420,7 @@ export class SplattingPlugin extends PipelinePlugin {
             this.prevSortCameraMatrix = camera.matrixWorld.clone();
         }
         this.isSortDirty = this.isSortDirty || isSortDirty;
-        this.reorderIsDirty = this.reorderIsDirty || isSceneDirty;
+        this.reorderIsDirty = this.reorderIsDirty || isSceneDirty || packForceUnstableEnabled;
         this.forceUpdate = false;
     }
 
@@ -426,8 +428,6 @@ export class SplattingPlugin extends PipelinePlugin {
         this.reorderIsDirty = true;
         this.packAttachSize.width = 1;
         this.packAttachSize.height = 1;
-        this.packSortedLayoutAttachSize.width = 1;
-        this.packSortedLayoutAttachSize.height = 1;
     }
 
     updateGraphHash(hasher: HashKeyBuilder) {
@@ -461,7 +461,6 @@ export class SplattingPlugin extends PipelinePlugin {
             packSortedLayoutEnabled,
             packSortedLayoutMaterial,
             packSortedLayoutQuat,
-            packSortedLayoutAttachSize,
             compositeEnabled,
             compositeHighPrecisionEnabled,
             toneMappingEnabled,
@@ -663,15 +662,8 @@ export class SplattingPlugin extends PipelinePlugin {
                 })
                 .keepContent()
                 .resize(() => {
-                    const pixels = this.packSortedLayoutMaterial.count;
-                    const width = Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(pixels))), Capabilities.MAX_TEXTURE_SIZE);
-                    if (width > packSortedLayoutAttachSize.width) {
-                        packSortedLayoutAttachSize.width = width;
-                        packSortedLayoutAttachSize.height = 1;
-                    }
-                    const height = Math.ceil(pixels / packSortedLayoutAttachSize.width);
-                    packSortedLayoutAttachSize.height = Math.max(height, packSortedLayoutAttachSize.height);
-                    return packSortedLayoutAttachSize;
+                    const orderTex = this.reorderMaterial.orderTex;
+                    return { width: orderTex.width, height: orderTex.height };
                 })
                 .from([
                     pass('pack_sorted_layout_pass')
@@ -703,7 +695,7 @@ export class SplattingPlugin extends PipelinePlugin {
             .ping()
             .resize(() => {
                 const pixels = Math.ceil(splatManager.totalCount / (this.sortHighPrecisionEnabled ? 1 : 2));
-                const width = Math.min(Math.ceil(Math.sqrt(pixels) / 2) * 2, Capabilities.MAX_TEXTURE_SIZE);
+                const width = Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(pixels))), Capabilities.MAX_TEXTURE_SIZE);
                 const height = Math.ceil(pixels / width);
                 return { width, height };
             })
@@ -793,6 +785,7 @@ export class SplattingPlugin extends PipelinePlugin {
                     .input('centerTex', packTarget, 0)
                     .use(renderer => {
                         const m = this.highlightKernelMaterial;
+                        m.origin.copy(packCameraRelativeOrigin);
                         renderer.activeResources.forEach((input, name) => ((m as any)[name] = input));
                         renderer.renderer.renderDrawcall(
                             this.highlightKernelGeometry,
@@ -814,6 +807,12 @@ export class SplattingPlugin extends PipelinePlugin {
                 },
             },
             pack: {
+                forceUnstableEnabled: {
+                    get: () => this.packForceUnstableEnabled,
+                    set: (v: boolean) => {
+                        this.packForceUnstableEnabled = v;
+                    },
+                },
                 highPrecisionEnabled: {
                     get: () => this.packHighPrecisionEnabled,
                     set: (v: boolean) => {

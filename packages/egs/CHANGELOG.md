@@ -1,5 +1,14 @@
 # EGS 发布说明 Release Notes
 
+## DEV
+
+1. 新功能
+    - 新增`Splatting.pack.forceUnstableEnabled`配置，用于强制触发完整渲染流程
+2. 修复
+    - 修复开启`cameraRelativeEnabled`以后`SplatHighlightKernel`高亮发生偏移
+3. 优化
+    - 优化贴图尺寸计算，提升单个`Splat`对象场景时渲染性能
+
 ## 1.2.90
 
 1. 修复
