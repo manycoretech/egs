@@ -338,45 +338,47 @@ export class WGLState {
                 bits |= this.gl.STENCIL_BUFFER_BIT;
             }
             this.gl.clear(bits);
-        }
-        const gl = this.gl as WebGL2RenderingContext;
-        if (renderTarget && (color || depth || stencil)) {
-            // sync values
-            this.clearValues.depth[0] = this.depthState.currentDepthClear ?? 1;
-            this.clearValues.stencil[0] = this.stencilState.currentStencilClear ?? 0;
-            for (let i = 0; i < 4; i++) {
-                this.clearValues.colorF[i] = this.colorState.currentColorClear[COLOR_KEYS[i]];
-                this.clearValues.colorI[i] = this.colorState.currentColorClear[COLOR_KEYS[i]];
-                this.clearValues.colorU[i] = this.colorState.currentColorClear[COLOR_KEYS[i]];
-            }
-
-            if (depth || stencil) {
-                if (depth && stencil) {
-                    gl.clearBufferfi(gl.DEPTH_STENCIL, 0, this.clearValues.depth[0], this.clearValues.stencil[0]);
-                } else if (depth) {
-                    gl.clearBufferfv(gl.DEPTH, 0, this.clearValues.depth);
-                } else {
-                    gl.clearBufferuiv(gl.STENCIL, 0, this.clearValues.stencil);
+        } else {
+            if (color || depth || stencil) {
+                const gl = this.gl as WebGL2RenderingContext;
+                // sync values
+                this.clearValues.depth[0] = this.depthState.currentDepthClear ?? 1;
+                this.clearValues.stencil[0] = this.stencilState.currentStencilClear ?? 0;
+                for (let i = 0; i < 4; i++) {
+                    this.clearValues.colorF[i] = this.colorState.currentColorClear[COLOR_KEYS[i]];
+                    this.clearValues.colorI[i] = this.colorState.currentColorClear[COLOR_KEYS[i]];
+                    this.clearValues.colorU[i] = this.colorState.currentColorClear[COLOR_KEYS[i]];
                 }
-            }
-            if (color) {
-                for (let i = 0; i < renderTarget.colors.length; i++) {
-                    if (drawBuffers[i] !== gl.NONE) {
-                        switch (formatMeta(renderTarget.colors[i].format).sampleType.all) {
-                            case TextureSampleType.Float: {
-                                gl.clearBufferfv(gl.COLOR, i, this.clearValues.colorF);
-                                break;
+
+                if (depth || stencil) {
+                    if (depth && stencil) {
+                        gl.clearBufferfi(gl.DEPTH_STENCIL, 0, this.clearValues.depth[0], this.clearValues.stencil[0]);
+                    } else if (depth) {
+                        gl.clearBufferfv(gl.DEPTH, 0, this.clearValues.depth);
+                    } else {
+                        gl.clearBufferuiv(gl.STENCIL, 0, this.clearValues.stencil);
+                    }
+                }
+
+                if (color) {
+                    for (let i = 0; i < renderTarget.colors.length; i++) {
+                        if (drawBuffers[i] !== gl.NONE) {
+                            switch (formatMeta(renderTarget.colors[i].format).sampleType.all) {
+                                case TextureSampleType.Float: {
+                                    gl.clearBufferfv(gl.COLOR, i, this.clearValues.colorF);
+                                    break;
+                                }
+                                case TextureSampleType.Uint: {
+                                    gl.clearBufferuiv(gl.COLOR, i, this.clearValues.colorU);
+                                    break;
+                                }
+                                case TextureSampleType.Sint: {
+                                    gl.clearBufferiv(gl.COLOR, i, this.clearValues.colorI);
+                                    break;
+                                }
+                                default:
+                                    break;
                             }
-                            case TextureSampleType.Uint: {
-                                gl.clearBufferuiv(gl.COLOR, i, this.clearValues.colorU);
-                                break;
-                            }
-                            case TextureSampleType.Sint: {
-                                gl.clearBufferiv(gl.COLOR, i, this.clearValues.colorI);
-                                break;
-                            }
-                            default:
-                                break;
                         }
                     }
                 }
