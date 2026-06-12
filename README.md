@@ -4,7 +4,7 @@ Manycore EGS Graphics System main repo
 
 ## Requirements
 
-- Node: >= 22.13.0
+- Node: >= 22.22.1
 - typescript
 - pnpm(corepack preferred)
 

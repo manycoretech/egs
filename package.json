@@ -6,7 +6,7 @@
     "url": "https://github.com/manycoretech/egs.git"
   },
   "engines": {
-    "node": ">=22.13.0"
+    "node": ">=22.22.1"
   },
   "type": "module",
   "author": "egs",
