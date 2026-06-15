@@ -1,4 +1,4 @@
-import { WGLCapabilities } from '../WGLCapabilities';
+import { WGLCapabilities, type WebGLLimits } from '../WGLCapabilities';
 import { type WGLExtensions, WebGLExtEnums } from '../WGLExtensions';
 
 export class AttributeState {
@@ -8,9 +8,9 @@ export class AttributeState {
     private attributeDivisors: Uint8Array;
     private extensions: WGLExtensions;
 
-    constructor(gl: WebGL2RenderingContext | WebGLRenderingContext, extensions: WGLExtensions) {
+    constructor(gl: WebGL2RenderingContext | WebGLRenderingContext, limits: WebGLLimits, extensions: WGLExtensions) {
         this.gl = gl;
-        const maxVertexAttributes = WGLCapabilities.MAX_ATTRIBUTES;
+        const maxVertexAttributes = limits.maxVertexAttributes;
         this.newAttributes = new Uint8Array(maxVertexAttributes);
         this.enabledAttributes = new Uint8Array(maxVertexAttributes);
         this.attributeDivisors = new Uint8Array(maxVertexAttributes);

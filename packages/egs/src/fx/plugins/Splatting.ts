@@ -17,7 +17,6 @@ import { InstancedBufferGeometry } from '../../elements/geometries/containers/In
 import { SplattingMaterial } from '../../elements/materials/mesh/SplattingMaterial';
 import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
 import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
-import { Capabilities } from '../../renderer/Capabilities';
 import { SplatKernelHighlightMaterial } from '../../elements/materials/mesh/SplatKernelHighlightMaterial';
 import { SplatPackSortedLayoutMaterial } from '../../elements/materials/quad/SplatPackSortedLayoutMaterial';
 import { SplatReorderMaterial } from '../../elements/materials/quad/SplatReorderMaterial';
@@ -204,7 +203,10 @@ export class SplattingPlugin extends PipelinePlugin {
 
         let orderBuffer = this.orderBuffer;
         if (!orderBuffer || count > orderBuffer.length) {
-            const width = Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(count))), Capabilities.MAX_TEXTURE_SIZE);
+            const width = Math.min(
+                2 ** Math.ceil(Math.log2(Math.sqrt(count))),
+                this.renderer.renderer.limits.maxTextureDimension2D,
+            );
             const height = Math.ceil(count / width);
             orderBuffer = new Uint32Array(width * height);
         }
@@ -230,7 +232,10 @@ export class SplattingPlugin extends PipelinePlugin {
             this.packSortedLayoutMaterial.count =
             this.highlightKernelGeometry.instancedCount =
                 activeCount;
-        const w = Math.max(1, Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(count))), Capabilities.MAX_TEXTURE_SIZE));
+        const w = Math.max(
+            1,
+            Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(count))), this.renderer.renderer.limits.maxTextureDimension2D),
+        );
         const h = Math.max(1, Math.ceil(activeCount / w));
         reorderMaterial.orderTex = new SourceTexture(
             TextureDimension.D2,
@@ -475,7 +480,10 @@ export class SplattingPlugin extends PipelinePlugin {
 
         const resourceSizeFN = () => {
             const pixels = splatManager.totalCount;
-            const width = Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(pixels))), Capabilities.MAX_TEXTURE_SIZE);
+            const width = Math.min(
+                2 ** Math.ceil(Math.log2(Math.sqrt(pixels))),
+                this.renderer.renderer.limits.maxTextureDimension2D,
+            );
             if (width > packAttachSize.width) {
                 packAttachSize.width = width;
                 packAttachSize.height = 1;
@@ -695,7 +703,10 @@ export class SplattingPlugin extends PipelinePlugin {
             .ping()
             .resize(() => {
                 const pixels = Math.ceil(splatManager.totalCount / (this.sortHighPrecisionEnabled ? 1 : 2));
-                const width = Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(pixels))), Capabilities.MAX_TEXTURE_SIZE);
+                const width = Math.min(
+                    2 ** Math.ceil(Math.log2(Math.sqrt(pixels))),
+                    this.renderer.renderer.limits.maxTextureDimension2D,
+                );
                 const height = Math.ceil(pixels / width);
                 return { width, height };
             })

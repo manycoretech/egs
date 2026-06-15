@@ -1,5 +1,5 @@
 import { type WGLExtensions, WebGLExtEnums } from './WGLExtensions';
-import type { RendererParameters } from '../IRenderer';
+import type { Limits, RendererParameters } from '../IRenderer';
 import { CompressTextureType } from '../../utils/Constants';
 import { logger } from '../../utils/Logger';
 import { Capabilities } from '../Capabilities';
@@ -87,4 +87,34 @@ export function setupWebGLCapabilities(
     if (Capabilities.SUPPORTED_COMPRESS_TEXTURE_TYPES.length) {
         Capabilities.SUPPORTED_COMPRESS_TEXTURE_FORMATS = gl.getParameter(gl.COMPRESSED_TEXTURE_FORMATS);
     }
+}
+
+export interface WebGLLimits extends Limits {
+    maxTextureSlots: number;
+}
+
+export function setupWebGLLimits(gl: WebGLRenderingContext | WebGL2RenderingContext, limits: Limits): WebGLLimits {
+    let maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+    let maxTextureSize3D = 0;
+    if (typeof WebGL2RenderingContext !== 'undefined' && gl instanceof WebGL2RenderingContext) {
+        maxTextureSize3D = gl.getParameter(gl.MAX_3D_TEXTURE_SIZE);
+        limits.maxColorAttachments = 8;
+        limits.maxTextureArrayLayers = gl.getParameter(gl.MAX_ARRAY_TEXTURE_LAYERS);
+        limits.minUniformBufferOffsetAlignment = gl.getParameter(gl.UNIFORM_BUFFER_OFFSET_ALIGNMENT);
+    } else {
+        limits.maxTextureArrayLayers = 1;
+        limits.maxColorAttachments = 1;
+    }
+    limits.maxTextureDimension1D = limits.maxTextureDimension2D = maxTextureSize;
+    limits.maxTextureDimension3D = maxTextureSize3D;
+    limits.maxSampledTexturesPerShaderStage = Math.min(
+        gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS),
+        gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
+    );
+    limits.maxInterStageShaderVariables = gl.getParameter(gl.MAX_VARYING_VECTORS);
+    limits.maxVertexBuffers = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+    limits.maxVertexAttributes = limits.maxVertexBuffers;
+    return Object.assign(limits, {
+        maxTextureSlots: gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS),
+    });
 }

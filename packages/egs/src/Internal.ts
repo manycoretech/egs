@@ -28,8 +28,8 @@ export { Camera3D } from './scene/cameras/Camera3D';
 export { Object3DChangeEvent } from './scene/Object3D';
 export { RenderTarget, RenderAttachment } from './elements/textures/RenderTarget';
 export type { Nullable, TypedArray, IRange } from './utils/Utils';
-export { RendererState, RenderCtxInfo, MemoryGrowFailed } from './renderer/IRenderer';
-export type { IRenderer, RendererStatus, RendererParameters } from './renderer/IRenderer';
+export { RendererState, RenderCtxInfo, MemoryGrowFailed, defaultLimits } from './renderer/IRenderer';
+export type { IRenderer, RendererStatus, RendererParameters, Limits } from './renderer/IRenderer';
 export { registerGlobal3DRendererOverride, resetGlobal3DRendererOverride } from './renderer/RendererOverride';
 export { EnvMapMaterial } from './elements/materials/mesh/EnvMapMaterial';
 export { GradientMaterial } from './elements/materials/mesh/GradientMaterial';
@@ -106,7 +106,7 @@ export { getMaterialShaderComponents, getMaterialProperties } from './ContentAPI
 export { ToggleWebGPUEvent, WebGPUUnstable, WebGPUValidationFailed } from './Bridge/utils';
 export { IterableWeakMap, IterableWeakSet } from './utils/WeakCollections';
 export { DeferredDispatcher } from './renderer/MaterialDispatcher';
-export { setupWebGLCapabilities } from './renderer/webgl/WGLCapabilities';
+export { setupWebGLCapabilities, setupWebGLLimits } from './renderer/webgl/WGLCapabilities';
 export {
     setupWebGPUCapabilities,
     Capabilities,

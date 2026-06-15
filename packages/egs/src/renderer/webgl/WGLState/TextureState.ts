@@ -1,4 +1,4 @@
-import { WGLCapabilities } from '../WGLCapabilities';
+import type { WebGLLimits } from '../WGLCapabilities';
 import type { WebGLTextureType } from '../WGLConstants';
 import type { Nullable } from '../../../utils/Utils';
 import { logger } from '../../../utils/Logger';
@@ -14,10 +14,11 @@ export class TextureState {
     private currentBindTextures: TextureBindInfo[] = [];
     private slot = 0;
     private textureSlotMap: number[] = [];
+    private limits: WebGLLimits;
 
-    constructor(gl: WebGLRenderingContext | WebGL2RenderingContext) {
+    constructor(gl: WebGLRenderingContext | WebGL2RenderingContext, limits: WebGLLimits) {
         this.gl = gl;
-        for (let i = 0; i < WGLCapabilities.MAX_COMBINED_TEXTURE_IMAGE_UNITS; i++) {
+        for (let i = 0; i < limits.maxTextureSlots; i++) {
             const name = `TEXTURE${i}`;
             this.textureSlotMap[i] = (gl as any)[name];
         }
@@ -31,7 +32,7 @@ export class TextureState {
     }
 
     bindTextureAndActiveForUploading(webglType: WebGLTextureType, webglTexture: WebGLTexture) {
-        const lastSlot = this.gl.TEXTURE0 + WGLCapabilities.MAX_COMBINED_TEXTURE_IMAGE_UNITS - 1;
+        const lastSlot = this.gl.TEXTURE0 + this.limits.maxTextureSlots - 1;
         this.activeTexture(lastSlot);
         this.bindTextureAt(webglType, webglTexture, lastSlot);
     }
@@ -56,12 +57,12 @@ export class TextureState {
 
     getFreeSlot(): number {
         const slot = this.slot;
-        if (this.slot > WGLCapabilities.MAX_COMBINED_TEXTURE_IMAGE_UNITS) {
+        if (this.slot > this.limits.maxTextureSlots) {
             logger.webglError(
                 'EGS: Trying to use ' +
                     this.slot +
                     ' texture units while this GPU supports only ' +
-                    WGLCapabilities.MAX_TEXTURES,
+                    this.limits.maxTextureSlots,
             );
             return this.slot - 1;
         }

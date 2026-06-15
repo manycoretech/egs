@@ -134,6 +134,35 @@ export class RenderCtxInfo {
     }
 }
 
+// WebGPU limits compatible for renderer
+export interface Limits {
+    maxTextureDimension1D: number;
+    maxTextureDimension2D: number;
+    maxTextureDimension3D: number;
+    maxTextureArrayLayers: number;
+    maxSampledTexturesPerShaderStage: number;
+    maxInterStageShaderVariables: number;
+    maxColorAttachments: number;
+    maxVertexBuffers: number;
+    maxVertexAttributes: number;
+    minUniformBufferOffsetAlignment: number;
+}
+
+export function defaultLimits(): Limits {
+    return {
+        maxTextureDimension1D: 8192,
+        maxTextureDimension2D: 8192,
+        maxTextureDimension3D: 2048,
+        maxTextureArrayLayers: 256,
+        maxSampledTexturesPerShaderStage: 16,
+        maxInterStageShaderVariables: 16,
+        maxColorAttachments: 8,
+        maxVertexBuffers: 8,
+        maxVertexAttributes: 16,
+        minUniformBufferOffsetAlignment: 256,
+    };
+}
+
 export interface IRenderer extends EventDispatcher {
     readonly renderInfo: RenderInfo;
     /**
@@ -149,6 +178,11 @@ export interface IRenderer extends EventDispatcher {
      * @internal
      */
     readonly parameters: RendererParameters;
+
+    /**
+     * @internal
+     */
+    readonly limits: Limits;
 
     overrideDispatcher: Nullable<MaterialDispatcher>;
 

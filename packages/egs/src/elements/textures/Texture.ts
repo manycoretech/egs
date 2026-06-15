@@ -7,7 +7,7 @@ import type { ElementsWithGPUResource } from '../../utils/ElementBase';
 import { ContentBridge } from '../../ContentAPI';
 import { WGLCapabilities } from '../../renderer/webgl/WGLCapabilities';
 import { TextureDimension, TextureViewDimension, getBindableTarget } from './types';
-import { RendererBackend } from '../../renderer/IRenderer';
+import { RendererBackend, type Limits } from '../../renderer/IRenderer';
 
 export const TextureDisposeEvent = new EventType<Texture>();
 
@@ -179,7 +179,7 @@ export class WebGLTextureUploadCtx {
         public gl: WebGL2RenderingContext,
         public backend: RendererBackend,
         public isWebGL1: boolean,
-        public maxTextureSize: number,
+        public limits: Limits,
         public newCreated: boolean,
     ) {}
 }

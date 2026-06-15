@@ -4,6 +4,8 @@
 
 1. 新功能
     - 新增`Splatting.pack.forceUnstableEnabled`配置，用于强制触发完整渲染流程
+    - 新增`Limits`用于描述`IRenderer`的限制
+        - 部分`Capabilities`的字段标记为`deprecated`
 2. 修复
     - 修复开启`cameraRelativeEnabled`以后`SplatHighlightKernel`高亮发生偏移
     - 在启用`MRT`时`clear`生效不正确的问题

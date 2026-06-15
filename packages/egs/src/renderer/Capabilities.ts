@@ -36,26 +36,37 @@ export class Capabilities {
     static MAX_PRECISION: string;
     /**
      * Maximum of the number of texture supported by browser.
+     * @deprecated
      */
     static MAX_COMBINED_TEXTURE_IMAGE_UNITS: number;
     /**
      * Maximum of the number of texture supported by browser.
+     * @deprecated
      */
     static MAX_TEXTURES: number;
+    /**
+     * @deprecated
+     */
     static MAX_VERTEX_TEXTURES: number;
     /**
      * The limitation of texture's pixel count.
+     * @deprecated
      */
     static MAX_TEXTURE_SIZE: number;
     /**
      * The limitation of cube map's pixel count.
+     * @deprecated
      */
     static MAX_CUBEMAP_SIZE: number;
     /**
      * The max number of vertex attributes supported by browser.
+     * @deprecated
      */
     static MAX_ATTRIBUTES: number;
     static MAX_VERTEX_UNIFORMS: number;
+    /**
+     * @deprecated
+     */
     static MAX_VARYINGS: number;
     static MAX_FRAGMENT_UNIFORMS: number;
     static IS_SUPPORT_VERTEX_TEXTURES: boolean;

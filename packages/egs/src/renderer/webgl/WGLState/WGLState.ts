@@ -22,6 +22,7 @@ import type { WGLExtensions } from '../WGLExtensions';
 import type { RenderTarget } from '../../../elements/textures/RenderTarget';
 import { RendererBackend } from '../../IRenderer';
 import { formatMeta, TextureSampleType } from '../../../elements/textures/types';
+import type { WebGLLimits } from '../WGLCapabilities';
 
 const DEFAULT_DRAW_BUFFERS = [36064]; // WebGLRenderingContext.COLOR_ATTACHMENT0
 const COLOR_KEYS = ['x', 'y', 'z', 'w'] as const;
@@ -60,11 +61,12 @@ export class WGLState {
         gl: WebGLRenderingContext | WebGL2RenderingContext,
         extensions: WGLExtensions,
         backend: RendererBackend,
+        limits: WebGLLimits,
     ) {
         this.gl = gl;
         this.isWebGL2 = backend === RendererBackend.WEBGL2_JS;
-        this.textureState = new TextureState(gl);
-        this.attributeState = new AttributeState(gl, extensions);
+        this.textureState = new TextureState(gl, limits);
+        this.attributeState = new AttributeState(gl, limits, extensions);
         this.colorState = new ColorState(gl);
         this.depthState = new DepthState(gl);
         this.stencilState = new StencilState(gl);

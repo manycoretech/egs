@@ -1,6 +1,5 @@
 import { type Texture, TextureDisposeEvent, WebGLTextureUploadCtx } from '../../elements/textures/Texture';
 import type { WGLState } from '../webgl/WGLState/WGLState';
-import { Capabilities } from '../Capabilities';
 import { IterableWeakMap } from '../../utils/WeakCollections';
 import { TypeAssert } from '../../scene/tools/TypeAssert';
 import type { RenderAttachment } from '../../elements/textures/RenderTarget';
@@ -57,7 +56,7 @@ export class TextureManager {
                     this.renderer.gl as WebGL2RenderingContext,
                     this.renderer.backend,
                     this.isWebGL1,
-                    Capabilities.MAX_TEXTURE_SIZE,
+                    this.renderer.limits,
                     true,
                 ),
             );
@@ -77,7 +76,7 @@ export class TextureManager {
                     this.renderer.gl as WebGL2RenderingContext,
                     this.renderer.backend,
                     this.isWebGL1,
-                    Capabilities.MAX_TEXTURE_SIZE,
+                    this.renderer.limits,
                     false,
                 ),
             );

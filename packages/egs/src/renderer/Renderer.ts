@@ -6,7 +6,7 @@ import { Vector4 } from '../math/Vector4';
 import { WGLIndexedBufferRenderer } from './webgl/WGLIndexedBufferRenderer';
 import type { Camera3D } from '../scene/cameras/Camera3D';
 import { Color } from '../math/Color';
-import { setupWebGLCapabilities, WGLCapabilities } from './webgl/WGLCapabilities';
+import { setupWebGLCapabilities, WGLCapabilities, setupWebGLLimits, type WebGLLimits } from './webgl/WGLCapabilities';
 import { FatLineSegments } from '../scene/drawables/FatLineSegments';
 import type { BufferGeometryBase, BufferRange } from '../elements/geometries/containers/BufferGeometry';
 import type { Nullable, TypedArray, IRange } from '../utils/Utils';
@@ -30,6 +30,7 @@ import {
     type RendererParameters,
     ContextLostEvent,
     RenderCtxInfo,
+    defaultLimits,
 } from './IRenderer';
 import type { RenderStatistics } from '../Viewer';
 import { DefaultMaterialDispatcher, type MaterialDispatcher } from './MaterialDispatcher';
@@ -76,6 +77,10 @@ export class Renderer extends EventDispatcher implements IRenderer {
         state: RendererState.Ready,
         initialized: Promise.resolve(),
     };
+    /**
+     * @internal
+     */
+    readonly limits: WebGLLimits;
 
     parameters: RendererParameters;
 
@@ -194,7 +199,8 @@ export class Renderer extends EventDispatcher implements IRenderer {
 
         this.extensions = new WGLExtensions(this.gl);
         setupWebGLCapabilities(this.gl, this.parameters, this.extensions);
-        this.wglState = new WGLState(this.gl, this.extensions, this.backend);
+        this.limits = setupWebGLLimits(this.gl, defaultLimits());
+        this.wglState = new WGLState(this.gl, this.extensions, this.backend, this.limits);
         this.wglState.setViewport(this._currentViewport);
         this.wglState.setScissor(this._currentScissor);
         this.renderState = new RenderState(this.gl, this.wglState);

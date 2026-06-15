@@ -212,7 +212,7 @@ export class Texture2DCommonLayer extends Texture2DLayer {
         let new_h = 0;
         const internalFormat = getInternalFormat(ctx.gl, this.format, this.type);
 
-        const max_texture_size = ctx.maxTextureSize;
+        const max_texture_size = ctx.limits.maxTextureDimension2D;
         if (this.width > max_texture_size || this.height > max_texture_size) {
             need_resize = true;
             const scale = max_texture_size / Math.max(this.width, this.height);
