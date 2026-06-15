@@ -18,6 +18,7 @@ export class TextureState {
 
     constructor(gl: WebGLRenderingContext | WebGL2RenderingContext, limits: WebGLLimits) {
         this.gl = gl;
+        this.limits = limits;
         for (let i = 0; i < limits.maxTextureSlots; i++) {
             const name = `TEXTURE${i}`;
             this.textureSlotMap[i] = (gl as any)[name];
