@@ -119,13 +119,14 @@ export async function parseSplatData(
     return promise;
 }
 
+const sortPoll = new FactoryWorkerPool('sort-splat', SplatWorkerFactor, 1, 1);
 async function sortSplats(count: number, sorting: Uint16Array | Uint32Array, ordering: Uint32Array) {
     const { promise, resolve, reject } = deferred<{
         activeCount: number;
         sorting: Uint16Array | Uint32Array;
         ordering: Uint32Array;
     }>();
-    const worker = await poll.getWorker();
+    const worker = await sortPoll.getWorker();
     worker.onmessage = (event: MessageEvent) => {
         const data = event.data as ReceiveMessage<TaskType.SortSplats>;
         if (data.status === TaskStatus.Success) {

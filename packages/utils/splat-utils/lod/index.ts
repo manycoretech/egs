@@ -373,7 +373,7 @@ export class LodSplat {
         let restBudget = maxBudget - realUsedBudget;
         let cachedNodes = 0;
         let loadingNodes = 0;
-        // ready & cached & downsample component
+        // ready & cached & downsample component. prerelease budget
         for (let i = 0; i < components.length; i++) {
             const component = components[i];
             if (!component.isReady || !component.isCached || component.budgetDelta > 0) {
@@ -421,6 +421,7 @@ export class LodSplat {
             }
         }
         // not ready component
+        const hasApplyComponents = !!applyComponents.length;
         while (true) {
             if (cachedNodes >= schedulerExistingTaskLimit && loadingNodes >= schedulerParallelCounts) {
                 break;
@@ -432,6 +433,7 @@ export class LodSplat {
                 if (
                     component.isUsed ||
                     restBudget < 0 ||
+                    (hasApplyComponents && !component.isCached) ||
                     (component.isCached && cachedNodes >= schedulerExistingTaskLimit) ||
                     (!component.isCached && loadingNodes >= schedulerParallelCounts)
                 ) {
