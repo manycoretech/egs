@@ -721,7 +721,7 @@ export class SplattingPlugin extends PipelinePlugin {
                         const { width, height } = target!;
                         const count = splatManager.totalCount;
                         sortMaterial.update(scene.camera);
-                        sortMaterial.origin.sub(packCameraRelativeOrigin);
+                        sortMaterial.centerOrigin.copy(packCameraRelativeOrigin);
                         sortMaterial.resolution.set(width, height);
                         sortMaterial.count = count;
                         sortQuad.render(renderer);
@@ -951,6 +951,20 @@ export class SplattingPlugin extends PipelinePlugin {
                     get: () => this.sortMinIntervalMs,
                     set: (v: number) => {
                         this.sortMinIntervalMs = v;
+                    },
+                },
+                frustumCullingEnabled: {
+                    get: () => this.sortMaterial.frustumCullingEnabled,
+                    set: (v: boolean) => {
+                        this.isSortDirty = true;
+                        this.sortMaterial.frustumCullingEnabled = v;
+                        this.sortMaterial.notifyRecompileShader();
+                    },
+                },
+                frustumCullingClipScale: {
+                    get: () => this.sortMaterial.frustumCullingClipScale,
+                    set: (v: number) => {
+                        this.sortMaterial.frustumCullingClipScale = v;
                     },
                 },
                 sortSplatDistance: {

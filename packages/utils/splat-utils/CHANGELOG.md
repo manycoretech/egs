@@ -3,6 +3,9 @@
 ## DEV
 
 - 优化贴图尺寸计算
+- 修正`LodMeta.version`类型错误
+- `lod`新增`proxy`用以减少实际场景中`Splat`数量
+    - 对于`pack & precalculate`步骤`gpu`开销减少 50%-90%
 
 ## 1.0.6
 

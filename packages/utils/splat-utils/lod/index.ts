@@ -1,6 +1,5 @@
-import { deferred, sleep, type Deferred } from '@qunhe/egs-lib';
+import { type Deferred, deferred, sleep } from '@qunhe/egs-lib';
 import {
-    type __INTERNAL__,
     Box3,
     Vector3,
     type Camera,
@@ -11,6 +10,7 @@ import {
     type Splat,
     Vector4,
     type IViewerContext,
+    type __INTERNAL__,
 } from '@qunhe/egs';
 import { parseSplatData, detectSplatFileType } from '@qunhe/egs-splat-loader';
 import { ResourceManager } from './ResourceManager';
@@ -23,7 +23,7 @@ interface IBox {
 export interface LodMeta {
     magicCode: 2500660;
     type: 'lod-splat';
-    version: number;
+    version: string;
     counts: number;
     shDegree: number;
     levels: number;
@@ -41,21 +41,9 @@ export interface LodMeta {
 }
 
 interface DistanceStep {
-    // <=
-    distance: number;
+    distance: number; // <=
     step: number;
 }
-
-const DEFAULT_DISTANCE_STEP: DistanceStep[] = [
-    {
-        distance: 5,
-        step: 3,
-    },
-    {
-        distance: 10,
-        step: 2,
-    },
-];
 
 export interface LodConfig {
     minLevel: number;
@@ -70,32 +58,26 @@ export interface LodConfig {
     schedulerParallelCounts: number;
     schedulerExistingTaskLimit: number;
     schedulerMinDuration: number;
-
     debuggerEnabled: boolean;
-    debuggerType: 0 | 1; // 0: level, 1: chunk idx
 }
+
+const LOD_LEVEL_COLORS = [
+    new Vector4(1.0, 0.2, 0.0, 1),
+    new Vector4(1.0, 1.0, 0.0, 1),
+    new Vector4(0.0, 1.0, 0.4, 1),
+    new Vector4(0.0, 0.8, 1.0, 1),
+    new Vector4(0.0, 0.4, 1.0, 1),
+];
+
+const DEFAULT_NODE_WEIGHT = 2;
+const DEFAULT_DISTANCE_STEP: DistanceStep[] = [
+    { distance: 5, step: 3 },
+    { distance: 10, step: 2 },
+];
 
 function DefaultLoadResource(url: string) {
     const type = detectSplatFileType(url, new Uint8Array());
     return parseSplatData(type!, url);
-}
-
-function getLodLevelDebuggerColor(level: number) {
-    const COLORS = [
-        new Vector4(1.0, 0.2, 0.0, 1),
-        new Vector4(1.0, 1.0, 0.0, 1),
-        new Vector4(0.0, 1.0, 0.4, 1),
-        new Vector4(0.0, 0.8, 1.0, 1),
-        new Vector4(0.0, 0.4, 1.0, 1),
-    ];
-    return COLORS[level];
-}
-
-function getChunkIdxDebuggerColor(idx: number) {
-    const r = ((idx >> 16) & 255) / 255;
-    const g = ((idx >> 8) & 255) / 255;
-    const b = (idx & 255) / 255;
-    return new Vector4(r, g, b, 1);
 }
 
 interface LodNode {
@@ -108,11 +90,18 @@ interface LodNode {
     weight: number;
 
     currentLevel: number;
-    currentSplat: Splat | undefined;
-
     targetWeight: number;
     targetLevel: number;
     unstableTicks: number;
+}
+
+interface LodProxy {
+    resourceIdx: number;
+    offset: number;
+    counts: number;
+    nodeStart: number;
+    nodeEnd: number;
+    splat: Splat;
 }
 
 const tempVec3 = new Vector3();
@@ -131,12 +120,14 @@ export class LodSplat {
     private schedulerExistingTaskLimit: number;
     private schedulerMinDuration: number;
     private debuggerEnabled: boolean;
-    private debuggerType: 0 | 1;
 
     private viewerCtx?: IViewerContext;
     private resourceManager: ResourceManager;
-    private nodes: LodNode[];
     private lessUsedBudget: number;
+    private forwardBox: Box3;
+    private nodes: LodNode[];
+    private proxies: LodProxy[] = [];
+    private realUsedBudget: number = 0;
 
     readonly container = new Object3D();
 
@@ -160,30 +151,29 @@ export class LodSplat {
         this.schedulerExistingTaskLimit = config?.schedulerExistingTaskLimit ?? 64;
         this.schedulerMinDuration = config?.schedulerMinDuration ?? 160;
         this.debuggerEnabled = config?.debuggerEnabled ?? false;
-        this.debuggerType = config?.debuggerType ?? 0;
 
         this.viewerCtx = viewerCtx;
         this.resourceManager = new ResourceManager(meta.files, meta.permanentFiles, loadResource);
-        this.nodes = meta.tree.map(({ bound, lods }) => ({
+
+        const { maxLevel, backgroundPenalty } = this;
+        const { forwardBox, tree } = meta;
+        const nodes = (this.nodes = tree.map(({ bound, lods }) => ({
             box: new Box3(
                 new Vector3(bound.min[0], bound.min[1], bound.min[2]),
                 new Vector3(bound.max[0], bound.max[1], bound.max[2]),
             ),
             lods: lods.map(v => ({ resourceIdx: v.file, offset: v.offset, counts: v.count })),
-            weight: 2,
+            weight: DEFAULT_NODE_WEIGHT,
             currentLevel: -1,
-            currentSplat: undefined,
             targetWeight: 0,
-            targetLevel: -1,
+            targetLevel: maxLevel,
             unstableTicks: 0,
-        }));
+        })));
 
-        const { nodes, maxLevel, backgroundPenalty } = this;
-        const { forwardBox } = meta;
-        const box = new Box3(
+        const box = (this.forwardBox = new Box3(
             new Vector3(forwardBox.min[0], forwardBox.min[1], forwardBox.min[2]),
             new Vector3(forwardBox.max[0], forwardBox.max[1], forwardBox.max[2]),
-        );
+        ));
         let lessBudget = 0;
         for (let i = 0; i < nodes.length; i++) {
             const node = nodes[i];
@@ -198,129 +188,341 @@ export class LodSplat {
     setConfig(config: Partial<LodConfig>) {
         this.minLevel = config?.minLevel ?? this.minLevel;
         this.maxBudget = config?.maxBudget ?? this.maxBudget;
-        this.backgroundPenalty = config?.backgroundPenalty ?? this.backgroundPenalty;
+        {
+            const { nodes, forwardBox } = this;
+            const backgroundPenalty = config?.backgroundPenalty ?? this.backgroundPenalty;
+            if (backgroundPenalty !== this.backgroundPenalty) {
+                for (let i = 0; i < nodes.length; i++) {
+                    const node = nodes[i];
+                    if (!forwardBox.intersectsBox(node.box)) {
+                        node.weight = DEFAULT_NODE_WEIGHT * backgroundPenalty;
+                    }
+                }
+                this.backgroundPenalty = backgroundPenalty;
+            }
+        }
         this.outsidePenalty = config?.outsidePenalty ?? this.outsidePenalty;
         this.behindPenalty = config?.behindPenalty ?? this.behindPenalty;
         this.behindTolerance = config?.behindTolerance ?? this.behindTolerance;
         this.behindDistanceTolerance = config?.behindDistanceTolerance ?? this.behindDistanceTolerance;
+        this.distanceStep = config?.distanceStep ?? this.distanceStep;
         this.hysteresisTicks = config?.hysteresisTicks ?? this.hysteresisTicks;
         this.schedulerParallelCounts = config?.schedulerParallelCounts ?? this.schedulerParallelCounts;
         this.schedulerExistingTaskLimit = config?.schedulerExistingTaskLimit ?? this.schedulerExistingTaskLimit;
         this.schedulerMinDuration = config?.schedulerMinDuration ?? this.schedulerMinDuration;
         this.debuggerEnabled = config?.debuggerEnabled ?? this.debuggerEnabled;
-        this.debuggerType = config?.debuggerType ?? this.debuggerType;
     }
 
     private flush = async () => {
         const {
-            container,
-            resourceManager,
-            nodes,
-            viewerCtx,
+            maxBudget,
             hysteresisTicks,
             schedulerParallelCounts,
             schedulerExistingTaskLimit,
             debuggerEnabled,
-            debuggerType,
+            container,
+            resourceManager,
+            viewerCtx,
+            nodes,
+            proxies,
+            realUsedBudget,
         } = this;
 
-        const existResourceTasks: Array<{ idx: number; node: LodNode }> = [];
-        const loadResourceTasks: Array<{ idx: number; node: LodNode }> = [];
+        // create merged proxies
+        const targetLevels = new Array<number>(nodes.length);
+        const targetProxies: LodProxy[] = [];
+        let prevProxy: LodProxy | undefined;
         for (let i = 0; i < nodes.length; i++) {
             const node = nodes[i];
-            const { lods, currentLevel, targetLevel, unstableTicks } = node;
-            if (node.currentLevel >= 0 && (currentLevel === targetLevel || unstableTicks < hysteresisTicks)) {
-                continue;
-            }
-            const currentLod = lods[currentLevel];
-            const targetLod = lods[targetLevel];
+            const { currentLevel, targetLevel, lods } = node;
+            targetLevels[i] = targetLevel;
+            const lod = lods[targetLevel];
+            const currentLod = currentLevel >= 0 ? lods[currentLevel] : undefined;
             if (
                 currentLod &&
-                currentLod.resourceIdx === targetLod.resourceIdx &&
-                currentLod.offset === targetLod.offset &&
-                currentLod.counts === targetLod.counts
+                currentLod.resourceIdx === lod.resourceIdx &&
+                currentLod.offset === lod.offset &&
+                currentLod.counts === lod.counts
             ) {
-                node.currentLevel = node.targetLevel;
+                node.currentLevel = targetLevel;
                 node.unstableTicks = 0;
-                continue;
             }
-            (resourceManager.has(targetLod.resourceIdx) ? existResourceTasks : loadResourceTasks).push({
-                idx: i,
-                node,
-            });
+            if (
+                prevProxy &&
+                prevProxy.resourceIdx === lod.resourceIdx &&
+                prevProxy.offset + prevProxy.counts === lod.offset
+            ) {
+                prevProxy.counts += lod.counts;
+                prevProxy.nodeEnd = i;
+            } else {
+                prevProxy = {
+                    resourceIdx: lod.resourceIdx,
+                    offset: lod.offset,
+                    counts: lod.counts,
+                    nodeStart: i,
+                    nodeEnd: i,
+                } as LodProxy;
+                targetProxies.push(prevProxy);
+            }
         }
-        existResourceTasks.sort((a, b) => b.node.targetWeight - a.node.targetWeight);
-        loadResourceTasks.sort((a, b) => b.node.targetWeight - a.node.targetWeight);
 
-        const tasks: Array<{ idx: number; node: LodNode }> = [];
-        for (let i = 0; i < existResourceTasks.length; i++) {
-            if (tasks.length >= schedulerExistingTaskLimit) {
-                break;
+        // create diff component
+        type DiffComponent = {
+            nodeStart: number;
+            nodeEnd: number;
+            newList: LodProxy[];
+            oldList: LodProxy[];
+            weight: number;
+            budgetDelta: number;
+            isCached: boolean;
+            isReady: boolean;
+            isUsed: boolean;
+        };
+
+        const components: DiffComponent[] = [];
+        let component: DiffComponent | undefined;
+        const commit = () => {
+            if (!component) {
+                return;
             }
-            tasks.push(existResourceTasks[i]);
-        }
-        for (let i = 0; i < loadResourceTasks.length; i++) {
-            if (tasks.length >= schedulerParallelCounts) {
-                break;
+            let hasChange = false;
+            for (let i = component.nodeStart; i <= component.nodeEnd; i++) {
+                const node = nodes[i];
+                component.weight = Math.max(component.weight, node.targetWeight);
+                component.isReady ||=
+                    node.currentLevel < 0 ||
+                    (node.currentLevel !== node.targetLevel && node.unstableTicks >= hysteresisTicks);
+                if (node.currentLevel < 0 || node.currentLevel !== node.targetLevel) {
+                    hasChange = true;
+                }
             }
-            tasks.push(loadResourceTasks[i]);
-        }
-        for (let i = 0; i < nodes.length; i++) {
-            if (tasks.length >= schedulerParallelCounts) {
-                break;
+            if (
+                !hasChange &&
+                component.newList.length > 0 &&
+                component.newList.length < component.oldList.length &&
+                component.budgetDelta <= 0
+            ) {
+                hasChange = true;
+                component.isReady = true;
             }
-            const node = nodes[i];
-            if (node.currentLevel === node.targetLevel) {
+            if (hasChange) {
+                components.push(component);
+            }
+            component = undefined;
+        };
+
+        const add = (proxy: LodProxy, isOld: boolean = false) => {
+            if (!component || proxy.nodeStart > component.nodeEnd) {
+                commit();
+                component = {
+                    nodeStart: proxy.nodeStart,
+                    nodeEnd: proxy.nodeEnd,
+                    newList: [],
+                    oldList: [],
+                    weight: 0,
+                    budgetDelta: 0,
+                    isCached: false,
+                    isReady: false,
+                    isUsed: false,
+                };
+            } else if (proxy.nodeEnd > component.nodeEnd) {
+                component.nodeEnd = proxy.nodeEnd;
+            }
+            if (isOld) {
+                component.oldList.push(proxy);
+                component.budgetDelta -= proxy.counts;
+            } else {
+                component.newList.push(proxy);
+                component.budgetDelta += proxy.counts;
+                component.isCached = resourceManager.has(proxy.resourceIdx);
+            }
+        };
+
+        let targetIdx = 0;
+        let currentIdx = 0;
+        while (targetIdx < targetProxies.length || currentIdx < proxies.length) {
+            const targetProxy = targetProxies[targetIdx];
+            const currentProxy = proxies[currentIdx];
+            if (
+                targetProxy &&
+                currentProxy &&
+                currentProxy.resourceIdx === targetProxy.resourceIdx &&
+                currentProxy.offset === targetProxy.offset &&
+                currentProxy.counts === targetProxy.counts
+            ) {
+                targetIdx++;
+                currentIdx++;
                 continue;
             }
-            tasks.push({ idx: i, node });
+
+            const targetStart = targetProxy?.nodeStart ?? Infinity;
+            const currentStart = currentProxy?.nodeStart ?? Infinity;
+            if (targetProxy && targetStart <= currentStart) {
+                add(targetProxy);
+                targetIdx++;
+            }
+            if (currentProxy && currentStart <= targetStart) {
+                add(currentProxy, true);
+                currentIdx++;
+            }
+        }
+        commit();
+        components.sort((a, b) => b.weight - a.weight);
+
+        const applyComponents: DiffComponent[] = [];
+        let restBudget = maxBudget - realUsedBudget;
+        let cachedNodes = 0;
+        let loadingNodes = 0;
+        // ready & cached & downsample component
+        for (let i = 0; i < components.length; i++) {
+            const component = components[i];
+            if (!component.isReady || !component.isCached || component.budgetDelta > 0) {
+                continue;
+            }
+            component.isUsed = true;
+            applyComponents.push(component);
+            restBudget -= component.budgetDelta;
+            cachedNodes += component.newList.length;
+            if (cachedNodes > schedulerExistingTaskLimit) {
+                break;
+            }
+        }
+        // ready component
+        while (true) {
+            if (cachedNodes >= schedulerExistingTaskLimit && loadingNodes >= schedulerParallelCounts) {
+                break;
+            }
+            let pick: DiffComponent | undefined;
+            for (let i = 0; i < components.length; i++) {
+                const component = components[i];
+                if (
+                    component.isUsed ||
+                    !component.isReady ||
+                    component.budgetDelta > restBudget ||
+                    (component.isCached && cachedNodes >= schedulerExistingTaskLimit) ||
+                    (!component.isCached && loadingNodes >= schedulerParallelCounts)
+                ) {
+                    continue;
+                }
+                pick = component;
+                break;
+            }
+            if (!pick) {
+                break;
+            }
+
+            pick.isUsed = true;
+            applyComponents.push(pick);
+            restBudget -= pick.budgetDelta;
+            if (pick.isCached) {
+                cachedNodes += pick.newList.length;
+            } else {
+                loadingNodes += pick.newList.length;
+            }
+        }
+        // not ready component
+        while (true) {
+            if (cachedNodes >= schedulerExistingTaskLimit && loadingNodes >= schedulerParallelCounts) {
+                break;
+            }
+
+            let pick: DiffComponent | undefined;
+            for (let i = 0; i < components.length; i++) {
+                const component = components[i];
+                if (
+                    component.isUsed ||
+                    restBudget < 0 ||
+                    (component.isCached && cachedNodes >= schedulerExistingTaskLimit) ||
+                    (!component.isCached && loadingNodes >= schedulerParallelCounts)
+                ) {
+                    continue;
+                }
+                pick = component;
+                break;
+            }
+            if (!pick) {
+                break;
+            }
+
+            pick.isUsed = true;
+            applyComponents.push(pick);
+            restBudget -= pick.budgetDelta;
+            if (pick.isCached) {
+                cachedNodes += pick.newList.length;
+            } else {
+                loadingNodes += pick.newList.length;
+            }
+        }
+
+        // modify container
+        const newProxies: LodProxy[] = [];
+        const oldProxies: LodProxy[] = [];
+        for (let i = 0; i < applyComponents.length; i++) {
+            const component = applyComponents[i];
+            newProxies.push(...component.newList);
+            oldProxies.push(...component.oldList);
+        }
+        const changes = newProxies.length + oldProxies.length;
+        if (!changes) {
+            return 0;
         }
 
         const renderer = viewerCtx?.viewer._getEngine().renderer;
-        const resources = await Promise.all(
-            tasks.map(async ({ node }) => {
-                const { targetLevel, lods } = node;
-                const { resourceIdx, offset, counts } = lods[targetLevel];
-                const splat = await resourceManager.loadSplat(resourceIdx, offset, counts);
+        const loadedProxies = await Promise.all(
+            newProxies.map(async proxy => {
+                const splat = (proxy.splat = await resourceManager.loadSplat(
+                    proxy.resourceIdx,
+                    proxy.offset,
+                    proxy.counts,
+                ));
                 if (renderer) {
                     for (let i = 0; i < splat.extrasTex.length; i++) {
                         renderer.queueFlushTexture(splat.extrasTex[i]);
                     }
                     renderer.flushCommands();
                 }
-                return { level: targetLevel, splat };
+                return proxy;
             }),
         );
 
-        const promises: Array<Promise<void>> = [];
-        for (let i = 0; i < tasks.length; i++) {
-            const { idx, node } = tasks[i];
-            const { level, splat } = resources[i];
+        const sortPromises: Array<Promise<void>> = [];
+        for (let i = 0; i < loadedProxies.length; i++) {
+            const { splat, nodeStart } = loadedProxies[i];
             const { promise, resolve } = deferred();
             if (debuggerEnabled) {
                 splat.setEffectConfig({
                     enabled: true,
                     overrideEnabled: true,
-                    overrideColor:
-                        debuggerType === 0 ? getLodLevelDebuggerColor(level) : getChunkIdxDebuggerColor(idx * 16),
+                    overrideColor: LOD_LEVEL_COLORS[targetLevels[nodeStart]],
                 });
             }
-            splat.once(SplatSortedEvent, () => {
-                if (node.currentSplat) {
-                    container.remove(node.currentSplat);
-                    resourceManager.release(node.lods[node.currentLevel].resourceIdx);
-                }
-                node.unstableTicks = 0;
-                node.currentLevel = level;
-                node.currentSplat = splat;
-                resolve();
-            });
+            splat.once(SplatSortedEvent, resolve);
             container.add(splat);
-            promises.push(promise);
+            sortPromises.push(promise);
         }
-        await Promise.all(promises);
+        await Promise.all(sortPromises);
 
-        return tasks.length;
+        for (let i = 0; i < oldProxies.length; i++) {
+            const proxy = oldProxies[i];
+            const idx = proxies.indexOf(proxy);
+            if (idx >= 0) {
+                proxies.splice(idx, 1);
+            }
+            container.remove(proxy.splat);
+            resourceManager.release(proxy.resourceIdx);
+        }
+        for (let i = 0; i < loadedProxies.length; i++) {
+            const proxy = loadedProxies[i];
+            for (let i = proxy.nodeStart; i <= proxy.nodeEnd; i++) {
+                nodes[i].currentLevel = targetLevels[i];
+                nodes[i].unstableTicks = 0;
+            }
+            proxies.push(proxy);
+        }
+        proxies.sort((a, b) => a.nodeStart - b.nodeStart || a.nodeEnd - b.nodeEnd);
+        this.realUsedBudget = proxies.reduce((p, c) => p + c.counts, 0);
+
+        return changes;
     };
 
     tick(camera: Camera) {
@@ -482,15 +684,15 @@ export class LodSplat {
             this.rafId = undefined;
         }
 
-        const { container, nodes } = this;
+        const { resourceManager, container, proxies } = this;
         container.removeFromParent();
-        for (let i = 0; i < nodes.length; i++) {
-            const node = nodes[i];
-            if (node.currentSplat) {
-                container.remove(node.currentSplat);
-                node.currentSplat.destroy();
-            }
+        for (let i = 0; i < proxies.length; i++) {
+            const proxy = proxies[i];
+            container.remove(proxy.splat);
+            resourceManager.release(proxy.resourceIdx);
+            proxy.splat.destroy();
         }
+        this.proxies = [];
 
         this.running?.resolve();
         this.running = undefined;

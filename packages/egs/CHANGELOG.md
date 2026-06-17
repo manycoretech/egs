@@ -4,6 +4,8 @@
 
 1. 新功能
     - 新增`Splatting.pack.forceUnstableEnabled`配置，用于强制触发完整渲染流程
+    - 新增`Splatting.sort.frustumCullingEnabled`配置，用于预剔除以提高性能
+        - 会放大视角转动时画面黑边问题，实际场景使用需要慎重
     - 新增`Limits`用于描述`IRenderer`的限制
         - 部分`Capabilities`的字段标记为`deprecated`
 2. 修复
