@@ -1,6 +1,6 @@
 # EGS 发布说明 Release Notes
 
-## DEV
+## 1.2.91
 
 1. 新功能
     - 新增`Splatting.pack.forceUnstableEnabled`配置，用于强制触发完整渲染流程
