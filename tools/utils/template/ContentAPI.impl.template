@@ -37,6 +37,11 @@ export function hasManagedContentAPI() {
 export function removeManagedContentAPI() {
     registeredManagedContentAPI = undefined;
 }
+export function disposeManagedContentAPI() {
+    registeredManagedContentAPI?.dispose();
+    registeredManagedContentAPI = undefined;
+    globalThis.EGS_MANAGED_CONTENT_API_DISABLED = true;
+}
 
 const warnInvalidInternalStaticInitLogic = new Proxy({}, {
     get: (_: any, key: string) => {

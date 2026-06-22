@@ -37,6 +37,11 @@ export function hasManagedContentAPI() {
 export function removeManagedContentAPI() {
     registeredManagedContentAPI = undefined;
 }
+export function disposeManagedContentAPI() {
+    registeredManagedContentAPI?.dispose();
+    registeredManagedContentAPI = undefined;
+    globalThis.EGS_MANAGED_CONTENT_API_DISABLED = true;
+}
 
 const warnInvalidInternalStaticInitLogic = new Proxy(
     {},
@@ -1724,6 +1729,15 @@ export const ManagedContentBridge: Required<ContentManagedAPI> = {
     rebuildWorld(config?: WorldRebuildConfig) {
         try {
             return registeredManagedContentAPI?.rebuildWorld?.(config);
+        } catch (e) {
+            if (window.EGS_WASM_FATAL_ERROR_OCCURRED !== true) {
+                throw e;
+            }
+        }
+    },
+    dispose() {
+        try {
+            return registeredManagedContentAPI?.dispose?.();
         } catch (e) {
             if (window.EGS_WASM_FATAL_ERROR_OCCURRED !== true) {
                 throw e;

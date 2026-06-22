@@ -430,6 +430,7 @@ export interface ContentManagedAPI extends ContentAPI {
     sceneTick(scene: Scene3D, timestamp: number): void;
     sceneOptimize(scene: Scene3D): void;
     rebuildWorld(config?: WorldRebuildConfig): Promise<void>;
+    dispose(): void;
 }
 
 export * from './ContentAPI.impl';

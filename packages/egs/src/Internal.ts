@@ -90,6 +90,7 @@ export {
     unregisterContentAPI,
     registerManagedContentAPI,
     removeManagedContentAPI,
+    disposeManagedContentAPI,
 } from './ContentAPI';
 export type { ContentManagedAPI, ContentAPI, WorldRebuildConfig } from './ContentAPI';
 export { LegacySourceTexture } from './elements/textures/Texture';

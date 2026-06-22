@@ -1,5 +1,10 @@
 # EGS 发布说明 Release Notes
 
+## 1.2.92
+
+1. 新功能
+    - 新增`__INTERNAL__.disposeManagedContentAPI`方法，销毁并禁止使用`ContentManagedAPI`
+
 ## 1.2.91
 
 1. 新功能
