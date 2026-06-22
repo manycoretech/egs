@@ -11,7 +11,7 @@
   "type": "module",
   "author": "egs",
   "license": "MIT",
-  "packageManager": "pnpm@11.7.0",
+  "packageManager": "pnpm@11.8.0",
   "description": "the wrapper repo which contains the egs-main repo and egs-website together to help test and develop",
   "devDependencies": {
     "@internal/cli": "workspace:*",
