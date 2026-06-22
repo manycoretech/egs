@@ -1,6 +1,6 @@
 # changelog
 
-## DEV
+## 1.0.5
 
 - 优化贴图尺寸计算
 - 独立 sort worker 防止被解析长时间阻塞

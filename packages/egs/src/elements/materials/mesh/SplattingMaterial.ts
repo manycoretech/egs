@@ -175,14 +175,13 @@ function createVertexShader(material: SplattingMaterial): string {
                         xy, sy2, yz,
                         xz, yz, sz2
                     );
+                    if (determinant(mCov3D) < 0.) {
+                        return;
+                    }
 
                     uint uColor = covData.w;
                     vec4 color = vec4(uColor & 0xFFu, (uColor >> 8u) & 0xFFu, (uColor >> 16u) & 0xFFu, (uColor >> 24u) & 0xFFu) * INV_255;
                 `
-        }
-
-        if (determinant(mCov3D) < -1e-5) {
-            return;
         }
 
         vec2 scaledResolution = resolution * focalAdjustment;

@@ -1,6 +1,6 @@
 # changelog
 
-## DEV
+## 1.0.7
 
 - 优化贴图尺寸计算
 - 修正`LodMeta.version`类型错误

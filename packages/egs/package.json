@@ -1,6 +1,6 @@
 {
   "name": "@qunhe/egs",
-  "version": "1.2.90",
+  "version": "1.2.91",
   "description": "Manycore EGS Graphics System",
   "license": "MIT",
   "main": "index.js",

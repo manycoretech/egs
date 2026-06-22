@@ -11,6 +11,7 @@
 2. 修复
     - 修复开启`cameraRelativeEnabled`以后`SplatHighlightKernel`高亮发生偏移
     - 在启用`MRT`时`clear`生效不正确的问题
+    - 修复低精度 pack 时数据异常
 3. 优化
     - 优化贴图尺寸计算，提升单个`Splat`对象场景时渲染性能
 
