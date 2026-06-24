@@ -121,9 +121,6 @@ importers:
 
   packages/loaders/splat-loader:
     dependencies:
-      '@qunhe/egs':
-        specifier: workspace:*
-        version: link:../../egs
       '@qunhe/egs-lib':
         specifier: workspace:*
         version: link:../../egs-lib
