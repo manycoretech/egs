@@ -1,5 +1,5 @@
 import { unzipSync } from 'fflate';
-import { type IFile, type IData, type ISingleSplat, extractFromRootDir } from './utils';
+import { type IFile, type IData, type ISingleSplat, extractFromRootDir } from '../utils';
 
 interface MetaAttribute {
     name: string;
@@ -156,7 +156,6 @@ export class LccFile implements IFile {
             g: 0,
             b: 0,
             a: 0,
-            shN: [],
         };
         const shData = new Array(45);
         let index = BlockOffset;

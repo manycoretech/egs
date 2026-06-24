@@ -1,24 +1,36 @@
-import { __INTERNAL__ } from '@qunhe/egs';
-import { FactoryWorkerPool, deferred } from '@qunhe/egs-lib';
-import { getMaxTextureSize, SplatFileType, SplatPackType } from './utils';
-import { type ParseExtras, type SendMessage, TaskType, type ReceiveMessage, TaskStatus } from './WorkerMessage';
-import { type SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
-
 export { KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, EszFile } from './file';
-export type { IFile } from './file';
 export { SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
-export { ISamplerFormat, SH_MAPS } from './splat/utils';
-export type { ISingleSplat, ISampler } from './splat/utils';
-export { SplatFileType, SplatPackType, detectSplatFileType } from './utils';
+export {
+    type ISingleSplat,
+    ISamplerFormat,
+    type ISampler,
+    type ISplatData,
+    type IFile,
+    SH_MAPS,
+    NUM_F_REST_TO_SH_DEGREE,
+    SplatFileType,
+    SplatPackType,
+    detectSplatFileType,
+} from './utils';
+export { createSplatFile, createSplatData } from './helper';
 
-let SplatWorkerFactor: () => Worker;
+import { FactoryWorkerPool, deferred } from '@qunhe/egs-lib';
+import { type ParseExtras, getMaxTextureSize, SplatFileType, SplatPackType } from './utils';
+import { type SendMessage, TaskType, type ReceiveMessage, TaskStatus } from './WorkerMessage';
+import type { SplatData } from './splat';
+import { createSplatData } from './helper';
+
+const useMockStream =
+    /ip([ao]d|hone)/i.test(navigator.userAgent) || /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+let WorkerFactor: () => Worker;
 try {
     const W = require('worker-loader?inline&fallback=false!./worker');
-    SplatWorkerFactor = () => new W();
+    WorkerFactor = () => new W();
 } catch {
-    SplatWorkerFactor = () => new Worker(new URL('./worker', import.meta.url), { type: 'module' });
+    WorkerFactor = () => new Worker(new URL('./worker', import.meta.url), { type: 'module' });
 }
-const poll = new FactoryWorkerPool('splat', SplatWorkerFactor, 4, 1);
+const poll = new FactoryWorkerPool('splat', WorkerFactor, 4, 1);
 export async function parseSplatData(
     type: SplatFileType,
     input: Uint8Array | string | File | { stream: ReadableStream<Uint8Array>; contentLength: number },
@@ -56,25 +68,7 @@ export async function parseSplatData(
     worker.onmessage = (event: MessageEvent) => {
         const data = event.data as ReceiveMessage<TaskType.ParseSplat>;
         if (data.status === TaskStatus.Success) {
-            let splatData: SplatData;
-            switch (packType) {
-                case SplatPackType.Raw: {
-                    splatData = new RawSplatData();
-                    break;
-                }
-                case SplatPackType.Compressed: {
-                    splatData = new CompressedSplatData();
-                    break;
-                }
-                case SplatPackType.SuperCompressed: {
-                    splatData = new SuperCompressedSplatData();
-                    break;
-                }
-                case SplatPackType.Sog: {
-                    splatData = new SogSplatData();
-                    break;
-                }
-            }
+            const splatData = createSplatData(packType);
             splatData.deserialize(data.payload);
             resolve(splatData);
         } else if (data.status === TaskStatus.Fail) {
@@ -83,14 +77,12 @@ export async function parseSplatData(
         worker.release();
     };
 
-    const platform = __INTERNAL__.Platform.getInstance();
-    const isMockStream = platform.isSafari || platform.ios;
     const payload: SendMessage<TaskType.ParseSplat> = {
         taskType: TaskType.ParseSplat,
         payload: {
             type,
             packType,
-            stream: isMockStream ? undefined : stream,
+            stream: useMockStream ? undefined : stream,
             contentLength,
             extras: {
                 maxShDegree: extras.maxShDegree ?? 3,
@@ -98,8 +90,8 @@ export async function parseSplatData(
             },
         },
     };
-    worker.postMessage(payload, isMockStream ? [] : [stream as any]);
-    if (isMockStream) {
+    worker.postMessage(payload, useMockStream ? [] : [stream as any]);
+    if (useMockStream) {
         const reader = stream.getReader();
         while (true) {
             const { done, value } = await reader.read();
@@ -118,32 +110,3 @@ export async function parseSplatData(
 
     return promise;
 }
-
-const sortPoll = new FactoryWorkerPool('sort-splat', SplatWorkerFactor, 1, 1);
-async function sortSplats(count: number, sorting: Uint16Array | Uint32Array, ordering: Uint32Array) {
-    const { promise, resolve, reject } = deferred<{
-        activeCount: number;
-        sorting: Uint16Array | Uint32Array;
-        ordering: Uint32Array;
-    }>();
-    const worker = await sortPoll.getWorker();
-    worker.onmessage = (event: MessageEvent) => {
-        const data = event.data as ReceiveMessage<TaskType.SortSplats>;
-        if (data.status === TaskStatus.Success) {
-            resolve(data.payload);
-        } else if (data.status === TaskStatus.Fail) {
-            reject(new Error(data.payload));
-        }
-        worker.release();
-    };
-
-    const payload: SendMessage<TaskType.SortSplats> = {
-        taskType: TaskType.SortSplats,
-        payload: { count, sorting, ordering },
-    };
-    worker.postMessage(payload, [sorting.buffer, ordering.buffer]);
-
-    return promise;
-}
-
-__INTERNAL__.setSortSplats?.(sortSplats);

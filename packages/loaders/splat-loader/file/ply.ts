@@ -8,7 +8,7 @@ import {
     StreamChunkDecoder,
     type ChunkDecoder,
     NUM_F_REST_TO_SH_DEGREE,
-} from './utils';
+} from '../utils';
 
 type PlyPropertyType = 'char' | 'uchar' | 'short' | 'ushort' | 'int' | 'uint' | 'float' | 'double';
 
@@ -346,7 +346,6 @@ export class PlyFile implements IFile {
             g: 0,
             b: 0,
             a: 0,
-            shN: [],
         };
         const initDecoder = () => {
             const { elements, littleEndian, isSuperSplatCompressed, shDegree } = this;
@@ -558,9 +557,8 @@ export class PlyFile implements IFile {
             g: 0,
             b: 0,
             a: 0,
-            shN: new Array(shCounts),
         };
-        const shN = single.shN;
+        const shN = new Array(shCounts);
         for (let i = 0; i < chunkCounts; i++) {
             if (writer.desiredSize! <= 0) {
                 await writer.ready;

@@ -1,7 +1,7 @@
 import { deferred } from '@qunhe/egs-lib';
-import type { ISplatData, ISingleSplat } from './utils';
+import type { ISplatData, ISingleSplat, IData } from '../utils';
 
-export abstract class SplatData {
+export abstract class SplatData implements IData {
     readonly counts: number;
     readonly shDegree: number;
     readonly maxShDegree: number;

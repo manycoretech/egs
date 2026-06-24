@@ -20,6 +20,22 @@ interface IVector3 {
 const tempVec = new Vector3();
 const tempQuat = new Quaternion();
 const tempMat = new Matrix4();
+const DEFAULT_SINGLE_SPLAT: ISingleSplat = {
+    x: 0,
+    y: 0,
+    z: 0,
+    sx: 0,
+    sy: 0,
+    sz: 0,
+    qx: 0,
+    qy: 0,
+    qz: 0,
+    qw: 0,
+    r: 0,
+    g: 0,
+    b: 0,
+    a: 0,
+};
 export class SplatOperator {
     splat: Splat;
     /**
@@ -116,25 +132,7 @@ export class SplatOperator {
         }
     }
 
-    readSplat(
-        index: number,
-        single: ISingleSplat = {
-            x: 0,
-            y: 0,
-            z: 0,
-            sx: 0,
-            sy: 0,
-            sz: 0,
-            qx: 0,
-            qy: 0,
-            qz: 0,
-            qw: 0,
-            r: 0,
-            g: 0,
-            b: 0,
-            a: 0,
-        },
-    ): ISingleSplat {
+    readSplat(index: number, single: ISingleSplat = DEFAULT_SINGLE_SPLAT): ISingleSplat {
         const {
             splat: { groupTex, groupTransformTex },
             data,
@@ -174,25 +172,7 @@ export class SplatOperator {
         return single;
     }
 
-    foreachSplat(
-        callback: (i: number, single: ISingleSplat) => void,
-        single: ISingleSplat = {
-            x: 0,
-            y: 0,
-            z: 0,
-            sx: 0,
-            sy: 0,
-            sz: 0,
-            qx: 0,
-            qy: 0,
-            qz: 0,
-            qw: 0,
-            r: 0,
-            g: 0,
-            b: 0,
-            a: 0,
-        },
-    ) {
+    foreachSplat(callback: (i: number, single: ISingleSplat) => void, single: ISingleSplat = DEFAULT_SINGLE_SPLAT) {
         const {
             counts,
             splat: { stateTex, groupTex, groupTransformTex },

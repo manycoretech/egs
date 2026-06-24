@@ -274,7 +274,8 @@ export class LodSplat {
             oldList: LodProxy[];
             weight: number;
             budgetDelta: number;
-            isCached: boolean;
+            cachedCount: number;
+            loadingCount: number;
             isReady: boolean;
             isUsed: boolean;
         };
@@ -321,7 +322,8 @@ export class LodSplat {
                     oldList: [],
                     weight: 0,
                     budgetDelta: 0,
-                    isCached: false,
+                    cachedCount: 0,
+                    loadingCount: 0,
                     isReady: false,
                     isUsed: false,
                 };
@@ -334,7 +336,11 @@ export class LodSplat {
             } else {
                 component.newList.push(proxy);
                 component.budgetDelta += proxy.counts;
-                component.isCached = resourceManager.has(proxy.resourceIdx);
+                if (resourceManager.has(proxy.resourceIdx)) {
+                    component.cachedCount++;
+                } else {
+                    component.loadingCount++;
+                }
             }
         };
 
@@ -376,7 +382,7 @@ export class LodSplat {
         // ready & cached & downsample component. prerelease budget
         for (let i = 0; i < components.length; i++) {
             const component = components[i];
-            if (!component.isReady || !component.isCached || component.budgetDelta > 0) {
+            if (!component.isReady || !!component.loadingCount || component.budgetDelta > 0) {
                 continue;
             }
             component.isUsed = true;
@@ -399,8 +405,8 @@ export class LodSplat {
                     component.isUsed ||
                     !component.isReady ||
                     component.budgetDelta > restBudget ||
-                    (component.isCached && cachedNodes >= schedulerExistingTaskLimit) ||
-                    (!component.isCached && loadingNodes >= schedulerParallelCounts)
+                    (!!component.cachedCount && cachedNodes >= schedulerExistingTaskLimit) ||
+                    (!!component.loadingCount && loadingNodes >= schedulerParallelCounts)
                 ) {
                     continue;
                 }
@@ -414,11 +420,8 @@ export class LodSplat {
             pick.isUsed = true;
             applyComponents.push(pick);
             restBudget -= pick.budgetDelta;
-            if (pick.isCached) {
-                cachedNodes += pick.newList.length;
-            } else {
-                loadingNodes += pick.newList.length;
-            }
+            cachedNodes += pick.cachedCount;
+            loadingNodes += pick.loadingCount;
         }
         // not ready component
         const hasApplyComponents = !!applyComponents.length;
@@ -433,9 +436,9 @@ export class LodSplat {
                 if (
                     component.isUsed ||
                     restBudget < 0 ||
-                    (hasApplyComponents && !component.isCached) ||
-                    (component.isCached && cachedNodes >= schedulerExistingTaskLimit) ||
-                    (!component.isCached && loadingNodes >= schedulerParallelCounts)
+                    (hasApplyComponents && !!component.loadingCount) ||
+                    (!!component.cachedCount && cachedNodes >= schedulerExistingTaskLimit) ||
+                    (!!component.loadingCount && loadingNodes >= schedulerParallelCounts)
                 ) {
                     continue;
                 }
@@ -449,11 +452,8 @@ export class LodSplat {
             pick.isUsed = true;
             applyComponents.push(pick);
             restBudget -= pick.budgetDelta;
-            if (pick.isCached) {
-                cachedNodes += pick.newList.length;
-            } else {
-                loadingNodes += pick.newList.length;
-            }
+            cachedNodes += pick.cachedCount;
+            loadingNodes += pick.loadingCount;
         }
 
         // modify container

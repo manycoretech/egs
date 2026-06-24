@@ -1,5 +1,11 @@
 # changelog
 
+## 1.0.6
+
+- 移除`sort`相关实现，`@qunhe/egs-splat-loader`只负责解析
+- 调整内部文件结构
+- 移除`@qunhe/egs`依赖
+
 ## 1.0.5
 
 - 优化贴图尺寸计算

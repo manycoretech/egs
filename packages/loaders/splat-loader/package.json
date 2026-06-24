@@ -1,6 +1,6 @@
 {
   "name": "@qunhe/egs-splat-loader",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "EGS 3d gaussian splatting loader",
   "main": "index.js",
   "types": "index.d.ts",
@@ -13,7 +13,6 @@
     "build:types:release": "pnpm build --release --type-only"
   },
   "dependencies": {
-    "@qunhe/egs": "^1.2.88",
     "@qunhe/egs-lib": "^1.0.2",
     "fflate": "^0.8.3",
     "zstddec": "^0.2.0",

@@ -8,7 +8,7 @@ import {
     isUrl,
     SH_C0,
     SH_MAPS,
-} from './utils';
+} from '../utils';
 
 interface Metadata {
     version: number;
@@ -153,7 +153,6 @@ export class EszFile implements IFile {
             g: 0,
             b: 0,
             a: 0,
-            shN: [],
         };
         for (let i = 0; i < counts; i++) {
             const i4 = i * 4;

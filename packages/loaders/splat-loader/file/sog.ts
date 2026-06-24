@@ -9,7 +9,7 @@ import {
     decodeImage,
     extractFromRootDir,
     NUM_F_REST_TO_SH_DEGREE,
-} from './utils';
+} from '../utils';
 
 export interface SogMetadataV1 {
     version: undefined;
@@ -205,7 +205,6 @@ export class SogFile implements IFile {
             g: 0,
             b: 0,
             a: 0,
-            shN: [],
         };
         for (let i = 0; i < counts; i++) {
             const i4 = i * 4;
@@ -296,7 +295,6 @@ export class SogFile implements IFile {
             g: 0,
             b: 0,
             a: 0,
-            shN: [],
         };
         for (let i = 0; i < counts; i++) {
             const i4 = i * 4;

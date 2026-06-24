@@ -1,4 +1,4 @@
-import { type IFile, type IData, type ISingleSplat, fromHalf, SH_MAPS } from './utils';
+import { type IFile, type IData, type ISingleSplat, fromHalf, SH_MAPS } from '../utils';
 
 interface KSplatCompression {
     bytesPerCenter: number;
@@ -249,7 +249,6 @@ export class KsplatFile implements IFile {
             g: 0,
             b: 0,
             a: 0,
-            shN: [],
         };
         const maxSHSize = SH_MAPS[maxSHDegree];
         const shData = new Array(maxSHSize);

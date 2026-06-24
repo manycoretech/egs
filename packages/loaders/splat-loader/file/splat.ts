@@ -1,4 +1,4 @@
-import { type IFile, type IData, type ISingleSplat, clamp, StreamChunkDecoder, BufferReader } from './utils';
+import { type IFile, type IData, type ISingleSplat, clamp, StreamChunkDecoder, BufferReader } from '../utils';
 
 const ItemSize = 32;
 export class SplatFile implements IFile {
@@ -25,7 +25,6 @@ export class SplatFile implements IFile {
             g: 0,
             b: 0,
             a: 0,
-            shN: [],
         };
         decoder.setDecoders([
             {
@@ -90,7 +89,6 @@ export class SplatFile implements IFile {
             g: 0,
             b: 0,
             a: 0,
-            shN: [],
         };
         for (let i = 0; i < chunkCounts; i++) {
             if (writer.desiredSize! <= 0) {

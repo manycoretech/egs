@@ -10,7 +10,7 @@ import {
     fromHalf,
     encodeQuatOct,
     decodeQuatOct,
-} from './utils';
+} from '../utils';
 
 function packSint5x9ToUint32x2(data: number[], out: Uint32Array, offset: number) {
     const q0 = ((data[0] * 16 + 16.5) | 0) & 31;

@@ -10,7 +10,7 @@ import {
     fromHalf,
     encodeQuatOct,
     decodeQuatOct,
-} from './utils';
+} from '../utils';
 
 function encode111011s(a: number, b: number, c: number) {
     return (

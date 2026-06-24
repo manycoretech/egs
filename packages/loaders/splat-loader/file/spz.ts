@@ -9,7 +9,7 @@ import {
     fromHalf,
     clamp,
     StreamChunkDecoder,
-} from './utils';
+} from '../utils';
 
 const SPZ_MAGIC = 0x5053474e; // NGSP = Niantic gaussian splat
 const SPZ_VERSION = 3;
@@ -250,7 +250,6 @@ export class SpzFile implements IFile {
             g: 0,
             b: 0,
             a: 0,
-            shN: new Array(shCounts),
         };
 
         // center
@@ -410,7 +409,7 @@ export class SpzFile implements IFile {
 
         // shN
         if (shDegree > 0) {
-            const shN = single.shN;
+            const shN = new Array(shCounts);
             const ItemSize = shCounts;
             const chunkSize = 1024;
             const chunkCounts = Math.ceil(data.counts / chunkSize);

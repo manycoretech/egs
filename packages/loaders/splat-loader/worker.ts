@@ -1,18 +1,15 @@
 /// <reference lib="webworker" />
 
-declare let self: ServiceWorkerGlobalScope;
-
 import { TaskType, type SendMessage, TaskStatus, type ReceiveMessage } from './WorkerMessage';
-import { SplatFileType, sortSplats, SplatPackType, sort32Splats } from './utils';
-import { type SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
-import type { ISplatData } from './splat/utils';
-import { KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, EszFile } from './file';
-import { type IFile, NUM_F_REST_TO_SH_DEGREE } from './file/utils';
-import type { SogMetadata } from './splat/SogSplatData';
+import { SogFile } from './file';
 import type { SogMetadataV1, SogMetadataV2 } from './file/sog';
+import { SogSplatData } from './splat';
+import type { SogMetadata } from './splat/SogSplatData';
+import { NUM_F_REST_TO_SH_DEGREE, SplatPackType, type ISplatData } from './utils';
+import { createSplatData, createSplatFile } from './helper';
 
 let writer: WritableStreamDefaultWriter<Uint8Array> | undefined;
-self.onmessage = async (event: ExtendableMessageEvent) => {
+self.onmessage = async (event: MessageEvent) => {
     try {
         const message = event.data as { taskType: TaskType };
         switch (message.taskType) {
@@ -24,56 +21,8 @@ self.onmessage = async (event: ExtendableMessageEvent) => {
                     contentLength,
                     extras: { maxShDegree, maxTextureSize },
                 } = (event.data as SendMessage<TaskType.ParseSplat>).payload;
-                let splatData: SplatData;
-                switch (packType) {
-                    case SplatPackType.Raw: {
-                        splatData = new RawSplatData(maxShDegree, maxTextureSize);
-                        break;
-                    }
-                    case SplatPackType.Compressed: {
-                        splatData = new CompressedSplatData(maxShDegree, maxTextureSize);
-                        break;
-                    }
-                    case SplatPackType.SuperCompressed: {
-                        splatData = new SuperCompressedSplatData(maxShDegree, maxTextureSize);
-                        break;
-                    }
-                    case SplatPackType.Sog: {
-                        splatData = new SogSplatData(maxShDegree, maxTextureSize);
-                    }
-                }
-
-                let file: IFile;
-                switch (type) {
-                    case SplatFileType.PLY: {
-                        file = new PlyFile();
-                        break;
-                    }
-                    case SplatFileType.SPZ: {
-                        file = new SpzFile();
-                        break;
-                    }
-                    case SplatFileType.KSPLAT: {
-                        file = new KsplatFile();
-                        break;
-                    }
-                    case SplatFileType.SPLAT: {
-                        file = new SplatFile();
-                        break;
-                    }
-                    case SplatFileType.SOG: {
-                        file = new SogFile();
-                        break;
-                    }
-                    case SplatFileType.LCC: {
-                        file = new LccFile();
-                        break;
-                    }
-                    case SplatFileType.ESZ: {
-                        file = new EszFile();
-                        break;
-                    }
-                }
+                const splatData = createSplatData(packType, maxShDegree, maxTextureSize);
+                const file = createSplatFile(type);
 
                 let reader = stream;
                 if (!reader) {
@@ -167,19 +116,6 @@ self.onmessage = async (event: ExtendableMessageEvent) => {
                 } else {
                     writer.close();
                 }
-                return;
-            }
-            case TaskType.SortSplats: {
-                const { count, sorting, ordering } = (event.data as SendMessage<TaskType.SortSplats>).payload;
-                const activeCount =
-                    sorting instanceof Uint32Array
-                        ? sort32Splats(count, sorting, ordering)
-                        : sortSplats(count, sorting, ordering);
-                const payload: ReceiveMessage<TaskType.SortSplats> = {
-                    status: TaskStatus.Success,
-                    payload: { activeCount, sorting, ordering },
-                };
-                postMessage(payload, [sorting.buffer, ordering.buffer]);
                 return;
             }
             default: {

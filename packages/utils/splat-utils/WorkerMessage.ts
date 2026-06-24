@@ -1,8 +1,5 @@
-import type { ParseExtras, SplatFileType, SplatPackType, ISplatData } from './utils';
-
 export enum TaskType {
-    ParseSplat = 'ParseSplat',
-    PostStreamChunk = 'PostStreamChunk',
+    SortSplats = 'SortSplats',
 }
 
 export enum TaskStatus {
@@ -18,19 +15,9 @@ interface IBasicMessage {
 }
 
 export interface IMessage extends IBasicMessage {
-    [TaskType.ParseSplat]: {
-        send: {
-            type: SplatFileType;
-            packType: SplatPackType;
-            stream?: ReadableStream<Uint8Array>;
-            contentLength: number;
-            extras: ParseExtras;
-        };
-        receive: ISplatData;
-    };
-    [TaskType.PostStreamChunk]: {
-        send: { chunk: Uint8Array | undefined };
-        receive: undefined;
+    [TaskType.SortSplats]: {
+        send: { count: number; sorting: Uint16Array | Uint32Array; ordering: Uint32Array };
+        receive: { activeCount: number; sorting: Uint16Array | Uint32Array; ordering: Uint32Array };
     };
 }
 
