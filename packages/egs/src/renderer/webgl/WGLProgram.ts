@@ -110,6 +110,7 @@ export class WGLProgram {
             const isArrayFloat = info.type === WebGLShaderDataType.Float && info.size > 1;
             const isArrayInt = info.type === WebGLShaderDataType.Int && info.size > 1;
             const isArrayUint = info.type === WebGLShaderDataType.UInt && info.size > 1;
+            const isArrayIVec4 = info.type === WebGLShaderDataType.IntVec4 && info.size > 1;
             const isArraySampler2D = info.type === WebGLShaderDataType.Sampler2D && info.size > 1;
             const isArraySamplerCube = info.type === WebGLShaderDataType.SamplerCube && info.size > 1;
             let type: WebGLShaderDataType;
@@ -119,6 +120,8 @@ export class WGLProgram {
                 type = WebGLShaderDataType.IntV;
             } else if (isArrayUint) {
                 type = WebGLShaderDataType.UintV;
+            } else if (isArrayIVec4) {
+                type = WebGLShaderDataType.IVec4V;
             } else if (isArraySampler2D) {
                 type = WebGLShaderDataType.ArraySampler2D;
             } else if (isArraySamplerCube) {

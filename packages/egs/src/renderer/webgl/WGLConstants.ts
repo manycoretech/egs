@@ -34,8 +34,9 @@ export enum WebGLShaderDataType {
     FloatV = 9999999,
     IntV = 9999998,
     UintV = 9999997,
-    ArraySampler2D = 9999996,
-    ArraySamplerCube = 9999995,
+    IVec4V = 9999996,
+    ArraySampler2D = 9999995,
+    ArraySamplerCube = 9999994,
 }
 /**
  * Which type of encoding method supported by compressed texture.

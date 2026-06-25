@@ -1,5 +1,10 @@
 # EGS 发布说明 Release Notes
 
+## DEV
+
+1. 修复
+    - 修复`SplatReorderMaterial`移动端兼容性异常
+
 ## 1.2.92
 
 1. 新功能

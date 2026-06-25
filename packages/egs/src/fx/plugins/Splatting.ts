@@ -347,9 +347,9 @@ export class SplattingPlugin extends PipelinePlugin {
             reorderMaterial.count = reorderData.length;
             for (let i = 0; i < reorderData.length; i++) {
                 const item = reorderData[i];
-                reorderMaterial.startArr[i] = item.start;
-                reorderMaterial.endArr[i] = item.end;
-                reorderMaterial.offsetArr[i] = item.offset;
+                reorderMaterial.rangeArr[i * 4 + 0] = item.start;
+                reorderMaterial.rangeArr[i * 4 + 1] = item.end;
+                reorderMaterial.rangeArr[i * 4 + 2] = item.offset;
             }
         }
 

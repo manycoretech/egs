@@ -49,6 +49,9 @@ function setValue1iv(gl: WebGLRenderingContext, location: any, v: number[]) {
 function setValue2iv(gl: WebGLRenderingContext, location: any, v: number[]) {
     gl.uniform2iv(location, v);
 }
+function setValue4iv(gl: WebGLRenderingContext, location: any, v: number[]) {
+    gl.uniform4iv(location, v);
+}
 
 function setValue1ui(gl: WebGL2RenderingContext, location: any, v: number) {
     gl.uniform1ui(location, v);
@@ -105,6 +108,8 @@ function getCorrectUpload(type: WebGLShaderDataType): any {
             return setValue1iv;
         case WebGLShaderDataType.UintV:
             return setValue1uiv;
+        case WebGLShaderDataType.IVec4V:
+            return setValue4iv;
 
         case WebGLShaderDataType.IntVec2:
             return setValue2iv;
