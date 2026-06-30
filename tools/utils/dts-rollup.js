@@ -1,7 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import { createRequire, findPackageJSON } from 'node:module';
 import chalk from 'chalk';
 import { sync } from 'glob';
 import ts from 'typescript';
@@ -42,8 +42,8 @@ function readJsonFile(filePath) {
     return JSON.parse(fs.readFileSync(filePath, 'utf8'));
 }
 
-function resolvePackageInfo(projectRequire, packageName) {
-    const packageJsonPath = projectRequire.resolve(`${packageName}/package.json`);
+function resolvePackageInfo(projectDir, packageName) {
+    const packageJsonPath = fs.realpathSync(findPackageJSON(packageName, pathToFileURL(path.join(projectDir, 'index.js'))));
     const packageJson = readJsonFile(packageJsonPath);
     const packageRoot = path.dirname(packageJsonPath);
     const declaration = packageJson.types ?? packageJson.typings;
@@ -74,45 +74,41 @@ function resolvePackageDeclarationPath(packageRoot, publishRoot, declaration) {
 }
 
 function collectBundledPackageInfos(projectDir, bundledPackages) {
-    const projectRequire = createRequire(path.join(projectDir, 'package.json'));
     const bundledPackageInfos = new Map();
-    const pendingPackages = bundledPackages.map(packageName => ({ packageName, require: projectRequire }));
-
+    const pendingPackages = bundledPackages.concat();
     while (pendingPackages.length > 0) {
-        const { packageName, require } = pendingPackages.shift();
+        const packageName = pendingPackages.shift();
         if (bundledPackageInfos.has(packageName)) {
             continue;
         }
 
-        const packageInfo = resolvePackageInfo(require, packageName);
+        const packageInfo = resolvePackageInfo(projectDir, packageName);
         if (!packageInfo.declarationPath) {
             throw new Error(`Unable to find bundled declaration output for ${packageName}.`);
         }
 
         bundledPackageInfos.set(packageInfo.name, packageInfo);
-        const packageRequire = createRequire(path.join(packageInfo.packageRoot, 'package.json'));
 
         for (const dependencyName of getPackageDependencyNames(packageInfo.packageJson)) {
             if (
                 bundledPackageInfos.has(dependencyName) ||
-                pendingPackages.some(pendingPackage => pendingPackage.packageName === dependencyName)
+                pendingPackages.includes(dependencyName)
             ) {
                 continue;
             }
 
             let dependencyInfo;
             try {
-                dependencyInfo = resolvePackageInfo(packageRequire, dependencyName);
+                dependencyInfo = resolvePackageInfo(packageInfo.packageRoot, dependencyName);
             } catch {
                 continue;
             }
 
             if (dependencyInfo.hasReleaseDeclaration) {
-                pendingPackages.push({ packageName: dependencyName, require: packageRequire });
+                pendingPackages.push(dependencyName);
             }
         }
     }
-
     return [...bundledPackageInfos.values()];
 }
 
