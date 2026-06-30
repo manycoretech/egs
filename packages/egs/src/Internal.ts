@@ -127,6 +127,16 @@ export type { BVHBuilderData, BVH, BVHRaw } from './BVH/index.js';
 
 export type { ViewerPlugin } from './Viewer.js';
 
+/**
+ * @internal
+ */
+export { enableDebugFixedDevicePixelRatio, disableDebugFixedDevicePixelRatio } from './engine/RenderEngine.js';
+export type { ViewerConfig, IViewerConfig } from './engine/EngineConfig.js';
+/**
+ * @internal
+ */
+export { parseScene as deprecatedParseScene } from './scene/tools/SceneIO.js';
+
 import {
     serializeObject3D as deprecatedSerializeObject3D,
     parseObjects as deprecatedParseObjects,

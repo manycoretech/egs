@@ -158,7 +158,7 @@ export interface ViewerConfig {
 export type ConfigCellImpl<T> = T extends object
     ? { [P in keyof T]?: T[P] extends ConfigCell<infer V> ? V : ConfigCellImpl<T[P]> }
     : T;
-type IViewerConfig = ConfigCellImpl<ViewerConfig>;
+export type IViewerConfig = ConfigCellImpl<ViewerConfig>;
 
 const DEFAULT_VIEWER_CONFIG: IViewerConfig = {
     staticFrameCache: {
