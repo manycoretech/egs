@@ -43,7 +43,9 @@ function readJsonFile(filePath) {
 }
 
 function resolvePackageInfo(projectDir, packageName) {
-    const packageJsonPath = fs.realpathSync(findPackageJSON(packageName, pathToFileURL(path.join(projectDir, 'index.js'))));
+    const packageJsonPath = fs.realpathSync(
+        findPackageJSON(packageName, pathToFileURL(path.join(projectDir, 'index.js'))),
+    );
     const packageJson = readJsonFile(packageJsonPath);
     const packageRoot = path.dirname(packageJsonPath);
     const declaration = packageJson.types ?? packageJson.typings;
@@ -90,10 +92,7 @@ function collectBundledPackageInfos(projectDir, bundledPackages) {
         bundledPackageInfos.set(packageInfo.name, packageInfo);
 
         for (const dependencyName of getPackageDependencyNames(packageInfo.packageJson)) {
-            if (
-                bundledPackageInfos.has(dependencyName) ||
-                pendingPackages.includes(dependencyName)
-            ) {
+            if (bundledPackageInfos.has(dependencyName) || pendingPackages.includes(dependencyName)) {
                 continue;
             }
 
