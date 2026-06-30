@@ -1,6 +1,10 @@
 import { PassQuadMaterialBase } from './PassMaterialBase.js';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
-import { type ShaderBuilder, FragOutType, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import {
+    type ShaderBuilder,
+    FragOutType,
+    ShaderInjectionTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 import { materialProperty } from '../../../ContentAPI.js';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';

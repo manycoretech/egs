@@ -1,5 +1,11 @@
 export { computeDenseBox } from './utils.js';
-export { createSplat, createSplatData, createSplatModifyData, combineSplatData, transformSplatFile } from './SplatData.js';
+export {
+    createSplat,
+    createSplatData,
+    createSplatModifyData,
+    combineSplatData,
+    transformSplatFile,
+} from './SplatData.js';
 export { SplatOperator } from './SplatOperator.js';
 export { type LodMeta, type LodConfig, LodSplat } from './lod/index.js';
 

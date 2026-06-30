@@ -1,5 +1,9 @@
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
-import { FragOutType, type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import {
+    FragOutType,
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
 import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock.js';
 import { Blending, BlendingFactor, BlendingEquation } from '../../../utils/Constants.js';
 import { SceneMaterial } from '../base/index.js';

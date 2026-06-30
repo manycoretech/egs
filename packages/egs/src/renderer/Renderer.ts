@@ -6,7 +6,12 @@ import { Vector4 } from '../math/Vector4.js';
 import { WGLIndexedBufferRenderer } from './webgl/WGLIndexedBufferRenderer.js';
 import type { Camera3D } from '../scene/cameras/Camera3D.js';
 import { Color } from '../math/Color.js';
-import { setupWebGLCapabilities, WGLCapabilities, setupWebGLLimits, type WebGLLimits } from './webgl/WGLCapabilities.js';
+import {
+    setupWebGLCapabilities,
+    WGLCapabilities,
+    setupWebGLLimits,
+    type WebGLLimits,
+} from './webgl/WGLCapabilities.js';
 import { FatLineSegments } from '../scene/drawables/FatLineSegments.js';
 import type { BufferGeometryBase, BufferRange } from '../elements/geometries/containers/BufferGeometry.js';
 import type { Nullable, TypedArray, IRange } from '../utils/Utils.js';

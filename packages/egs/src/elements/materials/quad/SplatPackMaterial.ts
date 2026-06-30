@@ -1,5 +1,9 @@
 import { PassQuadMaterialBase } from './PassMaterialBase.js';
-import { type ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import {
+    type ShaderBuilder,
+    ShaderInjectionTypes,
+    FragOutType,
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
 import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
 import { Vector2 } from '../../../math/Vector2.js';

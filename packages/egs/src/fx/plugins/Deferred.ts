@@ -16,7 +16,11 @@ import {
 } from '../../elements/materials/mesh/MeshPhongMaterial.js';
 import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool.js';
 import { Vector4 } from '../../math/Vector4.js';
-import { CopyMaterial, CopyDepthMaterial, CopyColorAndDepthMaterial } from '../../elements/materials/quad/CopyMaterial.js';
+import {
+    CopyMaterial,
+    CopyDepthMaterial,
+    CopyColorAndDepthMaterial,
+} from '../../elements/materials/quad/CopyMaterial.js';
 import type { AmbientLight } from '../../scene/lights/AmbientLight.js';
 import { SpotLight, spotLightInclude } from '../../scene/lights/SpotLight.js';
 import { PointLight, punctualLightIntensityToIrradianceFactor } from '../../scene/lights/PointLight.js';
