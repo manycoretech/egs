@@ -1,4 +1,4 @@
-import { Material } from '../Material';
+import { Material } from '../Material.js';
 
 export abstract class DrivenMaterial extends Material {
     readonly isDrivenMaterial: boolean = true;

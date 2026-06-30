@@ -1,11 +1,11 @@
-import { type Intersection, Raycaster } from './Raycaster';
-import type { Drawable } from '../drawables/Drawable';
-import type { Vector2 } from '../../math/Vector2';
-import { TypeAssert } from './TypeAssert';
-import type { Camera3D } from '../cameras/Camera3D';
-import { Box3 } from '../../math/Box3';
-import type { Viewer } from '../../Viewer';
-import { hasManagedContentAPI } from '../../ContentAPI';
+import { type Intersection, Raycaster } from './Raycaster.js';
+import type { Drawable } from '../drawables/Drawable.js';
+import type { Vector2 } from '../../math/Vector2.js';
+import { TypeAssert } from './TypeAssert.js';
+import type { Camera3D } from '../cameras/Camera3D.js';
+import { Box3 } from '../../math/Box3.js';
+import type { Viewer } from '../../Viewer.js';
+import { hasManagedContentAPI } from '../../ContentAPI.js';
 
 function ascSort(a: Intersection, b: Intersection): number {
     return a.distance - b.distance;

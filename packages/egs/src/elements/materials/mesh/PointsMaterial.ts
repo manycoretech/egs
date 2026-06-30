@@ -1,17 +1,17 @@
-import { ColorWithAlpha, type ColorWithAlphaParam } from './LineMaterial';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { ColorWithAlpha, type ColorWithAlphaParam } from './LineMaterial.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 import {
     ShaderInjectionTypes,
     type ShaderBuilder,
     ShaderVaryingTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import { Material, type MaterialParameters, type ConvertMaterialParameters } from '../Material';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { Utils } from '../../../utils/Utils';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { materialProperty, shaderComponentInMaterial } from '../../../ContentAPI';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { Material, type MaterialParameters, type ConvertMaterialParameters } from '../Material.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import { Utils } from '../../../utils/Utils.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { materialProperty, shaderComponentInMaterial } from '../../../ContentAPI.js';
 
 export type PointsMaterialParameters = MaterialParameters &
     ColorWithAlphaParam &

@@ -1,9 +1,9 @@
-import type { Drawable } from '../../drawables/Drawable';
-import type { Material } from '../../../elements/materials/Material';
-import type { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry';
-import { logger } from '../../../utils/Logger';
-import type { GeometryBase } from '../../../elements/geometries/containers/GeometryBase';
-import type { Nullable } from '../../../utils/Utils';
+import type { Drawable } from '../../drawables/Drawable.js';
+import type { Material } from '../../../elements/materials/Material.js';
+import type { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry.js';
+import { logger } from '../../../utils/Logger.js';
+import type { GeometryBase } from '../../../elements/geometries/containers/GeometryBase.js';
+import type { Nullable } from '../../../utils/Utils.js';
 
 export interface MergeDrawcallSource<
     T extends Drawable,

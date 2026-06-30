@@ -1,5 +1,5 @@
-import { Blending, type BlendingFactor, BlendingEquation } from '../../../utils/Constants';
-import { logger } from '../../../utils/Logger';
+import { Blending, type BlendingFactor, BlendingEquation } from '../../../utils/Constants.js';
+import { logger } from '../../../utils/Logger.js';
 
 export class BlendState {
     private currentBlending?: Blending;

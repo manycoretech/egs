@@ -23,10 +23,10 @@ import {
     type GLTF,
     AccessorComponentType,
     ALPHA_MODES,
-} from './type';
-import { MaterialsUnlitExtension, TextureTransformExtension } from './extensions';
-import { DEFAULT_MATERIAL, WEBGL_COMPONENT_TYPES, ACCESSOR_TYPE_SIZES, EMPTY_TEXTURE, ATTRIBUTE_MAP } from './const';
-import type { TransformExtensionData } from './extensions/texture_transform_extension';
+} from './type.js';
+import { MaterialsUnlitExtension, TextureTransformExtension } from './extensions/index.js';
+import { DEFAULT_MATERIAL, WEBGL_COMPONENT_TYPES, ACCESSOR_TYPE_SIZES, EMPTY_TEXTURE, ATTRIBUTE_MAP } from './const.js';
+import type { TransformExtensionData } from './extensions/texture_transform_extension.js';
 
 interface ResourceManagerConfig {
     binaryBuffer?: ArrayBuffer;

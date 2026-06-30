@@ -1,6 +1,6 @@
-import type { Scene3D } from './Scene3D';
-import { LightShaderComponent } from '../renderer/shader/components/LightShaderComponent';
-import { ClippingShaderComponent } from '../renderer/shader/components/ClippingShaderComponent';
+import type { Scene3D } from './Scene3D.js';
+import { LightShaderComponent } from '../renderer/shader/components/LightShaderComponent.js';
+import { ClippingShaderComponent } from '../renderer/shader/components/ClippingShaderComponent.js';
 
 export class ShaderComponentRegistry {
     static global = new Map<Scene3D, ShaderComponentRegistry>();

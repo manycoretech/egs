@@ -1,7 +1,7 @@
-import { BufferGeometry } from '../containers/BufferGeometry';
-import { Vector3 } from '../../../math/Vector3';
-import { Vector2 } from '../../../math/Vector2';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
+import { BufferGeometry } from '../containers/BufferGeometry.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { Vector2 } from '../../../math/Vector2.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
 
 export interface CircleShapeParameter {
     radius: number;

@@ -1,7 +1,7 @@
-import { BufferGeometry } from '../containers/BufferGeometry';
-import type { Nullable } from '../../../utils/Utils';
-import { logger } from '../../../utils/Logger';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
+import { BufferGeometry } from '../containers/BufferGeometry.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import { logger } from '../../../utils/Logger.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
 
 /**
  * Return a non-index version of an indexed BufferGeometry.

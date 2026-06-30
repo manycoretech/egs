@@ -6,8 +6,8 @@ import DracoDecoderModule, {
     type Mesh,
     type Attribute,
     type TypedArray,
-} from './draco_decoder_wrapper';
-import DracoDecoderWasm from './draco_decoder.wasm';
+} from './draco_decoder_wrapper.js';
+import DracoDecoderWasm from './draco_decoder.wasm.js';
 
 let DecoderModule: Promise<DecoderModule> | undefined;
 function getDracoDecoderModule(): Promise<DecoderModule> {

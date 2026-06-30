@@ -1,31 +1,31 @@
 // @ts-nocheck
 // AUTO GENERATED DO NOT MODIFY, IF FOUND COMPILE ERROR RUN "pnpm generate:content-api" in package/egs-main
 
-import type { TypedArray, Nullable } from './utils/Utils';
-import type { BufferGeometryBase, BufferGroup } from './elements/geometries/containers/BufferGeometry';
-import type { Material } from './elements/materials/Material';
-import type { Object3D } from './scene/Object3D';
-import type { InstancedBufferGeometry } from './elements/geometries/containers/InstancedBufferGeometry';
-import type { RenderTarget, RenderTargetCube } from './elements/textures/RenderTarget';
-import type { Drawable } from './scene/drawables/Drawable';
-import type { Camera3D } from './scene/cameras/Camera3D';
-import type { Texture2D } from './elements/textures/Texture2D';
-import type { ShaderComponent } from './renderer/shader/Shader';
-import type { Shadow } from './scene/shadows/Shadow';
-import type { Intersection, Raycaster } from './scene/tools/Raycaster';
-import type { Light } from './scene/lights/Light';
-import type { Viewer } from './Viewer';
-import type { BufferAttribute } from './elements/attributes/BufferAttribute';
-import type { PopBufferGeometry } from './elements/geometries/containers/PopBufferGeometry';
-import type { IPopbufferInfo } from './elements/geometries/containers/IPopBufferInfo';
-import type { SkinnedMesh } from './scene/drawables/SkinnedMesh';
-import type { Texture } from './elements/textures/Texture';
-import type { MipLevelSource, LayerSource, SourceTexture } from './elements/textures/SourceTexture';
-import type { Matrix3 } from './math/Matrix3';
-import type { Matrix4 } from './math/Matrix4';
-import type { Scene3D } from './scene/Scene3D';
-import type { ReadonlyVector2 } from './math/Vector2';
-import type { ContentAPI, ContentManagedAPI, WorldRebuildConfig } from './ContentAPI';
+import type { TypedArray, Nullable } from './utils/Utils.js';
+import type { BufferGeometryBase, BufferGroup } from './elements/geometries/containers/BufferGeometry.js';
+import type { Material } from './elements/materials/Material.js';
+import type { Object3D } from './scene/Object3D.js';
+import type { InstancedBufferGeometry } from './elements/geometries/containers/InstancedBufferGeometry.js';
+import type { RenderTarget, RenderTargetCube } from './elements/textures/RenderTarget.js';
+import type { Drawable } from './scene/drawables/Drawable.js';
+import type { Camera3D } from './scene/cameras/Camera3D.js';
+import type { Texture2D } from './elements/textures/Texture2D.js';
+import type { ShaderComponent } from './renderer/shader/Shader.js';
+import type { Shadow } from './scene/shadows/Shadow.js';
+import type { Intersection, Raycaster } from './scene/tools/Raycaster.js';
+import type { Light } from './scene/lights/Light.js';
+import type { Viewer } from './Viewer.js';
+import type { BufferAttribute } from './elements/attributes/BufferAttribute.js';
+import type { PopBufferGeometry } from './elements/geometries/containers/PopBufferGeometry.js';
+import type { IPopbufferInfo } from './elements/geometries/containers/IPopBufferInfo.js';
+import type { SkinnedMesh } from './scene/drawables/SkinnedMesh.js';
+import type { Texture } from './elements/textures/Texture.js';
+import type { MipLevelSource, LayerSource, SourceTexture } from './elements/textures/SourceTexture.js';
+import type { Matrix3 } from './math/Matrix3.js';
+import type { Matrix4 } from './math/Matrix4.js';
+import type { Scene3D } from './scene/Scene3D.js';
+import type { ReadonlyVector2 } from './math/Vector2.js';
+import type { ContentAPI, ContentManagedAPI, WorldRebuildConfig } from './ContentAPI.js';
 
 let registeredManagedContentAPI: ContentManagedAPI | undefined;
 export function registerManagedContentAPI(api: ContentManagedAPI) {

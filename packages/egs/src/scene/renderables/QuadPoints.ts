@@ -1,10 +1,10 @@
-import type { IRenderer } from '../../renderer/IRenderer';
-import { OrthographicCamera } from '../cameras/OrthographicCamera';
-import type { Renderable } from './IRenderable';
-import type { Material } from '../../elements/materials/Material';
-import { Points } from '../drawables/Points';
-import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
-import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
+import type { IRenderer } from '../../renderer/IRenderer.js';
+import { OrthographicCamera } from '../cameras/OrthographicCamera.js';
+import type { Renderable } from './IRenderable.js';
+import type { Material } from '../../elements/materials/Material.js';
+import { Points } from '../drawables/Points.js';
+import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry.js';
+import { BufferAttribute } from '../../elements/attributes/BufferAttribute.js';
 
 export class QuadPoints implements Renderable {
     private quadPointsCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);

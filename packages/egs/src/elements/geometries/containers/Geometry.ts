@@ -1,17 +1,17 @@
-import { Sphere } from '../../../math/Sphere';
-import { EventDispatcher } from '../../../utils/EventDispatcher';
+import { Sphere } from '../../../math/Sphere.js';
+import { EventDispatcher } from '../../../utils/EventDispatcher.js';
 
-import { Color } from '../../../math/Color';
-import { Face3 } from '../../../math/Face3';
-import { Matrix3 } from '../../../math/Matrix3';
-import { Matrix4 } from '../../../math/Matrix4';
-import { Vector2 } from '../../../math/Vector2';
-import { Vector3 } from '../../../math/Vector3';
-import { Object3D } from '../../../scene/Object3D';
-import type { Deserializer, Serializer } from '../../../utils/Serialization';
-import type { BufferGeometry } from './BufferGeometry';
-import { singleton } from '../../../utils/Utils';
-import { logger } from '../../../utils/Logger';
+import { Color } from '../../../math/Color.js';
+import { Face3 } from '../../../math/Face3.js';
+import { Matrix3 } from '../../../math/Matrix3.js';
+import { Matrix4 } from '../../../math/Matrix4.js';
+import { Vector2 } from '../../../math/Vector2.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { Object3D } from '../../../scene/Object3D.js';
+import type { Deserializer, Serializer } from '../../../utils/Serialization.js';
+import type { BufferGeometry } from './BufferGeometry.js';
+import { singleton } from '../../../utils/Utils.js';
+import { logger } from '../../../utils/Logger.js';
 
 const m1 = new Matrix4();
 const obj = singleton(() => new Object3D());

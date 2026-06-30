@@ -1,12 +1,12 @@
-import { PassQuadMaterialBase } from '../../../elements/materials/quad/PassMaterialBase';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { materialProperty } from '../../../ContentAPI';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { Texture2D } from '../../textures/Texture2D';
-import type { Texture } from '../../textures/Texture';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
+import { PassQuadMaterialBase } from '../../../elements/materials/quad/PassMaterialBase.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import { Texture2D } from '../../textures/Texture2D.js';
+import type { Texture } from '../../textures/Texture.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
 
 export class PseudoColorMaterial extends PassQuadMaterialBase {
     @materialProperty()

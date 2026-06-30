@@ -1,13 +1,13 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { Vector2 } from '../../../math/Vector2';
-import { Vector3 } from '../../../math/Vector3';
-import { Matrix4 } from '../../../math/Matrix4';
-import type { Camera3D } from '../../../scene/cameras/Camera3D';
-import type { TextureV2 } from '../../textures/TextureV2';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { Vector2 } from '../../../math/Vector2.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { Matrix4 } from '../../../math/Matrix4.js';
+import type { Camera3D } from '../../../scene/cameras/Camera3D.js';
+import type { TextureV2 } from '../../textures/TextureV2.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
 
 export class SplatSortMaterial extends PassQuadMaterialBase {
     transparent = false;

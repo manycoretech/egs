@@ -1,5 +1,5 @@
-export { SplatData } from './SplatData';
-export { RawSplatData } from './RawSplatData';
-export { CompressedSplatData } from './CompressedSplatData';
-export { SuperCompressedSplatData } from './SuperCompressedSplatData';
-export { SogSplatData } from './SogSplatData';
+export { SplatData } from './SplatData.js';
+export { RawSplatData } from './RawSplatData.js';
+export { CompressedSplatData } from './CompressedSplatData.js';
+export { SuperCompressedSplatData } from './SuperCompressedSplatData.js';
+export { SogSplatData } from './SogSplatData.js';

@@ -4,6 +4,8 @@
 
 1. 修复
     - 修复`SplatReorderMaterial`移动端兼容性异常
+2. 优化
+    - 改造为标准的`ESM`
 
 ## 1.2.92
 

@@ -1,5 +1,5 @@
-import { BufferGeometry } from './BufferGeometry';
-import { ContentBridge } from '../../../ContentAPI';
+import { BufferGeometry } from './BufferGeometry.js';
+import { ContentBridge } from '../../../ContentAPI.js';
 
 export class InstancedBufferGeometry extends BufferGeometry {
     /**

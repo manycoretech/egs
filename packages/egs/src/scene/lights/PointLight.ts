@@ -1,16 +1,16 @@
-import { Color } from '../../math/Color';
-import { Matrix4 } from '../../math/Matrix4';
-import { Vector3 } from '../../math/Vector3';
-import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock';
-import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
-import { PointShadow } from '../shadows/PointShadow';
-import { Light } from './Light';
-import type { Nullable } from '../../utils/Utils';
-import { lightProperty } from '../../ContentAPI';
-import { Vector2 } from '../../math/Vector2';
-import { Texture2D } from '../../elements/textures/Texture2D';
-import type { TextureV2 } from '../../elements/textures/TextureV2';
+import { Color } from '../../math/Color.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock.js';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
+import { PointShadow } from '../shadows/PointShadow.js';
+import { Light } from './Light.js';
+import type { Nullable } from '../../utils/Utils.js';
+import { lightProperty } from '../../ContentAPI.js';
+import { Vector2 } from '../../math/Vector2.js';
+import { Texture2D } from '../../elements/textures/Texture2D.js';
+import type { TextureV2 } from '../../elements/textures/TextureV2.js';
 /**
  * A light that gets emitted from a single point in all directions.
  * A common use case for this is to replicate the light emitted from a bare lightbulb.

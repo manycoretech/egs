@@ -1,6 +1,6 @@
-import { Vector2 } from './Vector2';
-import type { Matrix3 } from './Matrix3';
-import type { Matrix4 } from './Matrix4';
+import { Vector2 } from './Vector2.js';
+import type { Matrix3 } from './Matrix3.js';
+import type { Matrix4 } from './Matrix4.js';
 
 let tmpVec2: Vector2;
 /**

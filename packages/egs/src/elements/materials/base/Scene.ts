@@ -1,10 +1,10 @@
-import type { Nullable } from '../../../utils/Utils';
-import { Material, copyItem } from '../Material';
-import { materialProperty } from '../../../ContentAPI';
-import { PopShaderComponent } from '../../../renderer/shader/components/PopShaderComponent';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import type { ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import type { Nullable } from '../../../utils/Utils.js';
+import { Material, copyItem } from '../Material.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { PopShaderComponent } from '../../../renderer/shader/components/PopShaderComponent.js';
+import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import type { ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 
 export abstract class SceneMaterial extends Material {
     extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {

@@ -1,7 +1,7 @@
-import { PerspectiveCamera } from './PerspectiveCamera';
-import { Vector3 } from '../../math/Vector3';
-import type { Matrix4 } from '../../math/Matrix4';
-import { ContentBridge } from '../../ContentAPI';
+import { PerspectiveCamera } from './PerspectiveCamera.js';
+import { Vector3 } from '../../math/Vector3.js';
+import type { Matrix4 } from '../../math/Matrix4.js';
+import { ContentBridge } from '../../ContentAPI.js';
 
 export class CubeCamera {
     cameras: PerspectiveCamera[];

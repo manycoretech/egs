@@ -1,7 +1,7 @@
 /* oxlint-disable no-cond-assign */
-import { _Math } from './Math';
-import { logger } from '../utils/Logger';
-import type { PickReadonly } from '../utils/Utils';
+import { _Math } from './Math.js';
+import { logger } from '../utils/Logger.js';
+import type { PickReadonly } from '../utils/Utils.js';
 
 export interface HSL {
     h: number;

@@ -1,17 +1,17 @@
-import { type IEffectConfig, PipelinePlugin, type PipelineContext } from './PipelinePlugin';
-import { type DepthPackingStrategies, MeshDepthMaterial } from '../../elements/materials/mesh/MeshDepthMaterial';
-import { MeshNormalMaterial } from '../../elements/materials/mesh/MeshNormalMaterial';
-import type { RenderGraph } from '../../rendergraph/RenderGraph';
-import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher';
-import { pass } from '../../rendergraph/NodeMakers';
-import type { SceneAdaptor } from '../SceneAdaptor';
-import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import { PipelineContentBridge } from '../PipelineAPI.impl';
-import type { Material } from '../../elements/materials/Material';
-import { DrivenCullingMaterial } from '../../elements/materials/driven/DrivenCullingMaterial';
-import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial';
-import type { PassNode } from '../../rendergraph/nodes/PassNode';
-import type { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode';
+import { type IEffectConfig, PipelinePlugin, type PipelineContext } from './PipelinePlugin.js';
+import { type DepthPackingStrategies, MeshDepthMaterial } from '../../elements/materials/mesh/MeshDepthMaterial.js';
+import { MeshNormalMaterial } from '../../elements/materials/mesh/MeshNormalMaterial.js';
+import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
+import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher.js';
+import { pass } from '../../rendergraph/NodeMakers.js';
+import type { SceneAdaptor } from '../SceneAdaptor.js';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
+import { PipelineContentBridge } from '../PipelineAPI.impl.js';
+import type { Material } from '../../elements/materials/Material.js';
+import { DrivenCullingMaterial } from '../../elements/materials/driven/DrivenCullingMaterial.js';
+import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial.js';
+import type { PassNode } from '../../rendergraph/nodes/PassNode.js';
+import type { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode.js';
 
 export enum DebugMode {
     Depth = 0,

@@ -7,15 +7,15 @@ import type {
     ProjectedDrawcallList,
     DrawcallListClassifyType,
     RenderObjectsType,
-} from '../scene/tools/DrawcallList';
-import type { IRenderer } from '../renderer/IRenderer';
-import type { MaterialDispatcher } from '../renderer/MaterialDispatcher';
-import type { Camera3D } from '../scene/cameras/Camera3D';
-import type { Drawable } from '../scene/drawables/Drawable';
-import type { Scene3D } from '../scene/Scene3D';
-import type { Light } from '../scene/lights/Light';
-import type { Object3D } from '../scene/Object3D';
-import type { ShadowMode, PipelineAPI, IPipelineFilter } from './PipelineAPI';
+} from '../scene/tools/DrawcallList.js';
+import type { IRenderer } from '../renderer/IRenderer.js';
+import type { MaterialDispatcher } from '../renderer/MaterialDispatcher.js';
+import type { Camera3D } from '../scene/cameras/Camera3D.js';
+import type { Drawable } from '../scene/drawables/Drawable.js';
+import type { Scene3D } from '../scene/Scene3D.js';
+import type { Light } from '../scene/lights/Light.js';
+import type { Object3D } from '../scene/Object3D.js';
+import type { ShadowMode, PipelineAPI, IPipelineFilter } from './PipelineAPI.js';
 
 let registeredPipelineContentAPI: PipelineAPI | undefined;
 export function registerPipelineContentAPI(api: PipelineAPI) {

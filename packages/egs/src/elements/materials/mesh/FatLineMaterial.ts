@@ -4,22 +4,22 @@ import {
     LineDash,
     type LineDashParam,
     type ColorWithAlphaParam,
-} from './LineMaterial';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+} from './LineMaterial.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 import {
     type ShaderBuilder,
     ShaderVaryingTypes,
     ShaderInjectionTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { ConvertMaterialParameters, MaterialParameters } from '../Material';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
-import { Utils } from '../../../utils/Utils';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { materialProperty, shaderComponentInMaterial } from '../../../ContentAPI';
-import type { Renderer } from '../../../renderer/Renderer';
-import { SceneClipMaterial } from '../base';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { ConvertMaterialParameters, MaterialParameters } from '../Material.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms.js';
+import { Utils } from '../../../utils/Utils.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { materialProperty, shaderComponentInMaterial } from '../../../ContentAPI.js';
+import type { Renderer } from '../../../renderer/Renderer.js';
+import { SceneClipMaterial } from '../base/index.js';
 
 export type FatLineMaterialParameter = ConvertMaterialParameters<
     Pick<FatLineMaterial, 'enableDash' | 'fatLineWidth' | 'enableViewIndependentDashScale'>

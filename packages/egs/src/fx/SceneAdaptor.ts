@@ -1,14 +1,14 @@
-import type { DirectionalLight } from '../scene/lights/DirectionalLight';
-import type { SpotLight } from '../scene/lights/SpotLight';
-import type { Scene3D } from '../scene/Scene3D';
-import type { Camera3D } from '../scene/cameras/Camera3D';
-import { type ProjectedDrawcallList, DrawcallListClassifyList } from '../scene/tools/DrawcallList';
-import type { Nullable } from '../utils/Utils';
-import type { RendererAdaptor } from './RendererAdaptor';
-import type { PassExecuteCtx } from '../rendergraph/nodes/PassNode';
-import { Shadow } from '../scene/shadows/Shadow';
-import { PipelineFilters } from './PipelineAPI';
-import type { ResizeFN } from '../rendergraph/nodes/utils';
+import type { DirectionalLight } from '../scene/lights/DirectionalLight.js';
+import type { SpotLight } from '../scene/lights/SpotLight.js';
+import type { Scene3D } from '../scene/Scene3D.js';
+import type { Camera3D } from '../scene/cameras/Camera3D.js';
+import { type ProjectedDrawcallList, DrawcallListClassifyList } from '../scene/tools/DrawcallList.js';
+import type { Nullable } from '../utils/Utils.js';
+import type { RendererAdaptor } from './RendererAdaptor.js';
+import type { PassExecuteCtx } from '../rendergraph/nodes/PassNode.js';
+import { Shadow } from '../scene/shadows/Shadow.js';
+import { PipelineFilters } from './PipelineAPI.js';
+import type { ResizeFN } from '../rendergraph/nodes/utils.js';
 
 export class SceneAdaptorDispatcher {
     adaptor: SceneAdaptor;

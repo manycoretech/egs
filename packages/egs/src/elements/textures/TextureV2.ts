@@ -1,4 +1,4 @@
-import { Texture, type WebGLTextureUploadCtx } from './Texture';
+import { Texture, type WebGLTextureUploadCtx } from './Texture.js';
 import {
     type TextureFormat,
     type WebGLTextureFormat,
@@ -10,9 +10,9 @@ import {
     textureCopyInfo,
     mipLevelSize,
     CUBE_FACES,
-} from './types';
-import { _Math } from '../../math/Math';
-import { logger } from '../../utils/Logger';
+} from './types.js';
+import { _Math } from '../../math/Math.js';
+import { logger } from '../../utils/Logger.js';
 
 /**
  * A new texture base with immutable size after creation.

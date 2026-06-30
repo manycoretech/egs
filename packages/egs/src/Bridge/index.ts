@@ -8,33 +8,33 @@ import {
     getLightProperties,
     hasManagedContentAPI,
     ManagedContentBridge,
-} from '../ContentAPI';
-import type { BufferAttribute } from '../elements/attributes/BufferAttribute';
-import type { Texture } from '../elements/textures/Texture';
-import { Texture2D } from '../elements/textures/Texture2D';
-import { Texture3D } from '../elements/textures/Texture3D';
-import { TextureCube } from '../elements/textures/TextureCube';
-import type { BufferGeometryBase } from '../elements/geometries/containers/BufferGeometry';
-import { InstancedBufferGeometry } from '../elements/geometries/containers/InstancedBufferGeometry';
-import { FatLineBufferGeometry } from '../elements/geometries/containers/FatLineBufferGeometry';
-import { PopBufferGeometry } from '../elements/geometries/containers/PopBufferGeometry';
-import type { ShaderComponent } from '../renderer/shader/Shader';
-import { PatternShaderComponent, shaderBlendKeys } from '../renderer/shader/components/PatternShaderComponent';
-import type { Material } from '../elements/materials/Material';
-import type { Object3D } from '../scene/Object3D';
-import { Camera3D } from '../scene/cameras/Camera3D';
-import { Light } from '../scene/lights/Light';
-import { Drawable } from '../scene/drawables/Drawable';
-import { InstanceMesh } from '../scene/drawables/InstanceMesh';
-import type { Scene3D } from '../scene/Scene3D';
-import { IterableWeakSet } from '../utils/WeakCollections';
-import { BaseElement } from '../utils/ElementBase';
-import { Matrix4 } from '../math/Matrix4';
-import { Matrix3 } from '../math/Matrix3';
-import type { Renderer } from '../renderer/Renderer';
-import { Viewer } from '../Viewer';
-import { SpriteBufferGeometry } from '../elements/geometries/containers/SpriteBufferGeometry';
-import { TypeAssert } from '../scene/tools/TypeAssert';
+} from '../ContentAPI.js';
+import type { BufferAttribute } from '../elements/attributes/BufferAttribute.js';
+import type { Texture } from '../elements/textures/Texture.js';
+import { Texture2D } from '../elements/textures/Texture2D.js';
+import { Texture3D } from '../elements/textures/Texture3D.js';
+import { TextureCube } from '../elements/textures/TextureCube.js';
+import type { BufferGeometryBase } from '../elements/geometries/containers/BufferGeometry.js';
+import { InstancedBufferGeometry } from '../elements/geometries/containers/InstancedBufferGeometry.js';
+import { FatLineBufferGeometry } from '../elements/geometries/containers/FatLineBufferGeometry.js';
+import { PopBufferGeometry } from '../elements/geometries/containers/PopBufferGeometry.js';
+import type { ShaderComponent } from '../renderer/shader/Shader.js';
+import { PatternShaderComponent, shaderBlendKeys } from '../renderer/shader/components/PatternShaderComponent.js';
+import type { Material } from '../elements/materials/Material.js';
+import type { Object3D } from '../scene/Object3D.js';
+import { Camera3D } from '../scene/cameras/Camera3D.js';
+import { Light } from '../scene/lights/Light.js';
+import { Drawable } from '../scene/drawables/Drawable.js';
+import { InstanceMesh } from '../scene/drawables/InstanceMesh.js';
+import type { Scene3D } from '../scene/Scene3D.js';
+import { IterableWeakSet } from '../utils/WeakCollections.js';
+import { BaseElement } from '../utils/ElementBase.js';
+import { Matrix4 } from '../math/Matrix4.js';
+import { Matrix3 } from '../math/Matrix3.js';
+import type { Renderer } from '../renderer/Renderer.js';
+import { Viewer } from '../Viewer.js';
+import { SpriteBufferGeometry } from '../elements/geometries/containers/SpriteBufferGeometry.js';
+import { TypeAssert } from '../scene/tools/TypeAssert.js';
 
 function checkMaterialPropertyValid(value: any) {
     if (value == null) {

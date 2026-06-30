@@ -1,9 +1,9 @@
 import { Quaternion } from '@qunhe/egs';
-import { type AnimationClip, Blend, InterpolationMode, type KeyframeTrack, type TypedArray } from './type';
-import { LinearInterpolant } from './interpolants/LinearInterpolant';
-import { DiscreteInterpolant } from './interpolants/DiscreteInterpolant';
-import { CubicInterpolant } from './interpolants/CubicInterpolant';
-import { QuaternionLinearInterpolant } from './interpolants/QuaternionLinearInterpolant';
+import { type AnimationClip, Blend, InterpolationMode, type KeyframeTrack, type TypedArray } from './type.js';
+import { LinearInterpolant } from './interpolants/LinearInterpolant.js';
+import { DiscreteInterpolant } from './interpolants/DiscreteInterpolant.js';
+import { CubicInterpolant } from './interpolants/CubicInterpolant.js';
+import { QuaternionLinearInterpolant } from './interpolants/QuaternionLinearInterpolant.js';
 
 const TrackPathReg = /^(?:([^[\]]+)\/)?([^[\]]+)?(?:\.([^[\].]+)(?:\[(.+)\])?)?\.([^[\].]+)(?:\[(.+)\])?$/;
 

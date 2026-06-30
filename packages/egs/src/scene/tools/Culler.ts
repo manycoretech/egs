@@ -1,9 +1,9 @@
-import { Vector3 } from '../../math/Vector3';
-import { Frustum } from '../../math/Frustum';
-import { Matrix4 } from '../../math/Matrix4';
-import { TypeAssert } from './TypeAssert';
-import type { Camera3D } from '../cameras/Camera3D';
-import type { Drawable } from '../drawables/Drawable';
+import { Vector3 } from '../../math/Vector3.js';
+import { Frustum } from '../../math/Frustum.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import { TypeAssert } from './TypeAssert.js';
+import type { Camera3D } from '../cameras/Camera3D.js';
+import type { Drawable } from '../drawables/Drawable.js';
 
 export class Culler {
     enableFrustumCulling = false;

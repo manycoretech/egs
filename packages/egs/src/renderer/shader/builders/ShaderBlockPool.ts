@@ -1,4 +1,4 @@
-import { createShaderBlock } from './ShaderBlock';
+import { createShaderBlock } from './ShaderBlock.js';
 
 export const ShaderBlockPool = {
     Encode24: createShaderBlock(`

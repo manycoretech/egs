@@ -1,5 +1,5 @@
-import type { GLTF } from './type';
-import { textDecoder } from './const';
+import type { GLTF } from './type.js';
+import { textDecoder } from './const.js';
 
 const BINARY_HEADER_MAGIC = 'glTF';
 const HEADER_LENGTH = 12;

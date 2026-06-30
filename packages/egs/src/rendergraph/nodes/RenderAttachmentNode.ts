@@ -1,8 +1,8 @@
-import { SamplerDescriptor } from '../../elements/textures/Texture';
-import { ResourceNode } from './ResourceNode';
-import { type ResizeFN, defaultResizeFN, type Size } from './utils';
-import { TextureViewDimension, TextureFormat } from '../../elements/textures/types';
-import { SamplerFilter } from '../../utils/Constants';
+import { SamplerDescriptor } from '../../elements/textures/Texture.js';
+import { ResourceNode } from './ResourceNode.js';
+import { type ResizeFN, defaultResizeFN, type Size } from './utils.js';
+import { TextureViewDimension, TextureFormat } from '../../elements/textures/types.js';
+import { SamplerFilter } from '../../utils/Constants.js';
 
 export abstract class RenderAttachmentNode extends ResourceNode {
     private _width = 4;

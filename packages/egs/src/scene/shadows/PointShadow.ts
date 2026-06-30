@@ -1,25 +1,25 @@
-import { Shadow } from './Shadow';
+import { Shadow } from './Shadow.js';
 import {
     type ShaderBuilder,
     ShaderInjectionTypes,
     ShaderVaryingTypes,
-} from '../../renderer/shader/builders/ShaderBuilder';
-import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms';
-import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
-import { Vector3 } from '../../math/Vector3';
-import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
-import type { Light } from '../lights/Light';
-import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import { CubeCamera } from '../cameras/CubeCamera';
-import { TextureCube } from '../../elements/textures/TextureCube';
-import type { PointLight } from '../lights/PointLight';
-import { lightProperty } from '../../ContentAPI';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
-import { Vector2 } from '../../math/Vector2';
-import { _Math } from '../../math/Math';
-import type { RenderAttachment } from '../../elements/textures/RenderTarget';
-import type { Texture2D } from '../../elements/textures/Texture2D';
-import type { TextureV2 } from '../../elements/textures/TextureV2';
+} from '../../renderer/shader/builders/ShaderBuilder.js';
+import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms.js';
+import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool.js';
+import type { Light } from '../lights/Light.js';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
+import { CubeCamera } from '../cameras/CubeCamera.js';
+import { TextureCube } from '../../elements/textures/TextureCube.js';
+import type { PointLight } from '../lights/PointLight.js';
+import { lightProperty } from '../../ContentAPI.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
+import { Vector2 } from '../../math/Vector2.js';
+import { _Math } from '../../math/Math.js';
+import type { RenderAttachment } from '../../elements/textures/RenderTarget.js';
+import type { Texture2D } from '../../elements/textures/Texture2D.js';
+import type { TextureV2 } from '../../elements/textures/TextureV2.js';
 
 const cubeDirections = [
     new Vector3(1, 0, 0),

@@ -1,15 +1,15 @@
-import { WebGLPixelFormat, WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { TextureDataType } from '../../../utils/Constants';
-import { _Math } from '../../../math/Math';
-import { Color, type ReadonlyColor } from '../../../math/Color';
-import { logger } from '../../../utils/Logger';
-import type { Vector3 } from '../../../math/Vector3';
-import type { Vector2 } from '../../../math/Vector2';
-import type { Material } from '../../../elements/materials/Material';
-import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { Texture2D, Texture2DCommonLayer } from '../../../elements/textures/Texture2D';
-import type { TextureV2 } from '../../../elements/textures/TextureV2';
+import { WebGLPixelFormat, WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { TextureDataType } from '../../../utils/Constants.js';
+import { _Math } from '../../../math/Math.js';
+import { Color, type ReadonlyColor } from '../../../math/Color.js';
+import { logger } from '../../../utils/Logger.js';
+import type { Vector3 } from '../../../math/Vector3.js';
+import type { Vector2 } from '../../../math/Vector2.js';
+import type { Material } from '../../../elements/materials/Material.js';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { Texture2D, Texture2DCommonLayer } from '../../../elements/textures/Texture2D.js';
+import type { TextureV2 } from '../../../elements/textures/TextureV2.js';
 
 type DataTextureStorageAble = number | Color | Vector3 | Vector2 | ReadonlyColor;
 

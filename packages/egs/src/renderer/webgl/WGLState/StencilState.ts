@@ -1,5 +1,5 @@
-import type { Nullable } from '../../../utils/Utils';
-import type { StencilFunc, StencilOp } from '../../../utils/Constants';
+import type { Nullable } from '../../../utils/Utils.js';
+import type { StencilFunc, StencilOp } from '../../../utils/Constants.js';
 
 export class StencilState {
     private currentStencilMask: Nullable<number>;

@@ -1,9 +1,9 @@
-import { _Math } from '../../math/Math';
-import { logger } from '../../utils/Logger';
-import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants';
-import { TextureDataType } from '../../utils/Constants';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
-import { type TypedArray, singleton } from '../../utils/Utils';
+import { _Math } from '../../math/Math.js';
+import { logger } from '../../utils/Logger.js';
+import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants.js';
+import { TextureDataType } from '../../utils/Constants.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
+import { type TypedArray, singleton } from '../../utils/Utils.js';
 import {
     getFormatByteSize,
     LegacySourceTexture,
@@ -14,9 +14,9 @@ import {
     createImgByUrl,
     getInternalFormat,
     type WebGLUploadable,
-} from './Texture';
-import { ContentBridge } from '../../ContentAPI';
-import { TextureDimension, TextureViewDimension } from './types';
+} from './Texture.js';
+import { ContentBridge } from '../../ContentAPI.js';
+import { TextureDimension, TextureViewDimension } from './types.js';
 
 function getDataUrl(canvas: HTMLCanvasElement): string {
     if (canvas.width > 2048 || canvas.height > 2048) {

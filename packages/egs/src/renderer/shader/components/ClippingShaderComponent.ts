@@ -1,13 +1,13 @@
-import { SharedShaderComponent } from '../Shader';
-import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../builders/ShaderBuilder';
-import { Plane } from '../../../math/Plane';
-import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import type { Camera3D } from '../../../scene/cameras/Camera3D';
-import { Matrix3 } from '../../../math/Matrix3';
-import type { WGLProgram } from '../../webgl/WGLProgram';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import { Vector3 } from '../../../math/Vector3';
-import { ContentBridge, materialProperty } from '../../../ContentAPI';
+import { SharedShaderComponent } from '../Shader.js';
+import { type ShaderBuilder, ShaderVaryingTypes, ShaderInjectionTypes } from '../builders/ShaderBuilder.js';
+import { Plane } from '../../../math/Plane.js';
+import { WebGLShaderDataType } from '../../webgl/WGLConstants.js';
+import type { Camera3D } from '../../../scene/cameras/Camera3D.js';
+import { Matrix3 } from '../../../math/Matrix3.js';
+import type { WGLProgram } from '../../webgl/WGLProgram.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { ContentBridge, materialProperty } from '../../../ContentAPI.js';
 
 const viewNormalMatrix = new Matrix3();
 

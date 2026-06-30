@@ -1,11 +1,11 @@
-import type { ShaderBuilder } from './builders/ShaderBuilder';
-import type { WGLProgram } from '../webgl/WGLProgram';
-import type { WebGLShaderDataType } from '../webgl/WGLConstants';
-import type { Material } from '../../elements/materials/Material';
-import type { BuiltInUniformTypes } from '../RenderState/BuiltInUniforms';
-import type { Camera3D } from '../../scene/cameras/Camera3D';
-import { logger } from '../../utils/Logger';
-import type { Deserializer, Serializer, SerializerableDelegated } from '../../utils/Serialization';
+import type { ShaderBuilder } from './builders/ShaderBuilder.js';
+import type { WGLProgram } from '../webgl/WGLProgram.js';
+import type { WebGLShaderDataType } from '../webgl/WGLConstants.js';
+import type { Material } from '../../elements/materials/Material.js';
+import type { BuiltInUniformTypes } from '../RenderState/BuiltInUniforms.js';
+import type { Camera3D } from '../../scene/cameras/Camera3D.js';
+import { logger } from '../../utils/Logger.js';
+import type { Deserializer, Serializer, SerializerableDelegated } from '../../utils/Serialization.js';
 
 // Any class implements this interface can be composed in material
 // it's the basic abstraction of shading component

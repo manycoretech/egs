@@ -1,15 +1,15 @@
-import type { WGLProgram } from '../../webgl/WGLProgram';
-import { ShaderComponent } from '../Shader';
-import { type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
-import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import type { Nullable } from '../../../utils/Utils';
-import type { Texture } from '../../../elements/textures/Texture';
-import { createShaderBlock } from '../builders/ShaderBlock';
-import { readonlyMath } from '../../../math/Readonly';
-import type { Texture2D } from '../../../elements/textures/Texture2D';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import { ContentBridge, materialProperty } from '../../../ContentAPI';
-import type { TextureV2 } from '../../../elements/textures/TextureV2';
+import type { WGLProgram } from '../../webgl/WGLProgram.js';
+import { ShaderComponent } from '../Shader.js';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder.js';
+import { WebGLShaderDataType } from '../../webgl/WGLConstants.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import type { Texture } from '../../../elements/textures/Texture.js';
+import { createShaderBlock } from '../builders/ShaderBlock.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import type { Texture2D } from '../../../elements/textures/Texture2D.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { ContentBridge, materialProperty } from '../../../ContentAPI.js';
+import type { TextureV2 } from '../../../elements/textures/TextureV2.js';
 
 /**
  * Pattern layout methods supported by paving shader components.

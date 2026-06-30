@@ -1,12 +1,12 @@
 import { deferred, FactoryWorkerPool } from '@qunhe/egs-lib';
-import { TaskStatus, TaskType, type ReceiveMessage, type SendMessage } from './WorkerMessage';
+import { TaskStatus, TaskType, type ReceiveMessage, type SendMessage } from './WorkerMessage.js';
 
 let WorkerFactor: () => Worker;
 try {
     const W = require('worker-loader?inline&fallback=false!./worker');
     WorkerFactor = () => new W();
 } catch {
-    WorkerFactor = () => new Worker(new URL('./worker', import.meta.url), { type: 'module' });
+    WorkerFactor = () => new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
 }
 
 const poll = new FactoryWorkerPool('sort-splat-order', WorkerFactor, 1, 1);

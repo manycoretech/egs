@@ -1,7 +1,7 @@
-import { Light } from './Light';
-import { Color } from '../../math/Color';
-import { Object3D } from '../Object3D';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
+import { Light } from './Light.js';
+import { Color } from '../../math/Color.js';
+import { Object3D } from '../Object3D.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
 
 /**
  * A light source positioned directly above the scene, with color fading from the sky color to the ground color.

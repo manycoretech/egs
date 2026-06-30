@@ -1,6 +1,6 @@
-import { type SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
-import { EszFile, KsplatFile, LccFile, PlyFile, SogFile, SplatFile, SpzFile } from './file';
-import { type IFile, SplatFileType, SplatPackType } from './utils';
+import { type SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat/index.js';
+import { EszFile, KsplatFile, LccFile, PlyFile, SogFile, SplatFile, SpzFile } from './file/index.js';
+import { type IFile, SplatFileType, SplatPackType } from './utils.js';
 
 export function createSplatFile(type: SplatFileType): IFile {
     switch (type) {

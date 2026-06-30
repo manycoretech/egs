@@ -1,6 +1,6 @@
-import { DAGNode } from './DAGNode';
-import { EventType } from '../../utils/EventDispatcher';
-import { EventDispatcher } from '../../utils/EventDispatcher';
+import { DAGNode } from './DAGNode.js';
+import { EventType } from '../../utils/EventDispatcher.js';
+import { EventDispatcher } from '../../utils/EventDispatcher.js';
 
 export const ExecuteBeforeEvent = new EventType();
 export const ExecuteAfterEvent = new EventType();

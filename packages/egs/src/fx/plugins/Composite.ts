@@ -1,16 +1,16 @@
-import { PipelinePlugin, type IEffectConfig } from './PipelinePlugin';
-import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import type { RenderGraph } from '../../rendergraph/RenderGraph';
-import { pass, target } from '../../rendergraph/NodeMakers';
-import { Platform } from '../../utils/Platform';
-import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
-import { drawQuad } from '../RendererAdaptor';
-import type { Vector4 } from '../../math/Vector4';
-import { Quad } from '../../scene/renderables/Quad';
-import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
-import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
-import type { SceneAdaptor } from '../SceneAdaptor';
-import { RendererBackend } from '../../renderer/IRenderer';
+import { PipelinePlugin, type IEffectConfig } from './PipelinePlugin.js';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
+import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
+import { pass, target } from '../../rendergraph/NodeMakers.js';
+import { Platform } from '../../utils/Platform.js';
+import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial.js';
+import { drawQuad } from '../RendererAdaptor.js';
+import type { Vector4 } from '../../math/Vector4.js';
+import { Quad } from '../../scene/renderables/Quad.js';
+import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry.js';
+import { BufferAttribute } from '../../elements/attributes/BufferAttribute.js';
+import type { SceneAdaptor } from '../SceneAdaptor.js';
+import { RendererBackend } from '../../renderer/IRenderer.js';
 
 export const COMPOSITE_TARGET_NAME = 'composite_target';
 

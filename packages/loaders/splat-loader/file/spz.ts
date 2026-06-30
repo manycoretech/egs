@@ -9,7 +9,7 @@ import {
     fromHalf,
     clamp,
     StreamChunkDecoder,
-} from '../utils';
+} from '../utils.js';
 
 const SPZ_MAGIC = 0x5053474e; // NGSP = Niantic gaussian splat
 const SPZ_VERSION = 3;

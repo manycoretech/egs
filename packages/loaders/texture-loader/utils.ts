@@ -1,5 +1,5 @@
 import { TextureFormat, type LayerSource } from '@qunhe/egs';
-import { TextureContainerType, type LoadResult } from './type';
+import { TextureContainerType, type LoadResult } from './type.js';
 
 const { toU64, toI64 } = (function () {
     const buffer = new ArrayBuffer(8);

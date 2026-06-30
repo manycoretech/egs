@@ -1,7 +1,7 @@
-import type { Camera3D } from '../../scene/cameras/Camera3D';
-import { Vector2 } from '../../math/Vector2';
-import { Vector3 } from '../../math/Vector3';
-import type { Drawable } from '../../scene/drawables/Drawable';
+import type { Camera3D } from '../../scene/cameras/Camera3D.js';
+import { Vector2 } from '../../math/Vector2.js';
+import { Vector3 } from '../../math/Vector3.js';
+import type { Drawable } from '../../scene/drawables/Drawable.js';
 
 export enum BuiltInUniformTypes {
     resolution,

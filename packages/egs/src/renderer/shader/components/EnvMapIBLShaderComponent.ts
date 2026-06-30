@@ -1,21 +1,21 @@
-import { ShaderComponent } from '../Shader';
+import { ShaderComponent } from '../Shader.js';
 import {
     type ShaderBuilder,
     ShaderInjectionTypes,
     ShaderVaryingTypes,
     ShaderExtensionTypes,
-} from '../builders/ShaderBuilder';
-import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import type { WGLProgram } from '../../webgl/WGLProgram';
-import { createShaderBlock } from '../builders/ShaderBlock';
-import { ShaderBlockPool } from '../builders/ShaderBlockPool';
-import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
-import { TextureCube } from '../../../elements/textures/TextureCube';
-import type { Texture2D } from '../../../elements/textures/Texture2D';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import { ContentBridge, materialProperty } from '../../../ContentAPI';
-import { Capabilities } from '../../Capabilities';
-import type { TextureV2 } from '../../../elements/textures/TextureV2';
+} from '../builders/ShaderBuilder.js';
+import { WebGLShaderDataType } from '../../webgl/WGLConstants.js';
+import type { WGLProgram } from '../../webgl/WGLProgram.js';
+import { createShaderBlock } from '../builders/ShaderBlock.js';
+import { ShaderBlockPool } from '../builders/ShaderBlockPool.js';
+import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms.js';
+import { TextureCube } from '../../../elements/textures/TextureCube.js';
+import type { Texture2D } from '../../../elements/textures/Texture2D.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { ContentBridge, materialProperty } from '../../../ContentAPI.js';
+import { Capabilities } from '../../Capabilities.js';
+import type { TextureV2 } from '../../../elements/textures/TextureV2.js';
 
 /**
  * Environment-map combine operation for IBL shading.

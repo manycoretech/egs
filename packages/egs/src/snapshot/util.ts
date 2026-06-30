@@ -1,13 +1,13 @@
-import { Vector3 } from '../math/Vector3';
-import { Matrix4 } from '../math/Matrix4';
-import type { OrthographicCamera } from '../scene/cameras/OrthographicCamera';
-import type { Box3 } from '../math/Box3';
-import type { Size } from '../utils/Utils';
-import { RenderTarget, RenderAttachment } from '../elements/textures/RenderTarget';
-import { SamplerDescriptor } from '../elements/textures/Texture';
-import { WGLCapabilities } from '../renderer/webgl/WGLCapabilities';
-import { TextureViewDimension, getDepthFormat, TextureFormat, TextureDimension } from '../elements/textures/types';
-import type { IRenderer } from '../renderer/IRenderer';
+import { Vector3 } from '../math/Vector3.js';
+import { Matrix4 } from '../math/Matrix4.js';
+import type { OrthographicCamera } from '../scene/cameras/OrthographicCamera.js';
+import type { Box3 } from '../math/Box3.js';
+import type { Size } from '../utils/Utils.js';
+import { RenderTarget, RenderAttachment } from '../elements/textures/RenderTarget.js';
+import { SamplerDescriptor } from '../elements/textures/Texture.js';
+import { WGLCapabilities } from '../renderer/webgl/WGLCapabilities.js';
+import { TextureViewDimension, getDepthFormat, TextureFormat, TextureDimension } from '../elements/textures/types.js';
+import type { IRenderer } from '../renderer/IRenderer.js';
 
 /**
  * Bounding strategy used to frame snapshot targets.

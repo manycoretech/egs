@@ -1,9 +1,9 @@
-import type { DrawableSet } from './DrawableSet';
-import type { Drawable } from '../../drawables/Drawable';
-import { DynamicAnalyser } from './DynamicAnalyser';
-import type { RenderProxyManager } from './RenderProxyManager';
-import type { DrawableList } from '../DrawcallList';
-import { logger } from '../../../utils/Logger';
+import type { DrawableSet } from './DrawableSet.js';
+import type { Drawable } from '../../drawables/Drawable.js';
+import { DynamicAnalyser } from './DynamicAnalyser.js';
+import type { RenderProxyManager } from './RenderProxyManager.js';
+import type { DrawableList } from '../DrawcallList.js';
+import { logger } from '../../../utils/Logger.js';
 
 export class ProxyItemModification<T extends Drawable> {
     // this sets is exclusive;

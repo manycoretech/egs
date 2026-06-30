@@ -1,5 +1,5 @@
-import type { Sphere } from './Sphere';
-import { Vector3 } from './Vector3';
+import type { Sphere } from './Sphere.js';
+import { Vector3 } from './Vector3.js';
 
 const V = new Vector3();
 /**

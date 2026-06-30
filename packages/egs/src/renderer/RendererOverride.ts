@@ -1,5 +1,5 @@
-import type { RendererParameters, IRenderer } from './IRenderer';
-import { Renderer } from './Renderer';
+import type { RendererParameters, IRenderer } from './IRenderer.js';
+import { Renderer } from './Renderer.js';
 
 const DEFAULT_RENDERER_IMPL = (p: RendererParameters) => new Renderer(p);
 

@@ -1,17 +1,17 @@
-import { TAAMaterial } from '../../elements/materials/quad/TAAMaterial';
-import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
-import { pingpong, pass, target } from '../../rendergraph/NodeMakers';
-import type { Camera3D } from '../../scene/cameras/Camera3D';
-import { Vector2 } from '../../math/Vector2';
-import { drawQuad } from '../RendererAdaptor';
-import { Utils } from '../../utils/Utils';
-import { readonlyMath } from '../../math/Readonly';
-import { Blending } from '../../utils/Constants';
-import type { PassNode } from '../../rendergraph/nodes/PassNode';
-import { PipelinePlugin, type IEffectConfig } from './PipelinePlugin';
-import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import type { RenderGraph } from '../../rendergraph/RenderGraph';
-import type { SceneAdaptor } from '../SceneAdaptor';
+import { TAAMaterial } from '../../elements/materials/quad/TAAMaterial.js';
+import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial.js';
+import { pingpong, pass, target } from '../../rendergraph/NodeMakers.js';
+import type { Camera3D } from '../../scene/cameras/Camera3D.js';
+import { Vector2 } from '../../math/Vector2.js';
+import { drawQuad } from '../RendererAdaptor.js';
+import { Utils } from '../../utils/Utils.js';
+import { readonlyMath } from '../../math/Readonly.js';
+import { Blending } from '../../utils/Constants.js';
+import type { PassNode } from '../../rendergraph/nodes/PassNode.js';
+import { PipelinePlugin, type IEffectConfig } from './PipelinePlugin.js';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
+import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
+import type { SceneAdaptor } from '../SceneAdaptor.js';
 
 export class TAAPlugin extends PipelinePlugin {
     readonly PLUGIN_NAME = 'taa';

@@ -1,11 +1,11 @@
-import type { TypedArray } from '../../utils/Utils';
-import type { Color } from '../../math/Color';
-import { Vector2 } from '../../math/Vector2';
-import type { Vector3 } from '../../math/Vector3';
-import type { Vector4 } from '../../math/Vector4';
-import type { Serializer, Deserializer } from '../../utils/Serialization';
-import { ElementEventDispatcher } from '../../utils/EventDispatcher';
-import { ContentBridge, ManagedContentBridge, hasManagedContentAPI } from '../../ContentAPI';
+import type { TypedArray } from '../../utils/Utils.js';
+import type { Color } from '../../math/Color.js';
+import { Vector2 } from '../../math/Vector2.js';
+import type { Vector3 } from '../../math/Vector3.js';
+import type { Vector4 } from '../../math/Vector4.js';
+import type { Serializer, Deserializer } from '../../utils/Serialization.js';
+import { ElementEventDispatcher } from '../../utils/EventDispatcher.js';
+import { ContentBridge, ManagedContentBridge, hasManagedContentAPI } from '../../ContentAPI.js';
 /**
  * This class stores data for an attribute (such as vertex positions, face indices, normals,
  * colors, UVs, and any custom attributes ) associated with a {@link BufferGeometry | BufferGeometry },

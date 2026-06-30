@@ -1,4 +1,4 @@
-import { EventDispatcher, EventType } from '../../utils/EventDispatcher';
+import { EventDispatcher, EventType } from '../../utils/EventDispatcher.js';
 export const LayerChangeEvent = new EventType<number>();
 
 /**

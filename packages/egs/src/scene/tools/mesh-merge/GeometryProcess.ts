@@ -1,9 +1,9 @@
-import type { BufferGroup, IndexBufferAttribute } from '../../../elements/geometries/containers/BufferGeometry';
-import { BufferAttribute } from '../../../elements/attributes/BufferAttribute';
-import { Vector3 } from '../../../math/Vector3';
-import { Vector2 } from '../../../math/Vector2';
-import type { PopBufferGeometry } from '../../../elements/geometries/containers/PopBufferGeometry';
-import type { MeshPhongMaterial } from '../../../elements/materials/mesh/MeshPhongMaterial';
+import type { BufferGroup, IndexBufferAttribute } from '../../../elements/geometries/containers/BufferGeometry.js';
+import { BufferAttribute } from '../../../elements/attributes/BufferAttribute.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { Vector2 } from '../../../math/Vector2.js';
+import type { PopBufferGeometry } from '../../../elements/geometries/containers/PopBufferGeometry.js';
+import type { MeshPhongMaterial } from '../../../elements/materials/mesh/MeshPhongMaterial.js';
 
 // indexValue => materialIndex
 let usedMap = new Uint16Array(10000);

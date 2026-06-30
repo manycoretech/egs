@@ -1,7 +1,7 @@
-import { Object3D } from '../Object3D';
-import { Color } from '../../math/Color';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
-import { ContentBridge, lightProperty } from '../../ContentAPI';
+import { Object3D } from '../Object3D.js';
+import { Color } from '../../math/Color.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
+import { ContentBridge, lightProperty } from '../../ContentAPI.js';
 
 /**
  * This class is base class of all types of light source.

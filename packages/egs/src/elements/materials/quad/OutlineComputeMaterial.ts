@@ -1,15 +1,15 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import type { Texture } from '../../textures/Texture';
-import type { Nullable } from '../../../utils/Utils';
-import { Matrix4 } from '../../../math/Matrix4';
-import { Vector4 } from '../../../math/Vector4';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { readonlyMath } from '../../../math/Readonly';
-import { materialProperty } from '../../../ContentAPI';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import type { Texture } from '../../textures/Texture.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import { Matrix4 } from '../../../math/Matrix4.js';
+import { Vector4 } from '../../../math/Vector4.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import { materialProperty } from '../../../ContentAPI.js';
 
 enum ThicknessCoord {
     Index = 'indexSampleCoord',

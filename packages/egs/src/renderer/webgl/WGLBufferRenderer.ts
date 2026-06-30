@@ -1,10 +1,10 @@
-import { type WGLExtensions, WebGLExtEnums } from './WGLExtensions';
-import type { RenderInfo, ObjectStatsInfo } from '../../utils/RenderInfo';
-import { WGLCapabilities } from './WGLCapabilities';
-import type { Drawable } from '../../scene/drawables/Drawable';
-import type { InstancedBufferGeometry } from '../../elements/geometries/containers/InstancedBufferGeometry';
-import { logger } from '../../utils/Logger';
-import type { Nullable } from '../../utils/Utils';
+import { type WGLExtensions, WebGLExtEnums } from './WGLExtensions.js';
+import type { RenderInfo, ObjectStatsInfo } from '../../utils/RenderInfo.js';
+import { WGLCapabilities } from './WGLCapabilities.js';
+import type { Drawable } from '../../scene/drawables/Drawable.js';
+import type { InstancedBufferGeometry } from '../../elements/geometries/containers/InstancedBufferGeometry.js';
+import { logger } from '../../utils/Logger.js';
+import type { Nullable } from '../../utils/Utils.js';
 
 // WGLBufferRenderer provides functions to control the method of drawing and drawing primitives without indices.
 // This also provides a function to draw instanced BufferGeometryBase.

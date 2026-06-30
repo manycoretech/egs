@@ -1,6 +1,6 @@
-import { logger } from '../../utils/Logger';
-import { _Math } from '../../math/Math';
-import type { TypedArray } from '../../utils/Utils';
+import { logger } from '../../utils/Logger.js';
+import { _Math } from '../../math/Math.js';
+import type { TypedArray } from '../../utils/Utils.js';
 import {
     getFormatByteSize,
     LegacySourceTexture,
@@ -10,12 +10,12 @@ import {
     type WebGLTextureUploadCtx,
     getInternalFormat,
     type WebGLUploadable,
-} from './Texture';
-import { ContentBridge } from '../../ContentAPI';
-import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants';
-import { TextureDataType } from '../../utils/Constants';
-import { RendererBackend } from '../../renderer/IRenderer';
-import { TextureDimension, TextureViewDimension } from './types';
+} from './Texture.js';
+import { ContentBridge } from '../../ContentAPI.js';
+import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants.js';
+import { TextureDataType } from '../../utils/Constants.js';
+import { RendererBackend } from '../../renderer/IRenderer.js';
+import { TextureDimension, TextureViewDimension } from './types.js';
 
 export class Texture3D extends LegacySourceTexture {
     readonly is3d = true;

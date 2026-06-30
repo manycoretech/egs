@@ -1,16 +1,16 @@
-import type { DAGNode } from './DAGNode';
-import { PassNode, type PassExecuteCtx } from './PassNode';
-import type { MaterialDispatcher } from '../../renderer/MaterialDispatcher';
+import type { DAGNode } from './DAGNode.js';
+import { PassNode, type PassExecuteCtx } from './PassNode.js';
+import type { MaterialDispatcher } from '../../renderer/MaterialDispatcher.js';
 import {
     type DrawableList,
     type DrawcallListClassifyType,
     DrawcallListClassifyList,
-} from '../../scene/tools/DrawcallList';
-import type { CubeCamera } from '../../scene/cameras/CubeCamera';
-import { RenderTargetNode } from './RenderTargetNode';
-import type { RenderTarget } from '../../elements/textures/RenderTarget';
-import type { ResizeFN } from './utils';
-import { TextureViewDimension } from '../../elements/textures/types';
+} from '../../scene/tools/DrawcallList.js';
+import type { CubeCamera } from '../../scene/cameras/CubeCamera.js';
+import { RenderTargetNode } from './RenderTargetNode.js';
+import type { RenderTarget } from '../../elements/textures/RenderTarget.js';
+import type { ResizeFN } from './utils.js';
+import { TextureViewDimension } from '../../elements/textures/types.js';
 
 export class CubePassNode {
     private passes: PassNode[];

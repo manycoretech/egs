@@ -1,20 +1,20 @@
-import { Color } from '../../math/Color';
-import { Mesh } from '../drawables/Mesh';
-import type { Renderable } from './IRenderable';
-import { GradientMaterial } from '../../elements/materials/mesh/GradientMaterial';
-import { SkyMaterial } from '../../elements/materials/mesh/SkyMaterial';
-import { EnvMapMaterial } from '../../elements/materials/mesh/EnvMapMaterial';
-import type { Texture } from '../../elements/textures/Texture';
-import { logger } from '../../utils/Logger';
-import { sphere } from '../../elements/geometries/builder/Index';
-import type { IRenderer } from '../../renderer/IRenderer';
-import { Quad } from './Quad';
-import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
-import type { Nullable } from '../../utils/Utils';
-import type { BackgroundLikeMaterial } from '../../elements/materials/base';
-import { Quaternion } from '../../math/Quaternion';
-import { Vector3 } from '../../math/Vector3';
-import { readonlyMath } from '../../math/Readonly';
+import { Color } from '../../math/Color.js';
+import { Mesh } from '../drawables/Mesh.js';
+import type { Renderable } from './IRenderable.js';
+import { GradientMaterial } from '../../elements/materials/mesh/GradientMaterial.js';
+import { SkyMaterial } from '../../elements/materials/mesh/SkyMaterial.js';
+import { EnvMapMaterial } from '../../elements/materials/mesh/EnvMapMaterial.js';
+import type { Texture } from '../../elements/textures/Texture.js';
+import { logger } from '../../utils/Logger.js';
+import { sphere } from '../../elements/geometries/builder/Index.js';
+import type { IRenderer } from '../../renderer/IRenderer.js';
+import { Quad } from './Quad.js';
+import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial.js';
+import type { Nullable } from '../../utils/Utils.js';
+import type { BackgroundLikeMaterial } from '../../elements/materials/base/index.js';
+import { Quaternion } from '../../math/Quaternion.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { readonlyMath } from '../../math/Readonly.js';
 
 /**
  * Union of supported viewer background configurations.

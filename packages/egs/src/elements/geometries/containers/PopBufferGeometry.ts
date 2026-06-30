@@ -1,9 +1,9 @@
-import { Vector3 } from '../../../math/Vector3';
-import type { Deserializer, Serializer } from '../../../utils/Serialization';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { BufferGeometry } from './BufferGeometry';
-import { ContentBridge, hasManagedContentAPI } from '../../../ContentAPI';
-import type { IPopbufferInfo, IMetaBlock, IPopbufferAttributes } from './IPopBufferInfo';
+import { Vector3 } from '../../../math/Vector3.js';
+import type { Deserializer, Serializer } from '../../../utils/Serialization.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
+import { BufferGeometry } from './BufferGeometry.js';
+import { ContentBridge, hasManagedContentAPI } from '../../../ContentAPI.js';
+import type { IPopbufferInfo, IMetaBlock, IPopbufferAttributes } from './IPopBufferInfo.js';
 
 export interface Metadata {
     boxMin: Readonly<Vector3>;

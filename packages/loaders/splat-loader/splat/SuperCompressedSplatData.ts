@@ -1,4 +1,4 @@
-import { SplatData } from './SplatData';
+import { SplatData } from './SplatData.js';
 import {
     type ISampler,
     ISamplerFormat,
@@ -10,7 +10,7 @@ import {
     fromHalf,
     encodeQuatOct,
     decodeQuatOct,
-} from '../utils';
+} from '../utils.js';
 
 function packSint5x9ToUint32x2(data: number[], out: Uint32Array, offset: number) {
     const q0 = ((data[0] * 16 + 16.5) | 0) & 31;

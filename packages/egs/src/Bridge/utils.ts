@@ -1,4 +1,4 @@
-import { EventType } from '../utils/EventDispatcher';
+import { EventType } from '../utils/EventDispatcher.js';
 
 export interface ToggleWebWebGpuPayload {
     enabled: boolean;

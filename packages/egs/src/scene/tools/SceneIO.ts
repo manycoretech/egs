@@ -1,6 +1,6 @@
-import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
-import { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';
-import { Curve2D } from '../../math/shape/curves/Curve2D';
+import { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry.js';
+import { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry.js';
+import { Curve2D } from '../../math/shape/curves/Curve2D.js';
 import {
     ArcCurve2D,
     CubicBezierCurve2D,
@@ -9,48 +9,48 @@ import {
     LineCurve2D,
     QuadraticBezierCurve2D,
     SplineCurve2D,
-} from '../../math/shape/curves/Curves';
-import { Circle } from '../../math/shape/plane/Circle';
-import { Ellipse } from '../../math/shape/plane/Ellipse';
-import { Path } from '../../math/shape/plane/Path';
-import { Polygon } from '../../math/shape/plane/Polygon';
-import { Rectangle } from '../../math/shape/plane/Rectangle';
-import { RoundedRectangle } from '../../math/shape/plane/RoundedRectangle';
-import { Shape } from '../../math/shape/plane/Shape';
-import { Star } from '../../math/shape/plane/Star';
-import { FatLineMaterial } from '../../elements/materials/mesh/FatLineMaterial';
-import { LineBasicMaterial, LineDashedMaterial } from '../../elements/materials/mesh/LineMaterial';
-import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial';
-import { MeshPhongMaterial } from '../../elements/materials/mesh/MeshPhongMaterial';
-import { PointsMaterial } from '../../elements/materials/mesh/PointsMaterial';
-import { SpriteMaterial } from '../../elements/materials/mesh/SpriteMaterial';
-import { WHITE_IMAGE_DATA } from '../../elements/textures/Texture';
-import { Deserializer, Serializer, SerializerMetaData } from '../../utils/Serialization';
-import { Utils } from '../../utils/Utils';
-import { OrthographicCamera } from '../cameras/OrthographicCamera';
-import { PerspectiveCamera } from '../cameras/PerspectiveCamera';
-import { FatLineSegments } from '../drawables/FatLineSegments';
-import { Line } from '../drawables/Line';
-import { LineSegments } from '../drawables/LineSegments';
-import { Mesh } from '../drawables/Mesh';
-import { PopMesh } from '../drawables/PopMesh';
-import { Sprite } from '../drawables/Sprite';
-import { Group } from '../Group';
-import { AmbientLight } from '../lights/AmbientLight';
-import { DirectionalLight } from '../lights/DirectionalLight';
-import { SpotLight } from '../lights/SpotLight';
-import { Object3D } from '../Object3D';
-import { Scene3D } from '../Scene3D';
-import { Texture2D } from '../../elements/textures/Texture2D';
-import { PointLight } from '../lights/PointLight';
-import { DiskAreaLight } from '../lights/DiskAreaLight';
-import { RectAreaLight } from '../lights/RectAreaLight';
-import { FontPath } from '../../math/shape/plane/Font';
-import { PavingShaderComponent } from '../../renderer/shader/components/PavingShaderComponent';
-import { ClippingShaderComponent } from '../../renderer/shader/components/ClippingShaderComponent';
-import { EnvMapIBLShaderComponent } from '../../renderer/shader/components/EnvMapIBLShaderComponent';
-import { createDefaultTextureCube } from '../../elements/textures/TextureCube';
-import { SpottedShaderComponent } from '../../renderer/shader/components/SpottedShaderComponent';
+} from '../../math/shape/curves/Curves.js';
+import { Circle } from '../../math/shape/plane/Circle.js';
+import { Ellipse } from '../../math/shape/plane/Ellipse.js';
+import { Path } from '../../math/shape/plane/Path.js';
+import { Polygon } from '../../math/shape/plane/Polygon.js';
+import { Rectangle } from '../../math/shape/plane/Rectangle.js';
+import { RoundedRectangle } from '../../math/shape/plane/RoundedRectangle.js';
+import { Shape } from '../../math/shape/plane/Shape.js';
+import { Star } from '../../math/shape/plane/Star.js';
+import { FatLineMaterial } from '../../elements/materials/mesh/FatLineMaterial.js';
+import { LineBasicMaterial, LineDashedMaterial } from '../../elements/materials/mesh/LineMaterial.js';
+import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial.js';
+import { MeshPhongMaterial } from '../../elements/materials/mesh/MeshPhongMaterial.js';
+import { PointsMaterial } from '../../elements/materials/mesh/PointsMaterial.js';
+import { SpriteMaterial } from '../../elements/materials/mesh/SpriteMaterial.js';
+import { WHITE_IMAGE_DATA } from '../../elements/textures/Texture.js';
+import { Deserializer, Serializer, SerializerMetaData } from '../../utils/Serialization.js';
+import { Utils } from '../../utils/Utils.js';
+import { OrthographicCamera } from '../cameras/OrthographicCamera.js';
+import { PerspectiveCamera } from '../cameras/PerspectiveCamera.js';
+import { FatLineSegments } from '../drawables/FatLineSegments.js';
+import { Line } from '../drawables/Line.js';
+import { LineSegments } from '../drawables/LineSegments.js';
+import { Mesh } from '../drawables/Mesh.js';
+import { PopMesh } from '../drawables/PopMesh.js';
+import { Sprite } from '../drawables/Sprite.js';
+import { Group } from '../Group.js';
+import { AmbientLight } from '../lights/AmbientLight.js';
+import { DirectionalLight } from '../lights/DirectionalLight.js';
+import { SpotLight } from '../lights/SpotLight.js';
+import { Object3D } from '../Object3D.js';
+import { Scene3D } from '../Scene3D.js';
+import { Texture2D } from '../../elements/textures/Texture2D.js';
+import { PointLight } from '../lights/PointLight.js';
+import { DiskAreaLight } from '../lights/DiskAreaLight.js';
+import { RectAreaLight } from '../lights/RectAreaLight.js';
+import { FontPath } from '../../math/shape/plane/Font.js';
+import { PavingShaderComponent } from '../../renderer/shader/components/PavingShaderComponent.js';
+import { ClippingShaderComponent } from '../../renderer/shader/components/ClippingShaderComponent.js';
+import { EnvMapIBLShaderComponent } from '../../renderer/shader/components/EnvMapIBLShaderComponent.js';
+import { createDefaultTextureCube } from '../../elements/textures/TextureCube.js';
+import { SpottedShaderComponent } from '../../renderer/shader/components/SpottedShaderComponent.js';
 
 export function exportScene(scene: Scene3D, name: string): void {
     const { geoBufferLength, geoBuffer, sceneData } = serializeScene(scene);

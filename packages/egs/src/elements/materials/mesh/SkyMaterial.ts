@@ -1,20 +1,20 @@
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 import {
     type ShaderBuilder,
     ShaderInjectionTypes,
     ShaderVaryingTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { Side } from '../../../utils/Constants';
-import { ContentBridge, materialProperty } from '../../../ContentAPI';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import type { Nullable } from '../../../utils/Utils';
-import type { Texture } from '../../textures/Texture';
-import { PassQuadMaterialBase } from '../quad/PassMaterialBase';
-import { BackgroundLikeMaterial } from '../base';
-import type { ReadonlyVector3 } from '../../../math/Vector3';
-import { readonlyMath } from '../../../math/Readonly';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { Side } from '../../../utils/Constants.js';
+import { ContentBridge, materialProperty } from '../../../ContentAPI.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import type { Texture } from '../../textures/Texture.js';
+import { PassQuadMaterialBase } from '../quad/PassMaterialBase.js';
+import { BackgroundLikeMaterial } from '../base/index.js';
+import type { ReadonlyVector3 } from '../../../math/Vector3.js';
+import { readonlyMath } from '../../../math/Readonly.js';
 
 export class SkyMaterial extends BackgroundLikeMaterial {
     private _luminance = 0.3;

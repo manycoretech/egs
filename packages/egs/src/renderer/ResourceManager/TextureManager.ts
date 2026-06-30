@@ -1,10 +1,10 @@
-import { type Texture, TextureDisposeEvent, WebGLTextureUploadCtx } from '../../elements/textures/Texture';
-import type { WGLState } from '../webgl/WGLState/WGLState';
-import { IterableWeakMap } from '../../utils/WeakCollections';
-import { TypeAssert } from '../../scene/tools/TypeAssert';
-import type { RenderAttachment } from '../../elements/textures/RenderTarget';
-import { RendererBackend } from '../IRenderer';
-import type { Renderer } from '../Renderer';
+import { type Texture, TextureDisposeEvent, WebGLTextureUploadCtx } from '../../elements/textures/Texture.js';
+import type { WGLState } from '../webgl/WGLState/WGLState.js';
+import { IterableWeakMap } from '../../utils/WeakCollections.js';
+import { TypeAssert } from '../../scene/tools/TypeAssert.js';
+import type { RenderAttachment } from '../../elements/textures/RenderTarget.js';
+import { RendererBackend } from '../IRenderer.js';
+import type { Renderer } from '../Renderer.js';
 
 interface WGLTextureData {
     webglTexture: WebGLTexture;

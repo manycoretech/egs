@@ -1,19 +1,19 @@
-import { MeshDepthMaterial } from '../../elements/materials/mesh/MeshDepthMaterial';
-import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher';
-import { cubePass, cubeTarget, pass, target } from '../../rendergraph/NodeMakers';
-import { iter } from '../../utils/Utils';
-import { DrawcallListClassifyList, type ProjectedDrawcallList } from '../../scene/tools/DrawcallList';
-import { PipelinePlugin, type PipelineContext, type DrivenCullingConfig } from './PipelinePlugin';
-import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import type { RenderGraph } from '../../rendergraph/RenderGraph';
-import { Shadow } from '../../scene/shadows/Shadow';
-import type { SceneAdaptorDispatcher } from '../SceneAdaptor';
-import type { RendererAdaptor } from '../RendererAdaptor';
-import { DrivenCullingMaterial } from '../../elements/materials/driven/DrivenCullingMaterial';
-import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial';
-import type { RenderTarget } from '../../elements/textures/RenderTarget';
-import { PipelineFilters } from '../PipelineAPI';
-import type { PassNode } from '../../rendergraph/nodes/PassNode';
+import { MeshDepthMaterial } from '../../elements/materials/mesh/MeshDepthMaterial.js';
+import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher.js';
+import { cubePass, cubeTarget, pass, target } from '../../rendergraph/NodeMakers.js';
+import { iter } from '../../utils/Utils.js';
+import { DrawcallListClassifyList, type ProjectedDrawcallList } from '../../scene/tools/DrawcallList.js';
+import { PipelinePlugin, type PipelineContext, type DrivenCullingConfig } from './PipelinePlugin.js';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
+import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
+import { Shadow } from '../../scene/shadows/Shadow.js';
+import type { SceneAdaptorDispatcher } from '../SceneAdaptor.js';
+import type { RendererAdaptor } from '../RendererAdaptor.js';
+import { DrivenCullingMaterial } from '../../elements/materials/driven/DrivenCullingMaterial.js';
+import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial.js';
+import type { RenderTarget } from '../../elements/textures/RenderTarget.js';
+import { PipelineFilters } from '../PipelineAPI.js';
+import type { PassNode } from '../../rendergraph/nodes/PassNode.js';
 
 export class ShadowMapPlugin extends PipelinePlugin {
     readonly PLUGIN_NAME = 'shadowMap';

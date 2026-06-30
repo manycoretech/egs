@@ -3,6 +3,8 @@
   "version": "1.0.1",
   "description": "decode gltf",
   "main": "index.js",
+  "module": "index.js",
+  "type": "module",
   "license": "MIT",
   "types": "index.d.ts",
   "repository": "https://github.com/manycoretech/egs.git",

@@ -8,7 +8,7 @@ import {
     SuperCompressedSplatData,
     SogSplatData,
 } from '@qunhe/egs-splat-loader';
-import { createSourceTextureFromSampler, createSourceTextureFromImageSource } from '../SplatData';
+import { createSourceTextureFromSampler, createSourceTextureFromImageSource } from '../SplatData.js';
 
 interface ResourceData {
     type: SplatPackType;

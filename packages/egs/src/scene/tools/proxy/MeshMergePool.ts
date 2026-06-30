@@ -1,8 +1,8 @@
-import { ProxyOptimizer } from './ProxyOptimizer';
-import { type Drawable, DrawableRenderMode } from '../../drawables/Drawable';
-import { Mesh } from '../../drawables/Mesh';
-import { MultiMeshMerger } from '../mesh-merge/MultiMeshMerger';
-import { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry';
+import { ProxyOptimizer } from './ProxyOptimizer.js';
+import { type Drawable, DrawableRenderMode } from '../../drawables/Drawable.js';
+import { Mesh } from '../../drawables/Mesh.js';
+import { MultiMeshMerger } from '../mesh-merge/MultiMeshMerger.js';
+import { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry.js';
 
 let DEFAULT_GEOMETRY: BufferGeometry | undefined;
 const merger = new MultiMeshMerger();

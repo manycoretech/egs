@@ -1,4 +1,4 @@
-import { DAGNode } from './DAGNode';
+import { DAGNode } from './DAGNode.js';
 
 // resource node class, which is abstract. It could be a renderTargetNode or a drawcallListNode
 // any class extends this in the Graph is includes only the data needs to be rendered

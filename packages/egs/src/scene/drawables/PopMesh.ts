@@ -1,8 +1,8 @@
-import type { Nullable } from '../../utils/Utils';
-import { Mesh } from './Mesh';
-import type { MeshPhongMaterial } from '../../elements/materials/mesh/MeshPhongMaterial';
-import type { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';
-import { drawableState } from '../../ContentAPI';
+import type { Nullable } from '../../utils/Utils.js';
+import { Mesh } from './Mesh.js';
+import type { MeshPhongMaterial } from '../../elements/materials/mesh/MeshPhongMaterial.js';
+import type { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry.js';
+import { drawableState } from '../../ContentAPI.js';
 
 /**
  * This is a spacial mesh to draw content in one WebGL Drawcall.

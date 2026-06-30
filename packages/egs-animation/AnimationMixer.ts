@@ -1,7 +1,7 @@
 import { EventDispatcher, Matrix3, type MeshPhongMaterial, type Object3D, type ReadonlyMatrix3 } from '@qunhe/egs';
-import { AnimationAction } from './AnimationAction';
-import type { AnimationClip } from './type';
-import type { PropertyMixer } from './PropertyMixer';
+import { AnimationAction } from './AnimationAction.js';
+import type { AnimationClip } from './type.js';
+import type { PropertyMixer } from './PropertyMixer.js';
 
 /**
  * The class is a player for animations on a particular object called root

@@ -1,7 +1,7 @@
-export { KsplatFile } from './ksplat';
-export { PlyFile } from './ply';
-export { SogFile } from './sog';
-export { SplatFile } from './splat';
-export { SpzFile } from './spz';
-export { LccFile } from './lcc';
-export { EszFile } from './esz';
+export { KsplatFile } from './ksplat.js';
+export { PlyFile } from './ply.js';
+export { SogFile } from './sog.js';
+export { SplatFile } from './splat.js';
+export { SpzFile } from './spz.js';
+export { LccFile } from './lcc.js';
+export { EszFile } from './esz.js';

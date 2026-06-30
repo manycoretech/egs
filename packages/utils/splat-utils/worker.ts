@@ -1,6 +1,6 @@
 /// <reference lib="webworker" />
 
-import { TaskType, type SendMessage, TaskStatus, type ReceiveMessage } from './WorkerMessage';
+import { TaskType, type SendMessage, TaskStatus, type ReceiveMessage } from './WorkerMessage.js';
 
 const DEPTH_INFINITY = 0x7bff;
 const buckets = new Uint32Array(0x10000);

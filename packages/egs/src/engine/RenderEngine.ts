@@ -1,31 +1,31 @@
-import { logger } from '../utils/Logger';
-import { type IRenderer, RendererState, type RendererParameters } from '../renderer/IRenderer';
+import { logger } from '../utils/Logger.js';
+import { type IRenderer, RendererState, type RendererParameters } from '../renderer/IRenderer.js';
 import {
     ContextLostEvent,
     ContextLostRestoreFailedEvent,
     MemoryGrowFailed,
     type CtxLostInfo,
-} from '../renderer/IRenderer';
-import type { Camera3D } from '../scene/cameras/Camera3D';
-import type { Scene3D } from '../scene/Scene3D';
-import { EventDispatcher, EventType } from '../utils/EventDispatcher';
-import type { Size } from '../utils/Utils';
-import type { EngineInitializeConfig } from './EngineConfig';
-import { SnapshotRenderer as DeprecatedSnapshotRenderer } from '../snapshot/SnapshotRenderer';
-import { SnapshotRenderer } from '../snapshot/SnapshotRendererV2';
-import { SceneAdaptor } from '../fx/SceneAdaptor';
-import { ContentBridge } from '../ContentAPI';
+} from '../renderer/IRenderer.js';
+import type { Camera3D } from '../scene/cameras/Camera3D.js';
+import type { Scene3D } from '../scene/Scene3D.js';
+import { EventDispatcher, EventType } from '../utils/EventDispatcher.js';
+import type { Size } from '../utils/Utils.js';
+import type { EngineInitializeConfig } from './EngineConfig.js';
+import { SnapshotRenderer as DeprecatedSnapshotRenderer } from '../snapshot/SnapshotRenderer.js';
+import { SnapshotRenderer } from '../snapshot/SnapshotRendererV2.js';
+import { SceneAdaptor } from '../fx/SceneAdaptor.js';
+import { ContentBridge } from '../ContentAPI.js';
 import {
     ToggleWebGPUEvent,
     WebGPUUnstable,
     WebGPUValidationFailed,
     type ToggleWebWebGpuPayload,
-} from '../Bridge/utils';
-import type { RenderingConfig, DrivenCullingConfig } from '../fx/plugins/PipelinePlugin';
-import type { PostPipeline } from '../fx/Pipeline';
-import type { Vector4 } from '../math/Vector4';
-import { Application } from '../Application';
-import { globalOverrideDefaultRendererImpl } from '../renderer/RendererOverride';
+} from '../Bridge/utils.js';
+import type { RenderingConfig, DrivenCullingConfig } from '../fx/plugins/PipelinePlugin.js';
+import type { PostPipeline } from '../fx/Pipeline.js';
+import type { Vector4 } from '../math/Vector4.js';
+import { Application } from '../Application.js';
+import { globalOverrideDefaultRendererImpl } from '../renderer/RendererOverride.js';
 
 /**
  * Event emitted when the renderer has been reset

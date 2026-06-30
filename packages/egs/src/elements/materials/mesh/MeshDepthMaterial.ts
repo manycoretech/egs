@@ -1,11 +1,11 @@
-import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { materialProperty } from '../../../ContentAPI';
-import { SceneMaterial } from '../base';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { SceneMaterial } from '../base/index.js';
 
 /**
  * Depth packing modes supported by depth-only materials.

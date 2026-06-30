@@ -1,11 +1,11 @@
-import { Color } from '../../Color';
-import { Vector2 } from '../../Vector2';
-import { Path } from './Path';
-import { Shape } from './Shape';
-import type { SerializerableDelegatedAsReference, Serializer, Deserializer } from '../../../utils/Serialization';
-import { _Math } from '../../Math';
-import type { Box2 } from '../../../math/Box2';
-import { logger } from '../../../utils/Logger';
+import { Color } from '../../Color.js';
+import { Vector2 } from '../../Vector2.js';
+import { Path } from './Path.js';
+import { Shape } from './Shape.js';
+import type { SerializerableDelegatedAsReference, Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { _Math } from '../../Math.js';
+import type { Box2 } from '../../../math/Box2.js';
+import { logger } from '../../../utils/Logger.js';
 
 /**
  * This class is used to draw a text in the scene.

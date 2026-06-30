@@ -1,16 +1,16 @@
-import { Box3 } from '../math/Box3';
-import { Euler } from '../math/Euler';
-import { Matrix4 } from '../math/Matrix4';
-import { Quaternion } from '../math/Quaternion';
-import { Vector3 } from '../math/Vector3';
-import { WatchedVector3 } from '../math/WatchedVector3';
-import type { Scene3D } from '../scene/Scene3D';
-import { EventType, ElementEventDispatcher, type Listener } from '../utils/EventDispatcher';
-import type { Deserializer, Serializer, SerializerableDelegatedAsReference } from '../utils/Serialization';
-import type { Nullable } from '../utils/Utils';
-import { Layers, LayerChangeEvent } from './tools/Layers';
-import { TypeAssert } from './tools/TypeAssert';
-import { ContentBridge, hasManagedContentAPI, ManagedContentBridge } from '../ContentAPI';
+import { Box3 } from '../math/Box3.js';
+import { Euler } from '../math/Euler.js';
+import { Matrix4 } from '../math/Matrix4.js';
+import { Quaternion } from '../math/Quaternion.js';
+import { Vector3 } from '../math/Vector3.js';
+import { WatchedVector3 } from '../math/WatchedVector3.js';
+import type { Scene3D } from '../scene/Scene3D.js';
+import { EventType, ElementEventDispatcher, type Listener } from '../utils/EventDispatcher.js';
+import type { Deserializer, Serializer, SerializerableDelegatedAsReference } from '../utils/Serialization.js';
+import type { Nullable } from '../utils/Utils.js';
+import { Layers, LayerChangeEvent } from './tools/Layers.js';
+import { TypeAssert } from './tools/TypeAssert.js';
+import { ContentBridge, hasManagedContentAPI, ManagedContentBridge } from '../ContentAPI.js';
 
 export const Object3DChangeEvent = new EventType();
 

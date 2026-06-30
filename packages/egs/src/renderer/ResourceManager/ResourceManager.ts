@@ -1,21 +1,21 @@
-import type { RenderInfo } from '../../utils/RenderInfo';
-import { ProgramManager } from './ProgramManager';
-import { UBOManager } from './UBOManager';
-import { BufferManager } from './BufferManager';
-import { TextureManager } from './TextureManager';
-import { VAOManager } from './VAOManager';
-import type { UniformBlockObject } from '../shader/components/UniformBlockObject';
-import type { WGLBufferData } from '../webgl/WGLBuffer';
-import { Capabilities } from '../Capabilities';
-import type { WGLProgram } from '../webgl/WGLProgram';
-import type { BufferGeometryBase, BufferAttribute, Material } from '../../..';
+import type { RenderInfo } from '../../utils/RenderInfo.js';
+import { ProgramManager } from './ProgramManager.js';
+import { UBOManager } from './UBOManager.js';
+import { BufferManager } from './BufferManager.js';
+import { TextureManager } from './TextureManager.js';
+import { VAOManager } from './VAOManager.js';
+import type { UniformBlockObject } from '../shader/components/UniformBlockObject.js';
+import type { WGLBufferData } from '../webgl/WGLBuffer.js';
+import { Capabilities } from '../Capabilities.js';
+import type { WGLProgram } from '../webgl/WGLProgram.js';
+import type { BufferGeometryBase, BufferAttribute, Material } from '../../../index.js';
 import {
     GeometryAttributeChangedEvent,
     GeometryDisposeEvent,
-} from '../../elements/geometries/containers/BufferGeometry';
-import type { Nullable } from '../../utils/Utils';
-import { IterableWeakSet } from '../../utils/WeakCollections';
-import type { Renderer } from '../Renderer';
+} from '../../elements/geometries/containers/BufferGeometry.js';
+import type { Nullable } from '../../utils/Utils.js';
+import { IterableWeakSet } from '../../utils/WeakCollections.js';
+import type { Renderer } from '../Renderer.js';
 
 export interface ResourceStatistics {
     geometryBufferByteSize: number;

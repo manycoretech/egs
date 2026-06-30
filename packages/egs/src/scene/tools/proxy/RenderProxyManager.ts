@@ -1,17 +1,17 @@
-import { type Drawable, DrawableRenderMode } from '../../drawables/Drawable';
-import type { Scene3D } from '../../Scene3D';
-import { TypeAssert } from '../TypeAssert';
-import { InstancePool } from './InstancePool';
-import { DynamicAnalyser, extractorCreator } from './DynamicAnalyser';
-import { DrawableSet, DrawableAdd, DrawableDelete, DrawableChange } from './DrawableSet';
-import { MeshMergePool } from './MeshMergePool';
-import { DrawableList, ProjectedDrawcallList, DrawcallListClassifyList } from '../DrawcallList';
-import type { Camera3D } from '../../cameras/Camera3D';
-import { PipelineContentAPIForRenderingAndFilteringEnabled, PipelineContentBridge } from '../../../fx/PipelineAPI';
-import { hasManagedContentAPI, ManagedContentBridge } from '../../../ContentAPI';
-import { PopMeshMergeManager } from '../mesh-merge/PopMeshMergeManager';
-import type { PopMesh } from '../../drawables/PopMesh';
-import { TextureCompression } from '../../../fx/plugins/PipelinePlugin';
+import { type Drawable, DrawableRenderMode } from '../../drawables/Drawable.js';
+import type { Scene3D } from '../../Scene3D.js';
+import { TypeAssert } from '../TypeAssert.js';
+import { InstancePool } from './InstancePool.js';
+import { DynamicAnalyser, extractorCreator } from './DynamicAnalyser.js';
+import { DrawableSet, DrawableAdd, DrawableDelete, DrawableChange } from './DrawableSet.js';
+import { MeshMergePool } from './MeshMergePool.js';
+import { DrawableList, ProjectedDrawcallList, DrawcallListClassifyList } from '../DrawcallList.js';
+import type { Camera3D } from '../../cameras/Camera3D.js';
+import { PipelineContentAPIForRenderingAndFilteringEnabled, PipelineContentBridge } from '../../../fx/PipelineAPI.js';
+import { hasManagedContentAPI, ManagedContentBridge } from '../../../ContentAPI.js';
+import { PopMeshMergeManager } from '../mesh-merge/PopMeshMergeManager.js';
+import type { PopMesh } from '../../drawables/PopMesh.js';
+import { TextureCompression } from '../../../fx/plugins/PipelinePlugin.js';
 
 export class RenderProxyManager {
     private scene: Scene3D;

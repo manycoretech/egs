@@ -1,4 +1,4 @@
-import type { Splat } from './Splat';
+import type { Splat } from './Splat.js';
 
 export class SplatManager {
     private _splats = new Set<Splat>();

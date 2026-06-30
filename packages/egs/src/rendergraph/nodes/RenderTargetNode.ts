@@ -1,12 +1,12 @@
-import { type Size, type ResizeFN, defaultResizeFN } from './utils';
-import { DAGNode } from './DAGNode';
+import { type Size, type ResizeFN, defaultResizeFN } from './utils.js';
+import { DAGNode } from './DAGNode.js';
 import {
     RenderColorAttachmentNode,
     RenderDepthAttachmentNode,
     type RenderAttachmentNode,
-} from './RenderAttachmentNode';
-import type { PassNode } from './PassNode';
-import { TextureViewDimension } from '../../elements/textures/types';
+} from './RenderAttachmentNode.js';
+import type { PassNode } from './PassNode.js';
+import { TextureViewDimension } from '../../elements/textures/types.js';
 
 export class RenderTargetNode extends DAGNode {
     readonly isScreenNode: boolean;

@@ -3,18 +3,18 @@ import {
     ShaderExtensionTypes,
     ShaderVaryingTypes,
     ShaderInjectionTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
-import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
-import { Side } from '../../../utils/Constants';
-import { getDevicePixelRatio } from '../../../engine/RenderEngine';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { readonlyMath } from '../../../math/Readonly';
-import { materialProperty, ContentBridge } from '../../../ContentAPI';
-import { SceneMaterial } from '../base';
-import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock.js';
+import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms.js';
+import { Side } from '../../../utils/Constants.js';
+import { getDevicePixelRatio } from '../../../engine/RenderEngine.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import { materialProperty, ContentBridge } from '../../../ContentAPI.js';
+import { SceneMaterial } from '../base/index.js';
+import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool.js';
 
 export class GroundMaterial extends SceneMaterial {
     @materialProperty()

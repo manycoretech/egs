@@ -1,14 +1,14 @@
-import { Matrix4 } from '../../math/Matrix4';
-import { Object3D, Object3DChangeEvent } from '../Object3D';
-import { Vector3 } from '../../math/Vector3';
-import type { Serializer, Deserializer } from '../../utils/Serialization';
-import type { ReadonlyVector2, Vector2 } from '../../math/Vector2';
-import type { Ray } from '../../math/Ray';
-import { Culler } from '../tools/Culler';
-import type { Drawable } from '../drawables/Drawable';
-import { Vector4 } from '../../math/Vector4';
-import { ContentBridge, cameraState } from '../../ContentAPI';
-import { readonlyMath } from '../../math/Readonly';
+import { Matrix4 } from '../../math/Matrix4.js';
+import { Object3D, Object3DChangeEvent } from '../Object3D.js';
+import { Vector3 } from '../../math/Vector3.js';
+import type { Serializer, Deserializer } from '../../utils/Serialization.js';
+import type { ReadonlyVector2, Vector2 } from '../../math/Vector2.js';
+import type { Ray } from '../../math/Ray.js';
+import { Culler } from '../tools/Culler.js';
+import type { Drawable } from '../drawables/Drawable.js';
+import { Vector4 } from '../../math/Vector4.js';
+import { ContentBridge, cameraState } from '../../ContentAPI.js';
+import { readonlyMath } from '../../math/Readonly.js';
 
 // Its instance will be useful when there were more than one camera.
 export interface CameraView {

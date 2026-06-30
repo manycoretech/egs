@@ -1,11 +1,11 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { readonlyMath } from '../../../math/Readonly';
-import { materialProperty } from '../../../ContentAPI';
-import type { Texture } from '../../textures/Texture';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import type { Texture } from '../../textures/Texture.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
 
 export class OutlineComposeMaterial extends PassQuadMaterialBase {
     @materialProperty()

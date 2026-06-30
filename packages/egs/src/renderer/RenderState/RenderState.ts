@@ -1,18 +1,18 @@
-import { logger } from '../../utils/Logger';
-import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
-import type { Texture } from '../../elements/textures/Texture';
-import type { Camera3D } from '../../scene/cameras/Camera3D';
-import type { Drawable } from '../../scene/drawables/Drawable';
-import { TypeAssert } from '../../scene/tools/TypeAssert';
-import type { ResourceManager } from '../ResourceManager/ResourceManager';
-import { Capabilities } from '../Capabilities';
-import type { WGLProgram } from '../webgl/WGLProgram';
-import type { WGLState } from '../webgl/WGLState/WGLState';
-import { BuiltInUniforms, BuiltInUniformTypes } from './BuiltInUniforms';
-import type { PopMesh } from '../../scene/drawables/PopMesh';
-import type { SkinnedMesh } from '../../scene/drawables/SkinnedMesh';
-import { WGLCapabilities } from '../webgl/WGLCapabilities';
-import { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry';
+import { logger } from '../../utils/Logger.js';
+import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry.js';
+import type { Texture } from '../../elements/textures/Texture.js';
+import type { Camera3D } from '../../scene/cameras/Camera3D.js';
+import type { Drawable } from '../../scene/drawables/Drawable.js';
+import { TypeAssert } from '../../scene/tools/TypeAssert.js';
+import type { ResourceManager } from '../ResourceManager/ResourceManager.js';
+import { Capabilities } from '../Capabilities.js';
+import type { WGLProgram } from '../webgl/WGLProgram.js';
+import type { WGLState } from '../webgl/WGLState/WGLState.js';
+import { BuiltInUniforms, BuiltInUniformTypes } from './BuiltInUniforms.js';
+import type { PopMesh } from '../../scene/drawables/PopMesh.js';
+import type { SkinnedMesh } from '../../scene/drawables/SkinnedMesh.js';
+import { WGLCapabilities } from '../webgl/WGLCapabilities.js';
+import { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry.js';
 
 const DEFAULT_LOD = new Float32Array([1, 1, 0, 0, 0]);
 

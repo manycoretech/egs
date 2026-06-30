@@ -1,5 +1,9 @@
 # changelog
 
+## DEV
+
+- 改造为标准`ESM`
+
 ## 1.0.6
 
 - 移除`sort`相关实现，`@qunhe/egs-splat-loader`只负责解析

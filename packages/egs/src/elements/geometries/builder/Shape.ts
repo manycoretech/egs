@@ -1,6 +1,6 @@
-import { Shape } from '../../../math/shape/plane/Shape';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { BufferGeometry } from '../../geometries/containers/BufferGeometry';
+import { Shape } from '../../../math/shape/plane/Shape.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
+import { BufferGeometry } from '../../geometries/containers/BufferGeometry.js';
 
 export interface ShapeShapeParameter {
     shapes: Shape | Shape[];

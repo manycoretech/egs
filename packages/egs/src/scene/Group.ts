@@ -1,4 +1,4 @@
-import { Object3D } from './Object3D';
+import { Object3D } from './Object3D.js';
 
 /**
  * This is almost identical to an {@link Object3D| Object3D }. Its purpose is to make working with groups of objects syntactically clearer.

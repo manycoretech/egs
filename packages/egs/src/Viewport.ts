@@ -1,26 +1,26 @@
-import { type ViewerConfig, createViewConfig, listenViewerConfigChange } from './engine/EngineConfig';
-import type { RenderEngine } from './engine/RenderEngine';
-import type { Scene3D } from './scene/Scene3D';
-import type { Camera3D } from './scene/cameras/Camera3D';
+import { type ViewerConfig, createViewConfig, listenViewerConfigChange } from './engine/EngineConfig.js';
+import type { RenderEngine } from './engine/RenderEngine.js';
+import type { Scene3D } from './scene/Scene3D.js';
+import type { Camera3D } from './scene/cameras/Camera3D.js';
 import {
     CameraWatcher,
     CameraChangeEvent,
     CameraEndChangeEvent,
     CameraStartChangeEvent,
-} from './scene/tools/CameraWatcher';
-import type { RequestRenderHandler, Viewer } from './Viewer';
-import { TypeAssert } from './scene/tools/TypeAssert';
-import { logger, sendKtrackerEvent } from './utils/Logger';
-import type { HighlightGroup } from './fx/plugins/Highlight';
-import { PostPipeline } from './fx/Pipeline';
-import { RendererAdaptor } from './fx/RendererAdaptor';
-import type { Size, IRange } from './utils/Utils';
-import { PerspectiveCamera } from './scene/cameras/PerspectiveCamera';
-import { Vector4 } from './math/Vector4';
-import { ContentBridge } from './ContentAPI';
-import { COMPOSITE_TARGET_NAME } from './fx/plugins/Composite';
-import { SnapshotResult } from './snapshot/SnapshotResult';
-import type { DrivenCullingConfig } from './fx/plugins/PipelinePlugin';
+} from './scene/tools/CameraWatcher.js';
+import type { RequestRenderHandler, Viewer } from './Viewer.js';
+import { TypeAssert } from './scene/tools/TypeAssert.js';
+import { logger, sendKtrackerEvent } from './utils/Logger.js';
+import type { HighlightGroup } from './fx/plugins/Highlight.js';
+import { PostPipeline } from './fx/Pipeline.js';
+import { RendererAdaptor } from './fx/RendererAdaptor.js';
+import type { Size, IRange } from './utils/Utils.js';
+import { PerspectiveCamera } from './scene/cameras/PerspectiveCamera.js';
+import { Vector4 } from './math/Vector4.js';
+import { ContentBridge } from './ContentAPI.js';
+import { COMPOSITE_TARGET_NAME } from './fx/plugins/Composite.js';
+import { SnapshotResult } from './snapshot/SnapshotResult.js';
+import type { DrivenCullingConfig } from './fx/plugins/PipelinePlugin.js';
 
 /**
  * Named rendering viewport managed by a viewer.

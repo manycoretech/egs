@@ -1,5 +1,5 @@
-import type { Vector3 } from './Vector3';
-import { _Math } from './Math';
+import type { Vector3 } from './Vector3.js';
+import { _Math } from './Math.js';
 /**
  * A point's {@link https://en.wikipedia.org/wiki/Spherical_coordinate_system| spherical coordinates}.
  */

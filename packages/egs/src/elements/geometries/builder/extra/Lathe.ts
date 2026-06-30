@@ -1,9 +1,9 @@
-import { BufferAttribute } from '../../../../elements/attributes/BufferAttribute';
-import { BufferGeometry } from '../../../../elements/geometries/containers/BufferGeometry';
-import { computeNormalsByPosition } from '../../../../elements/geometries/operators/Renormalize';
-import { _Math } from '../../../../math/Math';
-import { Vector2 } from '../../../../math/Vector2';
-import { Vector3 } from '../../../../math/Vector3';
+import { BufferAttribute } from '../../../../elements/attributes/BufferAttribute.js';
+import { BufferGeometry } from '../../../../elements/geometries/containers/BufferGeometry.js';
+import { computeNormalsByPosition } from '../../../../elements/geometries/operators/Renormalize.js';
+import { _Math } from '../../../../math/Math.js';
+import { Vector2 } from '../../../../math/Vector2.js';
+import { Vector3 } from '../../../../math/Vector3.js';
 
 export interface LatheShapeParameter {
     points: Vector2[];

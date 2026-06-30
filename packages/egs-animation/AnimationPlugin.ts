@@ -1,6 +1,6 @@
 import { Clock, EventType, Viewer, type SkinnedMesh, type IViewerContext, type __INTERNAL__ } from '@qunhe/egs';
-import type { AnimationMixer } from './AnimationMixer';
-import type { ISkinnedMesh, Skeleton } from './Skeleton';
+import type { AnimationMixer } from './AnimationMixer.js';
+import type { ISkinnedMesh, Skeleton } from './Skeleton.js';
 
 export const SkeletonUpdatedEvent = new EventType();
 

@@ -1,8 +1,8 @@
-import { ShaderComponent } from '../Shader';
-import { type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
-import { ShaderBlockPool } from '../builders/ShaderBlockPool';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
+import { ShaderComponent } from '../Shader.js';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder.js';
+import { ShaderBlockPool } from '../builders/ShaderBlockPool.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms.js';
 
 // We store max level position in attributes.
 // position = ((gridPosition >> precision << precision) + HALF_GRID) * vertexGridSize + boxMin.

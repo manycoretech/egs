@@ -1,4 +1,4 @@
-import { logger } from './Logger';
+import { logger } from './Logger.js';
 
 class ApplicationTimer {
     startupTime: number;

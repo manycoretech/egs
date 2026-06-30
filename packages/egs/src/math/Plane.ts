@@ -1,10 +1,10 @@
-import { Vector3 } from './Vector3';
-import type { Sphere } from './Sphere';
-import type { Line3 } from './Line3';
-import type { Box3 } from './Box3';
-import type { Matrix4 } from './Matrix4';
-import { Matrix3 } from './Matrix3';
-import type { Nullable } from '../utils/Utils';
+import { Vector3 } from './Vector3.js';
+import type { Sphere } from './Sphere.js';
+import type { Line3 } from './Line3.js';
+import type { Box3 } from './Box3.js';
+import type { Matrix4 } from './Matrix4.js';
+import { Matrix3 } from './Matrix3.js';
+import type { Nullable } from '../utils/Utils.js';
 /**
  * A two dimensional surface that extends infinitely in 3d space,
  * represented in {@link http://mathworld.wolfram.com/HessianNormalForm.html| Hessian normal form} by a unit length normal vector and a constant.

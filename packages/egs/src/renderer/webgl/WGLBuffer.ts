@@ -1,7 +1,7 @@
-import type { BufferAttribute } from '../../elements/attributes/BufferAttribute';
-import { TypeAssert } from '../../scene/tools/TypeAssert';
-import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
-import { logger } from '../../utils/Logger';
+import type { BufferAttribute } from '../../elements/attributes/BufferAttribute.js';
+import { TypeAssert } from '../../scene/tools/TypeAssert.js';
+import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry.js';
+import { logger } from '../../utils/Logger.js';
 
 // Data type created by WGlBuffer
 export interface WGLBufferData {

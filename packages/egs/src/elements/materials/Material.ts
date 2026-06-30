@@ -1,12 +1,12 @@
-import { EventType, ElementEventDispatcher } from '../../utils/EventDispatcher';
-import type { ShaderInfo, ShaderComponent } from '../../renderer/shader/Shader';
-import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
+import { EventType, ElementEventDispatcher } from '../../utils/EventDispatcher.js';
+import type { ShaderInfo, ShaderComponent } from '../../renderer/shader/Shader.js';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
 import type {
     Serializer,
     Deserializer,
     SerializerablePartKeys,
     SerializerableDelegatedAsReference,
-} from '../../utils/Serialization';
+} from '../../utils/Serialization.js';
 import {
     Side,
     DepthModes,
@@ -15,17 +15,17 @@ import {
     BlendingEquation,
     StencilOp,
     StencilFunc,
-} from '../../utils/Constants';
-import { type Nullable, type PickSubTypeProperty, Utils } from '../../utils/Utils';
-import type { Renderer } from '../../renderer/Renderer';
-import type { Texture } from '../textures/Texture';
-import type { ReadonlyColor } from '../../math/Color';
-import type { UniformBlockObject } from '../../renderer/shader/components/UniformBlockObject';
-import { ShaderBuilder } from '../../renderer/shader/builders/ShaderBuilder';
-import type { ElementsWithGPUResource } from '../../utils/ElementBase';
-import { ContentBridge, materialProperty } from '../../ContentAPI';
-import type { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry';
-import { logger } from '../../utils/Logger';
+} from '../../utils/Constants.js';
+import { type Nullable, type PickSubTypeProperty, Utils } from '../../utils/Utils.js';
+import type { Renderer } from '../../renderer/Renderer.js';
+import type { Texture } from '../textures/Texture.js';
+import type { ReadonlyColor } from '../../math/Color.js';
+import type { UniformBlockObject } from '../../renderer/shader/components/UniformBlockObject.js';
+import { ShaderBuilder } from '../../renderer/shader/builders/ShaderBuilder.js';
+import type { ElementsWithGPUResource } from '../../utils/ElementBase.js';
+import { ContentBridge, materialProperty } from '../../ContentAPI.js';
+import type { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry.js';
+import { logger } from '../../utils/Logger.js';
 
 let materialId = 0;
 

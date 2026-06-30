@@ -1,6 +1,6 @@
-import { FPSTimer } from './FPSTimer';
-import { ValueCounter } from './ValueCounter';
-import type { Object3D } from '../scene/Object3D';
+import { FPSTimer } from './FPSTimer.js';
+import { ValueCounter } from './ValueCounter.js';
+import type { Object3D } from '../scene/Object3D.js';
 
 export class RenderInfo {
     objectInfo: ObjectStatsInfo = new ObjectStatsInfo(); // render info for last frame

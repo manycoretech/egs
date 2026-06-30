@@ -1,5 +1,5 @@
 import type { CompressTextureType } from '@qunhe/egs';
-import { getTranscoderConfig, type TranscodeResult } from './constants';
+import { getTranscoderConfig, type TranscodeResult } from './constants.js';
 
 let BasisModule: any = undefined;
 let p: Promise<void>;
@@ -18,9 +18,9 @@ function init() {
     BasisModule = {};
 
     p = Promise.all([
-        import('./wasm/basis_transcoder.wasm'),
+        import('./wasm/basis_transcoder.wasm.js'),
         // @ts-ignore
-        import('./wasm/basis_transcoder'),
+        import('./wasm/basis_transcoder.js'),
     ])
         .then(m => {
             BasisModule.wasmBinary = m[0].default;

@@ -3,18 +3,18 @@ import {
     createPipelineConfig,
     type DeprecatedPipelineConfig,
     createDeprecatedPipelineConfig,
-} from '../fx/PipelineConfig';
-import { Color } from '../math/Color';
-import { Vector2 } from '../math/Vector2';
-import { BackgroundMode } from '../scene/renderables/Background';
-import type { Viewer } from '../Viewer';
-import { logger } from '../utils/Logger';
-import type { RenderEngine } from './RenderEngine';
-import type { Nullable } from '../utils/Utils';
-import type { PostPipeline } from '../fx/Pipeline';
-import { GLOBAL_CONFIG } from '../utils/GlobalConfig';
-import type { DrivenCullingConfig, TextureCompression } from '../fx/plugins/PipelinePlugin';
-import type { Texture } from '../elements/textures/Texture';
+} from '../fx/PipelineConfig.js';
+import { Color } from '../math/Color.js';
+import { Vector2 } from '../math/Vector2.js';
+import { BackgroundMode } from '../scene/renderables/Background.js';
+import type { Viewer } from '../Viewer.js';
+import { logger } from '../utils/Logger.js';
+import type { RenderEngine } from './RenderEngine.js';
+import type { Nullable } from '../utils/Utils.js';
+import type { PostPipeline } from '../fx/Pipeline.js';
+import { GLOBAL_CONFIG } from '../utils/GlobalConfig.js';
+import type { DrivenCullingConfig, TextureCompression } from '../fx/plugins/PipelinePlugin.js';
+import type { Texture } from '../elements/textures/Texture.js';
 
 export interface ConfigCell<T> {
     get: () => T;

@@ -1,27 +1,27 @@
-import { WGLExtensions, WebGLExtEnums } from './webgl/WGLExtensions';
-import { RenderInfo } from '../utils/RenderInfo';
-import { WGLState } from './webgl/WGLState/WGLState';
-import { WGLBufferRenderer } from './webgl/WGLBufferRenderer';
-import { Vector4 } from '../math/Vector4';
-import { WGLIndexedBufferRenderer } from './webgl/WGLIndexedBufferRenderer';
-import type { Camera3D } from '../scene/cameras/Camera3D';
-import { Color } from '../math/Color';
-import { setupWebGLCapabilities, WGLCapabilities, setupWebGLLimits, type WebGLLimits } from './webgl/WGLCapabilities';
-import { FatLineSegments } from '../scene/drawables/FatLineSegments';
-import type { BufferGeometryBase, BufferRange } from '../elements/geometries/containers/BufferGeometry';
-import type { Nullable, TypedArray, IRange } from '../utils/Utils';
-import type { WGLBufferData } from './webgl/WGLBuffer';
-import { TypeAssert } from '../scene/tools/TypeAssert';
-import type { Drawable } from '../scene/drawables/Drawable';
-import type { WGLProgram } from './webgl/WGLProgram';
-import type { Material } from '../elements/materials/Material';
-import { RenderState } from './RenderState/RenderState';
-import { type ResourceStatistics, ResourceManager } from './ResourceManager/ResourceManager';
-import type { Renderable } from '../scene/renderables/IRenderable';
-import { InstancePool } from '../scene/tools/proxy/InstancePool';
-import { WebGLPixelFormat } from './webgl/WGLConstants';
-import { logger } from '../utils/Logger';
-import { EventDispatcher } from '../utils/EventDispatcher';
+import { WGLExtensions, WebGLExtEnums } from './webgl/WGLExtensions.js';
+import { RenderInfo } from '../utils/RenderInfo.js';
+import { WGLState } from './webgl/WGLState/WGLState.js';
+import { WGLBufferRenderer } from './webgl/WGLBufferRenderer.js';
+import { Vector4 } from '../math/Vector4.js';
+import { WGLIndexedBufferRenderer } from './webgl/WGLIndexedBufferRenderer.js';
+import type { Camera3D } from '../scene/cameras/Camera3D.js';
+import { Color } from '../math/Color.js';
+import { setupWebGLCapabilities, WGLCapabilities, setupWebGLLimits, type WebGLLimits } from './webgl/WGLCapabilities.js';
+import { FatLineSegments } from '../scene/drawables/FatLineSegments.js';
+import type { BufferGeometryBase, BufferRange } from '../elements/geometries/containers/BufferGeometry.js';
+import type { Nullable, TypedArray, IRange } from '../utils/Utils.js';
+import type { WGLBufferData } from './webgl/WGLBuffer.js';
+import { TypeAssert } from '../scene/tools/TypeAssert.js';
+import type { Drawable } from '../scene/drawables/Drawable.js';
+import type { WGLProgram } from './webgl/WGLProgram.js';
+import type { Material } from '../elements/materials/Material.js';
+import { RenderState } from './RenderState/RenderState.js';
+import { type ResourceStatistics, ResourceManager } from './ResourceManager/ResourceManager.js';
+import type { Renderable } from '../scene/renderables/IRenderable.js';
+import { InstancePool } from '../scene/tools/proxy/InstancePool.js';
+import { WebGLPixelFormat } from './webgl/WGLConstants.js';
+import { logger } from '../utils/Logger.js';
+import { EventDispatcher } from '../utils/EventDispatcher.js';
 import {
     type IRenderer,
     type MemoryInfo,
@@ -31,14 +31,14 @@ import {
     ContextLostEvent,
     RenderCtxInfo,
     defaultLimits,
-} from './IRenderer';
-import type { RenderStatistics } from '../Viewer';
-import { DefaultMaterialDispatcher, type MaterialDispatcher } from './MaterialDispatcher';
-import type { RenderTarget } from '../elements/textures/RenderTarget';
-import { getBufferSubDataAsync } from '../utils/AsyncRead';
-import type { WGLRenderAttachment } from './ResourceManager/TextureManager';
-import type { Texture } from '../elements/textures/Texture';
-import type { ShaderComponentRegistry } from '../scene/ShaderComponentRegistry';
+} from './IRenderer.js';
+import type { RenderStatistics } from '../Viewer.js';
+import { DefaultMaterialDispatcher, type MaterialDispatcher } from './MaterialDispatcher.js';
+import type { RenderTarget } from '../elements/textures/RenderTarget.js';
+import { getBufferSubDataAsync } from '../utils/AsyncRead.js';
+import type { WGLRenderAttachment } from './ResourceManager/TextureManager.js';
+import type { Texture } from '../elements/textures/Texture.js';
+import type { ShaderComponentRegistry } from '../scene/ShaderComponentRegistry.js';
 
 const MAX_COLOR_ATTACHMENTS = 8;
 

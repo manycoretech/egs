@@ -1,25 +1,25 @@
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { Utils, type Nullable } from '../../../utils/Utils';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { Utils, type Nullable } from '../../../utils/Utils.js';
 import {
     type ShaderBuilder,
     ShaderInjectionTypes,
     ShaderVaryingTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import type { MaterialParameters } from '../Material';
-import { ColorShaderComponent } from '../../../renderer/shader/components/ColorShaderComponent';
-import { AlphaShaderComponent } from '../../../renderer/shader/components/AlphaShaderComponent';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import type { Color } from '../../../math/Color';
-import { shaderComponentInMaterial, materialProperty } from '../../../ContentAPI';
-import type { ReadonlyMatrix3 } from '../../../math/Matrix3';
-import { readonlyMath } from '../../../math/Readonly';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { SceneClipMaterial } from '../base';
-import type { Texture2D } from '../../textures/Texture2D';
-import type { TextureV2 } from '../../textures/TextureV2';
-import type { Texture } from '../../textures/Texture';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { MaterialParameters } from '../Material.js';
+import { ColorShaderComponent } from '../../../renderer/shader/components/ColorShaderComponent.js';
+import { AlphaShaderComponent } from '../../../renderer/shader/components/AlphaShaderComponent.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import type { Color } from '../../../math/Color.js';
+import { shaderComponentInMaterial, materialProperty } from '../../../ContentAPI.js';
+import type { ReadonlyMatrix3 } from '../../../math/Matrix3.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { SceneClipMaterial } from '../base/index.js';
+import type { Texture2D } from '../../textures/Texture2D.js';
+import type { TextureV2 } from '../../textures/TextureV2.js';
+import type { Texture } from '../../textures/Texture.js';
 
 export type MeshBasicMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters & {
     color?: number | string | Color;

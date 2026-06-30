@@ -1,5 +1,5 @@
-import { PipelinePlugin } from './PipelinePlugin';
-import { Ground } from '../../scene/renderables/Ground';
+import { PipelinePlugin } from './PipelinePlugin.js';
+import { Ground } from '../../scene/renderables/Ground.js';
 import {
     BackgroundMode,
     BasicBackground,
@@ -8,20 +8,20 @@ import {
     GradientBackground,
     type Background,
     SkyBackground,
-} from '../../scene/renderables/Background';
-import { PreSkyMapMaterial } from '../../elements/materials/mesh/SkyMaterial';
-import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
-import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import type { RenderGraph } from '../../rendergraph/RenderGraph';
-import { target, pass } from '../../rendergraph/NodeMakers';
-import { drawQuad, type RendererAdaptor } from '../RendererAdaptor';
-import type { RenderTarget } from '../../elements/textures/RenderTarget';
-import type { Vector2 } from '../../math/Vector2';
-import type { Color } from '../../math/Color';
-import type { Nullable } from '../../utils/Utils';
-import { Vector3 } from '../../math/Vector3';
-import type { SceneAdaptorDispatcher } from '../SceneAdaptor';
-import type { Texture } from '../../elements/textures/Texture';
+} from '../../scene/renderables/Background.js';
+import { PreSkyMapMaterial } from '../../elements/materials/mesh/SkyMaterial.js';
+import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial.js';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
+import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
+import { target, pass } from '../../rendergraph/NodeMakers.js';
+import { drawQuad, type RendererAdaptor } from '../RendererAdaptor.js';
+import type { RenderTarget } from '../../elements/textures/RenderTarget.js';
+import type { Vector2 } from '../../math/Vector2.js';
+import type { Color } from '../../math/Color.js';
+import type { Nullable } from '../../utils/Utils.js';
+import { Vector3 } from '../../math/Vector3.js';
+import type { SceneAdaptorDispatcher } from '../SceneAdaptor.js';
+import type { Texture } from '../../elements/textures/Texture.js';
 
 export const BACKGROUND_SHADING_PASS_NAME = 'background_shading_pass';
 

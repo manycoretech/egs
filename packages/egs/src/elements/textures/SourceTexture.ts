@@ -1,9 +1,9 @@
-import type { WebGLTextureUploadCtx, SamplerDescriptor } from './Texture';
-import { TextureV2 } from './TextureV2';
-import { ContentBridge } from '../../ContentAPI';
-import { TextureDimension, type TextureViewDimension, type TextureFormat, mipLevelSize, CUBE_FACES } from './types';
-import type { TypedArray } from '../../utils/Utils';
-import { logger } from '../../utils/Logger';
+import type { WebGLTextureUploadCtx, SamplerDescriptor } from './Texture.js';
+import { TextureV2 } from './TextureV2.js';
+import { ContentBridge } from '../../ContentAPI.js';
+import { TextureDimension, type TextureViewDimension, type TextureFormat, mipLevelSize, CUBE_FACES } from './types.js';
+import type { TypedArray } from '../../utils/Utils.js';
+import { logger } from '../../utils/Logger.js';
 
 export type MipLevelSource = TypedArray;
 export type LayerSource =

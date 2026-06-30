@@ -8,7 +8,7 @@ import {
     StreamChunkDecoder,
     type ChunkDecoder,
     NUM_F_REST_TO_SH_DEGREE,
-} from '../utils';
+} from '../utils.js';
 
 type PlyPropertyType = 'char' | 'uchar' | 'short' | 'ushort' | 'int' | 'uint' | 'float' | 'double';
 

@@ -1,14 +1,14 @@
-import { Material } from '../Material';
-import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
-import { Side } from '../../../utils/Constants';
-import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
-import { Vector3 } from '../../../math/Vector3';
-import { Vector4 } from '../../../math/Vector4';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import type { TextureV2 } from '../../textures/TextureV2';
+import { Material } from '../Material.js';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms.js';
+import { Side } from '../../../utils/Constants.js';
+import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { Vector4 } from '../../../math/Vector4.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import type { TextureV2 } from '../../textures/TextureV2.js';
 
 export class SplattingMaterial extends Material {
     transparent = true;

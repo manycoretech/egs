@@ -1,12 +1,12 @@
-import { Mesh } from '../../drawables/Mesh';
-import { TypeAssert } from '../TypeAssert';
-import type { Drawable } from '../../drawables/Drawable';
-import { DrawcallMerger, type MergeDrawcallSource } from './Merger';
-import type { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry';
-import type { Material } from '../../../elements/materials/Material';
-import type { GeometryBase } from '../../../elements/geometries/containers/GeometryBase';
-import { logger } from '../../../utils/Logger';
-import { mergeBufferGeometries } from '../../../elements/geometries/operators/Index';
+import { Mesh } from '../../drawables/Mesh.js';
+import { TypeAssert } from '../TypeAssert.js';
+import type { Drawable } from '../../drawables/Drawable.js';
+import { DrawcallMerger, type MergeDrawcallSource } from './Merger.js';
+import type { BufferGeometry } from '../../../elements/geometries/containers/BufferGeometry.js';
+import type { Material } from '../../../elements/materials/Material.js';
+import type { GeometryBase } from '../../../elements/geometries/containers/GeometryBase.js';
+import { logger } from '../../../utils/Logger.js';
+import { mergeBufferGeometries } from '../../../elements/geometries/operators/Index.js';
 
 export class MultiMeshMerger extends DrawcallMerger<Mesh, Material, BufferGeometry> {
     downcastInputDrawable(input: Drawable): input is Mesh {

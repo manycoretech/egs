@@ -1,19 +1,19 @@
-import type { Renderer } from './Renderer';
-import type { Material } from '../elements/materials/Material';
-import { WGLProgram } from './webgl/WGLProgram';
-import { logger } from '../utils/Logger';
-import type { BufferGeometryBase } from '../elements/geometries/containers/BufferGeometry';
-import type { Drawable } from '../scene/drawables/Drawable';
-import { TypeAssert } from '../scene/tools/TypeAssert';
-import { Capabilities } from './Capabilities';
-import { ShaderBuilder, ShaderInjectionTypes } from './shader/builders/ShaderBuilder';
-import { type Nullable, singleton } from '../utils/Utils';
-import { PipelineContentBridge } from '../fx/PipelineAPI';
-import { BaseElement } from '../utils/ElementBase';
-import { Blending } from '../utils/Constants';
-import type { DeferredMaterial } from '../elements/materials/base';
-import { ShaderBlockPool } from './shader/builders/ShaderBlockPool';
-import type { ShaderComponentRegistry } from '../scene/ShaderComponentRegistry';
+import type { Renderer } from './Renderer.js';
+import type { Material } from '../elements/materials/Material.js';
+import { WGLProgram } from './webgl/WGLProgram.js';
+import { logger } from '../utils/Logger.js';
+import type { BufferGeometryBase } from '../elements/geometries/containers/BufferGeometry.js';
+import type { Drawable } from '../scene/drawables/Drawable.js';
+import { TypeAssert } from '../scene/tools/TypeAssert.js';
+import { Capabilities } from './Capabilities.js';
+import { ShaderBuilder, ShaderInjectionTypes } from './shader/builders/ShaderBuilder.js';
+import { type Nullable, singleton } from '../utils/Utils.js';
+import { PipelineContentBridge } from '../fx/PipelineAPI.js';
+import { BaseElement } from '../utils/ElementBase.js';
+import { Blending } from '../utils/Constants.js';
+import type { DeferredMaterial } from '../elements/materials/base/index.js';
+import { ShaderBlockPool } from './shader/builders/ShaderBlockPool.js';
+import type { ShaderComponentRegistry } from '../scene/ShaderComponentRegistry.js';
 
 export function checkInstance(object: Drawable, geometry: BufferGeometryBase): boolean {
     const isInstance = TypeAssert.isInstanceMesh(object);

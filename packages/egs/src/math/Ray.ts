@@ -1,9 +1,9 @@
-import { Vector3 } from './Vector3';
-import type { Sphere } from './Sphere';
-import type { Plane } from './Plane';
-import type { Box3 } from './Box3';
-import type { Matrix4 } from './Matrix4';
-import type { Nullable } from '../utils/Utils';
+import { Vector3 } from './Vector3.js';
+import type { Sphere } from './Sphere.js';
+import type { Plane } from './Plane.js';
+import type { Box3 } from './Box3.js';
+import type { Matrix4 } from './Matrix4.js';
+import type { Nullable } from '../utils/Utils.js';
 /**
  * A ray that emits from an origin in a certain direction. This is used by the
  * {@link Raycaster| Raycaster} to assist with {@link https://en.wikipedia.org/wiki/Ray_casting| ray casting}.

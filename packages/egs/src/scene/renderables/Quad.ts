@@ -1,18 +1,18 @@
-import { type IRenderer, RendererBackend } from '../../renderer/IRenderer';
-import { OrthographicCamera } from '../cameras/OrthographicCamera';
-import { Mesh } from '../drawables/Mesh';
-import type { Renderable } from './IRenderable';
-import type { Material } from '../../elements/materials/Material';
+import { type IRenderer, RendererBackend } from '../../renderer/IRenderer.js';
+import { OrthographicCamera } from '../cameras/OrthographicCamera.js';
+import { Mesh } from '../drawables/Mesh.js';
+import type { Renderable } from './IRenderable.js';
+import type { Material } from '../../elements/materials/Material.js';
 import {
     PipelineContentBridge,
     PipelineContentAPIForRenderingAndFilteringEnabled,
     ShadowMode,
-} from '../../fx/PipelineAPI';
-import type { DeferredLightBase } from '../../fx/plugins/Deferred';
-import { FullScreenTriangleBufferGeometry } from '../../elements/geometries/builder/Triangle';
-import type { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry';
-import type { Scene3D } from '../Scene3D';
-import type { Light } from '../lights/Light';
+} from '../../fx/PipelineAPI.js';
+import type { DeferredLightBase } from '../../fx/plugins/Deferred.js';
+import { FullScreenTriangleBufferGeometry } from '../../elements/geometries/builder/Triangle.js';
+import type { BufferGeometry } from '../../elements/geometries/containers/BufferGeometry.js';
+import type { Scene3D } from '../Scene3D.js';
+import type { Light } from '../lights/Light.js';
 
 export class Quad implements Renderable {
     private quadCamera = new OrthographicCamera(-1, 1, 1, -1, 0, 1);

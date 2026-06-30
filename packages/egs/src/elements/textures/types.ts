@@ -1,5 +1,5 @@
-import { RendererBackend } from '../../renderer/IRenderer';
-import { logger } from '../../utils/Logger';
+import { RendererBackend } from '../../renderer/IRenderer.js';
+import { logger } from '../../utils/Logger.js';
 
 /**
  * Dimensionality of texture storage.

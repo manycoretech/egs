@@ -1,11 +1,11 @@
-import { Sphere } from '../../math/Sphere';
-import { Drawable } from './Drawable';
-import type { Raycaster, Intersection } from '../tools/Raycaster';
-import { Vector3 } from '../../math/Vector3';
-import { BufferGeometry, type PointList } from '../../elements/geometries/containers/BufferGeometry';
-import type { Material } from '../../elements/materials/Material';
-import { PointsMaterial } from '../../elements/materials/mesh/PointsMaterial';
-import { DrawMode } from '../../utils/Constants';
+import { Sphere } from '../../math/Sphere.js';
+import { Drawable } from './Drawable.js';
+import type { Raycaster, Intersection } from '../tools/Raycaster.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { BufferGeometry, type PointList } from '../../elements/geometries/containers/BufferGeometry.js';
+import type { Material } from '../../elements/materials/Material.js';
+import { PointsMaterial } from '../../elements/materials/mesh/PointsMaterial.js';
+import { DrawMode } from '../../utils/Constants.js';
 
 const sphere = new Sphere();
 const position = new Vector3();

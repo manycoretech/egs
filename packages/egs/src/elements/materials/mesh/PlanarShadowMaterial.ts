@@ -1,7 +1,7 @@
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { SceneMaterial } from '../base';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { SceneMaterial } from '../base/index.js';
 
 export class PlanarShadowMaterial extends SceneMaterial {
     intensity = 0;

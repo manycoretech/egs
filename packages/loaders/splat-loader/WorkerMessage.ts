@@ -1,4 +1,4 @@
-import type { ParseExtras, SplatFileType, SplatPackType, ISplatData } from './utils';
+import type { ParseExtras, SplatFileType, SplatPackType, ISplatData } from './utils.js';
 
 export enum TaskType {
     ParseSplat = 'ParseSplat',

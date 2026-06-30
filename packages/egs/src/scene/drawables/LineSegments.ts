@@ -1,10 +1,10 @@
-import { BufferGeometry, type LineList } from '../../elements/geometries/containers/BufferGeometry';
-import type { Material } from '../../elements/materials/Material';
-import { Drawable } from '../../scene/drawables/Drawable';
-import { raycastLine } from './Line';
-import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
-import type { Intersection, Raycaster } from '../../scene/tools/Raycaster';
-import { DrawMode } from '../../utils/Constants';
+import { BufferGeometry, type LineList } from '../../elements/geometries/containers/BufferGeometry.js';
+import type { Material } from '../../elements/materials/Material.js';
+import { Drawable } from '../../scene/drawables/Drawable.js';
+import { raycastLine } from './Line.js';
+import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial.js';
+import type { Intersection, Raycaster } from '../../scene/tools/Raycaster.js';
+import { DrawMode } from '../../utils/Constants.js';
 
 /**
  * This class is used to link points as pair and draw a segmented line between them.

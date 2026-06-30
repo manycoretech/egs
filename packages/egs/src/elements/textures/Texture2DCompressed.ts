@@ -1,16 +1,16 @@
-import type { TypedArray } from '../../utils/Utils';
+import type { TypedArray } from '../../utils/Utils.js';
 import {
     LegacySourceTexture,
     type SourceTextureLayerWebGLUploadResult,
     type SourceTextureWebGLUploadResult,
     type TextureMipmapGroup,
     type WebGLTextureUploadCtx,
-} from './Texture';
-import { Texture2DLayer } from './Texture2D';
-import { ContentBridge } from '../../ContentAPI';
-import type { CompressedPixelFormat } from '../../utils/Constants';
-import { _Math } from '../../math/Math';
-import { TextureDimension, TextureViewDimension } from './types';
+} from './Texture.js';
+import { Texture2DLayer } from './Texture2D.js';
+import { ContentBridge } from '../../ContentAPI.js';
+import type { CompressedPixelFormat } from '../../utils/Constants.js';
+import { _Math } from '../../math/Math.js';
+import { TextureDimension, TextureViewDimension } from './types.js';
 
 export class Texture2DCompressed extends LegacySourceTexture {
     className() {

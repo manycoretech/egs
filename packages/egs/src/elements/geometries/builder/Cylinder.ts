@@ -1,7 +1,7 @@
-import { BufferGeometry } from '../containers/BufferGeometry';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { Vector3 } from '../../../math/Vector3';
-import { Vector2 } from '../../../math/Vector2';
+import { BufferGeometry } from '../containers/BufferGeometry.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { Vector2 } from '../../../math/Vector2.js';
 /**
  * @param { number } radiusTop Radius of the cylinder at the top. Default is 1.
  * @param { number } radiusBottom Radius of the cylinder at the bottom. Default is 1.

@@ -1,27 +1,27 @@
-import { RenderMode } from '../engine/EngineConfig';
-import type { Color } from '../math/Color';
-import type { PostPipeline } from './Pipeline';
-import type { Vector3 } from '../math/Vector3';
-import type { Plane } from '../math/Plane';
-import { FilterTarget } from '../elements/materials/quad/FilterMaterial';
-import { DebugMode } from './plugins/Debug';
+import { RenderMode } from '../engine/EngineConfig.js';
+import type { Color } from '../math/Color.js';
+import type { PostPipeline } from './Pipeline.js';
+import type { Vector3 } from '../math/Vector3.js';
+import type { Plane } from '../math/Plane.js';
+import { FilterTarget } from '../elements/materials/quad/FilterMaterial.js';
+import { DebugMode } from './plugins/Debug.js';
 
-import type { ConfigCell, RenderingConfig } from './plugins/PipelinePlugin';
-import type { SceneClipPlugin } from './plugins/SceneClip';
-import type { AOPlugin } from './plugins/AO';
-import type { BackgroundPlugin } from './plugins/Background';
-import type { SplattingPlugin } from './plugins/Splatting';
-import type { DeferredPlugin } from './plugins/Deferred';
-import type { ForwardPlugin } from './plugins/Forward';
-import type { TransparentLinePlugin } from './plugins/TransparentLine';
-import type { HighlightPlugin } from './plugins/Highlight';
-import type { OutlinePlugin } from './plugins/Outline';
-import type { ShadowMapPlugin } from './plugins/ShadowMap';
-import type { StylizePlugin } from './plugins/Stylize';
-import type { TAAPlugin } from './plugins/TAA';
-import type { CompositePlugin } from './plugins/Composite';
-import type { DebugPlugin } from './plugins/Debug';
-import type { Texture } from '../elements/textures/Texture';
+import type { ConfigCell, RenderingConfig } from './plugins/PipelinePlugin.js';
+import type { SceneClipPlugin } from './plugins/SceneClip.js';
+import type { AOPlugin } from './plugins/AO.js';
+import type { BackgroundPlugin } from './plugins/Background.js';
+import type { SplattingPlugin } from './plugins/Splatting.js';
+import type { DeferredPlugin } from './plugins/Deferred.js';
+import type { ForwardPlugin } from './plugins/Forward.js';
+import type { TransparentLinePlugin } from './plugins/TransparentLine.js';
+import type { HighlightPlugin } from './plugins/Highlight.js';
+import type { OutlinePlugin } from './plugins/Outline.js';
+import type { ShadowMapPlugin } from './plugins/ShadowMap.js';
+import type { StylizePlugin } from './plugins/Stylize.js';
+import type { TAAPlugin } from './plugins/TAA.js';
+import type { CompositePlugin } from './plugins/Composite.js';
+import type { DebugPlugin } from './plugins/Debug.js';
+import type { Texture } from '../elements/textures/Texture.js';
 
 export interface PipelineConfig {
     MSAA: {

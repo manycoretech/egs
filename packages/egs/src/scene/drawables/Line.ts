@@ -1,13 +1,13 @@
-import { Vector3 } from '../../math/Vector3';
-import { Matrix4 } from '../../math/Matrix4';
-import { Ray } from '../../math/Ray';
-import { Sphere } from '../../math/Sphere';
-import { Drawable } from './Drawable';
-import { BufferGeometry, type LineStrip } from '../../elements/geometries/containers/BufferGeometry';
-import type { Material } from '../../elements/materials/Material';
-import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
-import type { Raycaster, Intersection } from '../tools/Raycaster';
-import { DrawMode } from '../../utils/Constants';
+import { Vector3 } from '../../math/Vector3.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import { Ray } from '../../math/Ray.js';
+import { Sphere } from '../../math/Sphere.js';
+import { Drawable } from './Drawable.js';
+import { BufferGeometry, type LineStrip } from '../../elements/geometries/containers/BufferGeometry.js';
+import type { Material } from '../../elements/materials/Material.js';
+import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial.js';
+import type { Raycaster, Intersection } from '../tools/Raycaster.js';
+import { DrawMode } from '../../utils/Constants.js';
 
 const inverseMatrix = new Matrix4();
 const ray = new Ray();

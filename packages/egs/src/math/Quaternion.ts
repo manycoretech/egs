@@ -1,6 +1,6 @@
-import type { Euler } from './Euler';
-import { Vector3 } from './Vector3';
-import type { Matrix4 } from './Matrix4';
+import type { Euler } from './Euler.js';
+import { Vector3 } from './Vector3.js';
+import type { Matrix4 } from './Matrix4.js';
 /**
  * Implementation of a {@link http://en.wikipedia.org/wiki/Quaternion| quaternion}.
  * Quaternions are used to represent {@link https://en.wikipedia.org/wiki/Quaternions_and_spatial_rotation| rotations}.

@@ -1,12 +1,12 @@
-import { ShaderComponent } from '../Shader';
-import { type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
-import type { WGLProgram } from '../../webgl/WGLProgram';
-import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import type { ConvertMaterialParameters } from '../../../elements/materials/Material';
-import { Utils } from '../../../utils/Utils';
-import { readonlyMath } from '../../../math/Readonly';
-import { ContentBridge, materialProperty } from '../../../ContentAPI';
+import { ShaderComponent } from '../Shader.js';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../webgl/WGLProgram.js';
+import { WebGLShaderDataType } from '../../webgl/WGLConstants.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import type { ConvertMaterialParameters } from '../../../elements/materials/Material.js';
+import { Utils } from '../../../utils/Utils.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import { ContentBridge, materialProperty } from '../../../ContentAPI.js';
 
 /**
  * Spot pattern styles supported by spotted shader components.

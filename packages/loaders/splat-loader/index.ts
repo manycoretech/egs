@@ -1,5 +1,5 @@
-export { KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, EszFile } from './file';
-export { SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat';
+export { KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, EszFile } from './file/index.js';
+export { SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat/index.js';
 export {
     type ISingleSplat,
     ISamplerFormat,
@@ -11,14 +11,14 @@ export {
     SplatFileType,
     SplatPackType,
     detectSplatFileType,
-} from './utils';
-export { createSplatFile, createSplatData } from './helper';
+} from './utils.js';
+export { createSplatFile, createSplatData } from './helper.js';
 
 import { FactoryWorkerPool, deferred } from '@qunhe/egs-lib';
-import { type ParseExtras, getMaxTextureSize, SplatFileType, SplatPackType } from './utils';
-import { type SendMessage, TaskType, type ReceiveMessage, TaskStatus } from './WorkerMessage';
-import type { SplatData } from './splat';
-import { createSplatData } from './helper';
+import { type ParseExtras, getMaxTextureSize, SplatFileType, SplatPackType } from './utils.js';
+import { type SendMessage, TaskType, type ReceiveMessage, TaskStatus } from './WorkerMessage.js';
+import type { SplatData } from './splat/index.js';
+import { createSplatData } from './helper.js';
 
 const useMockStream =
     /ip([ao]d|hone)/i.test(navigator.userAgent) || /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
@@ -28,7 +28,7 @@ try {
     const W = require('worker-loader?inline&fallback=false!./worker');
     WorkerFactor = () => new W();
 } catch {
-    WorkerFactor = () => new Worker(new URL('./worker', import.meta.url), { type: 'module' });
+    WorkerFactor = () => new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
 }
 const poll = new FactoryWorkerPool('splat', WorkerFactor, 4, 1);
 export async function parseSplatData(

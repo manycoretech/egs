@@ -1,70 +1,70 @@
-export { logger } from './utils/Logger';
+export { logger } from './utils/Logger.js';
 export {
     MaterialShadingWithDynamicShapeDispatcher,
     DefaultMaterialDispatcher,
     MaterialDispatcher,
-} from './renderer/MaterialDispatcher';
+} from './renderer/MaterialDispatcher.js';
 export {
     ForwardDispatcher,
     PlanarShadowDispatcher,
     BeforeScenePassEvent,
     AfterScenePassEvent,
-} from './fx/plugins/Forward';
-export { ShadowMode, PipelineFilters } from './fx/PipelineAPI';
-export type { PipelineAPI, IPipelineFilter } from './fx/PipelineAPI';
-export { EncodeDispatcher } from './fx/plugins/Outline';
+} from './fx/plugins/Forward.js';
+export { ShadowMode, PipelineFilters } from './fx/PipelineAPI.js';
+export type { PipelineAPI, IPipelineFilter } from './fx/PipelineAPI.js';
+export { EncodeDispatcher } from './fx/plugins/Outline.js';
 export {
     RenderObjectsType,
     DrawableList,
     ProjectedDrawcallList,
     DrawcallListClassifyList,
-} from './scene/tools/DrawcallList';
-export type { DrawcallListClassifyType } from './scene/tools/DrawcallList';
-export { InstancedBufferGeometry } from './elements/geometries/containers/InstancedBufferGeometry';
-export { SpriteBufferGeometry } from './elements/geometries/containers/SpriteBufferGeometry';
-export { ShaderComponent } from './renderer/shader/Shader';
-export { Texture2DCommonLayer } from './elements/textures/Texture2D';
-export { Camera3D } from './scene/cameras/Camera3D';
-export { Object3DChangeEvent } from './scene/Object3D';
-export { RenderTarget, RenderAttachment } from './elements/textures/RenderTarget';
-export type { Nullable, TypedArray, IRange } from './utils/Utils';
-export { RendererState, RenderCtxInfo, MemoryGrowFailed, defaultLimits } from './renderer/IRenderer';
-export type { IRenderer, RendererStatus, RendererParameters, Limits } from './renderer/IRenderer';
-export { registerGlobal3DRendererOverride, resetGlobal3DRendererOverride } from './renderer/RendererOverride';
-export { EnvMapMaterial } from './elements/materials/mesh/EnvMapMaterial';
-export { GradientMaterial } from './elements/materials/mesh/GradientMaterial';
-export { GroundMaterial } from './elements/materials/mesh/GroundMaterial';
-export { AlphaShaderComponent } from './renderer/shader/components/AlphaShaderComponent';
-export { ColorShaderComponent } from './renderer/shader/components/ColorShaderComponent';
-export { SkinningShaderComponent } from './renderer/shader/components/SkinningShaderComponent';
-export { PreSkyMapMaterial, SkyMaterial } from './elements/materials/mesh/SkyMaterial';
-export { Shadow } from './scene/shadows/Shadow';
-export { DirectionalShadow } from './scene/shadows/DirectionalShadow';
-export { PointShadow } from './scene/shadows/PointShadow';
-export { SpotShadow } from './scene/shadows/SpotShadow';
-export { BlurPassMaterial } from './elements/materials/quad/BlurPassMaterial';
+} from './scene/tools/DrawcallList.js';
+export type { DrawcallListClassifyType } from './scene/tools/DrawcallList.js';
+export { InstancedBufferGeometry } from './elements/geometries/containers/InstancedBufferGeometry.js';
+export { SpriteBufferGeometry } from './elements/geometries/containers/SpriteBufferGeometry.js';
+export { ShaderComponent } from './renderer/shader/Shader.js';
+export { Texture2DCommonLayer } from './elements/textures/Texture2D.js';
+export { Camera3D } from './scene/cameras/Camera3D.js';
+export { Object3DChangeEvent } from './scene/Object3D.js';
+export { RenderTarget, RenderAttachment } from './elements/textures/RenderTarget.js';
+export type { Nullable, TypedArray, IRange } from './utils/Utils.js';
+export { RendererState, RenderCtxInfo, MemoryGrowFailed, defaultLimits } from './renderer/IRenderer.js';
+export type { IRenderer, RendererStatus, RendererParameters, Limits } from './renderer/IRenderer.js';
+export { registerGlobal3DRendererOverride, resetGlobal3DRendererOverride } from './renderer/RendererOverride.js';
+export { EnvMapMaterial } from './elements/materials/mesh/EnvMapMaterial.js';
+export { GradientMaterial } from './elements/materials/mesh/GradientMaterial.js';
+export { GroundMaterial } from './elements/materials/mesh/GroundMaterial.js';
+export { AlphaShaderComponent } from './renderer/shader/components/AlphaShaderComponent.js';
+export { ColorShaderComponent } from './renderer/shader/components/ColorShaderComponent.js';
+export { SkinningShaderComponent } from './renderer/shader/components/SkinningShaderComponent.js';
+export { PreSkyMapMaterial, SkyMaterial } from './elements/materials/mesh/SkyMaterial.js';
+export { Shadow } from './scene/shadows/Shadow.js';
+export { DirectionalShadow } from './scene/shadows/DirectionalShadow.js';
+export { PointShadow } from './scene/shadows/PointShadow.js';
+export { SpotShadow } from './scene/shadows/SpotShadow.js';
+export { BlurPassMaterial } from './elements/materials/quad/BlurPassMaterial.js';
 export {
     MixColorAndDepthMaterial,
     CopyColorAndDepthMaterial,
     CopyDepthMaterial,
     CopyMaterial,
-} from './elements/materials/quad/CopyMaterial';
-export { MixOITMaterial } from './elements/materials/quad/MixOITMaterial';
-export { MixPlanarShadowMaterial } from './elements/materials/quad/MixPlanarShadowMaterial';
-export { HighLightBlendPassMaterial } from './elements/materials/quad/HighLightBlendPassMaterial';
-export { DownsampleMaterial } from './elements/materials/quad/DownsampleMaterial';
-export { OutlineComputeMaterial } from './elements/materials/quad/OutlineComputeMaterial';
-export { OutlineComposeMaterial } from './elements/materials/quad/OutlineComposeMaterial';
-export { OutlineEncodeMaterial } from './elements/materials/mesh/OutlineEncodeMaterial';
-export { SSAOBlurPassMaterial } from './elements/materials/quad/SSAOBlurPassMaterial';
-export { SSAOPassMaterial } from './elements/materials/quad/SSAOPassMaterial';
-export { TAAMaterial } from './elements/materials/quad/TAAMaterial';
-export { PseudoColorMaterial } from './elements/materials/quad/PseudoColorMaterial';
-export { RoomBoxMaterial } from './elements/materials/mesh/RoomBoxMaterial';
-export { PlanarShadowMaterial } from './elements/materials/mesh/PlanarShadowMaterial';
-export { FilterMaterial } from './elements/materials/quad/FilterMaterial';
-export { ToonMaterial } from './elements/materials/mesh/ToonMaterial';
-export { OITMaterial } from './elements/materials/mesh/OITMaterial';
+} from './elements/materials/quad/CopyMaterial.js';
+export { MixOITMaterial } from './elements/materials/quad/MixOITMaterial.js';
+export { MixPlanarShadowMaterial } from './elements/materials/quad/MixPlanarShadowMaterial.js';
+export { HighLightBlendPassMaterial } from './elements/materials/quad/HighLightBlendPassMaterial.js';
+export { DownsampleMaterial } from './elements/materials/quad/DownsampleMaterial.js';
+export { OutlineComputeMaterial } from './elements/materials/quad/OutlineComputeMaterial.js';
+export { OutlineComposeMaterial } from './elements/materials/quad/OutlineComposeMaterial.js';
+export { OutlineEncodeMaterial } from './elements/materials/mesh/OutlineEncodeMaterial.js';
+export { SSAOBlurPassMaterial } from './elements/materials/quad/SSAOBlurPassMaterial.js';
+export { SSAOPassMaterial } from './elements/materials/quad/SSAOPassMaterial.js';
+export { TAAMaterial } from './elements/materials/quad/TAAMaterial.js';
+export { PseudoColorMaterial } from './elements/materials/quad/PseudoColorMaterial.js';
+export { RoomBoxMaterial } from './elements/materials/mesh/RoomBoxMaterial.js';
+export { PlanarShadowMaterial } from './elements/materials/mesh/PlanarShadowMaterial.js';
+export { FilterMaterial } from './elements/materials/quad/FilterMaterial.js';
+export { ToonMaterial } from './elements/materials/mesh/ToonMaterial.js';
+export { OITMaterial } from './elements/materials/mesh/OITMaterial.js';
 export {
     ExposedCopyMaterial,
     ExposedToneMappingMaterial,
@@ -72,9 +72,9 @@ export {
     DialuxWhiteBalanceExposureMaterial,
     HistogramComputeMaterial,
     AvgLuminanceMaterial,
-} from './elements/materials/quad/ExposedCopyMaterial';
-export { ToneMappingMaterial } from './elements/materials/quad/ToneMappingMaterial';
-export { BackgroundLikeMaterial } from './elements/materials/base';
+} from './elements/materials/quad/ExposedCopyMaterial.js';
+export { ToneMappingMaterial } from './elements/materials/quad/ToneMappingMaterial.js';
+export { BackgroundLikeMaterial } from './elements/materials/base/index.js';
 export {
     DeferredDrawAmbientLightMaterial,
     DeferredDrawDirectionalLightMaterial,
@@ -82,57 +82,57 @@ export {
     DeferredDrawPointLightMaterial,
     DeferredDrawRectAreaLightMaterial,
     DeferredDrawSpotLightMaterial,
-} from './fx/plugins/Deferred';
+} from './fx/plugins/Deferred.js';
 
-export { registerPipelineContentAPI, removePipelineContentAPI } from './fx/PipelineAPI';
+export { registerPipelineContentAPI, removePipelineContentAPI } from './fx/PipelineAPI.js';
 export {
     registerContentAPI,
     unregisterContentAPI,
     registerManagedContentAPI,
     removeManagedContentAPI,
     disposeManagedContentAPI,
-} from './ContentAPI';
-export type { ContentManagedAPI, ContentAPI, WorldRebuildConfig } from './ContentAPI';
-export { LegacySourceTexture } from './elements/textures/Texture';
-export { textureCopyInfo, textureCopyFootprint } from './elements/textures/types';
+} from './ContentAPI.js';
+export type { ContentManagedAPI, ContentAPI, WorldRebuildConfig } from './ContentAPI.js';
+export { LegacySourceTexture } from './elements/textures/Texture.js';
+export { textureCopyInfo, textureCopyFootprint } from './elements/textures/types.js';
 
-export { RenderInfo } from './utils/RenderInfo';
-export type { Renderable } from './scene/renderables/IRenderable';
-export { WebGLExtEnums } from './renderer/webgl/WGLExtensions';
-export { WGLConstantsConvertor } from './renderer/webgl/WGLConstantsConvertor';
-export { WGLExtensions } from './renderer/webgl/WGLExtensions';
-export { getBufferSubDataAsync } from './utils/AsyncRead';
-export { Platform } from './utils/Platform';
-export { getMaterialShaderComponents, getMaterialProperties } from './ContentAPI';
-export { ToggleWebGPUEvent, WebGPUUnstable, WebGPUValidationFailed } from './Bridge/utils';
-export { IterableWeakMap, IterableWeakSet } from './utils/WeakCollections';
-export { DeferredDispatcher } from './renderer/MaterialDispatcher';
-export { setupWebGLCapabilities, setupWebGLLimits } from './renderer/webgl/WGLCapabilities';
+export { RenderInfo } from './utils/RenderInfo.js';
+export type { Renderable } from './scene/renderables/IRenderable.js';
+export { WebGLExtEnums } from './renderer/webgl/WGLExtensions.js';
+export { WGLConstantsConvertor } from './renderer/webgl/WGLConstantsConvertor.js';
+export { WGLExtensions } from './renderer/webgl/WGLExtensions.js';
+export { getBufferSubDataAsync } from './utils/AsyncRead.js';
+export { Platform } from './utils/Platform.js';
+export { getMaterialShaderComponents, getMaterialProperties } from './ContentAPI.js';
+export { ToggleWebGPUEvent, WebGPUUnstable, WebGPUValidationFailed } from './Bridge/utils.js';
+export { IterableWeakMap, IterableWeakSet } from './utils/WeakCollections.js';
+export { DeferredDispatcher } from './renderer/MaterialDispatcher.js';
+export { setupWebGLCapabilities, setupWebGLLimits } from './renderer/webgl/WGLCapabilities.js';
 export {
     setupWebGPUCapabilities,
     Capabilities,
     setupWebGPUCompressedTextureCapabilities,
-} from './renderer/Capabilities';
-export { setSortSplats, SplattingRenderMode } from './fx/plugins/Splatting';
-export { CompressedSplat } from './scene/splat/CompressedSplat';
-export { SuperCompressedSplat } from './scene/splat/SuperCompressedSplat';
-export { SogSplat } from './scene/splat/SogSplat';
-export type { SogSplatMeta } from './scene/splat/SogSplat';
+} from './renderer/Capabilities.js';
+export { setSortSplats, SplattingRenderMode } from './fx/plugins/Splatting.js';
+export { CompressedSplat } from './scene/splat/CompressedSplat.js';
+export { SuperCompressedSplat } from './scene/splat/SuperCompressedSplat.js';
+export { SogSplat } from './scene/splat/SogSplat.js';
+export type { SogSplatMeta } from './scene/splat/SogSplat.js';
 
-export { GLOBAL_CONFIG } from './utils/GlobalConfig';
-export { deferred } from './utils/Deferred';
-export type { Deferred } from './utils/Deferred';
-export { BVHStrategyType, BVHBuilder } from './BVH';
-export type { BVHBuilderData, BVH, BVHRaw } from './BVH';
+export { GLOBAL_CONFIG } from './utils/GlobalConfig.js';
+export { deferred } from './utils/Deferred.js';
+export type { Deferred } from './utils/Deferred.js';
+export { BVHStrategyType, BVHBuilder } from './BVH/index.js';
+export type { BVHBuilderData, BVH, BVHRaw } from './BVH/index.js';
 
-export type { ViewerPlugin } from './Viewer';
+export type { ViewerPlugin } from './Viewer.js';
 
 import {
     serializeObject3D as deprecatedSerializeObject3D,
     parseObjects as deprecatedParseObjects,
     deepCloneObject3D as deprecatedDeepCloneObject3D,
     downloadStringAsFile as deprecatedDownloadStringAsFile,
-} from './scene/tools/SceneIO';
+} from './scene/tools/SceneIO.js';
 
 let serializeObject3D = deprecatedSerializeObject3D;
 let parseObjects = deprecatedParseObjects;
@@ -151,9 +151,9 @@ export function injectSerialize(inject: {
 }
 export { serializeObject3D, parseObjects, deepCloneObject3D, downloadStringAsFile };
 
-export { afterWASMInit, beforeAPIRegister } from './Bridge';
+export { afterWASMInit, beforeAPIRegister } from './Bridge/index.js';
 
 // gpu driven
-export { DrivenCullingMaterial } from './elements/materials/driven/DrivenCullingMaterial';
-export { DrivenShadingMaterial } from './elements/materials/driven/DrivenShadingMaterial';
-export { DrivenGenHZBMaterial } from './elements/materials/driven/DrivenGenHZBMaterial';
+export { DrivenCullingMaterial } from './elements/materials/driven/DrivenCullingMaterial.js';
+export { DrivenShadingMaterial } from './elements/materials/driven/DrivenShadingMaterial.js';
+export { DrivenGenHZBMaterial } from './elements/materials/driven/DrivenGenHZBMaterial.js';

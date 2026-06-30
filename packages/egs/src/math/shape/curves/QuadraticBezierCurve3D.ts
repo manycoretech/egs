@@ -1,6 +1,6 @@
-import { Vector3 } from '../../Vector3';
-import { Curve } from './Curve';
-import { _Math } from '../../Math';
+import { Vector3 } from '../../Vector3.js';
+import { Curve } from './Curve.js';
+import { _Math } from '../../Math.js';
 /**
  * Build a Quadratic-Bezier curve by {@link v0 | v0 }, {@link v1 | v1 } and {@link v2 | v2 } in 3D {@link Path | Path }.
  */

@@ -1,6 +1,6 @@
-import { RenderEngine, ResetRendererEvent, RendererInitialized } from './engine/RenderEngine';
-import { type RenderInfo, FrameInfo } from './utils/RenderInfo';
-import type { ViewerConfig, EngineInitializeConfig, RenderMode, ConfigCell } from './engine/EngineConfig';
+import { RenderEngine, ResetRendererEvent, RendererInitialized } from './engine/RenderEngine.js';
+import { type RenderInfo, FrameInfo } from './utils/RenderInfo.js';
+import type { ViewerConfig, EngineInitializeConfig, RenderMode, ConfigCell } from './engine/EngineConfig.js';
 import {
     BackgroundMode,
     type BackgroundParameter,
@@ -9,39 +9,39 @@ import {
     type SkyBackgroundParameter,
     type EnvMapBackgroundParameter,
     type BasicBackgroundParameter,
-} from './scene/renderables/Background';
-import { Scene3D, SceneChangeEvent } from './scene/Scene3D';
-import { exportScene } from './scene/tools/SceneIO';
-import { type Size, Utils, type IRange } from './utils/Utils';
-import type { Camera3D } from './scene/cameras/Camera3D';
-import { Picker } from './scene/tools/Picker';
-import { EventType, EventDispatcher } from './utils/EventDispatcher';
-import { TickEvent } from './utils/FPSTimer';
-import { logger } from './utils/Logger';
-import type { SnapshotRenderer as DeprecatedSnapshotRenderer } from './snapshot/SnapshotRenderer';
-import type { SnapshotRenderer } from './snapshot/SnapshotRendererV2';
+} from './scene/renderables/Background.js';
+import { Scene3D, SceneChangeEvent } from './scene/Scene3D.js';
+import { exportScene } from './scene/tools/SceneIO.js';
+import { type Size, Utils, type IRange } from './utils/Utils.js';
+import type { Camera3D } from './scene/cameras/Camera3D.js';
+import { Picker } from './scene/tools/Picker.js';
+import { EventType, EventDispatcher } from './utils/EventDispatcher.js';
+import { TickEvent } from './utils/FPSTimer.js';
+import { logger } from './utils/Logger.js';
+import type { SnapshotRenderer as DeprecatedSnapshotRenderer } from './snapshot/SnapshotRenderer.js';
+import type { SnapshotRenderer } from './snapshot/SnapshotRendererV2.js';
 import {
     ContextLostEvent,
     ContextLostRestoreFailedEvent,
     type CtxLostInfo,
     MemoryGrowFailed,
-} from './renderer/IRenderer';
-import { CoordinateSystemHelper } from './scene/helpers/CoordinateSystemHelper';
-import type { RenderTarget } from './elements/textures/RenderTarget';
-import type { ArrayCamera } from './scene/cameras/ArrayCamera';
-import type { BaseElement } from './utils/ElementBase';
-import { ContentBridge } from './ContentAPI';
-import { type MemoryInfo, RendererBackend } from './renderer/IRenderer';
-import { TypeAssert } from './scene/tools/TypeAssert';
-import type { HighLightItem, HighlightGroup } from './fx/plugins/Highlight';
-import { type RenderingConfig, TextureCompression } from './fx/plugins/PipelinePlugin';
-import { COMPOSITE_TARGET_NAME } from './fx/plugins/Composite';
-import { Viewport } from './Viewport';
-import type { Vector4 } from './math/Vector4';
-import { ToggleWebGPUEvent, WebGPUUnstable, WebGPUValidationFailed } from './Bridge/utils';
-import { applicationTimer } from './utils/ApplicationTimer';
+} from './renderer/IRenderer.js';
+import { CoordinateSystemHelper } from './scene/helpers/CoordinateSystemHelper.js';
+import type { RenderTarget } from './elements/textures/RenderTarget.js';
+import type { ArrayCamera } from './scene/cameras/ArrayCamera.js';
+import type { BaseElement } from './utils/ElementBase.js';
+import { ContentBridge } from './ContentAPI.js';
+import { type MemoryInfo, RendererBackend } from './renderer/IRenderer.js';
+import { TypeAssert } from './scene/tools/TypeAssert.js';
+import type { HighLightItem, HighlightGroup } from './fx/plugins/Highlight.js';
+import { type RenderingConfig, TextureCompression } from './fx/plugins/PipelinePlugin.js';
+import { COMPOSITE_TARGET_NAME } from './fx/plugins/Composite.js';
+import { Viewport } from './Viewport.js';
+import type { Vector4 } from './math/Vector4.js';
+import { ToggleWebGPUEvent, WebGPUUnstable, WebGPUValidationFailed } from './Bridge/utils.js';
+import { applicationTimer } from './utils/ApplicationTimer.js';
 
-export type { HighLightItem, HighlightGroup } from './fx/plugins/Highlight';
+export type { HighLightItem, HighlightGroup } from './fx/plugins/Highlight.js';
 
 export type RequestRenderHandler = () => void;
 

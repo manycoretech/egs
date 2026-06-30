@@ -1,4 +1,4 @@
-import { logger } from '../../utils/Logger';
+import { logger } from '../../utils/Logger.js';
 
 // WGLShader contains a static function to createShader in WebGL it.
 // and logger can record the shaders' information when error appears during compiling process.

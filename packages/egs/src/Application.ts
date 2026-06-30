@@ -1,6 +1,7 @@
-import { Viewer, ViewerUnInitializeEvent } from './Viewer';
-import type { EngineInitializeConfig } from './engine/EngineConfig';
-import { hasManagedContentAPI, ManagedContentBridge, type WorldRebuildConfig } from './ContentAPI';
+import { Viewer, ViewerUnInitializeEvent } from './Viewer.js';
+import type { EngineInitializeConfig } from './engine/EngineConfig.js';
+import { hasManagedContentAPI, ManagedContentBridge, type WorldRebuildConfig } from './ContentAPI.js';
+// @ts-ignore
 import p from '../package.json';
 
 export const projectName = 'ExaGraphics Graphics System';

@@ -2,9 +2,9 @@ import {
     ShaderInjectionTypes,
     type ShaderBuilder,
     ShaderVaryingTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import { Material, type MaterialParameters } from '../Material';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { Material, type MaterialParameters } from '../Material.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 
 export abstract class PassQuadMaterialBase extends Material {
     constructor(params?: MaterialParameters) {

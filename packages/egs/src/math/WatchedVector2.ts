@@ -1,4 +1,4 @@
-import { Vector2 } from './Vector2';
+import { Vector2 } from './Vector2.js';
 
 /**
  * This class provide a {@link onChange| callback method } which is called by {@link Vector2.x| x } or {@link Vector2.y| y } changes.

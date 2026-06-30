@@ -1,8 +1,8 @@
-import type { BufferAttribute } from '../../elements/attributes/BufferAttribute';
-import { type WGLBufferData, WGLBuffer } from '../webgl/WGLBuffer';
-import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
-import { logger } from '../../utils/Logger';
-import { IterableWeakMap } from '../../utils/WeakCollections';
+import type { BufferAttribute } from '../../elements/attributes/BufferAttribute.js';
+import { type WGLBufferData, WGLBuffer } from '../webgl/WGLBuffer.js';
+import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry.js';
+import { logger } from '../../utils/Logger.js';
+import { IterableWeakMap } from '../../utils/WeakCollections.js';
 
 // BufferManager manages the ues of buffers, it maintains the GPU buffers' creating, updating and
 // deleting, also there is a map to keep record of the buffers which are been shared by to objects. So any buffer will

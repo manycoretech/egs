@@ -1,33 +1,33 @@
-import { logger } from '../../../utils/Logger';
-import { Vector3 } from '../../../math/Vector3';
-import type { Camera3D } from '../../../scene/cameras/Camera3D';
-import type { Drawable } from '../../../scene/drawables/Drawable';
-import type { AmbientLight } from '../../../scene/lights/AmbientLight';
-import { DirectionalLight, directionLightCollect } from '../../../scene/lights/DirectionalLight';
-import { DiskAreaLight, diskAreaLightCollect } from '../../../scene/lights/DiskAreaLight';
-import type { HemisphereLight } from '../../../scene/lights/HemisphereLight';
-import type { Light } from '../../../scene/lights/Light';
+import { logger } from '../../../utils/Logger.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import type { Camera3D } from '../../../scene/cameras/Camera3D.js';
+import type { Drawable } from '../../../scene/drawables/Drawable.js';
+import type { AmbientLight } from '../../../scene/lights/AmbientLight.js';
+import { DirectionalLight, directionLightCollect } from '../../../scene/lights/DirectionalLight.js';
+import { DiskAreaLight, diskAreaLightCollect } from '../../../scene/lights/DiskAreaLight.js';
+import type { HemisphereLight } from '../../../scene/lights/HemisphereLight.js';
+import type { Light } from '../../../scene/lights/Light.js';
 import {
     PointLight,
     pointLightCollect,
     punctualLightIntensityToIrradianceFactor,
-} from '../../../scene/lights/PointLight';
-import { RectAreaLight, rectAreaLightCollect } from '../../../scene/lights/RectAreaLight';
-import { SpotLight, spotLightCollect } from '../../../scene/lights/SpotLight';
-import type { Nullable } from '../../../utils/Utils';
-import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import type { WGLProgram } from '../../webgl/WGLProgram';
-import { ShaderBlockPool } from '../builders/ShaderBlockPool';
-import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
-import { unrollLoops } from '../builders/ShaderHelper';
+} from '../../../scene/lights/PointLight.js';
+import { RectAreaLight, rectAreaLightCollect } from '../../../scene/lights/RectAreaLight.js';
+import { SpotLight, spotLightCollect } from '../../../scene/lights/SpotLight.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import { WebGLShaderDataType } from '../../webgl/WGLConstants.js';
+import type { WGLProgram } from '../../webgl/WGLProgram.js';
+import { ShaderBlockPool } from '../builders/ShaderBlockPool.js';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder.js';
+import { unrollLoops } from '../builders/ShaderHelper.js';
 // the inner light system has some agreement on how a material will
-import { SharedShaderComponent } from '../Shader';
-import type { EnvMapIBLShaderComponent } from './EnvMapIBLShaderComponent';
+import { SharedShaderComponent } from '../Shader.js';
+import type { EnvMapIBLShaderComponent } from './EnvMapIBLShaderComponent.js';
 
-import type { Shadow } from '../../../scene/shadows/Shadow';
-import { Capabilities } from '../../Capabilities';
-import { TypeAssert } from '../../../scene/tools/TypeAssert';
-import type { Layers } from '../../../scene/tools/Layers';
+import type { Shadow } from '../../../scene/shadows/Shadow.js';
+import { Capabilities } from '../../Capabilities.js';
+import { TypeAssert } from '../../../scene/tools/TypeAssert.js';
+import type { Layers } from '../../../scene/tools/Layers.js';
 
 // receive the light, to use inner light system, one shading stage should provide given interface
 export interface LightMaterialComponent {

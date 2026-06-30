@@ -1,13 +1,13 @@
-import type { LightMaterialComponent } from '../components/LightShaderComponent';
-import type { Nullable } from '../../../utils/Utils';
+import type { LightMaterialComponent } from '../components/LightShaderComponent.js';
+import type { Nullable } from '../../../utils/Utils.js';
 import type {
     ShaderComponent,
     ShaderInputDescriptor,
     UniformArrayDescriptor,
     ShaderInfo,
     VaryArrayDescriptor,
-} from '../Shader';
-import { WebGLShaderDataType } from '../../webgl/WGLConstants';
+} from '../Shader.js';
+import { WebGLShaderDataType } from '../../webgl/WGLConstants.js';
 import {
     mapAttributeType,
     mapInnerGlobalUniform,
@@ -24,14 +24,14 @@ import {
     ShaderAttributeTypes,
     ShaderVaryingTypes,
     ShaderInjectionTypes,
-} from './ShaderHelper';
-import type { ShaderBlock } from './ShaderBlock';
-import { ShaderBlockPool } from './ShaderBlockPool';
-import type { UniformBlockObject } from '../components/UniformBlockObject';
-import { Capabilities } from '../../Capabilities';
-import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
-import { logger } from '../../../utils/Logger';
-import { gles2_polyfill } from './GLES2_Polyfill';
+} from './ShaderHelper.js';
+import type { ShaderBlock } from './ShaderBlock.js';
+import { ShaderBlockPool } from './ShaderBlockPool.js';
+import type { UniformBlockObject } from '../components/UniformBlockObject.js';
+import { Capabilities } from '../../Capabilities.js';
+import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms.js';
+import { logger } from '../../../utils/Logger.js';
+import { gles2_polyfill } from './GLES2_Polyfill.js';
 
 export { ShaderExtensionTypes, ShaderAttributeTypes, ShaderInjectionTypes, ShaderVaryingTypes };
 // ShaderBuilder provides all functions that is used to assemble shader components to a completed shader code;

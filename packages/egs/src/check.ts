@@ -1,4 +1,4 @@
-import { sendKtrackerEvent } from './utils/Logger';
+import { sendKtrackerEvent } from './utils/Logger.js';
 
 function preCheckWASMRequirement() {
     return (

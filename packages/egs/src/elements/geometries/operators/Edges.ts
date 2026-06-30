@@ -1,12 +1,12 @@
-import { _Math } from '../../../math/Math';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { TypeAssert } from '../../../scene/tools/TypeAssert';
-import { BufferGeometry, type BufferGroup, type LineList } from '../containers/BufferGeometry';
-import { Geometry } from '../containers/Geometry';
-import type { GeometryBase } from '../containers/GeometryBase';
-import { Vector3 } from '../../../math/Vector3';
-import { Face3 } from '../../../math/Face3';
-import type { Mesh } from '../../../scene/drawables/Mesh';
+import { _Math } from '../../../math/Math.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
+import { TypeAssert } from '../../../scene/tools/TypeAssert.js';
+import { BufferGeometry, type BufferGroup, type LineList } from '../containers/BufferGeometry.js';
+import { Geometry } from '../containers/Geometry.js';
+import type { GeometryBase } from '../containers/GeometryBase.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { Face3 } from '../../../math/Face3.js';
+import type { Mesh } from '../../../scene/drawables/Mesh.js';
 
 export function createEdge(g: BufferGeometry | Geometry, thresholdAngle: number): BufferGeometry<LineList> {
     return new EdgesBufferGeometry(g, thresholdAngle).forceCastTopology();

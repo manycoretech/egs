@@ -1,6 +1,6 @@
 import { MeshBasicMaterial, Color, type Texture2D } from '@qunhe/egs';
-import type { IMaterial } from '../type';
-import type { ResourceManager } from '../resource';
+import type { IMaterial } from '../type.js';
+import type { ResourceManager } from '../resource.js';
 
 /**
  * Unlit Materials Extension

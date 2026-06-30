@@ -1,10 +1,10 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { type ShaderBuilder, FragOutType, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { materialProperty } from '../../../ContentAPI';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import type { SourceTexture } from '../../textures/SourceTexture';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { type ShaderBuilder, FragOutType, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import type { SourceTexture } from '../../textures/SourceTexture.js';
 
 export class SplatReorderMaterial extends PassQuadMaterialBase {
     transparent = false;

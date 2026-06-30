@@ -1,16 +1,16 @@
-import { Vector3 } from '../../math/Vector3';
-import { Matrix4 } from '../../math/Matrix4';
-import { Ray } from '../../math/Ray';
-import { Sphere } from '../../math/Sphere';
-import type { Raycaster, Intersection } from '../tools/Raycaster';
-import type { FatLineMaterial } from '../../elements/materials/mesh/FatLineMaterial';
-import { FatLineBufferGeometry } from '../../elements/geometries/containers/FatLineBufferGeometry';
-import { checkIntersectionLine } from './Line';
-import { OutlineMode, Drawable } from './Drawable';
-import type { Serializer, Deserializer } from '../../utils/Serialization';
-import type { BufferGeometry, LineList } from '../../elements/geometries/containers/BufferGeometry';
-import { computeLineDistancesForFatline } from '../../elements/geometries/operators/LineDistance';
-import { DrawMode } from '../../utils/Constants';
+import { Vector3 } from '../../math/Vector3.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import { Ray } from '../../math/Ray.js';
+import { Sphere } from '../../math/Sphere.js';
+import type { Raycaster, Intersection } from '../tools/Raycaster.js';
+import type { FatLineMaterial } from '../../elements/materials/mesh/FatLineMaterial.js';
+import { FatLineBufferGeometry } from '../../elements/geometries/containers/FatLineBufferGeometry.js';
+import { checkIntersectionLine } from './Line.js';
+import { OutlineMode, Drawable } from './Drawable.js';
+import type { Serializer, Deserializer } from '../../utils/Serialization.js';
+import type { BufferGeometry, LineList } from '../../elements/geometries/containers/BufferGeometry.js';
+import { computeLineDistancesForFatline } from '../../elements/geometries/operators/LineDistance.js';
+import { DrawMode } from '../../utils/Constants.js';
 
 const realScaleTemp = new Vector3();
 

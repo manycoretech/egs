@@ -1,5 +1,5 @@
-import { type Drawable, DrawableRenderMode } from '../../drawables/Drawable';
-import type { DrawableList } from '../DrawcallList';
+import { type Drawable, DrawableRenderMode } from '../../drawables/Drawable.js';
+import type { DrawableList } from '../DrawcallList.js';
 
 export class DynamicAnalyser<T extends Drawable = Drawable> {
     // after this time duration, the dynamic node is considered to be static

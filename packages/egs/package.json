@@ -3,6 +3,8 @@
   "version": "1.2.92",
   "description": "Manycore EGS Graphics System",
   "license": "MIT",
+  "type": "module",
+  "module": "index.js",
   "main": "index.js",
   "types": "index.d.ts",
   "repository": "https://github.com/manycoretech/egs.git",

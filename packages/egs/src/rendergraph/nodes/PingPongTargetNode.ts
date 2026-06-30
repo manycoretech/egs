@@ -1,6 +1,6 @@
-import { DAGNode } from './DAGNode';
-import { RenderTargetNode } from './RenderTargetNode';
-import { RenderColorAttachmentNode } from './RenderAttachmentNode';
+import { DAGNode } from './DAGNode.js';
+import { RenderTargetNode } from './RenderTargetNode.js';
+import { RenderColorAttachmentNode } from './RenderAttachmentNode.js';
 
 function target(name: string) {
     const target = new RenderTargetNode(name);

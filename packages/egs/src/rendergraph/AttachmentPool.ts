@@ -2,11 +2,11 @@ import {
     RenderColorAttachmentNode,
     type RenderAttachmentNode,
     RenderDepthAttachmentNode,
-} from './nodes/RenderAttachmentNode';
-import { WGLCapabilities } from '../renderer/webgl/WGLCapabilities';
-import { RenderAttachment } from '../elements/textures/RenderTarget';
-import { getDepthFormat, toTextureDimension } from '../elements/textures/types';
-import type { IRenderer } from '../renderer/IRenderer';
+} from './nodes/RenderAttachmentNode.js';
+import { WGLCapabilities } from '../renderer/webgl/WGLCapabilities.js';
+import { RenderAttachment } from '../elements/textures/RenderTarget.js';
+import { getDepthFormat, toTextureDimension } from '../elements/textures/types.js';
+import type { IRenderer } from '../renderer/IRenderer.js';
 
 // Maintain the fbo storage in rendergraph
 export class AttachmentPool {

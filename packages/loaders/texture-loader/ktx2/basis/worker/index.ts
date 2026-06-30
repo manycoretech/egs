@@ -1,6 +1,6 @@
-import type { TranscodeOptions } from '../transcoder';
+import type { TranscodeOptions } from '../transcoder.js';
 import type { CompressTextureType } from '@qunhe/egs';
-import { TaskType, TaskStatus, type TranscodeResult } from '../constants';
+import { TaskType, TaskStatus, type TranscodeResult } from '../constants.js';
 
 export function transcode(
     buffer: Uint8Array,
@@ -9,7 +9,7 @@ export function transcode(
 ): Promise<TranscodeResult> {
     return import(
         /* webpackChunkName: "egs-transcoder-worker" */
-        './pool'
+        './pool.js'
     )
         .then(m => m.default.getWorker())
         .then(

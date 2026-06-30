@@ -1,10 +1,10 @@
 import { Drawable, EventType, type Material, type MeshPhongMaterial, type Object3D, Vector2 } from '@qunhe/egs';
-import { type AnimationClip, Blend, Loop } from './type';
-import type { Interpolant } from './interpolants/Interpolant';
-import { PropertyMixer } from './PropertyMixer';
-import { parseTrackPath, createInterpolant } from './utils';
-import type { ISkinnedMesh } from './Skeleton';
-import type { AnimationMixer } from './AnimationMixer';
+import { type AnimationClip, Blend, Loop } from './type.js';
+import type { Interpolant } from './interpolants/Interpolant.js';
+import { PropertyMixer } from './PropertyMixer.js';
+import { parseTrackPath, createInterpolant } from './utils.js';
+import type { ISkinnedMesh } from './Skeleton.js';
+import type { AnimationMixer } from './AnimationMixer.js';
 
 export interface ActionCtx {
     propertyMixerMap: Map<string, PropertyMixer>;

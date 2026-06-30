@@ -1,9 +1,9 @@
-import { EventType, ElementEventDispatcher } from '../../../utils/EventDispatcher';
-import type { Nullable } from '../../../utils/Utils';
-import type { Box3 } from '../../../math/Box3';
-import type { Sphere } from '../../../math/Sphere';
-import type { SerializerableDelegatedAsReference, Serializer, Deserializer } from '../../../utils/Serialization';
-import type { ElementsWithGPUResource } from '../../../utils/ElementBase';
+import { EventType, ElementEventDispatcher } from '../../../utils/EventDispatcher.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import type { Box3 } from '../../../math/Box3.js';
+import type { Sphere } from '../../../math/Sphere.js';
+import type { SerializerableDelegatedAsReference, Serializer, Deserializer } from '../../../utils/Serialization.js';
+import type { ElementsWithGPUResource } from '../../../utils/ElementBase.js';
 
 export const GeometryShapeChanged = new EventType<GeometryBase>();
 export const GeometryContentChanged = new EventType<GeometryBase>();

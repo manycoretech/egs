@@ -1,8 +1,8 @@
-import { SceneAdaptor } from '../fx/SceneAdaptor';
-import { DrawableList, type ProjectedDrawcallList } from '../scene/tools/DrawcallList';
-import type { Scene3D } from '../scene/Scene3D';
-import type { Camera3D } from '../scene/cameras/Camera3D';
-import type { Nullable } from '../utils/Utils';
+import { SceneAdaptor } from '../fx/SceneAdaptor.js';
+import { DrawableList, type ProjectedDrawcallList } from '../scene/tools/DrawcallList.js';
+import type { Scene3D } from '../scene/Scene3D.js';
+import type { Camera3D } from '../scene/cameras/Camera3D.js';
+import type { Nullable } from '../utils/Utils.js';
 
 export class SnapShotAdaptor extends SceneAdaptor {
     objectToSnapShot = new DrawableList();

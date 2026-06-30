@@ -1,10 +1,10 @@
-import { Camera3D, type CameraView } from './Camera3D';
-import { _Math } from '../../math/Math';
-import type { Nullable } from '../../utils/Utils';
-import type { Serializer, Deserializer } from '../../utils/Serialization';
-import type { Vector2 } from '../../math/Vector2';
-import type { Ray } from '../../math/Ray';
-import { ContentBridge, cameraState } from '../../ContentAPI';
+import { Camera3D, type CameraView } from './Camera3D.js';
+import { _Math } from '../../math/Math.js';
+import type { Nullable } from '../../utils/Utils.js';
+import type { Serializer, Deserializer } from '../../utils/Serialization.js';
+import type { Vector2 } from '../../math/Vector2.js';
+import type { Ray } from '../../math/Ray.js';
+import { ContentBridge, cameraState } from '../../ContentAPI.js';
 
 const TO_RADIANS = Math.PI / 180;
 /**

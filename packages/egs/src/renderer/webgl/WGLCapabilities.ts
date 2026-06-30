@@ -1,8 +1,8 @@
-import { type WGLExtensions, WebGLExtEnums } from './WGLExtensions';
-import type { Limits, RendererParameters } from '../IRenderer';
-import { CompressTextureType } from '../../utils/Constants';
-import { logger } from '../../utils/Logger';
-import { Capabilities } from '../Capabilities';
+import { type WGLExtensions, WebGLExtEnums } from './WGLExtensions.js';
+import type { Limits, RendererParameters } from '../IRenderer.js';
+import { CompressTextureType } from '../../utils/Constants.js';
+import { logger } from '../../utils/Logger.js';
+import { Capabilities } from '../Capabilities.js';
 
 /**
  * @deprecated use Capabilities instead.

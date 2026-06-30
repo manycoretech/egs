@@ -1,4 +1,4 @@
-import { Vector4 } from '../../../math/Vector4';
+import { Vector4 } from '../../../math/Vector4.js';
 
 export class ColorState {
     private color = new Vector4();

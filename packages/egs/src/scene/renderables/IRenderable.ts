@@ -1,4 +1,4 @@
-import type { IRenderer } from '../../renderer/IRenderer';
+import type { IRenderer } from '../../renderer/IRenderer.js';
 
 export interface Renderable {
     /**

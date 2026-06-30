@@ -1,20 +1,20 @@
-import { Material } from '../Material';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { Material } from '../Material.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 import {
     type ShaderBuilder,
     ShaderVaryingTypes,
     ShaderInjectionTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { Texture } from '../../textures/Texture';
-import { Vector4 } from '../../../math/Vector4';
-import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
-import type { TextureCube } from '../../textures/TextureCube';
-import { readonlyMath } from '../../../math/Readonly';
-import { Utils } from '../../../utils/Utils';
-import { ContentBridge, materialProperty, materialPropertyDeclare } from '../../../ContentAPI';
-import type { TextureV2 } from '../../textures/TextureV2';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { Texture } from '../../textures/Texture.js';
+import { Vector4 } from '../../../math/Vector4.js';
+import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms.js';
+import type { TextureCube } from '../../textures/TextureCube.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import { Utils } from '../../../utils/Utils.js';
+import { ContentBridge, materialProperty, materialPropertyDeclare } from '../../../ContentAPI.js';
+import type { TextureV2 } from '../../textures/TextureV2.js';
 
 abstract class PanoBackGroundMaterial extends Material {
     extendShaderShape(builder: ShaderBuilder, _: ShaderComponentRegistry) {

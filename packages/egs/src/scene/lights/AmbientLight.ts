@@ -1,6 +1,6 @@
-import { Light } from './Light';
-import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import { Color } from '../../math/Color';
+import { Light } from './Light.js';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
+import { Color } from '../../math/Color.js';
 
 /**
  * This light's color gets applied to all the objects in the scene globally.

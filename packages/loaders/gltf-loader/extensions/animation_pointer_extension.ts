@@ -1,4 +1,4 @@
-import type { IAnimationChannelTarget } from '../type';
+import type { IAnimationChannelTarget } from '../type.js';
 
 interface AnimationPointerExtensionData {
     pointer: string;

@@ -1,6 +1,6 @@
-import { ValueCounter } from './ValueCounter';
-import { EventDispatcher, EventType } from '../utils/EventDispatcher';
-import { DEFAULT_RAF_FUNCTION } from './Utils';
+import { ValueCounter } from './ValueCounter.js';
+import { EventDispatcher, EventType } from '../utils/EventDispatcher.js';
+import { DEFAULT_RAF_FUNCTION } from './Utils.js';
 
 export const TickEvent = new EventType();
 

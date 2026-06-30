@@ -1,20 +1,20 @@
-import type { BufferGeometryBase, BufferRange } from '../elements/geometries/containers/BufferGeometry';
-import type { Material } from '../elements/materials/Material';
-import type { Color } from '../math/Color';
-import type { Camera3D } from '../scene/cameras/Camera3D';
-import type { Drawable } from '../scene/drawables/Drawable';
-import type { Renderable } from '../scene/renderables/IRenderable';
-import { type EventDispatcher, EventType } from '../utils/EventDispatcher';
-import type { Nullable, TypedArray, IRange } from '../utils/Utils';
-import type { RenderStatistics } from '../Viewer';
-import type { MaterialDispatcher } from './MaterialDispatcher';
-import type { RenderInfo } from '../utils/RenderInfo';
-import type { RenderTarget } from '../elements/textures/RenderTarget';
-import type { ResourceStatistics } from './ResourceManager/ResourceManager';
-import { WebGLExtEnums, type WGLExtensions } from './webgl/WGLExtensions';
-import { Platform } from '../utils/Platform';
-import type { Texture } from '../elements/textures/Texture';
-import type { ShaderComponentRegistry } from '../scene/ShaderComponentRegistry';
+import type { BufferGeometryBase, BufferRange } from '../elements/geometries/containers/BufferGeometry.js';
+import type { Material } from '../elements/materials/Material.js';
+import type { Color } from '../math/Color.js';
+import type { Camera3D } from '../scene/cameras/Camera3D.js';
+import type { Drawable } from '../scene/drawables/Drawable.js';
+import type { Renderable } from '../scene/renderables/IRenderable.js';
+import { type EventDispatcher, EventType } from '../utils/EventDispatcher.js';
+import type { Nullable, TypedArray, IRange } from '../utils/Utils.js';
+import type { RenderStatistics } from '../Viewer.js';
+import type { MaterialDispatcher } from './MaterialDispatcher.js';
+import type { RenderInfo } from '../utils/RenderInfo.js';
+import type { RenderTarget } from '../elements/textures/RenderTarget.js';
+import type { ResourceStatistics } from './ResourceManager/ResourceManager.js';
+import { WebGLExtEnums, type WGLExtensions } from './webgl/WGLExtensions.js';
+import { Platform } from '../utils/Platform.js';
+import type { Texture } from '../elements/textures/Texture.js';
+import type { ShaderComponentRegistry } from '../scene/ShaderComponentRegistry.js';
 
 export type RendererParameters = Required<
     Pick<

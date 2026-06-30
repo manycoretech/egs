@@ -1,8 +1,8 @@
-import type { Nullable } from '../../utils/Utils';
-import type { UniformBlockObject } from '../shader/components/UniformBlockObject';
-import type { WGLUniformBlockData } from '../webgl/WGLUniformBlock';
-import { logger } from '../../utils/Logger';
-import { IterableWeakMap } from '../../utils/WeakCollections';
+import type { Nullable } from '../../utils/Utils.js';
+import type { UniformBlockObject } from '../shader/components/UniformBlockObject.js';
+import type { WGLUniformBlockData } from '../webgl/WGLUniformBlock.js';
+import { logger } from '../../utils/Logger.js';
+import { IterableWeakMap } from '../../utils/WeakCollections.js';
 
 // UBOManager includes create, delete and dispose function, which manages used buffer and stores all UBOs in a private map.
 // It also provides function to resource manager for binding UBO and get UBO's parameter in WebGl.

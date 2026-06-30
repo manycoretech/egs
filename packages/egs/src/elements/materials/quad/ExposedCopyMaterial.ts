@@ -1,14 +1,14 @@
-import { PassPointsMaterialBase, PassQuadMaterialBase } from './PassMaterialBase';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import { Blending, BlendingFactor, BlendingEquation } from '../../../utils/Constants';
-import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
-import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
-import { Texture2D } from '../../textures/Texture2D';
-import { Matrix3 } from '../../../math/Matrix3';
-import { materialProperty } from '../../../ContentAPI';
-import type { Texture } from '../../textures/Texture';
+import { PassPointsMaterialBase, PassQuadMaterialBase } from './PassMaterialBase.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { Blending, BlendingFactor, BlendingEquation } from '../../../utils/Constants.js';
+import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock.js';
+import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool.js';
+import { Texture2D } from '../../textures/Texture2D.js';
+import { Matrix3 } from '../../../math/Matrix3.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import type { Texture } from '../../textures/Texture.js';
 
 const DialuxLuminanceShader = createShaderBlock(`
 const float minLumCorrect = 2.03; // 5.0-0.01

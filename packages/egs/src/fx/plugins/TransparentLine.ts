@@ -1,25 +1,25 @@
-import { filterBy, DrawableList } from '../../scene/tools/DrawcallList';
-import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
-import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial';
-import { LineSegments } from '../../scene/drawables/LineSegments';
-import { pass, disableClear } from '../../rendergraph/NodeMakers';
-import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher';
-import { logger } from '../../utils/Logger';
-import { createEdge, needRebuild, updateEdgesVisibility } from '../../elements/geometries/operators/Edges';
-import { readonlyMath } from '../../math/Readonly';
-import type { Color } from '../../math/Color';
+import { filterBy, DrawableList } from '../../scene/tools/DrawcallList.js';
+import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial.js';
+import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial.js';
+import { LineSegments } from '../../scene/drawables/LineSegments.js';
+import { pass, disableClear } from '../../rendergraph/NodeMakers.js';
+import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher.js';
+import { logger } from '../../utils/Logger.js';
+import { createEdge, needRebuild, updateEdgesVisibility } from '../../elements/geometries/operators/Edges.js';
+import { readonlyMath } from '../../math/Readonly.js';
+import type { Color } from '../../math/Color.js';
 import {
     PipelineFilters,
     PipelineContentBridge,
     PipelineContentAPIForRenderingAndFilteringEnabled,
-} from '../PipelineAPI';
-import { TypeAssert } from '../../scene/tools/TypeAssert';
-import { type Drawable, DrawableRenderMode } from '../../scene/drawables/Drawable';
-import { PipelinePlugin } from './PipelinePlugin';
-import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import type { RenderGraph } from '../../rendergraph/RenderGraph';
-import type { SceneAdaptorDispatcher } from '../SceneAdaptor';
-import type { RendererAdaptor } from '../RendererAdaptor';
+} from '../PipelineAPI.js';
+import { TypeAssert } from '../../scene/tools/TypeAssert.js';
+import { type Drawable, DrawableRenderMode } from '../../scene/drawables/Drawable.js';
+import { PipelinePlugin } from './PipelinePlugin.js';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
+import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
+import type { SceneAdaptorDispatcher } from '../SceneAdaptor.js';
+import type { RendererAdaptor } from '../RendererAdaptor.js';
 
 export class TransparentLinePlugin extends PipelinePlugin {
     readonly PLUGIN_NAME = 'transparent_line';

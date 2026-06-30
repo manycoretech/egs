@@ -1,7 +1,7 @@
-import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import type { ShaderInputDescriptor, UniformArrayDescriptor, VaryArrayDescriptor } from '../Shader';
-import type { UniformBlockObject } from '../components/UniformBlockObject';
-import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
+import { WebGLShaderDataType } from '../../webgl/WGLConstants.js';
+import type { ShaderInputDescriptor, UniformArrayDescriptor, VaryArrayDescriptor } from '../Shader.js';
+import type { UniformBlockObject } from '../components/UniformBlockObject.js';
+import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms.js';
 
 export enum ShaderAttributeTypes {
     position,

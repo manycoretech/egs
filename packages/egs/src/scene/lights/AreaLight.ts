@@ -1,12 +1,12 @@
-import { Texture2D } from '../../elements/textures/Texture2D';
-import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants';
-import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import { TextureDataType } from '../../utils/Constants';
-import { singleton } from '../../utils/Utils';
-import { Light } from './Light';
-import { ContentBridge } from '../../ContentAPI';
-import ltc1 from './data1.ltc';
-import ltc2 from './data2.ltc';
+import { Texture2D } from '../../elements/textures/Texture2D.js';
+import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants.js';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
+import { TextureDataType } from '../../utils/Constants.js';
+import { singleton } from '../../utils/Utils.js';
+import { Light } from './Light.js';
+import { ContentBridge } from '../../ContentAPI.js';
+import ltc1 from './data1.ltc.js';
+import ltc2 from './data2.ltc.js';
 
 const createLUT1 = singleton(() =>
     Texture2D.createByMainLayerSource(new Float32Array(ltc1), WebGLPixelFormat.RGBA, TextureDataType.FloatType, 64, 64)

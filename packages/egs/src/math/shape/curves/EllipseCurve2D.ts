@@ -1,6 +1,6 @@
-import { Vector2 } from '../../Vector2';
-import { Curve2D } from './Curve2D';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
+import { Vector2 } from '../../Vector2.js';
+import { Curve2D } from './Curve2D.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
 /**
  * Creates a 2d curve in the shape of an ellipse. Setting the xRadius equal to the yRadius will result in a circle.
  */

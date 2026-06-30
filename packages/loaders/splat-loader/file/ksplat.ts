@@ -1,4 +1,4 @@
-import { type IFile, type IData, type ISingleSplat, fromHalf, SH_MAPS } from '../utils';
+import { type IFile, type IData, type ISingleSplat, fromHalf, SH_MAPS } from '../utils.js';
 
 interface KSplatCompression {
     bytesPerCenter: number;

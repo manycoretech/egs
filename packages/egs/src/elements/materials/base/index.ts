@@ -1,13 +1,13 @@
-import { Material } from '../Material';
-import { ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { materialProperty } from '../../../ContentAPI';
-import type { ReadonlyVector3 } from '../../../math/Vector3';
-import { readonlyMath } from '../../../math/Readonly';
-import type { ReadonlyVector4 } from '../../../math/Vector4';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
+import { Material } from '../Material.js';
+import { ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import type { ReadonlyVector3 } from '../../../math/Vector3.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import type { ReadonlyVector4 } from '../../../math/Vector4.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
 
 export abstract class JsNoImplMaterial extends Material {
     extendShaderShape(_builder: ShaderBuilder, _registry: ShaderComponentRegistry): void {}
@@ -49,4 +49,4 @@ export interface DeferredMaterial extends Material {
     updateDeferredUniform(p: WGLProgram): void;
 }
 
-export { SceneMaterial, SceneClipMaterial, ScenePopLODMaterial } from './Scene';
+export { SceneMaterial, SceneClipMaterial, ScenePopLODMaterial } from './Scene.js';

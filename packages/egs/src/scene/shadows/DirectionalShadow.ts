@@ -1,19 +1,19 @@
-import { SingleProjectShadow } from './Shadow';
-import { OrthographicCamera } from '../cameras/OrthographicCamera';
+import { SingleProjectShadow } from './Shadow.js';
+import { OrthographicCamera } from '../cameras/OrthographicCamera.js';
 import {
     type ShaderBuilder,
     ShaderInjectionTypes,
     ShaderVaryingTypes,
-} from '../../renderer/shader/builders/ShaderBuilder';
-import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms';
-import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
-import { Vector3 } from '../../math/Vector3';
-import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
-import type { DirectionalLight } from '../lights/DirectionalLight';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
-import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import { Vector2 } from '../../math/Vector2';
-import { lightProperty } from '../../ContentAPI';
+} from '../../renderer/shader/builders/ShaderBuilder.js';
+import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms.js';
+import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool.js';
+import type { DirectionalLight } from '../lights/DirectionalLight.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
+import { Vector2 } from '../../math/Vector2.js';
+import { lightProperty } from '../../ContentAPI.js';
 
 export class DirectionalShadow extends SingleProjectShadow<OrthographicCamera> {
     @lightProperty()

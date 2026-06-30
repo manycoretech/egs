@@ -1,13 +1,13 @@
-import { logger } from '../../../utils/Logger';
-import { Box3 } from '../../../math/Box3';
-import type { Matrix4 } from '../../../math/Matrix4';
-import { Sphere } from '../../../math/Sphere';
-import { Vector3 } from '../../../math/Vector3';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { InstancedBufferAttribute } from '../../attributes/InstancedBufferAttribute';
-import type { BufferGeometry, LineList } from './BufferGeometry';
-import { InstancedBufferGeometry } from './InstancedBufferGeometry';
-import { ContentBridge } from '../../../ContentAPI';
+import { logger } from '../../../utils/Logger.js';
+import { Box3 } from '../../../math/Box3.js';
+import type { Matrix4 } from '../../../math/Matrix4.js';
+import { Sphere } from '../../../math/Sphere.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
+import { InstancedBufferAttribute } from '../../attributes/InstancedBufferAttribute.js';
+import type { BufferGeometry, LineList } from './BufferGeometry.js';
+import { InstancedBufferGeometry } from './InstancedBufferGeometry.js';
+import { ContentBridge } from '../../../ContentAPI.js';
 
 const tempBox = new Box3();
 const tempVector = new Vector3();

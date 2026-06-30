@@ -1,11 +1,11 @@
-import { WebGLShaderDataType } from './WGLConstants';
-import type { Vector4, ReadonlyVector4 } from '../../math/Vector4';
-import type { Color, ReadonlyColor } from '../../math/Color';
-import type { Matrix3, ReadonlyMatrix3 } from '../../math/Matrix3';
-import type { Matrix4, ReadonlyMatrix4 } from '../../math/Matrix4';
-import type { Vector2, ReadonlyVector2 } from '../../math/Vector2';
-import type { Vector3, ReadonlyVector3 } from '../../math/Vector3';
-import { logger } from '../../utils/Logger';
+import { WebGLShaderDataType } from './WGLConstants.js';
+import type { Vector4, ReadonlyVector4 } from '../../math/Vector4.js';
+import type { Color, ReadonlyColor } from '../../math/Color.js';
+import type { Matrix3, ReadonlyMatrix3 } from '../../math/Matrix3.js';
+import type { Matrix4, ReadonlyMatrix4 } from '../../math/Matrix4.js';
+import type { Vector2, ReadonlyVector2 } from '../../math/Vector2.js';
+import type { Vector3, ReadonlyVector3 } from '../../math/Vector3.js';
+import { logger } from '../../utils/Logger.js';
 
 export type UniformUploadTypes = boolean | number | Float32Array | Int32Array | number[];
 type ArrayLikedUniform = Exclude<UniformUploadTypes, number | boolean>;

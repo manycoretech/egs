@@ -1,8 +1,8 @@
 import { SourceTexture, TextureDimension, TextureFormat, TextureViewDimension } from '@qunhe/egs';
-import { TextureContainerType, type LoaderOptions, type LoadResult } from './type';
-import { detectContainerType, isCubeLike, mergeLoadResults } from './utils';
-import loadKTX2 from './ktx2';
-import loadDDS from './dds';
+import { TextureContainerType, type LoaderOptions, type LoadResult } from './type.js';
+import { detectContainerType, isCubeLike, mergeLoadResults } from './utils.js';
+import loadKTX2 from './ktx2/index.js';
+import loadDDS from './dds.js';
 
 async function downloadImage(url: URL, crossOrigin = ''): Promise<HTMLImageElement> {
     const img = document.createElement('img');
@@ -108,4 +108,4 @@ export async function downloadTexture(
     return texture;
 }
 
-export { TextureContainerType, type LoaderOptions } from './type';
+export { TextureContainerType, type LoaderOptions } from './type.js';

@@ -1,8 +1,8 @@
-import { ShaderComponent } from '../Shader';
-import { ShaderAttributeTypes, type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import { createShaderBlock } from '../builders/ShaderBlock';
-import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms';
+import { ShaderComponent } from '../Shader.js';
+import { ShaderAttributeTypes, type ShaderBuilder, ShaderInjectionTypes } from '../builders/ShaderBuilder.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { createShaderBlock } from '../builders/ShaderBlock.js';
+import { BuiltInUniformTypes } from '../../RenderState/BuiltInUniforms.js';
 
 export class SkinningShaderComponent extends ShaderComponent {
     className() {

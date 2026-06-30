@@ -4,13 +4,13 @@ import {
     isNumber,
     type ReadonlyMarked,
     type ReadOnlyMarkedCreatable,
-} from './Utils';
-import type { Object3D } from '../scene/Object3D';
-import { logger } from './Logger';
-import { TypeAssert } from '../scene/tools/TypeAssert';
-import type { ReadonlyColor } from '../math/Color';
-import type { ReadonlyMatrix3 } from '../math/Matrix3';
-import type { ReadonlyVector2 } from '../EGS';
+} from './Utils.js';
+import type { Object3D } from '../scene/Object3D.js';
+import { logger } from './Logger.js';
+import { TypeAssert } from '../scene/tools/TypeAssert.js';
+import type { ReadonlyColor } from '../math/Color.js';
+import type { ReadonlyMatrix3 } from '../math/Matrix3.js';
+import type { ReadonlyVector2 } from '../EGS.js';
 
 export interface SerializerableDelegated {
     serialize(serialize: Serializer): void;

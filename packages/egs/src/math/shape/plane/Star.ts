@@ -1,7 +1,7 @@
-import { _Math } from '../../Math';
-import { Polygon } from './Polygon';
+import { _Math } from '../../Math.js';
+import { Polygon } from './Polygon.js';
 
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
 /**
  * Draw a star shape with an arbitrary number of points.
  */

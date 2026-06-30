@@ -13,7 +13,7 @@ import {
     type __INTERNAL__,
 } from '@qunhe/egs';
 import { parseSplatData, detectSplatFileType } from '@qunhe/egs-splat-loader';
-import { ResourceManager } from './ResourceManager';
+import { ResourceManager } from './ResourceManager.js';
 
 interface IBox {
     min: [number, number, number];

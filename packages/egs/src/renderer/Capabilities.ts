@@ -1,6 +1,6 @@
-import { CompressTextureType, CompressedPixelFormat } from '../utils/Constants';
-import type { WebGLPixelFormat } from './webgl/WGLConstants';
-import type { RendererParameters } from './IRenderer';
+import { CompressTextureType, CompressedPixelFormat } from '../utils/Constants.js';
+import type { WebGLPixelFormat } from './webgl/WGLConstants.js';
+import type { RendererParameters } from './IRenderer.js';
 
 /**
  * WGLCapabilities indicates all capabilities in WebGl/WebGL2 context. It is used to prevent error from data over limitation.

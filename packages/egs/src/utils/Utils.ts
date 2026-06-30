@@ -1,7 +1,7 @@
-import { Color } from '../math/Color';
-import type { Material } from '../elements/materials/Material';
-import type { Texture } from '../elements/textures/Texture';
-import { Vector2 } from '../math/Vector2';
+import { Color } from '../math/Color.js';
+import type { Material } from '../elements/materials/Material.js';
+import type { Texture } from '../elements/textures/Texture.js';
+import { Vector2 } from '../math/Vector2.js';
 
 const INT8 = new Int8Array(4);
 const INT32 = new Int32Array(INT8.buffer, 0, 1);

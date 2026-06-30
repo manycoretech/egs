@@ -1,7 +1,7 @@
-import { Shape } from './Shape';
-import { Box2 } from '../../Box2';
+import { Shape } from './Shape.js';
+import { Box2 } from '../../Box2.js';
 
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
 /**
  * The Circle object is used to help draw graphics.
  */

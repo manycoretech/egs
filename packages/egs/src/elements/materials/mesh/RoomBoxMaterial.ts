@@ -1,18 +1,18 @@
-import { type MaterialParameters, copyItem } from '../Material';
+import { type MaterialParameters, copyItem } from '../Material.js';
 import {
     type ShaderBuilder,
     ShaderInjectionTypes,
     ShaderVaryingTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
-import { Utils } from '../../../utils/Utils';
-import { materialProperty } from '../../../ContentAPI';
-import { SceneMaterial } from '../base';
-import type { Texture2D } from '../../textures/Texture2D';
-import type { TextureV2 } from '../../textures/TextureV2';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms.js';
+import { Utils } from '../../../utils/Utils.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { SceneMaterial } from '../base/index.js';
+import type { Texture2D } from '../../textures/Texture2D.js';
+import type { TextureV2 } from '../../textures/TextureV2.js';
 
 export type RoomBoxMaterialParameter<T extends TextureV2 | Texture2D = Texture2D> = MaterialParameters & {
     texture?: T;

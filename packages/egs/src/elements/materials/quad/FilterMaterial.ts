@@ -1,13 +1,13 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { Texture } from '../../textures/Texture';
-import { materialProperty } from '../../../ContentAPI';
-import type { Nullable } from '../../../utils/Utils';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { Vector3 } from '../../../math/Vector3';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { Texture } from '../../textures/Texture.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { Vector3 } from '../../../math/Vector3.js';
 
 /**
  * Target region selected by a filter material.

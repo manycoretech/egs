@@ -1,7 +1,7 @@
-import type { BufferGeometry } from '../containers/BufferGeometry';
-import { logger } from '../../../utils/Logger';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { Vector3 } from '../../../math/Vector3';
+import type { BufferGeometry } from '../containers/BufferGeometry.js';
+import { logger } from '../../../utils/Logger.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
+import { Vector3 } from '../../../math/Vector3.js';
 const vector = new Vector3();
 
 /**

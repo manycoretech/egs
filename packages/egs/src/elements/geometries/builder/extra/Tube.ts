@@ -1,9 +1,9 @@
-import { BufferAttribute } from '../../../../elements/attributes/BufferAttribute';
-import { computeNormalsByPosition } from '../../../../elements/geometries/operators/Renormalize';
-import { BufferGeometry } from '../../../../elements/geometries/containers/BufferGeometry';
-import { Vector3 } from '../../../../math/Vector3';
-import type { Curve } from '../../../../math/shape/curves/Curve';
-import { Vector2 } from '../../../../math/Vector2';
+import { BufferAttribute } from '../../../../elements/attributes/BufferAttribute.js';
+import { computeNormalsByPosition } from '../../../../elements/geometries/operators/Renormalize.js';
+import { BufferGeometry } from '../../../../elements/geometries/containers/BufferGeometry.js';
+import { Vector3 } from '../../../../math/Vector3.js';
+import type { Curve } from '../../../../math/shape/curves/Curve.js';
+import { Vector2 } from '../../../../math/Vector2.js';
 export interface TubeShapeParameter {
     path: Curve<Vector3>;
     tubularSegments: number;

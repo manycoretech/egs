@@ -1,11 +1,11 @@
-import { Vector3 } from './Vector3';
-import type { Euler } from './Euler';
-import type { Quaternion } from './Quaternion';
-import type { BufferAttribute } from '../elements/attributes/BufferAttribute';
-import { logger } from '../utils/Logger';
-import { Vector2 } from './Vector2';
-import { _Math } from './Math';
-import type { PickReadonly } from '../utils/Utils';
+import { Vector3 } from './Vector3.js';
+import type { Euler } from './Euler.js';
+import type { Quaternion } from './Quaternion.js';
+import type { BufferAttribute } from '../elements/attributes/BufferAttribute.js';
+import { logger } from '../utils/Logger.js';
+import { Vector2 } from './Vector2.js';
+import { _Math } from './Math.js';
+import type { PickReadonly } from '../utils/Utils.js';
 
 let tmp1Vec3: Vector3;
 let tmp2Vec3: Vector3;

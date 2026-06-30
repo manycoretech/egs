@@ -1,14 +1,14 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { type ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { Vector3 } from '../../../math/Vector3';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { Splat } from '../../../scene/splat/Splat';
-import type { Camera3D } from '../../../scene/cameras/Camera3D';
-import { Vector2 } from '../../../math/Vector2';
-import type { TextureV2 } from '../../textures/TextureV2';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { type ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { Splat } from '../../../scene/splat/Splat.js';
+import type { Camera3D } from '../../../scene/cameras/Camera3D.js';
+import { Vector2 } from '../../../math/Vector2.js';
+import type { TextureV2 } from '../../textures/TextureV2.js';
 
 export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
     transparent = false;

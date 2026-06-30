@@ -1,15 +1,15 @@
-import type { Camera3D } from '../cameras/Camera3D';
-import { Matrix4 } from '../../math/Matrix4';
-import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import type { Nullable } from '../../utils/Utils';
-import type { ShaderBuilder } from '../../renderer/shader/builders/ShaderBuilder';
-import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
-import type { Object3D } from '../Object3D';
-import { lightProperty } from '../../ContentAPI';
-import { readonlyMath } from '../../math/Readonly';
-import { Texture2D } from '../../elements/textures/Texture2D';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
-import type { RenderAttachment } from '../../elements/textures/RenderTarget';
+import type { Camera3D } from '../cameras/Camera3D.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
+import type { Nullable } from '../../utils/Utils.js';
+import type { ShaderBuilder } from '../../renderer/shader/builders/ShaderBuilder.js';
+import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool.js';
+import type { Object3D } from '../Object3D.js';
+import { lightProperty } from '../../ContentAPI.js';
+import { readonlyMath } from '../../math/Readonly.js';
+import { Texture2D } from '../../elements/textures/Texture2D.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
+import type { RenderAttachment } from '../../elements/textures/RenderTarget.js';
 
 interface TargetLight extends Object3D {
     target: Object3D;

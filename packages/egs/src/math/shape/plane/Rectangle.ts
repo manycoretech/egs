@@ -1,7 +1,7 @@
-import { Vector2 } from '../../Vector2';
-import { Shape } from './Shape';
+import { Vector2 } from '../../Vector2.js';
+import { Shape } from './Shape.js';
 
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
 /**
  * Rectangle object is an area defined by its position, as indicated by its top-left corner point (x, y) and by its width and its height.
  */

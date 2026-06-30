@@ -1,13 +1,13 @@
-import { BufferAttribute } from '../../../../elements/attributes/BufferAttribute';
-import type { Geometry } from '../../../../elements/geometries/containers/Geometry';
-import { Vector2 } from '../../../../math/Vector2';
-import { Vector3 } from '../../../../math/Vector3';
-import type { Curve } from '../../../../math/shape/curves/Curve';
-import { Shape } from '../../../../math/shape/plane/Shape';
-import { BufferGeometry } from '../../../../elements/geometries/containers/BufferGeometry';
-import { logger } from '../../../../utils/Logger';
-import { computeNormalsByPosition } from '../../../../elements/geometries/operators/Renormalize';
-import type { Font } from '../../../../math/shape/plane/Font';
+import { BufferAttribute } from '../../../../elements/attributes/BufferAttribute.js';
+import type { Geometry } from '../../../../elements/geometries/containers/Geometry.js';
+import { Vector2 } from '../../../../math/Vector2.js';
+import { Vector3 } from '../../../../math/Vector3.js';
+import type { Curve } from '../../../../math/shape/curves/Curve.js';
+import { Shape } from '../../../../math/shape/plane/Shape.js';
+import { BufferGeometry } from '../../../../elements/geometries/containers/BufferGeometry.js';
+import { logger } from '../../../../utils/Logger.js';
+import { computeNormalsByPosition } from '../../../../elements/geometries/operators/Renormalize.js';
+import type { Font } from '../../../../math/shape/plane/Font.js';
 
 const WorldUVGenerator = {
     generateTopUV(_geometry: Geometry, vertices: number[], indexA: number, indexB: number, indexC: number) {

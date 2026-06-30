@@ -1,5 +1,5 @@
-import { BufferGeometry } from '../containers/BufferGeometry';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
+import { BufferGeometry } from '../containers/BufferGeometry.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
 
 export interface PlaneShapeParameter {
     width: number;

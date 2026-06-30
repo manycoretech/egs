@@ -1,13 +1,13 @@
-import { logger } from '../utils/Logger';
-import type { RenderGraph } from './RenderGraph';
-import type { RendererAdaptor } from '../fx/RendererAdaptor';
-import { AttachmentPool } from './AttachmentPool';
-import { RenderTarget, type RenderAttachment } from '../elements/textures/RenderTarget';
-import type { RenderTargetNode } from '../rendergraph/nodes/RenderTargetNode';
-import { ExecuteBeforeEvent, ExecuteAfterEvent } from './nodes/ExecuteNode';
-import type { OverrideScreenOutputTarget } from './nodes/PassNode';
-import type { Texture } from '../elements/textures/Texture';
-import type { RenderAttachmentNode } from './nodes/RenderAttachmentNode';
+import { logger } from '../utils/Logger.js';
+import type { RenderGraph } from './RenderGraph.js';
+import type { RendererAdaptor } from '../fx/RendererAdaptor.js';
+import { AttachmentPool } from './AttachmentPool.js';
+import { RenderTarget, type RenderAttachment } from '../elements/textures/RenderTarget.js';
+import type { RenderTargetNode } from '../rendergraph/nodes/RenderTargetNode.js';
+import { ExecuteBeforeEvent, ExecuteAfterEvent } from './nodes/ExecuteNode.js';
+import type { OverrideScreenOutputTarget } from './nodes/PassNode.js';
+import type { Texture } from '../elements/textures/Texture.js';
+import type { RenderAttachmentNode } from './nodes/RenderAttachmentNode.js';
 
 // Responsible for rendergraph execution
 export class EffectComposer {

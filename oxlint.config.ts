@@ -6,6 +6,7 @@ export default defineConfig({
         node: true,
         es2026: true,
     },
+    plugins: ['eslint', 'typescript', 'unicorn', 'oxc', 'promise', 'import'],
     ignorePatterns: [
         'crates/**',
         '**/build/**',

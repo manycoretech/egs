@@ -1,4 +1,4 @@
-import { DEFAULT_RAF_FUNCTION } from './Utils';
+import { DEFAULT_RAF_FUNCTION } from './Utils.js';
 
 type TickerCallback<T> = (this: T, dt: number) => any;
 

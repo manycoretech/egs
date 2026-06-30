@@ -1,10 +1,10 @@
-import type { Matrix4 } from './Matrix4';
-import { Vector3 } from './Vector3';
-import type { BufferAttribute } from '../elements/attributes/BufferAttribute';
-import { logger } from '../utils/Logger';
-import { _Math } from './Math';
-import { Vector2 } from './Vector2';
-import type { PickReadonly } from '../utils/Utils';
+import type { Matrix4 } from './Matrix4.js';
+import { Vector3 } from './Vector3.js';
+import type { BufferAttribute } from '../elements/attributes/BufferAttribute.js';
+import { logger } from '../utils/Logger.js';
+import { _Math } from './Math.js';
+import { Vector2 } from './Vector2.js';
+import type { PickReadonly } from '../utils/Utils.js';
 /**
  * A class representing a 3x3 {@link https://en.wikipedia.org/wiki/Matrix_(mathematics)| matrix}.
  */

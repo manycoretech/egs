@@ -1,10 +1,10 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { Vector2 } from '../../../math/Vector2';
-import { TextureV2 } from '../../textures/TextureV2';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import { Vector2 } from '../../../math/Vector2.js';
+import { TextureV2 } from '../../textures/TextureV2.js';
 
 export class SplatPackSortedLayoutMaterial extends PassQuadMaterialBase {
     transparent = false;

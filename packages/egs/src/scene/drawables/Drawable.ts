@@ -1,27 +1,27 @@
-import { logger } from '../../utils/Logger';
+import { logger } from '../../utils/Logger.js';
 import {
     type BufferGeometryBase,
     type BufferRange,
     BufferGeometry,
-} from '../../elements/geometries/containers/BufferGeometry';
-import type { GeometryBase } from '../../elements/geometries/containers/GeometryBase';
-import type { Material } from '../../elements/materials/Material';
-import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial';
-import { Box3 } from '../../math/Box3';
-import { Matrix3 } from '../../math/Matrix3';
-import { Matrix4 } from '../../math/Matrix4';
-import { Sphere } from '../../math/Sphere';
-import { Vector3 } from '../../math/Vector3';
-import type { Renderer } from '../../renderer/Renderer';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
-import type { Nullable } from '../../utils/Utils';
-import type { Camera3D } from '../cameras/Camera3D';
-import { Object3D } from '../Object3D';
-import type { Scene3D } from '../Scene3D';
-import type { Drawcall } from '../tools/DrawcallList';
-import type { Intersection, Raycaster } from '../tools/Raycaster';
-import { ContentBridge, drawableState, hasManagedContentAPI, ManagedContentBridge } from '../../ContentAPI';
-import { DrawMode } from '../../utils/Constants';
+} from '../../elements/geometries/containers/BufferGeometry.js';
+import type { GeometryBase } from '../../elements/geometries/containers/GeometryBase.js';
+import type { Material } from '../../elements/materials/Material.js';
+import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial.js';
+import { Box3 } from '../../math/Box3.js';
+import { Matrix3 } from '../../math/Matrix3.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import { Sphere } from '../../math/Sphere.js';
+import { Vector3 } from '../../math/Vector3.js';
+import type { Renderer } from '../../renderer/Renderer.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
+import type { Nullable } from '../../utils/Utils.js';
+import type { Camera3D } from '../cameras/Camera3D.js';
+import { Object3D } from '../Object3D.js';
+import type { Scene3D } from '../Scene3D.js';
+import type { Drawcall } from '../tools/DrawcallList.js';
+import type { Intersection, Raycaster } from '../tools/Raycaster.js';
+import { ContentBridge, drawableState, hasManagedContentAPI, ManagedContentBridge } from '../../ContentAPI.js';
+import { DrawMode } from '../../utils/Constants.js';
 
 /**
  * Render placement mode used by drawable scene objects.

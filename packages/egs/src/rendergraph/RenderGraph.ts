@@ -1,7 +1,7 @@
-import { PassNode } from './nodes/PassNode';
-import type { RenderTargetNode } from './nodes/RenderTargetNode';
-import { ResourceNode } from './nodes/ResourceNode';
-import type { DAGNode } from './nodes/DAGNode';
+import { PassNode } from './nodes/PassNode.js';
+import type { RenderTargetNode } from './nodes/RenderTargetNode.js';
+import { ResourceNode } from './nodes/ResourceNode.js';
+import type { DAGNode } from './nodes/DAGNode.js';
 
 export class RenderGraph {
     private initialized: boolean = false;

@@ -1,17 +1,17 @@
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 import {
     type ShaderBuilder,
     ShaderInjectionTypes,
     ShaderVaryingTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { Side } from '../../../utils/Constants';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { Utils } from '../../../utils/Utils';
-import type { Texture } from '../../textures/Texture';
-import { materialProperty } from '../../../ContentAPI';
-import { BackgroundLikeMaterial } from '../base';
-import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { Side } from '../../../utils/Constants.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { Utils } from '../../../utils/Utils.js';
+import type { Texture } from '../../textures/Texture.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { BackgroundLikeMaterial } from '../base/index.js';
+import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool.js';
 
 export class EnvMapMaterial extends BackgroundLikeMaterial {
     @materialProperty()

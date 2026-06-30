@@ -1,8 +1,8 @@
-import { BufferGeometry, type BufferRange } from '../containers/BufferGeometry';
-import { logger } from '../../../utils/Logger';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
-import type { Matrix4 } from '../../../math/Matrix4';
-import { Matrix3 } from '../../../math/Matrix3';
+import { BufferGeometry, type BufferRange } from '../containers/BufferGeometry.js';
+import { logger } from '../../../utils/Logger.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
+import type { Matrix4 } from '../../../math/Matrix4.js';
+import { Matrix3 } from '../../../math/Matrix3.js';
 
 export interface BufferGeometryMergeInfo {
     geometry: BufferGeometry;

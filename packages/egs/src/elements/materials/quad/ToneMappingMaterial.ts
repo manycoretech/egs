@@ -1,14 +1,14 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { type MaterialParameters, ColorTransfer } from '../../materials/Material';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { Texture } from '../../textures/Texture';
-import { materialProperty } from '../../../ContentAPI';
-import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { type MaterialParameters, ColorTransfer } from '../../materials/Material.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { Texture } from '../../textures/Texture.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool.js';
 
 /**
  * Tone mapping functions

@@ -1,9 +1,9 @@
-import type { Vector } from '../../Vector';
-import { Vector3 } from '../../Vector3';
-import { Matrix4 } from '../../Matrix4';
-import { _Math } from '../../Math';
-import type { SerializerableDelegatedAsReference, Serializer, Deserializer } from '../../../utils/Serialization';
-import { logger } from '../../../utils/Logger';
+import type { Vector } from '../../Vector.js';
+import { Vector3 } from '../../Vector3.js';
+import { Matrix4 } from '../../Matrix4.js';
+import { _Math } from '../../Math.js';
+import type { SerializerableDelegatedAsReference, Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { logger } from '../../../utils/Logger.js';
 /**
  * An extensible curve object which contains methods for interpolation.
  */

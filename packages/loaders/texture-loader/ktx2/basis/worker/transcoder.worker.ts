@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 
-import { TaskType, TaskStatus } from '../constants';
-import { transcode } from '../transcoder';
+import { TaskType, TaskStatus } from '../constants.js';
+import { transcode } from '../transcoder.js';
 
 self.onmessage = async (event: MessageEvent) => {
     const type: TaskType = event.data.type;

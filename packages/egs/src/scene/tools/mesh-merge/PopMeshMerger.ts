@@ -1,23 +1,23 @@
-import { BufferAttribute } from '../../../elements/attributes/BufferAttribute';
-import type { BufferGroup } from '../../../elements/geometries/containers/BufferGeometry';
-import type { GeometryBase } from '../../../elements/geometries/containers/GeometryBase';
-import type { PopBufferGeometry } from '../../../elements/geometries/containers/PopBufferGeometry';
-import type { Material } from '../../../elements/materials/Material';
+import { BufferAttribute } from '../../../elements/attributes/BufferAttribute.js';
+import type { BufferGroup } from '../../../elements/geometries/containers/BufferGeometry.js';
+import type { GeometryBase } from '../../../elements/geometries/containers/GeometryBase.js';
+import type { PopBufferGeometry } from '../../../elements/geometries/containers/PopBufferGeometry.js';
+import type { Material } from '../../../elements/materials/Material.js';
 import {
     MergedMeshPhongMaterial,
     MergedMeshPhongMaterialDataTextureSchema,
-} from '../../../elements/materials/mesh/MergedMeshPhongMaterial';
-import type { MeshPhongMaterial } from '../../../elements/materials/mesh/MeshPhongMaterial';
-import { _Math } from '../../../math/Math';
-import type { Nullable } from '../../../utils/Utils';
-import type { Drawable } from '../../drawables/Drawable';
-import type { PopMesh } from '../../drawables/PopMesh';
-import { updateLODbyLevel } from '../DrawcallList';
-import { TypeAssert } from '../TypeAssert';
-import { createDataTexture } from './DataTextureCreator';
-import { expandAttributeBySharedIndex, generateTransformedUVAttribute } from './GeometryProcess';
-import { DrawcallMerger, type MergeDrawcallSource } from './Merger';
-import type { IMetaBlock } from '../../../elements/geometries/containers/IPopBufferInfo';
+} from '../../../elements/materials/mesh/MergedMeshPhongMaterial.js';
+import type { MeshPhongMaterial } from '../../../elements/materials/mesh/MeshPhongMaterial.js';
+import { _Math } from '../../../math/Math.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import type { Drawable } from '../../drawables/Drawable.js';
+import type { PopMesh } from '../../drawables/PopMesh.js';
+import { updateLODbyLevel } from '../DrawcallList.js';
+import { TypeAssert } from '../TypeAssert.js';
+import { createDataTexture } from './DataTextureCreator.js';
+import { expandAttributeBySharedIndex, generateTransformedUVAttribute } from './GeometryProcess.js';
+import { DrawcallMerger, type MergeDrawcallSource } from './Merger.js';
+import type { IMetaBlock } from '../../../elements/geometries/containers/IPopBufferInfo.js';
 
 function generateAccumulate(array: number[]): number[] {
     let countAcc = 0;

@@ -1,12 +1,12 @@
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import { Material } from '../Material';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { Color } from '../../../math/Color';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
-import type { TextureV2 } from '../../textures/TextureV2';
-import { Vector3 } from '../../../math/Vector3';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { Material } from '../Material.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { Color } from '../../../math/Color.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms.js';
+import type { TextureV2 } from '../../textures/TextureV2.js';
+import { Vector3 } from '../../../math/Vector3.js';
 
 export class SplatKernelHighlightMaterial extends Material {
     depthTest = false;

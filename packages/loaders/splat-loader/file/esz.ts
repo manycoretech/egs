@@ -8,7 +8,7 @@ import {
     isUrl,
     SH_C0,
     SH_MAPS,
-} from '../utils';
+} from '../utils.js';
 
 interface Metadata {
     version: number;

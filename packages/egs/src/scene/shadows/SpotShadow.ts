@@ -1,23 +1,23 @@
-import { SingleProjectShadow } from './Shadow';
+import { SingleProjectShadow } from './Shadow.js';
 import {
     type ShaderBuilder,
     ShaderInjectionTypes,
     ShaderVaryingTypes,
-} from '../../renderer/shader/builders/ShaderBuilder';
-import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms';
-import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
-import { Vector3 } from '../../math/Vector3';
-import { PerspectiveCamera } from '../cameras/PerspectiveCamera';
-import { _Math } from '../../math/Math';
-import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
-import type { SpotLight } from '../lights/SpotLight';
-import type { DrawableList } from '../tools/DrawcallList';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
-import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import { lightProperty } from '../../ContentAPI';
-import { Vector2 } from '../../math/Vector2';
-import type { TextureV2 } from '../../elements/textures/TextureV2';
-import type { Texture2D } from '../../elements/textures/Texture2D';
+} from '../../renderer/shader/builders/ShaderBuilder.js';
+import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms.js';
+import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { PerspectiveCamera } from '../cameras/PerspectiveCamera.js';
+import { _Math } from '../../math/Math.js';
+import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool.js';
+import type { SpotLight } from '../lights/SpotLight.js';
+import type { DrawableList } from '../tools/DrawcallList.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
+import { lightProperty } from '../../ContentAPI.js';
+import { Vector2 } from '../../math/Vector2.js';
+import type { TextureV2 } from '../../elements/textures/TextureV2.js';
+import type { Texture2D } from '../../elements/textures/Texture2D.js';
 
 export class SpotShadow<T extends TextureV2 | Texture2D = Texture2D> extends SingleProjectShadow<PerspectiveCamera> {
     customNear: number;

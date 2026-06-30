@@ -1,15 +1,15 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { type ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { Vector2 } from '../../../math/Vector2';
-import { Vector3 } from '../../../math/Vector3';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import type { Splat, SplatEffectConfig } from '../../../scene/splat/Splat';
-import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
-import { Layers } from '../../../scene/tools/Layers';
-import { TextureDataType } from '../../../utils/Constants';
-import { RendererBackend } from '../../../renderer/IRenderer';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { type ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { Vector2 } from '../../../math/Vector2.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import type { Splat, SplatEffectConfig } from '../../../scene/splat/Splat.js';
+import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool.js';
+import { Layers } from '../../../scene/tools/Layers.js';
+import { TextureDataType } from '../../../utils/Constants.js';
+import { RendererBackend } from '../../../renderer/IRenderer.js';
 
 function isUSamplerType(type: TextureDataType) {
     return type === TextureDataType.UnsignedIntType || type === TextureDataType.UnsignedShortType;

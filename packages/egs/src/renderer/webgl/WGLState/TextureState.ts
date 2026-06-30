@@ -1,7 +1,7 @@
-import type { WebGLLimits } from '../WGLCapabilities';
-import type { WebGLTextureType } from '../WGLConstants';
-import type { Nullable } from '../../../utils/Utils';
-import { logger } from '../../../utils/Logger';
+import type { WebGLLimits } from '../WGLCapabilities.js';
+import type { WebGLTextureType } from '../WGLConstants.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import { logger } from '../../../utils/Logger.js';
 
 interface TextureBindInfo {
     type?: WebGLTextureType;

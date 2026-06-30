@@ -1,20 +1,20 @@
-import { MeshDepthMaterial, DepthPackingStrategies } from '../../elements/materials/mesh/MeshDepthMaterial';
-import { Blending, BlendingFactor, BlendingEquation } from '../../utils/Constants';
-import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
-import { SSAOPassMaterial } from '../../elements/materials/quad/SSAOPassMaterial';
-import { SSAOBlurPassMaterial } from '../../elements/materials/quad/SSAOBlurPassMaterial';
-import { pass, target } from '../../rendergraph/NodeMakers';
-import type { PerspectiveCamera } from '../../scene/cameras/PerspectiveCamera';
-import { TypeAssert } from '../../scene/tools/TypeAssert';
-import { drawQuad, type RendererAdaptor } from '../RendererAdaptor';
-import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher';
-import { Matrix4 } from '../../math/Matrix4';
-import { readonlyMath } from '../../math/Readonly';
-import { PipelinePlugin, type IEffectConfig, type PipelineContext } from './PipelinePlugin';
-import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import type { RenderGraph } from '../../rendergraph/RenderGraph';
-import type { SceneAdaptor, SceneAdaptorDispatcher } from '../SceneAdaptor';
-import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial';
+import { MeshDepthMaterial, DepthPackingStrategies } from '../../elements/materials/mesh/MeshDepthMaterial.js';
+import { Blending, BlendingFactor, BlendingEquation } from '../../utils/Constants.js';
+import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial.js';
+import { SSAOPassMaterial } from '../../elements/materials/quad/SSAOPassMaterial.js';
+import { SSAOBlurPassMaterial } from '../../elements/materials/quad/SSAOBlurPassMaterial.js';
+import { pass, target } from '../../rendergraph/NodeMakers.js';
+import type { PerspectiveCamera } from '../../scene/cameras/PerspectiveCamera.js';
+import { TypeAssert } from '../../scene/tools/TypeAssert.js';
+import { drawQuad, type RendererAdaptor } from '../RendererAdaptor.js';
+import { MaterialShadingWithDynamicShapeDispatcher } from '../../renderer/MaterialDispatcher.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import { readonlyMath } from '../../math/Readonly.js';
+import { PipelinePlugin, type IEffectConfig, type PipelineContext } from './PipelinePlugin.js';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
+import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
+import type { SceneAdaptor, SceneAdaptorDispatcher } from '../SceneAdaptor.js';
+import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial.js';
 
 export class AOPlugin extends PipelinePlugin {
     readonly PLUGIN_NAME = 'AO';

@@ -4,6 +4,7 @@
 
 - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`，迁移至`OXC`
 - 升级`semver`到`7.8.5`
+- 改造为标准的ESM
 
 ## 1.1.0
 

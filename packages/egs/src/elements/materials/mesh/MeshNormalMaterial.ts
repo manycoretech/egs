@@ -2,12 +2,12 @@ import {
     type ShaderBuilder,
     ShaderInjectionTypes,
     ShaderVaryingTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
-import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool';
-import { materialProperty } from '../../../ContentAPI';
-import { SceneMaterial } from '../base';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms.js';
+import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { SceneMaterial } from '../base/index.js';
 
 /**
  * Material that shades meshes by their normals.

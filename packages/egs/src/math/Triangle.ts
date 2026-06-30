@@ -1,6 +1,6 @@
-import { Vector3 } from './Vector3';
-import type { Vector2 } from './Vector2';
-import type { Box3 } from './Box3';
+import { Vector3 } from './Vector3.js';
+import type { Vector2 } from './Vector2.js';
+import type { Box3 } from './Box3.js';
 /**
  * A geometric triangle as defined by three {@link Vector3| Vector3} representing its three corners.
  */

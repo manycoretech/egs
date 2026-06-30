@@ -1,9 +1,9 @@
-import nx from '../../assets/env/nx.jpg';
-import ny from '../../assets/env/ny.jpg';
-import nz from '../../assets/env/nz.jpg';
-import px from '../../assets/env/px.jpg';
-import py from '../../assets/env/py.jpg';
-import pz from '../../assets/env/pz.jpg';
+import nx from '../../assets/env/nx.jpg.js';
+import ny from '../../assets/env/ny.jpg.js';
+import nz from '../../assets/env/nz.jpg.js';
+import px from '../../assets/env/px.jpg.js';
+import py from '../../assets/env/py.jpg.js';
+import pz from '../../assets/env/pz.jpg.js';
 
 import {
     LegacySourceTexture,
@@ -11,12 +11,12 @@ import {
     TextureMipmapGroup,
     type WebGLTextureUploadCtx,
     createImgByUrl,
-} from './Texture';
-import { TextureDimension, TextureViewDimension } from './types';
-import { Texture2DCommonLayer } from './Texture2D';
-import { ContentBridge } from '../../ContentAPI';
-import { singleton } from '../../utils/Utils';
-import type { Serializer, Deserializer } from '../../utils/Serialization';
+} from './Texture.js';
+import { TextureDimension, TextureViewDimension } from './types.js';
+import { Texture2DCommonLayer } from './Texture2D.js';
+import { ContentBridge } from '../../ContentAPI.js';
+import { singleton } from '../../utils/Utils.js';
+import type { Serializer, Deserializer } from '../../utils/Serialization.js';
 
 /**
  * Mipmapped texture data for one cube-map side.

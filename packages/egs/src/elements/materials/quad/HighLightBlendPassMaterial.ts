@@ -1,10 +1,10 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import type { Texture } from '../../textures/Texture';
-import { readonlyMath } from '../../../math/Readonly';
-import { materialProperty } from '../../../ContentAPI';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { Texture } from '../../textures/Texture.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import { materialProperty } from '../../../ContentAPI.js';
 
 export class HighLightBlendPassMaterial extends PassQuadMaterialBase {
     @materialProperty()

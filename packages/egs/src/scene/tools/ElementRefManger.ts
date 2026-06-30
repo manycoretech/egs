@@ -1,11 +1,11 @@
-import { type Material, MaterialPropertyChangeEvent } from '../../elements/materials/Material';
-import type { Drawable } from '../drawables/Drawable';
-import { RefObjectMap } from '../../utils/RefObjectMap';
+import { type Material, MaterialPropertyChangeEvent } from '../../elements/materials/Material.js';
+import type { Drawable } from '../drawables/Drawable.js';
+import { RefObjectMap } from '../../utils/RefObjectMap.js';
 import {
     type GeometryBase,
     GeometryShapeChanged,
     GeometryContentChanged,
-} from '../../elements/geometries/containers/GeometryBase';
+} from '../../elements/geometries/containers/GeometryBase.js';
 
 export class SceneElementRefManager {
     // ref count

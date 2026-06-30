@@ -1,7 +1,7 @@
-import type { Matrix4 } from './Matrix4';
-import type { Quaternion } from './Quaternion';
-import type { BufferAttribute } from '../elements/attributes/BufferAttribute';
-import type { PickReadonly } from '../utils/Utils';
+import type { Matrix4 } from './Matrix4.js';
+import type { Quaternion } from './Quaternion.js';
+import type { BufferAttribute } from '../elements/attributes/BufferAttribute.js';
+import type { PickReadonly } from '../utils/Utils.js';
 /**
  * Class representing a 4D {@link https://en.wikipedia.org/wiki/Vector_space| vector}.
  * A 4D vector is an ordered quadruplet of numbers (labeled x, y, z, and w).

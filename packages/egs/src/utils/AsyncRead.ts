@@ -1,5 +1,5 @@
-import type { TypedArray } from './Utils';
-import { type Deferred, deferred } from './Deferred';
+import type { TypedArray } from './Utils.js';
+import { type Deferred, deferred } from './Deferred.js';
 
 const TASK_POLL_INTERVAL = 10;
 

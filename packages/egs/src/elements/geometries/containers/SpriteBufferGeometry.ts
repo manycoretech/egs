@@ -1,8 +1,8 @@
-import { BufferGeometry } from './BufferGeometry';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { Box3 } from '../../../math/Box3';
-import { Sphere } from '../../../math/Sphere';
-import { ContentBridge } from '../../../ContentAPI';
+import { BufferGeometry } from './BufferGeometry.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
+import { Box3 } from '../../../math/Box3.js';
+import { Sphere } from '../../../math/Sphere.js';
+import { ContentBridge } from '../../../ContentAPI.js';
 
 const HALF_SQRT_2 = Math.SQRT2 / 2.0;
 

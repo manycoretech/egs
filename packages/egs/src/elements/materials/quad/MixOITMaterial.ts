@@ -1,14 +1,14 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
 import {
     ShaderInjectionTypes,
     type ShaderBuilder,
     ShaderVaryingTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { materialProperty } from '../../../ContentAPI';
-import type { Texture } from '../../textures/Texture';
-import { Blending, BlendingFactor } from '../../../utils/Constants';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import type { Texture } from '../../textures/Texture.js';
+import { Blending, BlendingFactor } from '../../../utils/Constants.js';
 
 export class MixOITMaterial extends PassQuadMaterialBase {
     @materialProperty()

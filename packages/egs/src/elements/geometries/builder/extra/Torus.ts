@@ -1,6 +1,6 @@
-import { BufferGeometry } from '../../containers/BufferGeometry';
-import { BufferAttribute } from '../../../attributes/BufferAttribute';
-import { Vector3 } from '../../../../math/Vector3';
+import { BufferGeometry } from '../../containers/BufferGeometry.js';
+import { BufferAttribute } from '../../../attributes/BufferAttribute.js';
+import { Vector3 } from '../../../../math/Vector3.js';
 /**
  * @param radius Radius of the torus, from the center of the torus to the center of the tube. Default is 1.
  * @param tube Radius of the tube. Default is 0.4.

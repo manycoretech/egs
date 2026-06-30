@@ -1,9 +1,9 @@
-import { type Material, MaterialDisposeEvent } from '../../elements/materials/Material';
-import type { RenderState } from '../RenderState/RenderState';
-import { WGLProgram } from '../webgl/WGLProgram';
-import type { UBOManager } from './UBOManager';
-import type { RenderInfo } from '../../utils/RenderInfo';
-import { IterableWeakMap } from '../../utils/WeakCollections';
+import { type Material, MaterialDisposeEvent } from '../../elements/materials/Material.js';
+import type { RenderState } from '../RenderState/RenderState.js';
+import { WGLProgram } from '../webgl/WGLProgram.js';
+import type { UBOManager } from './UBOManager.js';
+import type { RenderInfo } from '../../utils/RenderInfo.js';
+import { IterableWeakMap } from '../../utils/WeakCollections.js';
 
 // ProgramManager manages WebGl program or instanced program for resource manger.
 // it controls the shader and problem in the engine. There are plenty of maps to record all the usage of

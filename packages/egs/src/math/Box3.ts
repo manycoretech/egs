@@ -1,12 +1,12 @@
-import { Vector3 } from './Vector3';
-import type { Sphere } from './Sphere';
-import type { Matrix4 } from './Matrix4';
-import type { Triangle } from './Triangle';
-import { Plane } from './Plane';
-import type { BufferAttribute } from '../elements/attributes/BufferAttribute';
-import { Box2 } from './Box2';
-import type { Object3D } from '../scene/Object3D';
-import { TypeAssert } from '../scene/tools/TypeAssert';
+import { Vector3 } from './Vector3.js';
+import type { Sphere } from './Sphere.js';
+import type { Matrix4 } from './Matrix4.js';
+import type { Triangle } from './Triangle.js';
+import { Plane } from './Plane.js';
+import type { BufferAttribute } from '../elements/attributes/BufferAttribute.js';
+import { Box2 } from './Box2.js';
+import type { Object3D } from '../scene/Object3D.js';
+import { TypeAssert } from '../scene/tools/TypeAssert.js';
 
 /**
  * A 3D box represents by {@link min| min} and {@link max| max}.

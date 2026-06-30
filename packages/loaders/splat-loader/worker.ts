@@ -1,12 +1,12 @@
 /// <reference lib="webworker" />
 
-import { TaskType, type SendMessage, TaskStatus, type ReceiveMessage } from './WorkerMessage';
-import { SogFile } from './file';
-import type { SogMetadataV1, SogMetadataV2 } from './file/sog';
-import { SogSplatData } from './splat';
-import type { SogMetadata } from './splat/SogSplatData';
-import { NUM_F_REST_TO_SH_DEGREE, SplatPackType, type ISplatData } from './utils';
-import { createSplatData, createSplatFile } from './helper';
+import { TaskType, type SendMessage, TaskStatus, type ReceiveMessage } from './WorkerMessage.js';
+import { SogFile } from './file/index.js';
+import type { SogMetadataV1, SogMetadataV2 } from './file/sog.js';
+import { SogSplatData } from './splat/index.js';
+import type { SogMetadata } from './splat/SogSplatData.js';
+import { NUM_F_REST_TO_SH_DEGREE, SplatPackType, type ISplatData } from './utils.js';
+import { createSplatData, createSplatFile } from './helper.js';
 
 let writer: WritableStreamDefaultWriter<Uint8Array> | undefined;
 self.onmessage = async (event: MessageEvent) => {

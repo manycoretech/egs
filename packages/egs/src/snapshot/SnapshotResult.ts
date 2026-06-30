@@ -1,6 +1,6 @@
-import type { Box3 } from '../math/Box3';
-import type { Size } from '../utils/Utils';
-import { Matrix4 } from '../math/Matrix4';
+import type { Box3 } from '../math/Box3.js';
+import type { Size } from '../utils/Utils.js';
+import { Matrix4 } from '../math/Matrix4.js';
 
 /**
  * Result states returned by snapshot rendering.

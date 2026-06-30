@@ -1,5 +1,5 @@
-import type { Camera3D } from './Camera3D';
-import { ElementEventDispatcher } from '../../utils/EventDispatcher';
+import type { Camera3D } from './Camera3D.js';
+import { ElementEventDispatcher } from '../../utils/EventDispatcher.js';
 
 /**
  * ArrayCamera can be used in order to efficiently render a scene with a predefined set of cameras. This is an important performance aspect for rendering VR scenes.<br/>

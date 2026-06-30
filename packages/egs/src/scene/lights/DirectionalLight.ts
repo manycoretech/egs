@@ -1,14 +1,14 @@
-import { Light } from './Light';
-import { Object3D } from '../Object3D';
-import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import { Matrix4 } from '../../math/Matrix4';
-import { Vector3 } from '../../math/Vector3';
-import { Color } from '../../math/Color';
-import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
-import { DirectionalShadow } from '../shadows/DirectionalShadow';
-import { singleton } from '../../utils/Utils';
-import { lightProperty } from '../../ContentAPI';
+import { Light } from './Light.js';
+import { Object3D } from '../Object3D.js';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { Color } from '../../math/Color.js';
+import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
+import { DirectionalShadow } from '../shadows/DirectionalShadow.js';
+import { singleton } from '../../utils/Utils.js';
+import { lightProperty } from '../../ContentAPI.js';
 
 /**
  * A light that gets emitted in a specific direction.

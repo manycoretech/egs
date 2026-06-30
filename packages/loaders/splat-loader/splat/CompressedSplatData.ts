@@ -1,4 +1,4 @@
-import { SplatData } from './SplatData';
+import { SplatData } from './SplatData.js';
 import {
     type ISampler,
     type ISplatData,
@@ -10,7 +10,7 @@ import {
     fromHalf,
     encodeQuatOct,
     decodeQuatOct,
-} from '../utils';
+} from '../utils.js';
 
 function encode111011s(a: number, b: number, c: number) {
     return (

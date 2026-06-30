@@ -1,5 +1,5 @@
-import { BufferGeometry } from '../containers/BufferGeometry';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
+import { BufferGeometry } from '../containers/BufferGeometry.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
 
 export const WEBGL_QUAD_UV = new Float32Array([0, 0, 2, 0, 0, 2]);
 

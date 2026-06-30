@@ -1,8 +1,8 @@
-import type { PickReadonly, Size } from '../utils/Utils';
-import type { Matrix3 } from './Matrix3';
-import type { Matrix4 } from './Matrix4';
-import type { Vector } from './Vector';
-import { logger } from '../utils/Logger';
+import type { PickReadonly, Size } from '../utils/Utils.js';
+import type { Matrix3 } from './Matrix3.js';
+import type { Matrix4 } from './Matrix4.js';
+import type { Vector } from './Vector.js';
+import { logger } from '../utils/Logger.js';
 /**
  * Class representing a 2D {@link https://en.wikipedia.org/wiki/Vector_space| vector}.
  * A 2D vector is an ordered pair of numbers (labeled x and y).

@@ -1,14 +1,14 @@
-import type { Mesh } from '../scene/drawables/Mesh';
-import { BVHStrategyType, type BVH, BVHBuilder } from './Impl';
-import type { Intersection, Raycaster } from '../scene/tools/Raycaster';
-import type { Ray } from '../math/Ray';
-import { Vector3 } from '../math/Vector3';
-import { Side } from '../utils/Constants';
-import { Face3 } from '../math/Face3';
-import { Triangle } from '../math/Triangle';
-import type { Material } from '../elements/materials/Material';
-import type { BufferGeometry } from '../elements/geometries/containers/BufferGeometry';
-import { logger } from '../utils/Logger';
+import type { Mesh } from '../scene/drawables/Mesh.js';
+import { BVHStrategyType, type BVH, BVHBuilder } from './Impl.js';
+import type { Intersection, Raycaster } from '../scene/tools/Raycaster.js';
+import type { Ray } from '../math/Ray.js';
+import { Vector3 } from '../math/Vector3.js';
+import { Side } from '../utils/Constants.js';
+import { Face3 } from '../math/Face3.js';
+import { Triangle } from '../math/Triangle.js';
+import type { Material } from '../elements/materials/Material.js';
+import type { BufferGeometry } from '../elements/geometries/containers/BufferGeometry.js';
+import { logger } from '../utils/Logger.js';
 
 class Box {
     minX: number;

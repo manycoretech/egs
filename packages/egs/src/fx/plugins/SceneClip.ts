@@ -1,6 +1,6 @@
-import { PipelinePlugin } from './PipelinePlugin';
-import type { Plane } from '../../math/Plane';
-import type { Scene3D } from '../../scene/Scene3D';
+import { PipelinePlugin } from './PipelinePlugin.js';
+import type { Plane } from '../../math/Plane.js';
+import type { Scene3D } from '../../scene/Scene3D.js';
 
 export class SceneClipPlugin extends PipelinePlugin {
     PLUGIN_NAME = 'SceneClip';

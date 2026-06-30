@@ -9,7 +9,7 @@ import {
     decodeImage,
     extractFromRootDir,
     NUM_F_REST_TO_SH_DEGREE,
-} from '../utils';
+} from '../utils.js';
 
 export interface SogMetadataV1 {
     version: undefined;

@@ -1,10 +1,10 @@
-import type { ViewerConfig } from './engine/EngineConfig';
-import type { SnapshotRenderer } from './snapshot/SnapshotRendererV2';
-import type { Viewer } from './Viewer';
-import type { Viewport } from './Viewport';
-import type { HighlightGroup } from './fx/plugins/Highlight';
-import type { SnapshotResult } from './snapshot/SnapshotResult';
-import type { IRange } from './utils/Utils';
+import type { ViewerConfig } from './engine/EngineConfig.js';
+import type { SnapshotRenderer } from './snapshot/SnapshotRendererV2.js';
+import type { Viewer } from './Viewer.js';
+import type { Viewport } from './Viewport.js';
+import type { HighlightGroup } from './fx/plugins/Highlight.js';
+import type { SnapshotResult } from './snapshot/SnapshotResult.js';
+import type { IRange } from './utils/Utils.js';
 
 /**
  * Context object for viewport

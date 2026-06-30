@@ -1,14 +1,14 @@
-import { ShaderComponent } from '../Shader';
-import type { Nullable } from '../../../utils/Utils';
-import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
-import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import type { WGLProgram } from '../../webgl/WGLProgram';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import type { Texture2D } from '../../../elements/textures/Texture2D';
-import { readonlyMath } from '../../../math/Readonly';
-import type { ReadonlyColor } from '../../../math/Color';
-import { materialProperty } from '../../../ContentAPI';
-import type { TextureV2 } from '../../../elements/textures/TextureV2';
+import { ShaderComponent } from '../Shader.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder.js';
+import { WebGLShaderDataType } from '../../webgl/WGLConstants.js';
+import type { WGLProgram } from '../../webgl/WGLProgram.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import type { Texture2D } from '../../../elements/textures/Texture2D.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import type { ReadonlyColor } from '../../../math/Color.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import type { TextureV2 } from '../../../elements/textures/TextureV2.js';
 
 // ColorShaderComponent controls the use of common 2D texture,
 // which takes sample from texture with the UV coordinates data.

@@ -1,6 +1,7 @@
 # DEV
 
 - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`，迁移至`OXC`
+- 改造为标准`ESM`
 
 # 1.0.3
 

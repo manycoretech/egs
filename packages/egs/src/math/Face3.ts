@@ -1,5 +1,5 @@
-import { Vector3 } from '../math/Vector3';
-import { Color } from '../math/Color';
+import { Vector3 } from '../math/Vector3.js';
+import { Color } from '../math/Color.js';
 /**
  * Triangular face used in {@link Geometry | Geometry }.
  * These are created automatically for all standard geometry types, however if you are building a custom geometry you will have to create them manually.

@@ -1,10 +1,10 @@
-import { ContentBridge } from '../../ContentAPI';
-import type { WebGLTextureUploadCtx, SamplerDescriptor } from './Texture';
-import { TextureV2 } from './TextureV2';
-import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants';
-import type { WGLRenderAttachment } from '../../renderer/ResourceManager/TextureManager';
-import type { TextureViewDimension, TextureFormat, TextureDimension } from './types';
-import type { RendererBackend } from '../../renderer/IRenderer';
+import { ContentBridge } from '../../ContentAPI.js';
+import type { WebGLTextureUploadCtx, SamplerDescriptor } from './Texture.js';
+import { TextureV2 } from './TextureV2.js';
+import { WebGLPixelFormat } from '../../renderer/webgl/WGLConstants.js';
+import type { WGLRenderAttachment } from '../../renderer/ResourceManager/TextureManager.js';
+import type { TextureViewDimension, TextureFormat, TextureDimension } from './types.js';
+import type { RendererBackend } from '../../renderer/IRenderer.js';
 
 /**
  * color or depth attachment for render target.

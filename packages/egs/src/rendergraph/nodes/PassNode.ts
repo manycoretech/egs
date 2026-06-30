@@ -1,15 +1,15 @@
-import type { RendererAdaptor } from '../../fx/RendererAdaptor';
-import { Vector4 } from '../../math/Vector4';
-import type { MaterialDispatcher } from '../../renderer/MaterialDispatcher';
-import type { Nullable } from '../../utils/Utils';
-import { ExecuteNode } from './ExecuteNode';
-import type { Renderable } from '../../scene/renderables/IRenderable';
-import type { RenderTargetNode } from './RenderTargetNode';
-import { logger } from '../../utils/Logger';
-import type { RenderTarget } from '../../elements/textures/RenderTarget';
-import type { DrivenMaterial } from '../../elements/materials/driven/DrivenMaterial';
-import type { ResourceNode } from './ResourceNode';
-import type { Texture } from '../../elements/textures/Texture';
+import type { RendererAdaptor } from '../../fx/RendererAdaptor.js';
+import { Vector4 } from '../../math/Vector4.js';
+import type { MaterialDispatcher } from '../../renderer/MaterialDispatcher.js';
+import type { Nullable } from '../../utils/Utils.js';
+import { ExecuteNode } from './ExecuteNode.js';
+import type { Renderable } from '../../scene/renderables/IRenderable.js';
+import type { RenderTargetNode } from './RenderTargetNode.js';
+import { logger } from '../../utils/Logger.js';
+import type { RenderTarget } from '../../elements/textures/RenderTarget.js';
+import type { DrivenMaterial } from '../../elements/materials/driven/DrivenMaterial.js';
+import type { ResourceNode } from './ResourceNode.js';
+import type { Texture } from '../../elements/textures/Texture.js';
 
 export type RenderMethod = (renderer: RendererAdaptor, target?: RenderTarget, i?: number) => void;
 export type ConfigMethod = (renderer: RendererAdaptor) => boolean;

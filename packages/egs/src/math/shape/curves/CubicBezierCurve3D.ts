@@ -1,7 +1,7 @@
-import { Curve } from './Curve';
-import { Vector3 } from '../../Vector3';
-import { _Math } from '../../Math';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
+import { Curve } from './Curve.js';
+import { Vector3 } from '../../Vector3.js';
+import { _Math } from '../../Math.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
 /**
  * The cubic-bezier curve object is used to help drawing curves in 3D space.
  */

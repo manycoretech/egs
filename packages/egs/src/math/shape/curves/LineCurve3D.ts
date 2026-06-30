@@ -1,5 +1,5 @@
-import { Curve } from './Curve';
-import { Vector3 } from '../../Vector3';
+import { Curve } from './Curve.js';
+import { Vector3 } from '../../Vector3.js';
 /**
  * Build a line from {@link v1 | v1 } to {@link v2 | v2 } in 3D space.
  */

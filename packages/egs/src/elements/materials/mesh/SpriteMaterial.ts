@@ -1,22 +1,22 @@
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 import {
     type ShaderBuilder,
     ShaderVaryingTypes,
     ShaderInjectionTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { Material, type MaterialParameters, type ConvertMaterialParameters } from '../Material';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import { Utils, type Nullable } from '../../../utils/Utils';
-import type { Sprite } from '../../../scene/drawables/Sprite';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { readonlyMath } from '../../../math/Readonly';
-import { materialProperty } from '../../../ContentAPI';
-import type { Texture2D } from '../../textures/Texture2D';
-import type { TextureV2 } from '../../textures/TextureV2';
-import type { Texture } from '../../textures/Texture';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { Material, type MaterialParameters, type ConvertMaterialParameters } from '../Material.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { BuiltInUniformTypes } from '../../../renderer/RenderState/BuiltInUniforms.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import { Utils, type Nullable } from '../../../utils/Utils.js';
+import type { Sprite } from '../../../scene/drawables/Sprite.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import type { Texture2D } from '../../textures/Texture2D.js';
+import type { TextureV2 } from '../../textures/TextureV2.js';
+import type { Texture } from '../../textures/Texture.js';
 
 export type SpriteMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters &
     ConvertMaterialParameters<Pick<SpriteMaterial<T>, 'sizeAttenuation' | 'rotation' | 'opacity' | 'color'>> & {

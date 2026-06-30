@@ -1,6 +1,6 @@
 import { Quaternion, type Object3D, type Material } from '@qunhe/egs';
-import { multiplyQuaternionsFlat, type TrackPath } from './utils';
-import { Blend } from './type';
+import { multiplyQuaternionsFlat, type TrackPath } from './utils.js';
+import { Blend } from './type.js';
 
 /**
  * buffer layout: [ incoming | accu0 | accu1 | orig | addAccu | (optional work) ]

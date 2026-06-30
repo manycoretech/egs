@@ -1,9 +1,9 @@
-import { Splat } from './Splat';
-import { UniformBlockObject } from '../../renderer/shader/components/UniformBlockObject';
-import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
-import { Vector3 } from '../../math/Vector3';
-import { Vector4 } from '../../math/Vector4';
-import type { SourceTexture } from '../../elements/textures/SourceTexture';
+import { Splat } from './Splat.js';
+import { UniformBlockObject } from '../../renderer/shader/components/UniformBlockObject.js';
+import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { Vector4 } from '../../math/Vector4.js';
+import type { SourceTexture } from '../../elements/textures/SourceTexture.js';
 
 export type SogSplatMeta = {
     counts: number;

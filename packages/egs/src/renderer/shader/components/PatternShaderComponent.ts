@@ -1,16 +1,16 @@
-import { ShaderComponent } from '../Shader';
-import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder';
-import type { WGLProgram } from '../../webgl/WGLProgram';
-import { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import type { ConvertMaterialParameters } from '../../../elements/materials/Material';
-import { Utils } from '../../../utils/Utils';
-import type { Texture2D } from '../../../elements/textures/Texture2D';
-import { readonlyMath } from '../../../math/Readonly';
-import { ContentBridge, materialProperty } from '../../../ContentAPI';
-import type { Color } from '../../../math/Color';
-import { BlendingFactor, BlendingEquation } from '../../../utils/Constants';
-import type { TextureV2 } from '../../../elements/textures/TextureV2';
+import { ShaderComponent } from '../Shader.js';
+import { type ShaderBuilder, ShaderInjectionTypes, ShaderVaryingTypes } from '../builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../webgl/WGLProgram.js';
+import { WebGLShaderDataType } from '../../webgl/WGLConstants.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import type { ConvertMaterialParameters } from '../../../elements/materials/Material.js';
+import { Utils } from '../../../utils/Utils.js';
+import type { Texture2D } from '../../../elements/textures/Texture2D.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import { ContentBridge, materialProperty } from '../../../ContentAPI.js';
+import type { Color } from '../../../math/Color.js';
+import { BlendingFactor, BlendingEquation } from '../../../utils/Constants.js';
+import type { TextureV2 } from '../../../elements/textures/TextureV2.js';
 
 export type PatternShaderComponentParameter<T extends TextureV2 | Texture2D = Texture2D> = ConvertMaterialParameters<
     Pick<

@@ -1,7 +1,7 @@
-import { Box3 } from './Box3';
-import { Vector3 } from './Vector3';
-import type { Plane } from './Plane';
-import type { Matrix4 } from './Matrix4';
+import { Box3 } from './Box3.js';
+import { Vector3 } from './Vector3.js';
+import type { Plane } from './Plane.js';
+import type { Matrix4 } from './Matrix4.js';
 /**
  * A two dimensional surface that extends infinitely in 3d space,
  * represented in {@link http://mathworld.wolfram.com/HessianNormalForm.html| Hessian normal form} by a unit length normal vector and a constant.

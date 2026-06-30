@@ -1,58 +1,58 @@
-import { pass, target, colorAttachment, depthAttachment } from '../../rendergraph/NodeMakers';
+import { pass, target, colorAttachment, depthAttachment } from '../../rendergraph/NodeMakers.js';
 import {
     PipelinePlugin,
     type IEffectConfig,
     type RenderingConfig,
     type PipelineContext,
     type DrivenCullingConfig,
-} from './PipelinePlugin';
-import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import type { RenderGraph } from '../../rendergraph/RenderGraph';
-import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial';
-import { MixOITMaterial } from '../../elements/materials/quad/MixOITMaterial';
-import { CopyColorAndDepthMaterial, CopyMaterial } from '../../elements/materials/quad/CopyMaterial';
-import type { SceneAdaptor, SceneAdaptorDispatcher } from '../SceneAdaptor';
-import type { PassNode } from '../../rendergraph/nodes/PassNode';
-import { Color } from '../../math/Color';
-import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
-import { Blending, BlendingFactor, BlendingEquation } from '../../utils/Constants';
-import { Vector4 } from '../../math/Vector4';
-import { RenderObjectsType, filterBy } from '../../scene/tools/DrawcallList';
-import { drawQuad, type RendererAdaptor } from '../RendererAdaptor';
-import { BACKGROUND_SHADING_PASS_NAME } from './Background';
+} from './PipelinePlugin.js';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
+import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
+import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial.js';
+import { MixOITMaterial } from '../../elements/materials/quad/MixOITMaterial.js';
+import { CopyColorAndDepthMaterial, CopyMaterial } from '../../elements/materials/quad/CopyMaterial.js';
+import type { SceneAdaptor, SceneAdaptorDispatcher } from '../SceneAdaptor.js';
+import type { PassNode } from '../../rendergraph/nodes/PassNode.js';
+import { Color } from '../../math/Color.js';
+import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants.js';
+import { Blending, BlendingFactor, BlendingEquation } from '../../utils/Constants.js';
+import { Vector4 } from '../../math/Vector4.js';
+import { RenderObjectsType, filterBy } from '../../scene/tools/DrawcallList.js';
+import { drawQuad, type RendererAdaptor } from '../RendererAdaptor.js';
+import { BACKGROUND_SHADING_PASS_NAME } from './Background.js';
 import {
     MaterialDispatcher,
     checkInstance,
     MaterialShadingWithDynamicShapeDispatcher,
-} from '../../renderer/MaterialDispatcher';
-import { OutlineShadingMode, type Drawable, OutlineRenderMode } from '../../scene/drawables/Drawable';
-import { TypeAssert } from '../../scene/tools/TypeAssert';
-import type { Material } from '../../elements/materials/Material';
-import type { Nullable } from '../../utils/Utils';
-import { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
-import type { Renderer } from '../../renderer/Renderer';
-import { ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../renderer/shader/builders/ShaderBuilder';
-import { OITMaterial } from '../../elements/materials/mesh/OITMaterial';
-import { PipelineContentBridge, PipelineFilters } from '../PipelineAPI';
-import { EventType, EventDispatcher } from '../../utils/EventDispatcher';
-import { ToonMaterial } from '../../elements/materials/mesh/ToonMaterial';
-import { DrivenCullingMaterial } from '../../elements/materials/driven/DrivenCullingMaterial';
-import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial';
-import { MeshPhongMaterial } from '../../elements/materials/mesh/MeshPhongMaterial';
-import { Vector3 } from '../../math/Vector3';
-import { PlanarShadowMaterial } from '../../elements/materials/mesh/PlanarShadowMaterial';
-import { Plane } from '../../math/Plane';
-import { Matrix4 } from '../../math/Matrix4';
-import type { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry';
-import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms';
-import { BlurPassMaterial } from '../../elements/materials/quad/BlurPassMaterial';
-import { readonlyMath } from '../../math/Readonly';
-import { MixPlanarShadowMaterial } from '../../elements/materials/quad/MixPlanarShadowMaterial';
-import type { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode';
-import { RendererBackend } from '../../renderer/IRenderer';
-import { TextureFormat } from '../../elements/textures/types';
-import { Texture2D } from '../../elements/textures/Texture2D';
+} from '../../renderer/MaterialDispatcher.js';
+import { OutlineShadingMode, type Drawable, OutlineRenderMode } from '../../scene/drawables/Drawable.js';
+import { TypeAssert } from '../../scene/tools/TypeAssert.js';
+import type { Material } from '../../elements/materials/Material.js';
+import type { Nullable } from '../../utils/Utils.js';
+import { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
+import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry.js';
+import type { Renderer } from '../../renderer/Renderer.js';
+import { ShaderBuilder, ShaderInjectionTypes, FragOutType } from '../../renderer/shader/builders/ShaderBuilder.js';
+import { OITMaterial } from '../../elements/materials/mesh/OITMaterial.js';
+import { PipelineContentBridge, PipelineFilters } from '../PipelineAPI.js';
+import { EventType, EventDispatcher } from '../../utils/EventDispatcher.js';
+import { ToonMaterial } from '../../elements/materials/mesh/ToonMaterial.js';
+import { DrivenCullingMaterial } from '../../elements/materials/driven/DrivenCullingMaterial.js';
+import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial.js';
+import { MeshPhongMaterial } from '../../elements/materials/mesh/MeshPhongMaterial.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { PlanarShadowMaterial } from '../../elements/materials/mesh/PlanarShadowMaterial.js';
+import { Plane } from '../../math/Plane.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import type { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry.js';
+import { BuiltInUniformTypes } from '../../renderer/RenderState/BuiltInUniforms.js';
+import { BlurPassMaterial } from '../../elements/materials/quad/BlurPassMaterial.js';
+import { readonlyMath } from '../../math/Readonly.js';
+import { MixPlanarShadowMaterial } from '../../elements/materials/quad/MixPlanarShadowMaterial.js';
+import type { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode.js';
+import { RendererBackend } from '../../renderer/IRenderer.js';
+import { TextureFormat } from '../../elements/textures/types.js';
+import { Texture2D } from '../../elements/textures/Texture2D.js';
 
 const tmpVec3 = new Vector3();
 

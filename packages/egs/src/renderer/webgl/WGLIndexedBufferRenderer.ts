@@ -1,11 +1,11 @@
-import { WGLCapabilities } from './WGLCapabilities';
-import { type WGLExtensions, WebGLExtEnums } from './WGLExtensions';
-import type { RenderInfo, ObjectStatsInfo } from '../../utils/RenderInfo';
-import type { Drawable } from '../../scene/drawables/Drawable';
-import type { InstancedBufferGeometry } from '../../elements/geometries/containers/InstancedBufferGeometry';
-import type { WGLBufferData } from './WGLBuffer';
-import { logger } from '../../utils/Logger';
-import type { Nullable } from '../../utils/Utils';
+import { WGLCapabilities } from './WGLCapabilities.js';
+import { type WGLExtensions, WebGLExtEnums } from './WGLExtensions.js';
+import type { RenderInfo, ObjectStatsInfo } from '../../utils/RenderInfo.js';
+import type { Drawable } from '../../scene/drawables/Drawable.js';
+import type { InstancedBufferGeometry } from '../../elements/geometries/containers/InstancedBufferGeometry.js';
+import type { WGLBufferData } from './WGLBuffer.js';
+import { logger } from '../../utils/Logger.js';
+import type { Nullable } from '../../utils/Utils.js';
 
 // WGLBufferRenderer provides functions to control the method of drawing and drawing primitives with index buffer.
 // This also provides a function to draw instanced BufferGeometryBase.

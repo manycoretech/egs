@@ -1,7 +1,7 @@
-import { BufferAttribute } from '../../../../elements/attributes/BufferAttribute';
-import { Vector3 } from '../../../../math/Vector3';
-import { BufferGeometry } from '../../../../elements/geometries/containers/BufferGeometry';
-import { logger } from '../../../../utils/Logger';
+import { BufferAttribute } from '../../../../elements/attributes/BufferAttribute.js';
+import { Vector3 } from '../../../../math/Vector3.js';
+import { BufferGeometry } from '../../../../elements/geometries/containers/BufferGeometry.js';
+import { logger } from '../../../../utils/Logger.js';
 
 export interface ParametricShapeParameter {
     func: (u: number, v: number, w: Vector3) => Vector3;

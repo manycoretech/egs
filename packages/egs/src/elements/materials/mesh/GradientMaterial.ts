@@ -2,14 +2,14 @@ import {
     type ShaderBuilder,
     ShaderVaryingTypes,
     ShaderInjectionTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
-import { Side } from '../../../utils/Constants';
-import { readonlyMath } from '../../../math/Readonly';
-import { materialProperty } from '../../../ContentAPI';
-import { BackgroundLikeMaterial } from '../base';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock.js';
+import { Side } from '../../../utils/Constants.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { BackgroundLikeMaterial } from '../base/index.js';
 
 export class GradientMaterial extends BackgroundLikeMaterial {
     @materialProperty()

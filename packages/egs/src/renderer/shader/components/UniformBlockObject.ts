@@ -1,10 +1,10 @@
-import type { TypedArray, Nullable } from '../../../utils/Utils';
-import type { ShaderInputDescriptor, UniformBlockDescriptor, UniformArrayDescriptor } from '../Shader';
-import type { WebGLShaderDataType } from '../../webgl/WGLConstants';
-import type { WGLProgram } from '../../webgl/WGLProgram';
-import { Capabilities } from '../../Capabilities';
-import type { UniformGeneralTypes } from '../../webgl/WGLUniform';
-import { createUniforms, createUniformArrays } from '../builders/ShaderHelper';
+import type { TypedArray, Nullable } from '../../../utils/Utils.js';
+import type { ShaderInputDescriptor, UniformBlockDescriptor, UniformArrayDescriptor } from '../Shader.js';
+import type { WebGLShaderDataType } from '../../webgl/WGLConstants.js';
+import type { WGLProgram } from '../../webgl/WGLProgram.js';
+import { Capabilities } from '../../Capabilities.js';
+import type { UniformGeneralTypes } from '../../webgl/WGLUniform.js';
+import { createUniforms, createUniformArrays } from '../builders/ShaderHelper.js';
 
 interface UBOItem {
     value: Flattenable | number;

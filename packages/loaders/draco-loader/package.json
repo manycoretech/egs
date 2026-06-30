@@ -4,6 +4,8 @@
   "description": "decode draco",
   "license": "MIT",
   "main": "index.js",
+  "module": "index.js",
+  "type": "module",
   "types": "index.d.ts",
   "repository": "https://github.com/manycoretech/egs.git",
   "release": {

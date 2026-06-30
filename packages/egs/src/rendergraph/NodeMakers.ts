@@ -1,10 +1,10 @@
-import { CubeRenderTargetNode, CubePassNode } from './nodes/CubeNode';
-import { PingPongTargetNode } from './nodes/PingPongTargetNode';
-import type { DAGNode } from './nodes/DAGNode';
-import { PassNode } from './nodes/PassNode';
-import { RenderTargetNode } from './nodes/RenderTargetNode';
-import { RenderColorAttachmentNode, RenderDepthAttachmentNode } from './nodes/RenderAttachmentNode';
-import { TextureViewDimension } from '../elements/textures/types';
+import { CubeRenderTargetNode, CubePassNode } from './nodes/CubeNode.js';
+import { PingPongTargetNode } from './nodes/PingPongTargetNode.js';
+import type { DAGNode } from './nodes/DAGNode.js';
+import { PassNode } from './nodes/PassNode.js';
+import { RenderTargetNode } from './nodes/RenderTargetNode.js';
+import { RenderColorAttachmentNode, RenderDepthAttachmentNode } from './nodes/RenderAttachmentNode.js';
+import { TextureViewDimension } from '../elements/textures/types.js';
 
 export function disableClear(passes: Array<PassNode | undefined>) {
     return (passes.filter(v => !!v) as PassNode[]).map(v => v.disableClear());

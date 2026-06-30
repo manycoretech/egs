@@ -1,5 +1,5 @@
 import type { Matrix3 } from '@qunhe/egs';
-import type { SplatOperator } from './SplatOperator';
+import type { SplatOperator } from './SplatOperator.js';
 
 //#region
 /**

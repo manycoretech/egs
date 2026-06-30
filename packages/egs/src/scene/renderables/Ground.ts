@@ -1,11 +1,11 @@
-import { Mesh } from '../drawables/Mesh';
-import type { Renderable } from './IRenderable';
-import { GroundMaterial } from '../../elements/materials/mesh/GroundMaterial';
-import { logger } from '../../utils/Logger';
-import { plane } from '../../elements/geometries/builder/Index';
-import type { IRenderer } from '../../renderer/IRenderer';
-import { Vector3 } from '../../math/Vector3';
-import { readonlyMath } from '../../math/Readonly';
+import { Mesh } from '../drawables/Mesh.js';
+import type { Renderable } from './IRenderable.js';
+import { GroundMaterial } from '../../elements/materials/mesh/GroundMaterial.js';
+import { logger } from '../../utils/Logger.js';
+import { plane } from '../../elements/geometries/builder/Index.js';
+import type { IRenderer } from '../../renderer/IRenderer.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { readonlyMath } from '../../math/Readonly.js';
 
 const GROUND_DEFAULT_UP = new Vector3(0, 0, 1);
 /**

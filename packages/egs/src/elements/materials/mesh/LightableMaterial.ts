@@ -1,11 +1,11 @@
-import type { LightShaderComponent } from '../../../renderer/shader/components/LightShaderComponent';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import type { ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import { AreaLight } from '../../../scene/lights/AreaLight';
-import { Side } from '../../../utils/Constants';
-import { materialProperty } from '../../../ContentAPI';
-import { ScenePopLODMaterial } from '../base';
-import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
+import type { LightShaderComponent } from '../../../renderer/shader/components/LightShaderComponent.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import type { ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { AreaLight } from '../../../scene/lights/AreaLight.js';
+import { Side } from '../../../utils/Constants.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { ScenePopLODMaterial } from '../base/index.js';
+import { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
 
 export abstract class LightableMaterial extends ScenePopLODMaterial {
     isLightableMaterial = true;

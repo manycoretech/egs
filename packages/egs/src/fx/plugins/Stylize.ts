@@ -1,12 +1,12 @@
-import type { Vector3 } from '../../math/Vector3';
-import { pass, target } from '../../rendergraph/NodeMakers';
-import { drawQuad, type RendererAdaptor } from '../RendererAdaptor';
-import { FilterMaterial, FilterTarget } from '../../elements/materials/quad/FilterMaterial';
-import { PipelinePlugin } from './PipelinePlugin';
-import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import type { RenderGraph } from '../../rendergraph/RenderGraph';
-import type { SceneAdaptorDispatcher } from '../SceneAdaptor';
-import type { Texture } from '../../elements/textures/Texture';
+import type { Vector3 } from '../../math/Vector3.js';
+import { pass, target } from '../../rendergraph/NodeMakers.js';
+import { drawQuad, type RendererAdaptor } from '../RendererAdaptor.js';
+import { FilterMaterial, FilterTarget } from '../../elements/materials/quad/FilterMaterial.js';
+import { PipelinePlugin } from './PipelinePlugin.js';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
+import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
+import type { SceneAdaptorDispatcher } from '../SceneAdaptor.js';
+import type { Texture } from '../../elements/textures/Texture.js';
 
 export class StylizePlugin extends PipelinePlugin {
     readonly PLUGIN_NAME = 'stylize';

@@ -1,13 +1,13 @@
-import { ElementEventDispatcher, EventType } from '../../utils/EventDispatcher';
-import { type WebGLPixelFormat, getWebGLPixelFormatChannelSize } from '../../renderer/webgl/WGLConstants';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
-import { type TextureDataType, getTextureDataTypeSize, SamplerFilter, SamplerWrap } from '../../utils/Constants';
-import { logger } from '../../utils/Logger';
-import type { ElementsWithGPUResource } from '../../utils/ElementBase';
-import { ContentBridge } from '../../ContentAPI';
-import { WGLCapabilities } from '../../renderer/webgl/WGLCapabilities';
-import { TextureDimension, TextureViewDimension, getBindableTarget } from './types';
-import { RendererBackend, type Limits } from '../../renderer/IRenderer';
+import { ElementEventDispatcher, EventType } from '../../utils/EventDispatcher.js';
+import { type WebGLPixelFormat, getWebGLPixelFormatChannelSize } from '../../renderer/webgl/WGLConstants.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
+import { type TextureDataType, getTextureDataTypeSize, SamplerFilter, SamplerWrap } from '../../utils/Constants.js';
+import { logger } from '../../utils/Logger.js';
+import type { ElementsWithGPUResource } from '../../utils/ElementBase.js';
+import { ContentBridge } from '../../ContentAPI.js';
+import { WGLCapabilities } from '../../renderer/webgl/WGLCapabilities.js';
+import { TextureDimension, TextureViewDimension, getBindableTarget } from './types.js';
+import { RendererBackend, type Limits } from '../../renderer/IRenderer.js';
 
 export const TextureDisposeEvent = new EventType<Texture>();
 

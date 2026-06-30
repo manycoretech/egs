@@ -1,8 +1,8 @@
-import { InstanceMesh } from '../../drawables/InstanceMesh';
-import type { Mesh } from '../../drawables/Mesh';
-import { type Drawable, DrawableRenderMode } from '../../drawables/Drawable';
-import type { DrawableSet } from './DrawableSet';
-import { ProxyOptimizer } from './ProxyOptimizer';
+import { InstanceMesh } from '../../drawables/InstanceMesh.js';
+import type { Mesh } from '../../drawables/Mesh.js';
+import { type Drawable, DrawableRenderMode } from '../../drawables/Drawable.js';
+import type { DrawableSet } from './DrawableSet.js';
+import { ProxyOptimizer } from './ProxyOptimizer.js';
 
 export class InstancePool extends ProxyOptimizer<Mesh, InstanceMesh> {
     static isAvailable = true;

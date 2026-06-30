@@ -1,4 +1,4 @@
-import type { Vector3 } from './Vector3';
+import type { Vector3 } from './Vector3.js';
 /**
  * A point's {@link https://en.wikipedia.org/wiki/Cylindrical_coordinate_system| cylindrical coordinates}.
  */

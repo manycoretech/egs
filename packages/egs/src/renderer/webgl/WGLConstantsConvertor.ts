@@ -1,6 +1,6 @@
-import { type WGLExtensions, WebGLExtEnums } from './WGLExtensions';
-import { WGLCapabilities } from './WGLCapabilities';
-import { TextureDataType } from '../../utils/Constants';
+import { type WGLExtensions, WebGLExtEnums } from './WGLExtensions.js';
+import { WGLCapabilities } from './WGLCapabilities.js';
+import { TextureDataType } from '../../utils/Constants.js';
 
 export class WGLConstantsConvertor {
     static convertTextureDataType(

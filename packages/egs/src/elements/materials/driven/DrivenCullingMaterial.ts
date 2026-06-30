@@ -1,8 +1,8 @@
-import { materialProperty } from '../../../ContentAPI';
-import { DrivenMaterial } from './DrivenMaterial';
-import { Matrix4 } from '../../../math/Matrix4';
-import type { DrivenCullingConfig } from '../../../fx/plugins/PipelinePlugin';
-import type { RenderAttachment } from '../../textures/RenderTarget';
+import { materialProperty } from '../../../ContentAPI.js';
+import { DrivenMaterial } from './DrivenMaterial.js';
+import { Matrix4 } from '../../../math/Matrix4.js';
+import type { DrivenCullingConfig } from '../../../fx/plugins/PipelinePlugin.js';
+import type { RenderAttachment } from '../../textures/RenderTarget.js';
 
 export class DrivenCullingMaterial extends DrivenMaterial {
     @materialProperty()

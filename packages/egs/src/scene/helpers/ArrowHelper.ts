@@ -1,15 +1,15 @@
-import { CombinedObjectGroup } from '../Object3D';
-import { Vector3 } from '../../math/Vector3';
-import { Mesh } from '../drawables/Mesh';
-import { Line } from '../drawables/Line';
-import { Color } from '../../math/Color';
-import { BufferGeometry, type LineStrip } from '../../elements/geometries/containers/BufferGeometry';
-import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
-import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
-import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial';
-import { Matrix4 } from '../../math/Matrix4';
-import { cone } from '../../elements/geometries/builder/Index';
-import { transform } from '../../elements/geometries/operators/Index';
+import { CombinedObjectGroup } from '../Object3D.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { Mesh } from '../drawables/Mesh.js';
+import { Line } from '../drawables/Line.js';
+import { Color } from '../../math/Color.js';
+import { BufferGeometry, type LineStrip } from '../../elements/geometries/containers/BufferGeometry.js';
+import { BufferAttribute } from '../../elements/attributes/BufferAttribute.js';
+import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial.js';
+import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import { cone } from '../../elements/geometries/builder/Index.js';
+import { transform } from '../../elements/geometries/operators/Index.js';
 
 /**
  * Draw a arrow with a head and a line.

@@ -1,6 +1,6 @@
-import type { Vector2 } from '../../Vector2';
-import type { Deserializer, Serializer } from '../../../utils/Serialization';
-import { Path } from './Path';
+import type { Vector2 } from '../../Vector2.js';
+import type { Deserializer, Serializer } from '../../../utils/Serialization.js';
+import { Path } from './Path.js';
 /**
  * Defines a 2d shape plane which uses paths.
  */

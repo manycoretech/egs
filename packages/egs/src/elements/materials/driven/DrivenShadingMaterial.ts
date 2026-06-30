@@ -1,8 +1,8 @@
-import { materialProperty } from '../../../ContentAPI';
-import { Color } from '../../../math/Color';
-import { DrivenMaterial } from './DrivenMaterial';
-import { Matrix4 } from '../../../math/Matrix4';
-import { DepthPackingStrategies } from '../mesh/MeshDepthMaterial';
+import { materialProperty } from '../../../ContentAPI.js';
+import { Color } from '../../../math/Color.js';
+import { DrivenMaterial } from './DrivenMaterial.js';
+import { Matrix4 } from '../../../math/Matrix4.js';
+import { DepthPackingStrategies } from '../mesh/MeshDepthMaterial.js';
 
 export enum DrivenShadingMode {
     PhongShading = 0,

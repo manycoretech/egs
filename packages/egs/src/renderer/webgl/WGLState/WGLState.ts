@@ -1,13 +1,13 @@
-import { Vector4 } from '../../../math/Vector4';
+import { Vector4 } from '../../../math/Vector4.js';
 
-import { ColorState } from './ColorState';
-import { DepthState } from './DepthState';
-import { StencilState } from './StencilState';
-import { AttributeState } from './AttributeState';
-import type { Nullable } from '../../../utils/Utils';
-import { TextureState } from './TextureState';
-import type { WGLProgram } from '../WGLProgram';
-import { WebGLCullFace, type WebGLTextureType } from '../WGLConstants';
+import { ColorState } from './ColorState.js';
+import { DepthState } from './DepthState.js';
+import { StencilState } from './StencilState.js';
+import { AttributeState } from './AttributeState.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import { TextureState } from './TextureState.js';
+import type { WGLProgram } from '../WGLProgram.js';
+import { WebGLCullFace, type WebGLTextureType } from '../WGLConstants.js';
 import {
     Blending,
     DepthModes,
@@ -15,14 +15,14 @@ import {
     type BlendingEquation,
     type StencilFunc,
     type StencilOp,
-} from '../../../utils/Constants';
-import { BlendState } from './BlendState';
-import type { MaterialState } from '../../../elements/materials/Material';
-import type { WGLExtensions } from '../WGLExtensions';
-import type { RenderTarget } from '../../../elements/textures/RenderTarget';
-import { RendererBackend } from '../../IRenderer';
-import { formatMeta, TextureSampleType } from '../../../elements/textures/types';
-import type { WebGLLimits } from '../WGLCapabilities';
+} from '../../../utils/Constants.js';
+import { BlendState } from './BlendState.js';
+import type { MaterialState } from '../../../elements/materials/Material.js';
+import type { WGLExtensions } from '../WGLExtensions.js';
+import type { RenderTarget } from '../../../elements/textures/RenderTarget.js';
+import { RendererBackend } from '../../IRenderer.js';
+import { formatMeta, TextureSampleType } from '../../../elements/textures/types.js';
+import type { WebGLLimits } from '../WGLCapabilities.js';
 
 const DEFAULT_DRAW_BUFFERS = [36064]; // WebGLRenderingContext.COLOR_ATTACHMENT0
 const COLOR_KEYS = ['x', 'y', 'z', 'w'] as const;

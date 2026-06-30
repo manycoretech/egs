@@ -1,6 +1,6 @@
 import type { ISingleSplat } from '@qunhe/egs-splat-loader';
 import type { BVHSource } from '@qunhe/egs-lib';
-import type { SplatOperator } from './SplatOperator';
+import type { SplatOperator } from './SplatOperator.js';
 
 export type SplatEllipsoidPrimitive = ISingleSplat;
 

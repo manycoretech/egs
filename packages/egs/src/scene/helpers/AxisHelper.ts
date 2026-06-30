@@ -1,7 +1,7 @@
-import { LineSegments } from '../drawables/LineSegments';
-import { BufferGeometry, type LineList } from '../../elements/geometries/containers/BufferGeometry';
-import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
-import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
+import { LineSegments } from '../drawables/LineSegments.js';
+import { BufferGeometry, type LineList } from '../../elements/geometries/containers/BufferGeometry.js';
+import { BufferAttribute } from '../../elements/attributes/BufferAttribute.js';
+import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial.js';
 /**
  * An axis object to visualize the 3 axes in a simple way.
  * The X axis is red.

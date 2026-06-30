@@ -1,11 +1,11 @@
-import { Color } from '../../math/Color';
-import { Matrix4 } from '../../math/Matrix4';
-import { Vector3 } from '../../math/Vector3';
-import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock';
-import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import type { Deserializer, Serializer } from '../../utils/Serialization';
-import { AreaLight } from './AreaLight';
-import { lightProperty } from '../../ContentAPI';
+import { Color } from '../../math/Color.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import { Vector3 } from '../../math/Vector3.js';
+import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock.js';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
+import type { Deserializer, Serializer } from '../../utils/Serialization.js';
+import { AreaLight } from './AreaLight.js';
+import { lightProperty } from '../../ContentAPI.js';
 
 const matrix42 = new Matrix4();
 const matrix4 = new Matrix4();

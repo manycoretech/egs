@@ -1,8 +1,8 @@
-import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry';
-import { Capabilities } from '../Capabilities';
-import { type WGLExtensions, WebGLExtEnums } from '../webgl/WGLExtensions';
-import type { Nullable } from '../../utils/Utils';
-import { IterableWeakMap } from '../../utils/WeakCollections';
+import type { BufferGeometryBase } from '../../elements/geometries/containers/BufferGeometry.js';
+import { Capabilities } from '../Capabilities.js';
+import { type WGLExtensions, WebGLExtEnums } from '../webgl/WGLExtensions.js';
+import type { Nullable } from '../../utils/Utils.js';
+import { IterableWeakMap } from '../../utils/WeakCollections.js';
 
 // VAOManager provides functions to control the use of Vertex Array Object of WebGL/WebGL2.
 // VAO is available in WebGL1 with extensions or WebGL2, which means there is a chance that VAO

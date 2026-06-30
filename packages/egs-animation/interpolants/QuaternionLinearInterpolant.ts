@@ -1,5 +1,5 @@
 import { Quaternion } from '@qunhe/egs';
-import { Interpolant } from './Interpolant';
+import { Interpolant } from './Interpolant.js';
 
 export class QuaternionLinearInterpolant extends Interpolant<number> {
     protected interpolate(i1: number, t0: number, t: number, t1: number) {

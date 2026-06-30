@@ -1,13 +1,13 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { _Math } from '../../../math/Math';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder';
-import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
-import { readonlyMath } from '../../../math/Readonly';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { materialProperty } from '../../../ContentAPI';
-import type { Texture } from '../../textures/Texture';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { _Math } from '../../../math/Math.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { ShaderInjectionTypes, type ShaderBuilder } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import type { Texture } from '../../textures/Texture.js';
 
 export class BlurPassMaterial extends PassQuadMaterialBase {
     @materialProperty()

@@ -1,5 +1,5 @@
-import { SplatData } from './SplatData';
-import { type ISplatData, type ISingleSplat, Quaternion, ISamplerFormat, SH_MAPS } from '../utils';
+import { SplatData } from './SplatData.js';
+import { type ISplatData, type ISingleSplat, Quaternion, ISamplerFormat, SH_MAPS } from '../utils.js';
 
 const tempQuat = new Quaternion(0, 0, 0, 1);
 

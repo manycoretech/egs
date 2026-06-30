@@ -1,6 +1,6 @@
-import { Curve } from './Curve';
-import type { Vector2 } from '../../Vector2';
-import { Box2 } from '../../Box2';
+import { Curve } from './Curve.js';
+import type { Vector2 } from '../../Vector2.js';
+import { Box2 } from '../../Box2.js';
 /**
  * A basic class for curve which can be drawn in {@link Path | path }. 2d space
  */

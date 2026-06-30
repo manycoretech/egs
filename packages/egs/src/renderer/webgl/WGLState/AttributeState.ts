@@ -1,5 +1,5 @@
-import { WGLCapabilities, type WebGLLimits } from '../WGLCapabilities';
-import { type WGLExtensions, WebGLExtEnums } from '../WGLExtensions';
+import { WGLCapabilities, type WebGLLimits } from '../WGLCapabilities.js';
+import { type WGLExtensions, WebGLExtEnums } from '../WGLExtensions.js';
 
 export class AttributeState {
     readonly gl: WebGL2RenderingContext | WebGLRenderingContext;

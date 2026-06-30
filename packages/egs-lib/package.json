@@ -3,6 +3,8 @@
   "version": "1.0.3",
   "description": "egs-lib",
   "main": "index.js",
+  "module": "index.js",
+  "type": "module",
   "types": "index.d.ts",
   "license": "MIT",
   "repository": "https://github.com/manycoretech/egs.git",

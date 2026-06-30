@@ -1,16 +1,16 @@
-import { logger } from '../../../utils/Logger';
-import { Box3 } from '../../../math/Box3';
-import { Sphere } from '../../../math/Sphere';
-import { Vector3 } from '../../../math/Vector3';
-import { EventType } from '../../../utils/EventDispatcher';
-import type { Deserializer, Serializer } from '../../../utils/Serialization';
-import { type Nullable, type TypedArray, Utils } from '../../../utils/Utils';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { Geometry } from './Geometry';
-import { GeometryBase } from './GeometryBase';
-import { ContentBridge, hasManagedContentAPI, ManagedContentBridge } from '../../../ContentAPI';
-import { updateByGeometry } from '../operators/FromGeometry';
-import type { MeshBVH } from '../../../BVH';
+import { logger } from '../../../utils/Logger.js';
+import { Box3 } from '../../../math/Box3.js';
+import { Sphere } from '../../../math/Sphere.js';
+import { Vector3 } from '../../../math/Vector3.js';
+import { EventType } from '../../../utils/EventDispatcher.js';
+import type { Deserializer, Serializer } from '../../../utils/Serialization.js';
+import { type Nullable, type TypedArray, Utils } from '../../../utils/Utils.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
+import { Geometry } from './Geometry.js';
+import { GeometryBase } from './GeometryBase.js';
+import { ContentBridge, hasManagedContentAPI, ManagedContentBridge } from '../../../ContentAPI.js';
+import { updateByGeometry } from '../operators/FromGeometry.js';
+import type { MeshBVH } from '../../../BVH/index.js';
 
 /**
  * Event emitted when a buffer geometry is disposed.

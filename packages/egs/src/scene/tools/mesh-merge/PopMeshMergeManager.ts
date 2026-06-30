@@ -1,12 +1,12 @@
-import { RefCountMap } from '../../../utils/RefCountMap';
-import type { PopMesh } from '../../drawables/PopMesh';
-import type { Nullable } from '../../../utils/Utils';
-import type { MergedMeshPhongMaterial } from '../../../elements/materials/mesh/MergedMeshPhongMaterial';
-import type { PopBufferGeometry } from '../../../elements/geometries/containers/PopBufferGeometry';
-import type { MeshPhongMaterial } from '../../../elements/materials/mesh/MeshPhongMaterial';
-import { PopMeshMerger } from './PopMeshMerger';
-import type { Color } from '../../../math/Color';
-import type { Matrix3 } from '../../../math/Matrix3';
+import { RefCountMap } from '../../../utils/RefCountMap.js';
+import type { PopMesh } from '../../drawables/PopMesh.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import type { MergedMeshPhongMaterial } from '../../../elements/materials/mesh/MergedMeshPhongMaterial.js';
+import type { PopBufferGeometry } from '../../../elements/geometries/containers/PopBufferGeometry.js';
+import type { MeshPhongMaterial } from '../../../elements/materials/mesh/MeshPhongMaterial.js';
+import { PopMeshMerger } from './PopMeshMerger.js';
+import type { Color } from '../../../math/Color.js';
+import type { Matrix3 } from '../../../math/Matrix3.js';
 
 const merger = new PopMeshMerger();
 function mergePopMesh(mesh: PopMesh): Nullable<MergedMeshData> {

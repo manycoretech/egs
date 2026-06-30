@@ -1,14 +1,14 @@
-import { TypeAssert } from './TypeAssert';
-import { Layers } from './Layers';
-import type { Vector3 } from '../../math/Vector3';
-import type { Vector2 } from '../../math/Vector2';
-import type { Object3D } from '../Object3D';
-import { Ray } from '../../math/Ray';
-import type { Face3 } from '../../math/Face3';
-import type { Camera3D } from '../cameras/Camera3D';
-import type { Nullable } from '../../utils/Utils';
-import { hasManagedContentAPI, ManagedContentBridge } from '../../ContentAPI';
-import type { Scene3D } from '../Scene3D';
+import { TypeAssert } from './TypeAssert.js';
+import { Layers } from './Layers.js';
+import type { Vector3 } from '../../math/Vector3.js';
+import type { Vector2 } from '../../math/Vector2.js';
+import type { Object3D } from '../Object3D.js';
+import { Ray } from '../../math/Ray.js';
+import type { Face3 } from '../../math/Face3.js';
+import type { Camera3D } from '../cameras/Camera3D.js';
+import type { Nullable } from '../../utils/Utils.js';
+import { hasManagedContentAPI, ManagedContentBridge } from '../../ContentAPI.js';
+import type { Scene3D } from '../Scene3D.js';
 
 function ascSort(a: Intersection, b: Intersection) {
     return a.distance - b.distance;

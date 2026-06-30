@@ -1,5 +1,5 @@
-import { logger } from './logger';
-import { setFlags, intersectFlags, disableFlags, hasFlags, enableFlags } from './flags';
+import { logger } from './logger.js';
+import { setFlags, intersectFlags, disableFlags, hasFlags, enableFlags } from './flags.js';
 
 const WorkerFlags = {
     BUSY: 1,

@@ -1,6 +1,6 @@
-import { EllipseCurve2D } from './EllipseCurve2D';
-import { _Math } from '../../Math';
-import { Curve } from './Curve';
+import { EllipseCurve2D } from './EllipseCurve2D.js';
+import { _Math } from '../../Math.js';
+import { Curve } from './Curve.js';
 /**
  * This class is used to draw an arc-curve that is a part of ellipse curve.
  */

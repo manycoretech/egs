@@ -27,7 +27,7 @@ import {
     SH_MAPS,
     type IFile,
 } from '@qunhe/egs-splat-loader';
-import { createSHRotateFn } from './utils';
+import { createSHRotateFn } from './utils.js';
 
 type ISingleSplat = Parameters<SplatData['get']>[1];
 

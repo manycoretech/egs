@@ -4,17 +4,17 @@ import type {
     Drawcall,
     RenderObjectsType,
     DrawcallListClassifyType,
-} from '../scene/tools/DrawcallList';
-import type { IRenderer } from '../renderer/IRenderer';
-import type { MaterialDispatcher } from '../renderer/MaterialDispatcher';
-import type { Camera3D } from '../scene/cameras/Camera3D';
-import { type Drawable, OutlineRenderMode, type DrawableRenderMode } from '../scene/drawables/Drawable';
-import { TypeAssert } from '../scene/tools/TypeAssert';
-import type { Object3D } from '../scene/Object3D';
-import type { Scene3D } from '../scene/Scene3D';
-import type { Light } from '../scene/lights/Light';
-import type { Cone } from '../math/Cone';
-import { Vector3 } from '../math/Vector3';
+} from '../scene/tools/DrawcallList.js';
+import type { IRenderer } from '../renderer/IRenderer.js';
+import type { MaterialDispatcher } from '../renderer/MaterialDispatcher.js';
+import type { Camera3D } from '../scene/cameras/Camera3D.js';
+import { type Drawable, OutlineRenderMode, type DrawableRenderMode } from '../scene/drawables/Drawable.js';
+import { TypeAssert } from '../scene/tools/TypeAssert.js';
+import type { Object3D } from '../scene/Object3D.js';
+import type { Scene3D } from '../scene/Scene3D.js';
+import type { Light } from '../scene/lights/Light.js';
+import type { Cone } from '../math/Cone.js';
+import { Vector3 } from '../math/Vector3.js';
 
 export enum ShadowMode {
     EnableAll = 10,
@@ -186,4 +186,4 @@ export interface PipelineAPI {
     cleanupTempRenderList(list: Object3D[]): void;
 }
 
-export * from './PipelineAPI.impl';
+export * from './PipelineAPI.impl.js';

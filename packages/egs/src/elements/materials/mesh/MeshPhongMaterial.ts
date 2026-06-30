@@ -1,28 +1,28 @@
-import { type Nullable, Utils } from '../../../utils/Utils';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { type Nullable, Utils } from '../../../utils/Utils.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 import {
     ShaderVaryingTypes,
     ShaderInjectionTypes,
     type ShaderBuilder,
     ShaderAttributeTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { MaterialParameters, ConvertMaterialParameters } from '../Material';
-import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import { UniformBlockObject } from '../../../renderer/shader/components/UniformBlockObject';
-import { type ReadonlyColor, Color } from '../../../math/Color';
-import { LightableMaterial } from './LightableMaterial';
-import { readonlyMath } from '../../../math/Readonly';
-import type { Texture } from '../../textures/Texture';
-import { materialProperty } from '../../../ContentAPI';
-import { Matrix3, type ReadonlyMatrix3 } from '../../../math/Matrix3';
-import { Side } from '../../../utils/Constants';
-import type { DeferredMaterial } from '../base';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import type { Texture2D } from '../../textures/Texture2D';
-import type { TextureV2 } from '../../textures/TextureV2';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { MaterialParameters, ConvertMaterialParameters } from '../Material.js';
+import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import { UniformBlockObject } from '../../../renderer/shader/components/UniformBlockObject.js';
+import { type ReadonlyColor, Color } from '../../../math/Color.js';
+import { LightableMaterial } from './LightableMaterial.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import type { Texture } from '../../textures/Texture.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { Matrix3, type ReadonlyMatrix3 } from '../../../math/Matrix3.js';
+import { Side } from '../../../utils/Constants.js';
+import type { DeferredMaterial } from '../base/index.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import type { Texture2D } from '../../textures/Texture2D.js';
+import type { TextureV2 } from '../../textures/TextureV2.js';
 
 export type MeshPhongMaterialParameters<T extends Texture2D | TextureV2 = Texture2D> = MaterialParameters &
     ConvertMaterialParameters<

@@ -1,5 +1,5 @@
-import { BufferAttribute } from './BufferAttribute';
-import type { TypedArray } from '../../utils/Utils';
+import { BufferAttribute } from './BufferAttribute.js';
+import type { TypedArray } from '../../utils/Utils.js';
 /**
  * An instanced version of {@link BufferAttribute | BufferAttribute }.
  */

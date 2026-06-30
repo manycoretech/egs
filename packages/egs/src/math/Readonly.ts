@@ -1,9 +1,9 @@
-import { Color } from './Color';
-import { Vector2 } from './Vector2';
-import { Matrix4 } from './Matrix4';
-import { Vector3 } from './Vector3';
-import { Vector4 } from './Vector4';
-import { Matrix3 } from './Matrix3';
+import { Color } from './Color.js';
+import { Vector2 } from './Vector2.js';
+import { Matrix4 } from './Matrix4.js';
+import { Vector3 } from './Vector3.js';
+import { Vector4 } from './Vector4.js';
+import { Matrix3 } from './Matrix3.js';
 
 /**
  * Factory helpers that create readonly math value wrappers.

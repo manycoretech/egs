@@ -1,14 +1,14 @@
-import { Quad } from '../scene/renderables/Quad';
-import type { RenderSource } from '../rendergraph/nodes/PassNode';
-import type { IRenderer } from '../renderer/IRenderer';
-import type { Vector4 } from '../math/Vector4';
-import { Color } from '../math/Color';
-import type { Material } from '../elements/materials/Material';
-import type { Renderable } from '../scene/renderables/IRenderable';
-import type { RenderTarget } from '../elements/textures/RenderTarget';
-import { QuadPoints } from '../scene/renderables/QuadPoints';
-import { singleton } from '../utils/Utils';
-import type { Texture } from '../elements/textures/Texture';
+import { Quad } from '../scene/renderables/Quad.js';
+import type { RenderSource } from '../rendergraph/nodes/PassNode.js';
+import type { IRenderer } from '../renderer/IRenderer.js';
+import type { Vector4 } from '../math/Vector4.js';
+import { Color } from '../math/Color.js';
+import type { Material } from '../elements/materials/Material.js';
+import type { Renderable } from '../scene/renderables/IRenderable.js';
+import type { RenderTarget } from '../elements/textures/RenderTarget.js';
+import { QuadPoints } from '../scene/renderables/QuadPoints.js';
+import { singleton } from '../utils/Utils.js';
+import type { Texture } from '../elements/textures/Texture.js';
 
 const quadPointsGetter = singleton(() => new QuadPoints());
 export function drawPoint(m: Material, n: number = 128): RenderSource {

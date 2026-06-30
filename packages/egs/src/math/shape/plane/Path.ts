@@ -1,13 +1,13 @@
-import type { Deserializer, Serializer } from '../../../utils/Serialization';
-import { Box2 } from '../../Box2';
-import { Vector2 } from '../../Vector2';
-import { CubicBezierCurve2D } from '../curves/CubicBezierCurve2D';
-import { Curve2D } from '../curves/Curve2D';
-import * as Curves from '../curves/Curves';
-import { EllipseCurve2D } from '../curves/EllipseCurve2D';
-import { LineCurve2D } from '../curves/LineCurve2D';
-import { QuadraticBezierCurve2D } from '../curves/QuadraticBezierCurve2D';
-import { SplineCurve2D } from '../curves/SplineCurve2D';
+import type { Deserializer, Serializer } from '../../../utils/Serialization.js';
+import { Box2 } from '../../Box2.js';
+import { Vector2 } from '../../Vector2.js';
+import { CubicBezierCurve2D } from '../curves/CubicBezierCurve2D.js';
+import { Curve2D } from '../curves/Curve2D.js';
+import * as Curves from '../curves/Curves.js';
+import { EllipseCurve2D } from '../curves/EllipseCurve2D.js';
+import { LineCurve2D } from '../curves/LineCurve2D.js';
+import { QuadraticBezierCurve2D } from '../curves/QuadraticBezierCurve2D.js';
+import { SplineCurve2D } from '../curves/SplineCurve2D.js';
 
 /**
  * The class provides methods for creating paths and contours of 2D shapes similar to the 2D Canvas API.

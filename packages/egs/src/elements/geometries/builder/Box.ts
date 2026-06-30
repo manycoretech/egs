@@ -1,6 +1,6 @@
-import { BufferGeometry, type BufferGroup } from '../containers/BufferGeometry';
-import { BufferAttribute } from '../../attributes/BufferAttribute';
-import { Vector3 } from '../../../math/Vector3';
+import { BufferGeometry, type BufferGroup } from '../containers/BufferGeometry.js';
+import { BufferAttribute } from '../../attributes/BufferAttribute.js';
+import { Vector3 } from '../../../math/Vector3.js';
 
 /**
  * @param { number } width That is the length of the edges parallel to the X axis. Default is 1.

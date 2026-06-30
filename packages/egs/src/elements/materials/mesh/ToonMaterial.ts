@@ -1,11 +1,11 @@
-import { Color } from '../../../math/Color';
-import { materialProperty } from '../../../ContentAPI';
-import { HashKeyBuilder } from '../../../utils/HashKeyBuilder';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import { SceneMaterial } from '../base';
+import { Color } from '../../../math/Color.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import { SceneMaterial } from '../base/index.js';
 
 export class ToonMaterial extends SceneMaterial {
     @materialProperty()

@@ -1,20 +1,20 @@
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 import {
     type ShaderBuilder,
     ShaderVaryingTypes,
     ShaderInjectionTypes,
     ShaderAttributeTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import { ShaderComponent } from '../../../renderer/shader/Shader';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { MaterialParameters, ConvertMaterialParameters } from '../Material';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
-import type { Renderer } from '../../../renderer/Renderer';
-import { Utils } from '../../../utils/Utils';
-import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry';
-import { readonlyMath } from '../../../math/Readonly';
-import { materialProperty, shaderComponentInMaterial } from '../../../ContentAPI';
-import { SceneClipMaterial } from '../base';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { ShaderComponent } from '../../../renderer/shader/Shader.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { MaterialParameters, ConvertMaterialParameters } from '../Material.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
+import type { Renderer } from '../../../renderer/Renderer.js';
+import { Utils } from '../../../utils/Utils.js';
+import type { ShaderComponentRegistry } from '../../../scene/ShaderComponentRegistry.js';
+import { readonlyMath } from '../../../math/Readonly.js';
+import { materialProperty, shaderComponentInMaterial } from '../../../ContentAPI.js';
+import { SceneClipMaterial } from '../base/index.js';
 
 export type LineBasicMaterialParameters = MaterialParameters & ColorWithAlphaParam;
 /**

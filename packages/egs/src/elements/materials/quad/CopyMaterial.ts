@@ -1,16 +1,16 @@
-import { PassQuadMaterialBase } from './PassMaterialBase';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
+import { PassQuadMaterialBase } from './PassMaterialBase.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
 import {
     ShaderInjectionTypes,
     ShaderExtensionTypes,
     type ShaderBuilder,
     ShaderVaryingTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import { Blending } from '../../../utils/Constants';
-import type { Texture } from '../../textures/Texture';
-import { Matrix3 } from '../../../math/Matrix3';
-import { materialProperty } from '../../../ContentAPI';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { Blending } from '../../../utils/Constants.js';
+import type { Texture } from '../../textures/Texture.js';
+import { Matrix3 } from '../../../math/Matrix3.js';
+import { materialProperty } from '../../../ContentAPI.js';
 
 export class CopyMaterial extends PassQuadMaterialBase {
     @materialProperty()

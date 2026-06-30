@@ -1,9 +1,9 @@
-import { readonlyMath } from '../../../math/Readonly';
-import type { Nullable } from '../../../utils/Utils';
-import { materialProperty } from '../../../ContentAPI';
-import { JsNoImplMaterial } from '../base';
-import type { TextureV2 } from '../../textures/TextureV2';
-import type { Texture2D } from '../../textures/Texture2D';
+import { readonlyMath } from '../../../math/Readonly.js';
+import type { Nullable } from '../../../utils/Utils.js';
+import { materialProperty } from '../../../ContentAPI.js';
+import { JsNoImplMaterial } from '../base/index.js';
+import type { TextureV2 } from '../../textures/TextureV2.js';
+import type { Texture2D } from '../../textures/Texture2D.js';
 
 /**
  * Material facade for physically based shading.

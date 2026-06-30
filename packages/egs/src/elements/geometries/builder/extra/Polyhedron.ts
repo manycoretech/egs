@@ -1,8 +1,8 @@
-import { BufferAttribute } from '../../../attributes/BufferAttribute';
-import { BufferGeometry } from '../../containers/BufferGeometry';
-import { Vector3 } from '../../../../math/Vector3';
-import { Vector2 } from '../../../../math/Vector2';
-import { reNormalize, computeNormalsByPosition } from '../../operators/Renormalize';
+import { BufferAttribute } from '../../../attributes/BufferAttribute.js';
+import { BufferGeometry } from '../../containers/BufferGeometry.js';
+import { Vector3 } from '../../../../math/Vector3.js';
+import { Vector2 } from '../../../../math/Vector2.js';
+import { reNormalize, computeNormalsByPosition } from '../../operators/Renormalize.js';
 // An inner parameter's type as building polyhedron to regular, such as tetrahedron, octahedron, icosahedron...
 type RegularPolyhedronShapeParameter = Omit<Partial<PolyhedronShapeParameter>, 'vertices' | 'indices'>;
 const def = {

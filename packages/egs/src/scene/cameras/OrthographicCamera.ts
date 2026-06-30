@@ -1,9 +1,9 @@
-import { Camera3D, type CameraView } from './Camera3D';
-import type { Nullable } from '../../utils/Utils';
-import type { Serializer, Deserializer } from '../../utils/Serialization';
-import type { Vector2 } from '../../math/Vector2';
-import type { Ray } from '../../math/Ray';
-import { ContentBridge, cameraState } from '../../ContentAPI';
+import { Camera3D, type CameraView } from './Camera3D.js';
+import type { Nullable } from '../../utils/Utils.js';
+import type { Serializer, Deserializer } from '../../utils/Serialization.js';
+import type { Vector2 } from '../../math/Vector2.js';
+import type { Ray } from '../../math/Ray.js';
+import { ContentBridge, cameraState } from '../../ContentAPI.js';
 
 /**
  * The orthographic camera class, which has no "bigger when it's closer, small when it's far" effect.

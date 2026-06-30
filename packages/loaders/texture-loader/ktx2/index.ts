@@ -1,10 +1,10 @@
-import { KTX2_ID, VK_FORMATS, SuperCompression } from './constants';
+import { KTX2_ID, VK_FORMATS, SuperCompression } from './constants.js';
 import { TextureFormat } from '@qunhe/egs';
 import { logger } from '@qunhe/egs-lib';
-import { INVALID_LOAD_RESULT, toU64 } from '../utils';
-import { transcode } from './basis';
-import type { LoaderOptions, LoadResult } from '../type';
-import { toGPUTextureFormat } from './basis/constants';
+import { INVALID_LOAD_RESULT, toU64 } from '../utils.js';
+import { transcode } from './basis/index.js';
+import type { LoaderOptions, LoadResult } from '../type.js';
+import { toGPUTextureFormat } from './basis/constants.js';
 
 interface FormatMeta {
     format: TextureFormat;

@@ -10,7 +10,7 @@ import {
     TypeAssert,
     type BufferAttribute,
 } from '@qunhe/egs';
-import type { ResourceManager } from './resource';
+import type { ResourceManager } from './resource.js';
 import {
     type IScene,
     type INode,
@@ -22,10 +22,10 @@ import {
     type GLTF,
     PrimitiveMode,
     type ISkeleton,
-} from './type';
-import { DEFAULT_MATERIAL, INTERPOLATION } from './const';
-import { normalizedAttributeBuffer } from './utils';
-import { AnimationPointerExtension } from './extensions';
+} from './type.js';
+import { DEFAULT_MATERIAL, INTERPOLATION } from './const.js';
+import { normalizedAttributeBuffer } from './utils.js';
+import { AnimationPointerExtension } from './extensions/index.js';
 
 export interface ParseCtx {
     scenes: IScene[];

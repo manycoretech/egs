@@ -1,7 +1,7 @@
 import { logger } from '@qunhe/egs-lib';
-import type { LoaderOptions, LoadResult } from './type';
+import type { LoaderOptions, LoadResult } from './type.js';
 import { TextureFormat } from '@qunhe/egs';
-import { INVALID_LOAD_RESULT } from './utils';
+import { INVALID_LOAD_RESULT } from './utils.js';
 
 enum DXGI_FORMAT {
     DXGI_FORMAT_BC1_UNORM = 71,

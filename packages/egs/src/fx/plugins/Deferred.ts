@@ -1,29 +1,29 @@
-import { target, pass, disableClear, when, colorAttachment, depthAttachment } from '../../rendergraph/NodeMakers';
-import { drawPoint, drawQuad, type RendererAdaptor } from '../RendererAdaptor';
-import { type ShaderBuilder, ShaderInjectionTypes } from '../../renderer/shader/builders/ShaderBuilder';
-import type { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry';
-import type { WGLProgram } from '../../renderer/webgl/WGLProgram';
-import { Side, Blending, BlendingFactor, BlendingEquation } from '../../utils/Constants';
-import { DeferredDispatcher, DynamicForwardLightsDispatcher } from '../../renderer/MaterialDispatcher';
-import { PassQuadMaterialBase } from '../../elements/materials/quad/PassMaterialBase';
-import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants';
-import { directionalLightInclude, DirectionalLight } from '../../scene/lights/DirectionalLight';
+import { target, pass, disableClear, when, colorAttachment, depthAttachment } from '../../rendergraph/NodeMakers.js';
+import { drawPoint, drawQuad, type RendererAdaptor } from '../RendererAdaptor.js';
+import { type ShaderBuilder, ShaderInjectionTypes } from '../../renderer/shader/builders/ShaderBuilder.js';
+import type { ShaderComponentRegistry } from '../../scene/ShaderComponentRegistry.js';
+import type { WGLProgram } from '../../renderer/webgl/WGLProgram.js';
+import { Side, Blending, BlendingFactor, BlendingEquation } from '../../utils/Constants.js';
+import { DeferredDispatcher, DynamicForwardLightsDispatcher } from '../../renderer/MaterialDispatcher.js';
+import { PassQuadMaterialBase } from '../../elements/materials/quad/PassMaterialBase.js';
+import { WebGLShaderDataType } from '../../renderer/webgl/WGLConstants.js';
+import { directionalLightInclude, DirectionalLight } from '../../scene/lights/DirectionalLight.js';
 import {
     AreaBlinnPhong,
     DiskAreaBlinnPhong,
     MeshPhongMaterial,
     RectAreaBlinnPhong,
-} from '../../elements/materials/mesh/MeshPhongMaterial';
-import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool';
-import { Vector4 } from '../../math/Vector4';
-import { CopyMaterial, CopyDepthMaterial, CopyColorAndDepthMaterial } from '../../elements/materials/quad/CopyMaterial';
-import type { AmbientLight } from '../../scene/lights/AmbientLight';
-import { SpotLight, spotLightInclude } from '../../scene/lights/SpotLight';
-import { PointLight, punctualLightIntensityToIrradianceFactor } from '../../scene/lights/PointLight';
-import { RectAreaLight } from '../../scene/lights/RectAreaLight';
-import type { RenderTarget } from '../../elements/textures/RenderTarget';
-import { DiskAreaLight } from '../../scene/lights/DiskAreaLight';
-import type { Matrix4, ReadonlyMatrix4 } from '../../math/Matrix4';
+} from '../../elements/materials/mesh/MeshPhongMaterial.js';
+import { ShaderBlockPool } from '../../renderer/shader/builders/ShaderBlockPool.js';
+import { Vector4 } from '../../math/Vector4.js';
+import { CopyMaterial, CopyDepthMaterial, CopyColorAndDepthMaterial } from '../../elements/materials/quad/CopyMaterial.js';
+import type { AmbientLight } from '../../scene/lights/AmbientLight.js';
+import { SpotLight, spotLightInclude } from '../../scene/lights/SpotLight.js';
+import { PointLight, punctualLightIntensityToIrradianceFactor } from '../../scene/lights/PointLight.js';
+import { RectAreaLight } from '../../scene/lights/RectAreaLight.js';
+import type { RenderTarget } from '../../elements/textures/RenderTarget.js';
+import { DiskAreaLight } from '../../scene/lights/DiskAreaLight.js';
+import type { Matrix4, ReadonlyMatrix4 } from '../../math/Matrix4.js';
 import {
     DialuxLuminanceMaterial,
     DialuxWhiteBalanceExposureMaterial,
@@ -31,34 +31,34 @@ import {
     ExposedToneMappingMaterial,
     HistogramComputeMaterial,
     AvgLuminanceMaterial,
-} from '../../elements/materials/quad/ExposedCopyMaterial';
-import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock';
-import { PipelineFilters } from '../PipelineAPI';
-import { materialProperty } from '../../ContentAPI';
-import { readonlyMath } from '../../math/Readonly';
-import { Quad } from '../../scene/renderables/Quad';
-import { PseudoColorMaterial } from '../../elements/materials/quad/PseudoColorMaterial';
-import { Capabilities } from '../../renderer/Capabilities';
-import { PipelinePlugin, type PipelineContext } from './PipelinePlugin';
-import type { HashKeyBuilder } from '../../utils/HashKeyBuilder';
-import type { RenderGraph } from '../../rendergraph/RenderGraph';
-import { filterBy, RenderObjectsType } from '../../scene/tools/DrawcallList';
-import type { SceneAdaptorDispatcher } from '../SceneAdaptor';
-import { DrivenCullingMaterial } from '../../elements/materials/driven/DrivenCullingMaterial';
-import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial';
-import type { PassNode } from '../../rendergraph/nodes/PassNode';
-import { MixOITMaterial } from '../../elements/materials/quad/MixOITMaterial';
-import { BACKGROUND_SHADING_PASS_NAME } from './Background';
-import { ForwardDispatcher } from './Forward';
-import type { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode';
-import { RendererBackend } from '../../renderer/IRenderer';
-import { PipelineContentBridge } from '../PipelineAPI.impl';
-import type { Camera3D } from '../../scene/cameras/Camera3D';
-import { Vector3, type ReadonlyVector3 } from '../../math/Vector3';
-import { TypeAssert } from '../../scene/tools/TypeAssert';
-import { logger } from '../../utils/Logger';
-import type { Texture } from '../../elements/textures/Texture';
-import { TextureFormat } from '../../elements/textures/types';
+} from '../../elements/materials/quad/ExposedCopyMaterial.js';
+import { createShaderBlock } from '../../renderer/shader/builders/ShaderBlock.js';
+import { PipelineFilters } from '../PipelineAPI.js';
+import { materialProperty } from '../../ContentAPI.js';
+import { readonlyMath } from '../../math/Readonly.js';
+import { Quad } from '../../scene/renderables/Quad.js';
+import { PseudoColorMaterial } from '../../elements/materials/quad/PseudoColorMaterial.js';
+import { Capabilities } from '../../renderer/Capabilities.js';
+import { PipelinePlugin, type PipelineContext } from './PipelinePlugin.js';
+import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
+import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
+import { filterBy, RenderObjectsType } from '../../scene/tools/DrawcallList.js';
+import type { SceneAdaptorDispatcher } from '../SceneAdaptor.js';
+import { DrivenCullingMaterial } from '../../elements/materials/driven/DrivenCullingMaterial.js';
+import { DrivenShadingMaterial, DrivenShadingMode } from '../../elements/materials/driven/DrivenShadingMaterial.js';
+import type { PassNode } from '../../rendergraph/nodes/PassNode.js';
+import { MixOITMaterial } from '../../elements/materials/quad/MixOITMaterial.js';
+import { BACKGROUND_SHADING_PASS_NAME } from './Background.js';
+import { ForwardDispatcher } from './Forward.js';
+import type { RenderTargetNode } from '../../rendergraph/nodes/RenderTargetNode.js';
+import { RendererBackend } from '../../renderer/IRenderer.js';
+import { PipelineContentBridge } from '../PipelineAPI.impl.js';
+import type { Camera3D } from '../../scene/cameras/Camera3D.js';
+import { Vector3, type ReadonlyVector3 } from '../../math/Vector3.js';
+import { TypeAssert } from '../../scene/tools/TypeAssert.js';
+import { logger } from '../../utils/Logger.js';
+import type { Texture } from '../../elements/textures/Texture.js';
+import { TextureFormat } from '../../elements/textures/types.js';
 
 interface DeferredCameraUniforms {
     position?: ReadonlyVector3;

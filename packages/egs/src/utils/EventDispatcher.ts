@@ -1,5 +1,5 @@
-import { _Math } from '../math/Math';
-import { BaseElement } from './ElementBase';
+import { _Math } from '../math/Math.js';
+import { BaseElement } from './ElementBase.js';
 
 /**
  * Typed event key used by EventDispatcher.

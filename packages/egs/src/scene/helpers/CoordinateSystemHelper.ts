@@ -1,18 +1,18 @@
-import { Vector3 } from '../../math/Vector3';
-import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial';
-import { Shape } from '../../math/shape/plane/Shape';
-import { ArrowHelper } from './ArrowHelper';
-import { Mesh } from '../drawables/Mesh';
-import type { Renderable } from '../renderables/IRenderable';
-import { logger } from '../../utils/Logger';
-import { OrthographicCamera } from '../cameras/OrthographicCamera';
-import type { Camera3D } from '../cameras/Camera3D';
-import { TypeAssert } from '../tools/TypeAssert';
-import { Matrix4 } from '../../math/Matrix4';
-import type { Color } from '../../math/Color';
-import type { Material } from '../../elements/materials/Material';
-import { shape } from '../../elements/geometries/builder/Index';
-import type { IRenderer } from '../../renderer/IRenderer';
+import { Vector3 } from '../../math/Vector3.js';
+import { MeshBasicMaterial } from '../../elements/materials/mesh/MeshBasicMaterial.js';
+import { Shape } from '../../math/shape/plane/Shape.js';
+import { ArrowHelper } from './ArrowHelper.js';
+import { Mesh } from '../drawables/Mesh.js';
+import type { Renderable } from '../renderables/IRenderable.js';
+import { logger } from '../../utils/Logger.js';
+import { OrthographicCamera } from '../cameras/OrthographicCamera.js';
+import type { Camera3D } from '../cameras/Camera3D.js';
+import { TypeAssert } from '../tools/TypeAssert.js';
+import { Matrix4 } from '../../math/Matrix4.js';
+import type { Color } from '../../math/Color.js';
+import type { Material } from '../../elements/materials/Material.js';
+import { shape } from '../../elements/geometries/builder/Index.js';
+import type { IRenderer } from '../../renderer/IRenderer.js';
 
 const ALPHABET_X = new Shape().fromJSON(
     JSON.parse(`{"metadata":{"version":4.5,"type":"Curve","generator":"Curve.toJSON"},"arcLengthDivisions":200,"type":"Shape","autoClose":false,"curves":

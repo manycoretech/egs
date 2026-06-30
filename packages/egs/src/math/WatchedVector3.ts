@@ -1,4 +1,4 @@
-import { Vector3 } from './Vector3';
+import { Vector3 } from './Vector3.js';
 
 /**
  * This class provide a {@link onChange| callback method } which is called by {@link Vector3.x| x }, {@link Vector3.y| y } or {@link Vector3.z| z } changes.

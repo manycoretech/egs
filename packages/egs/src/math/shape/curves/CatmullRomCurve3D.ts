@@ -1,5 +1,5 @@
-import { Curve } from './Curve';
-import { Vector3 } from '../../Vector3';
+import { Curve } from './Curve.js';
+import { Vector3 } from '../../Vector3.js';
 
 class CubicPoly {
     c0 = 0;

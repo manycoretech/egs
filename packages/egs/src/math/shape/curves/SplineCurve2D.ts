@@ -1,7 +1,7 @@
-import { Vector2 } from '../../Vector2';
-import { _Math } from '../../Math';
-import { Curve2D } from './Curve2D';
-import type { Serializer, Deserializer } from '../../../utils/Serialization';
+import { Vector2 } from '../../Vector2.js';
+import { _Math } from '../../Math.js';
+import { Curve2D } from './Curve2D.js';
+import type { Serializer, Deserializer } from '../../../utils/Serialization.js';
 /**
  * Build spline curve by an array of controlling points.
  */

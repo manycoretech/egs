@@ -1,23 +1,23 @@
-import type { Drawable } from '../drawables/Drawable';
-import type { Nullable } from '../../utils/Utils';
-import { TypeAssert } from './TypeAssert';
-import type { Camera3D } from '../cameras/Camera3D';
-import type { IRenderer } from '../../renderer/IRenderer';
-import type { BufferGeometryBase, BufferRange } from '../../elements/geometries/containers/BufferGeometry';
-import type { Material } from '../../elements/materials/Material';
-import type { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry';
-import type { Renderable } from '../renderables/IRenderable';
+import type { Drawable } from '../drawables/Drawable.js';
+import type { Nullable } from '../../utils/Utils.js';
+import { TypeAssert } from './TypeAssert.js';
+import type { Camera3D } from '../cameras/Camera3D.js';
+import type { IRenderer } from '../../renderer/IRenderer.js';
+import type { BufferGeometryBase, BufferRange } from '../../elements/geometries/containers/BufferGeometry.js';
+import type { Material } from '../../elements/materials/Material.js';
+import type { PopBufferGeometry } from '../../elements/geometries/containers/PopBufferGeometry.js';
+import type { Renderable } from '../renderables/IRenderable.js';
 import {
     PipelineContentBridge,
     PipelineContentAPIForRenderingAndFilteringEnabled,
     type IPipelineFilter,
-} from '../../fx/PipelineAPI';
-import type { PerspectiveCamera } from '../cameras/PerspectiveCamera';
-import type { Box3 } from '../../math/Box3';
-import { Frustum } from '../../math/Frustum';
-import { ContentBridge } from '../../ContentAPI';
-import type { PopMesh } from '../drawables/PopMesh';
-import type { InstanceMesh } from '../drawables/InstanceMesh';
+} from '../../fx/PipelineAPI.js';
+import type { PerspectiveCamera } from '../cameras/PerspectiveCamera.js';
+import type { Box3 } from '../../math/Box3.js';
+import { Frustum } from '../../math/Frustum.js';
+import { ContentBridge } from '../../ContentAPI.js';
+import type { PopMesh } from '../drawables/PopMesh.js';
+import type { InstanceMesh } from '../drawables/InstanceMesh.js';
 
 // This for indicate pop is set to max level by renderer auto level
 const MAX_LEVEL_MAGIC_NUMBER = 17;

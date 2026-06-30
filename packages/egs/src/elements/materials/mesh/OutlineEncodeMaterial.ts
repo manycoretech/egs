@@ -1,14 +1,14 @@
-import type { WGLProgram } from '../../../renderer/webgl/WGLProgram';
-import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants';
+import type { WGLProgram } from '../../../renderer/webgl/WGLProgram.js';
+import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
 import {
     ShaderVaryingTypes,
     type ShaderBuilder,
     ShaderInjectionTypes,
-} from '../../../renderer/shader/builders/ShaderBuilder';
-import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock';
-import { Capabilities } from '../../../renderer/Capabilities';
-import { Platform } from '../../../utils/Platform';
-import { SceneMaterial } from '../base';
+} from '../../../renderer/shader/builders/ShaderBuilder.js';
+import { createShaderBlock } from '../../../renderer/shader/builders/ShaderBlock.js';
+import { Capabilities } from '../../../renderer/Capabilities.js';
+import { Platform } from '../../../utils/Platform.js';
+import { SceneMaterial } from '../base/index.js';
 
 export class OutlineEncodeMaterial extends SceneMaterial {
     encodeId = 0;

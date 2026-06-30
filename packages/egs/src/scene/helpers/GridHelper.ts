@@ -1,8 +1,8 @@
-import { LineSegments } from '../drawables/LineSegments';
-import { Color } from '../../math/Color';
-import { BufferGeometry, type LineList } from '../../elements/geometries/containers/BufferGeometry';
-import { BufferAttribute } from '../../elements/attributes/BufferAttribute';
-import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial';
+import { LineSegments } from '../drawables/LineSegments.js';
+import { Color } from '../../math/Color.js';
+import { BufferGeometry, type LineList } from '../../elements/geometries/containers/BufferGeometry.js';
+import { BufferAttribute } from '../../elements/attributes/BufferAttribute.js';
+import { LineBasicMaterial } from '../../elements/materials/mesh/LineMaterial.js';
 /**
  * This class is used to draw a square grid which is divided into four area by a cross coordinate system.
  */
