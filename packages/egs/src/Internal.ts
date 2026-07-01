@@ -75,6 +75,7 @@ export {
 } from './elements/materials/quad/ExposedCopyMaterial.js';
 export { ToneMappingMaterial } from './elements/materials/quad/ToneMappingMaterial.js';
 export { BackgroundLikeMaterial } from './elements/materials/base/index.js';
+export { SplattingRenderMode } from './elements/materials/mesh/SplattingMaterial.js';
 export {
     DeferredDrawAmbientLightMaterial,
     DeferredDrawDirectionalLightMaterial,
@@ -83,6 +84,7 @@ export {
     DeferredDrawRectAreaLightMaterial,
     DeferredDrawSpotLightMaterial,
 } from './fx/plugins/Deferred.js';
+export { setSortSplats } from './fx/plugins/Splatting.js';
 
 export { registerPipelineContentAPI, removePipelineContentAPI } from './fx/PipelineAPI.js';
 export {
@@ -113,7 +115,6 @@ export {
     Capabilities,
     setupWebGPUCompressedTextureCapabilities,
 } from './renderer/Capabilities.js';
-export { setSortSplats, SplattingRenderMode } from './fx/plugins/Splatting.js';
 export { CompressedSplat } from './scene/splat/CompressedSplat.js';
 export { SuperCompressedSplat } from './scene/splat/SuperCompressedSplat.js';
 export { SogSplat } from './scene/splat/SogSplat.js';

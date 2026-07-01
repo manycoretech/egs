@@ -2,9 +2,12 @@
 
 ## DEV
 
-1. 修复
+1. 新功能
+    - `Splatting`支持环渲染模式
+    - 新增`highlightKernel.selectedColor`支持高亮
+2. 修复
     - 修复`SplatReorderMaterial`移动端兼容性异常
-2. 优化
+3. 优化
     - 改造为标准的`ESM`
 
 ## 1.2.92

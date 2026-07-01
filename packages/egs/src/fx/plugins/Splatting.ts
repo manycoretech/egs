@@ -14,7 +14,7 @@ import { SplatPrecalculateMaterial } from '../../elements/materials/quad/SplatPr
 import type { RenderTarget } from '../../elements/textures/RenderTarget.js';
 import { Mesh } from '../../scene/drawables/Mesh.js';
 import { InstancedBufferGeometry } from '../../elements/geometries/containers/InstancedBufferGeometry.js';
-import { SplattingMaterial } from '../../elements/materials/mesh/SplattingMaterial.js';
+import { SplattingMaterial, SplattingRenderMode } from '../../elements/materials/mesh/SplattingMaterial.js';
 import { BufferAttribute } from '../../elements/attributes/BufferAttribute.js';
 import { CopyMaterial } from '../../elements/materials/quad/CopyMaterial.js';
 import { SplatKernelHighlightMaterial } from '../../elements/materials/mesh/SplatKernelHighlightMaterial.js';
@@ -45,11 +45,6 @@ let sortSplats: (
 };
 export function setSortSplats(fn: typeof sortSplats) {
     sortSplats = fn;
-}
-
-export enum SplattingRenderMode {
-    Default,
-    PickingId,
 }
 
 interface SplatCache {
@@ -111,7 +106,6 @@ export class SplattingPlugin extends PipelinePlugin {
     private splattingMesh = new Mesh();
     private splattingGeometry = new InstancedBufferGeometry();
     private splattingMaterial = new SplattingMaterial();
-    private splattingRenderMode: SplattingRenderMode = SplattingRenderMode.Default;
 
     private compositeEnabled: boolean = false;
     private compositeHighPrecisionEnabled: boolean = false;
@@ -872,20 +866,9 @@ export class SplattingPlugin extends PipelinePlugin {
             },
             raster: {
                 mode: {
-                    get: () => this.splattingRenderMode,
+                    get: () => this.splattingMaterial.renderMode,
                     set: (v: SplattingRenderMode) => {
-                        this.splattingRenderMode = v;
-                        const { splattingMaterial } = this;
-                        if (v === SplattingRenderMode.Default) {
-                            splattingMaterial.depthWrite = false;
-                            splattingMaterial.transparent = true;
-                            splattingMaterial.shadingPickIdEnabled = false;
-                        } else if (v === SplattingRenderMode.PickingId) {
-                            splattingMaterial.depthWrite = true;
-                            splattingMaterial.transparent = false;
-                            splattingMaterial.shadingPickIdEnabled = true;
-                        }
-                        splattingMaterial.notifyRecompileShader();
+                        this.splattingMaterial.updateRenderMode(v);
                     },
                 },
                 preBlurAmount: {
@@ -935,6 +918,12 @@ export class SplattingPlugin extends PipelinePlugin {
                     get: () => this.splattingMaterial.selectedColor.clone(),
                     set: (v: Vector4) => {
                         this.splattingMaterial.selectedColor.copy(v);
+                    },
+                },
+                ringSize: {
+                    get: () => this.splattingMaterial.ringSize,
+                    set: (v: number) => {
+                        this.splattingMaterial.ringSize = v;
                     },
                 },
             },
@@ -1050,6 +1039,12 @@ export class SplattingPlugin extends PipelinePlugin {
                     get: () => this.highlightKernelMaterial.color.getHex(),
                     set: (v: number) => {
                         this.highlightKernelMaterial.color.setHex(v);
+                    },
+                },
+                selectedColor: {
+                    get: () => this.highlightKernelMaterial.selectedColor.clone(),
+                    set: (v: Vector4) => {
+                        this.highlightKernelMaterial.selectedColor.copy(v);
                     },
                 },
             },

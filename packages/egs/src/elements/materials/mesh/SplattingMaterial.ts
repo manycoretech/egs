@@ -10,6 +10,12 @@ import { Vector4 } from '../../../math/Vector4.js';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
 import type { TextureV2 } from '../../textures/TextureV2.js';
 
+export enum SplattingRenderMode {
+    Default,
+    Ring,
+    PickingId,
+}
+
 export class SplattingMaterial extends Material {
     transparent = true;
     premultipliedAlpha = true;
@@ -26,8 +32,12 @@ export class SplattingMaterial extends Material {
     focalAdjustment: number = 2;
     detailCullingThreshold: number = 1;
     selectedColor: Vector4 = new Vector4(1, 1, 0, 1);
+    ringSize: number = 0.04;
 
-    shadingPickIdEnabled: boolean = false;
+    private _renderMode: SplattingRenderMode = SplattingRenderMode.Default;
+    get renderMode() {
+        return this._renderMode;
+    }
 
     count: number = 0;
     origin: Vector3 = new Vector3(0, 0, 0);
@@ -40,13 +50,25 @@ export class SplattingMaterial extends Material {
         return 'SplattingMaterial';
     }
 
+    updateRenderMode(mode: SplattingRenderMode) {
+        this._renderMode = mode;
+        if (mode === SplattingRenderMode.PickingId) {
+            this.depthWrite = true;
+            this.transparent = false;
+        } else {
+            this.depthWrite = false;
+            this.transparent = true;
+        }
+        this.notifyRecompileShader();
+    }
+
     generateShaderKey() {
         return HashKeyBuilder.getInstance()
             .raw(this.className())
             .bool(this.highPrecisionEnabled)
             .bool(this.sortedLayoutEnabled)
             .bool(this.normalizedFalloff)
-            .bool(this.shadingPickIdEnabled)
+            .raw(this.renderMode)
             .getKey();
     }
 
@@ -69,6 +91,7 @@ export class SplattingMaterial extends Material {
             .addUniform('focalAdjustment', WebGLShaderDataType.Float)
             .addUniform('detailCullingThreshold', WebGLShaderDataType.Float)
             .addUniform('selectedColor', WebGLShaderDataType.Vec4)
+            .addUniform('ringSize', WebGLShaderDataType.Float)
             .addUniform('origin', WebGLShaderDataType.Vec3)
             .addUniform('centerTex', WebGLShaderDataType.Sampler2D)
             .addUniform('packedTexWidth', WebGLShaderDataType.UInt)
@@ -81,7 +104,7 @@ export class SplattingMaterial extends Material {
             )
             .addVaryingCustom('vColor', WebGLShaderDataType.Vec4)
             .addVaryingCustom('vSplatUv', WebGLShaderDataType.Vec2)
-            .when(this.shadingPickIdEnabled, builder =>
+            .when(this.renderMode === SplattingRenderMode.PickingId, builder =>
                 builder.addVertexCustom(`flat out uint vId;`).addFragmentCustom(`flat in uint vId;`),
             )
             .addVertex(ShaderBlockPool.SplatHeader)
@@ -101,6 +124,7 @@ export class SplattingMaterial extends Material {
         program.setUniform('focalAdjustment', this.focalAdjustment);
         program.setUniform('detailCullingThreshold', this.detailCullingThreshold);
         program.setUniform('selectedColor', this.selectedColor);
+        program.setUniform('ringSize', 1.0 - this.ringSize, true);
         program.setUniform('origin', this.origin);
         program.setTexture2D('centerTex', this.centerTex);
         program.setTexture2D('covTex', this.covTex);
@@ -121,7 +145,7 @@ export class SplattingMaterial extends Material {
 }
 
 function createVertexShader(material: SplattingMaterial): string {
-    const { sortedLayoutEnabled, shadingPickIdEnabled, highPrecisionEnabled } = material;
+    const { sortedLayoutEnabled, highPrecisionEnabled, renderMode } = material;
     return `
         gl_Position = vec4(0.0, 0.0, 2.0, 1.0);
 
@@ -224,6 +248,7 @@ function createVertexShader(material: SplattingMaterial): string {
         }
 
         float factor = min(1.0, 0.5 * sqrt(-log(INV_255 / color.a)));
+        ${renderMode === SplattingRenderMode.Ring ? 'factor = 1.0;' : ''}
         float k = maxStdDev * factor;
         if (detailCullingThreshold > 0.) {
             float Ek = 1.0 - exp(-0.5 * k * k);
@@ -255,26 +280,28 @@ function createVertexShader(material: SplattingMaterial): string {
 
         vColor = color;
         vSplatUv = position.xy * k;
-        ${shadingPickIdEnabled ? 'vId = splatIndex;' : ''}
+        ${renderMode === SplattingRenderMode.PickingId ? 'vId = splatIndex;' : ''}
         gl_Position = clipCenter;
     `;
 }
 
 function createFragmentShader(material: SplattingMaterial): string {
-    const { normalizedFalloff, shadingPickIdEnabled } = material;
+    const { normalizedFalloff, renderMode } = material;
 
     return `
         float z = dot(vSplatUv, vSplatUv);
-        if (z > (maxStdDev * maxStdDev)) {
+        float MaxVariance = maxStdDev * maxStdDev;
+        if (z > MaxVariance) {
             discard;
         }
         float alpha = vColor.a * ${normalizedFalloff ? `(exp(-0.5 * z) - EXP4) * INV_EXP4` : 'fastExp(-0.5 * z)'};
+        ${renderMode === SplattingRenderMode.Ring ? 'alpha = z < MaxVariance * ringSize ? max(0.05, alpha) : 0.6;' : ``}
         if (alpha < MIN_ALPHA) {
             discard;
         }
         gl_FragColor = vec4(vColor.rgb * alpha, alpha);
         ${
-            shadingPickIdEnabled
+            renderMode === SplattingRenderMode.PickingId
                 ? `
                     gl_FragColor = vec4(
                         float((vId >> 0u) & 0xFFu) / 255.0,
