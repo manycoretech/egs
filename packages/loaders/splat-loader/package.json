@@ -23,8 +23,8 @@
   "dependencies": {
     "@qunhe/egs-lib": "^1.0.2",
     "fflate": "^0.8.3",
-    "zstddec": "^0.2.0",
-    "tslib": "^2.8.1"
+    "tslib": "^2.8.1",
+    "zstddec": "^0.2.0"
   },
   "devDependencies": {
     "typescript": "^6.0.3"

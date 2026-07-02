@@ -17,8 +17,8 @@
     "@internal/cli": "workspace:*",
     "@internal/utils": "workspace:*",
     "@types/node": "^22.20.0",
-    "oxfmt": "^0.56.0",
-    "oxlint": "^1.71.0",
+    "oxfmt": "^0.57.0",
+    "oxlint": "^1.72.0",
     "typescript": "^6.0.3"
   },
   "scripts": {
