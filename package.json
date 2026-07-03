@@ -17,11 +17,14 @@
     "@internal/cli": "workspace:*",
     "@internal/utils": "workspace:*",
     "@types/node": "^22.20.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.8",
     "oxfmt": "^0.57.0",
     "oxlint": "^1.72.0",
     "typescript": "^6.0.3"
   },
   "scripts": {
+    "prepare": "husky",
     "build": "pnpm run --filter=!@internal/* -r build",
     "build:release": "pnpm run --filter=!@internal/* -r build:release"
   }

@@ -5,7 +5,8 @@
   "type": "module",
   "bin": {
     "egs-build": "./bin/egs-build.js",
-    "generate-api-impl": "./bin/generate-api-impl.js"
+    "generate-api-impl": "./bin/generate-api-impl.js",
+    "invoke-lint-staged": "./bin/invoke-lint-staged.js"
   },
   "dependencies": {
     "yargs": "^18.0.0"
