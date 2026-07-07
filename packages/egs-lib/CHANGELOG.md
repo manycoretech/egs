@@ -2,6 +2,7 @@
 
 - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`，迁移至`OXC`
 - 改造为标准`ESM`
+- `WorkerPool`清理`worker`事件优化
 
 # 1.0.3
 

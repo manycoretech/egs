@@ -38,7 +38,9 @@ const workerProperties = {
     release: {
         value(this: InternalWebWorker) {
             this.flags = disableFlags(this.flags, WorkerFlags.BUSY);
+            this.onerror = null;
             this.onmessage = null;
+            this.onmessageerror = null;
             this.pool.flush();
         },
         enumerable: false,
