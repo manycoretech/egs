@@ -425,7 +425,6 @@ export class BufferReader {
     head = 0;
     tail = 0;
     buffer: Uint8Array;
-    view: DataView;
 
     get remaining(): number {
         return this.tail - this.head;
@@ -433,7 +432,6 @@ export class BufferReader {
 
     constructor(buffer: Uint8Array = new Uint8Array()) {
         this.buffer = buffer;
-        this.view = new DataView(this.buffer.buffer);
     }
 
     private grow(required: number) {
@@ -444,7 +442,6 @@ export class BufferReader {
         this.tail -= this.head;
         this.head = 0;
         this.buffer = next;
-        this.view = new DataView(next.buffer);
     }
 
     private compact() {
@@ -472,6 +469,10 @@ export class BufferReader {
     read(counts: number): Uint8Array {
         const head = this.head;
         const tail = (this.head = head + counts);
+        if (this.head === this.tail) {
+            this.head = 0;
+            this.tail = 0;
+        }
         return this.buffer.subarray(head, tail);
     }
 }
@@ -517,6 +518,90 @@ export class StreamChunkDecoder {
                 this.currentItemSize = itemSize;
                 this.flush();
             }
+        }
+    }
+}
+
+export class ByteStreamCursor {
+    private reader: ReadableStreamDefaultReader<Uint8Array>;
+    private chunk: Uint8Array | undefined;
+    private chunkOffset = 0;
+
+    constructor(stream: ReadableStream<Uint8Array>) {
+        this.reader = stream.getReader();
+    }
+
+    cancel(reason?: any) {
+        this.chunk = undefined;
+        this.chunkOffset = 0;
+        return this.reader.cancel(reason);
+    }
+
+    private async ensureChunk() {
+        while (!this.chunk || this.chunkOffset >= this.chunk.byteLength) {
+            const { done, value } = await this.reader.read();
+            if (done || !value) {
+                return false;
+            }
+            this.chunk = value;
+            this.chunkOffset = 0;
+        }
+        return true;
+    }
+
+    async readExact(byteLength: number) {
+        const result = new Uint8Array(byteLength);
+        let offset = 0;
+        while (offset < byteLength) {
+            if (!(await this.ensureChunk())) {
+                throw new Error('Invalid SPZ file: stream ended unexpectedly');
+            }
+            const source = this.chunk!;
+            const copyLength = Math.min(byteLength - offset, source.byteLength - this.chunkOffset);
+            result.set(source.subarray(this.chunkOffset, this.chunkOffset + copyLength), offset);
+            this.chunkOffset += copyLength;
+            if (this.chunkOffset >= source.byteLength) {
+                this.chunk = undefined;
+                this.chunkOffset = 0;
+            }
+            offset += copyLength;
+        }
+        return result;
+    }
+
+    async skip(byteLength: number) {
+        let skipped = 0;
+        while (skipped < byteLength) {
+            if (!(await this.ensureChunk())) {
+                throw new Error('Invalid SPZ file: stream ended unexpectedly');
+            }
+            const source = this.chunk!;
+            const step = Math.min(byteLength - skipped, source.byteLength - this.chunkOffset);
+            this.chunkOffset += step;
+            if (this.chunkOffset >= source.byteLength) {
+                this.chunk = undefined;
+                this.chunkOffset = 0;
+            }
+            skipped += step;
+        }
+    }
+
+    async readChunks(byteLength: number, onChunk: (chunk: Uint8Array) => void) {
+        let remaining = byteLength;
+        while (remaining > 0) {
+            if (!(await this.ensureChunk())) {
+                throw new Error('Invalid SPZ file: stream ended unexpectedly');
+            }
+            const source = this.chunk!;
+            const emitLength = Math.min(remaining, source.byteLength - this.chunkOffset);
+            const chunk = source.subarray(this.chunkOffset, this.chunkOffset + emitLength);
+            this.chunkOffset += emitLength;
+            if (this.chunkOffset >= source.byteLength) {
+                this.chunk = undefined;
+                this.chunkOffset = 0;
+            }
+            remaining -= emitLength;
+            onChunk(chunk);
         }
     }
 }
