@@ -165,7 +165,7 @@ function createPath(char: string, scale: number, offsetX: number, offsetY: numbe
         }
         const commands = path0.commands;
 
-        for (let i = 0, l = commands.length; i < l; ) {
+        for (let i = 0, l = commands.length; i < l;) {
             const command = commands[i++];
             switch (command.type) {
                 case 'M': // moveTo
