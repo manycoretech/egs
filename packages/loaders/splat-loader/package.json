@@ -1,6 +1,6 @@
 {
   "name": "@qunhe/egs-splat-loader",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "EGS 3d gaussian splatting loader",
   "main": "index.js",
   "module": "index.js",

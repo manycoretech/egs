@@ -1,12 +1,11 @@
 import {
     type IFile,
     type IData,
-    type ISingleSplat,
     SH_MAPS,
     SH_C0,
-    BufferReader,
+    ByteStreamCursor,
+    createSingleSplat,
     StreamChunkDecoder,
-    type ChunkDecoder,
     NUM_F_REST_TO_SH_DEGREE,
 } from '../utils.js';
 
@@ -137,7 +136,7 @@ interface IVertexBlock {
     f_rest: number[];
 }
 
-const HeaderTerminator = 'end_header\n';
+const HEADER_TERMINATOR_BYTES = new TextEncoder().encode('end_header\n');
 export class PlyFile implements IFile {
     private littleEndian = true;
     private comments: string[] = [];
@@ -323,35 +322,17 @@ export class PlyFile implements IFile {
         const setFn = data.set.bind(data) as IData['set'];
         const setShFn = data.setShN.bind(data) as IData['setShN'];
 
-        let headerParsed: boolean = false;
-        let header = '';
+        const cursor = new ByteStreamCursor(stream);
+        const header = new TextDecoder().decode(await cursor.readUntil(HEADER_TERMINATOR_BYTES));
+        this.initHeader(header);
 
-        const reader = new BufferReader();
-        const decoder = new StreamChunkDecoder(reader);
-
-        let BlockOffset: number = 0;
+        const { elements, littleEndian, isSuperSplatCompressed, shDegree } = this;
+        const BlockOffset = await data.initBlock(this.counts, this.shDegree);
         const chunks: ISSChunk[] = [];
-        const single: ISingleSplat = {
-            x: 0,
-            y: 0,
-            z: 0,
-            sx: 0,
-            sy: 0,
-            sz: 0,
-            qx: 0,
-            qy: 0,
-            qz: 0,
-            qw: 0,
-            r: 0,
-            g: 0,
-            b: 0,
-            a: 0,
-        };
-        const initDecoder = () => {
-            const { elements, littleEndian, isSuperSplatCompressed, shDegree } = this;
-            const chunkDecoders: ChunkDecoder[] = [];
-
-            for (const name in elements) {
+        const single = createSingleSplat();
+        const decoder = new StreamChunkDecoder(cursor);
+        await decoder.decode(
+            Object.keys(elements).map(name => {
                 const { count, properties } = elements[name];
                 const block = createEmptyBlock(properties, shDegree);
                 const [itemSize, parseFn] = createParseFn(properties, littleEndian, shDegree);
@@ -450,7 +431,7 @@ export class PlyFile implements IFile {
                     };
                 }
 
-                chunkDecoders.push({
+                return {
                     init: () => [count, itemSize],
                     decode: (offset, counts, buffer) => {
                         offset += BlockOffset;
@@ -460,46 +441,9 @@ export class PlyFile implements IFile {
                             fn(offset + i, block);
                         }
                     },
-                });
-            }
-
-            decoder.setDecoders(chunkDecoders);
-        };
-
-        const textDecoder = new TextDecoder();
-        const source = stream.getReader();
-        while (true) {
-            const { done, value } = await source.read();
-            if (done) {
-                break;
-            }
-            reader.write(value!);
-
-            if (!headerParsed) {
-                const HeaderReadBlockSize = 4096;
-                const counts = Math.ceil(reader.remaining / HeaderReadBlockSize);
-                for (let i = 0; i < counts; i++) {
-                    const chunk = reader.read(HeaderReadBlockSize);
-                    header += textDecoder.decode(chunk, { stream: true });
-                    const idx = header.indexOf(HeaderTerminator);
-                    if (idx >= 0) {
-                        header = header.slice(0, idx + HeaderTerminator.length);
-                        reader.head -=
-                            HeaderReadBlockSize - (new TextEncoder().encode(header).length % HeaderReadBlockSize);
-                        this.initHeader(header);
-                        initDecoder();
-                        BlockOffset = await data.initBlock(this.counts, this.shDegree);
-                        headerParsed = true;
-                        break;
-                    }
-                }
-                if (!headerParsed) {
-                    continue;
-                }
-            }
-
-            decoder.flush();
-        }
+                };
+            }),
+        );
         data.finishBlock();
     }
 
@@ -542,28 +486,9 @@ export class PlyFile implements IFile {
         const chunkSize = 1024;
         const chunkCounts = Math.ceil(counts / chunkSize);
 
-        const single: ISingleSplat = {
-            x: 0,
-            y: 0,
-            z: 0,
-            sx: 0,
-            sy: 0,
-            sz: 0,
-            qx: 0,
-            qy: 0,
-            qz: 0,
-            qw: 0,
-            r: 0,
-            g: 0,
-            b: 0,
-            a: 0,
-        };
+        const single = createSingleSplat();
         const shN = new Array(shCounts);
         for (let i = 0; i < chunkCounts; i++) {
-            if (writer.desiredSize! <= 0) {
-                await writer.ready;
-            }
-
             const currentChunkSize = Math.min(chunkSize, counts - i * chunkSize);
             const chunk = new Float32Array(currentChunkSize * ItemSize);
             const offset = i * chunkSize;
@@ -591,7 +516,9 @@ export class PlyFile implements IFile {
             }
 
             writer.write(new Uint8Array(chunk.buffer));
-            await Promise.resolve();
+            if (writer.desiredSize! <= 0) {
+                await writer.ready;
+            }
         }
 
         await writer.close();

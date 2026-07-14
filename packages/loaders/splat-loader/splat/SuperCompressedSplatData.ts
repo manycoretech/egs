@@ -13,15 +13,15 @@ import {
 } from '../utils.js';
 
 function packSint5x9ToUint32x2(data: number[], out: Uint32Array, offset: number) {
-    const q0 = ((data[0] * 16 + 16.5) | 0) & 31;
-    const q1 = ((data[1] * 16 + 16.5) | 0) & 31;
-    const q2 = ((data[2] * 16 + 16.5) | 0) & 31;
-    const q3 = ((data[3] * 16 + 16.5) | 0) & 31;
-    const q4 = ((data[4] * 16 + 16.5) | 0) & 31;
-    const q5 = ((data[5] * 16 + 16.5) | 0) & 31;
-    const q6 = ((data[6] * 16 + 16.5) | 0) & 31;
-    const q7 = ((data[7] * 16 + 16.5) | 0) & 31;
-    const q8 = ((data[8] * 16 + 16.5) | 0) & 31;
+    const q0 = clamp((data[0] * 16 + 16.5) | 0, 0, 31);
+    const q1 = clamp((data[1] * 16 + 16.5) | 0, 0, 31);
+    const q2 = clamp((data[2] * 16 + 16.5) | 0, 0, 31);
+    const q3 = clamp((data[3] * 16 + 16.5) | 0, 0, 31);
+    const q4 = clamp((data[4] * 16 + 16.5) | 0, 0, 31);
+    const q5 = clamp((data[5] * 16 + 16.5) | 0, 0, 31);
+    const q6 = clamp((data[6] * 16 + 16.5) | 0, 0, 31);
+    const q7 = clamp((data[7] * 16 + 16.5) | 0, 0, 31);
+    const q8 = clamp((data[8] * 16 + 16.5) | 0, 0, 31);
 
     let low = 0;
     let high = 0;
@@ -56,8 +56,8 @@ function unpackSint5x9FromUint32x2(low: number, high: number, out: number[], off
 }
 
 function packSint4ToUint8(v0: number, v1: number): number {
-    const l = ((v0 * 8 + 8.5) | 0) & 15;
-    const h = ((v1 * 8 + 8.5) | 0) & 15;
+    const l = clamp((v0 * 8 + 8.5) | 0, 0, 15);
+    const h = clamp((v1 * 8 + 8.5) | 0, 0, 15);
     return (h << 4) | l;
 }
 
@@ -326,10 +326,10 @@ export class SuperCompressedSplatData extends SplatData {
             unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 1], shN, 11);
             unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 2], shN, 13);
             unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 3], shN, 15);
-            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 5], shN, 17);
-            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 6], shN, 19);
-            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 7], shN, 21);
-            shN[23] = (sh2Uint8Buffer[offset + 8] & 0x0f) * 0.125 - 1.0;
+            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 4], shN, 17);
+            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 5], shN, 19);
+            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 6], shN, 21);
+            shN[23] = (sh1Uint8Buffer[offset + 7] & 0x0f) * 0.125 - 1.0;
         }
 
         if (shDegree >= 3) {

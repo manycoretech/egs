@@ -34,6 +34,25 @@ export interface ISingleSplat {
     a: number;
 }
 
+export function createSingleSplat(): ISingleSplat {
+    return {
+        x: 0,
+        y: 0,
+        z: 0,
+        sx: 0,
+        sy: 0,
+        sz: 0,
+        qx: 0,
+        qy: 0,
+        qz: 0,
+        qw: 0,
+        r: 0,
+        g: 0,
+        b: 0,
+        a: 0,
+    };
+}
+
 export enum ISamplerFormat {
     RG_UINT,
     RGBA_UINT,
@@ -229,6 +248,20 @@ export function fromHalf(h: number): number {
     return f32buffer[0];
 }
 
+export function encode111011s(a: number, b: number, c: number) {
+    return (
+        (clamp(((a * 0.5 + 0.5) * 2047) | 0, 0, 2047) << 21) |
+        (clamp(((b * 0.5 + 0.5) * 1023) | 0, 0, 1023) << 11) |
+        clamp(((c * 0.5 + 0.5) * 2047) | 0, 0, 2047)
+    );
+}
+
+export function decode111011s(decode: number, out: number[], offset: number) {
+    out[offset + 0] = (((decode >>> 21) & 2047) / 2047) * 2 - 1;
+    out[offset + 1] = (((decode >>> 11) & 1023) / 1023) * 2 - 1;
+    out[offset + 2] = ((decode & 2047) / 2047) * 2 - 1;
+}
+
 export function clamp(v: number, min: number, max: number): number {
     return Math.min(Math.max(v, min), max);
 }
@@ -421,107 +454,6 @@ export function decodeQuatOct(u: number, v: number, angle: number): number[] {
     return tempArr;
 }
 
-export class BufferReader {
-    head = 0;
-    tail = 0;
-    buffer: Uint8Array;
-
-    get remaining(): number {
-        return this.tail - this.head;
-    }
-
-    constructor(buffer: Uint8Array = new Uint8Array()) {
-        this.buffer = buffer;
-    }
-
-    private grow(required: number) {
-        const newCap = Math.max(required, this.buffer.length * 2);
-        const next = new Uint8Array(newCap);
-        next.set(this.buffer.subarray(this.head, this.tail), 0);
-
-        this.tail -= this.head;
-        this.head = 0;
-        this.buffer = next;
-    }
-
-    private compact() {
-        if (this.head === 0) {
-            return;
-        }
-        this.buffer.copyWithin(0, this.head, this.tail);
-        this.tail -= this.head;
-        this.head = 0;
-    }
-
-    write(chunk: Uint8Array) {
-        const remaining = this.tail - this.head;
-        const required = remaining + chunk.length;
-        if (this.buffer.length < required) {
-            this.grow(required);
-        } else if (this.head > 0 && this.buffer.length - this.tail < chunk.length) {
-            this.compact();
-        }
-
-        this.buffer.set(chunk, this.tail);
-        this.tail += chunk.length;
-    }
-
-    read(counts: number): Uint8Array {
-        const head = this.head;
-        const tail = (this.head = head + counts);
-        if (this.head === this.tail) {
-            this.head = 0;
-            this.tail = 0;
-        }
-        return this.buffer.subarray(head, tail);
-    }
-}
-
-export interface ChunkDecoder {
-    init(): [number, number]; // [totals, itemSize]
-    decode(offset: number, counts: number, buffer: Uint8Array): void;
-}
-
-export class StreamChunkDecoder {
-    private reader: BufferReader;
-    private decoders: ChunkDecoder[];
-    private decodedTotals: Uint32Array;
-    private currentIndex: number = 0;
-    private currentTotals: number;
-    private currentItemSize: number;
-
-    constructor(reader: BufferReader) {
-        this.reader = reader;
-    }
-
-    setDecoders(decoders: ChunkDecoder[]) {
-        this.decoders = decoders;
-        this.decodedTotals = new Uint32Array(decoders.length);
-        const [totals, itemSize] = decoders[this.currentIndex].init();
-        this.currentTotals = totals;
-        this.currentItemSize = itemSize;
-    }
-
-    flush() {
-        const { reader, decoders, decodedTotals, currentIndex, currentTotals, currentItemSize } = this;
-        const stage = decoders[currentIndex];
-        const decoded = decodedTotals[currentIndex];
-        const counts = Math.min(currentTotals - decoded, (reader.remaining / currentItemSize) | 0);
-        const buf = reader.read(counts * currentItemSize);
-        stage.decode(decoded, counts, buf);
-        decodedTotals[currentIndex] += counts;
-        if (decodedTotals[currentIndex] === currentTotals) {
-            this.currentIndex++;
-            if (this.currentIndex < decoders.length) {
-                const [totals, itemSize] = decoders[this.currentIndex]!.init();
-                this.currentTotals = totals;
-                this.currentItemSize = itemSize;
-                this.flush();
-            }
-        }
-    }
-}
-
 export class ByteStreamCursor {
     private reader: ReadableStreamDefaultReader<Uint8Array>;
     private chunk: Uint8Array | undefined;
@@ -531,7 +463,7 @@ export class ByteStreamCursor {
         this.reader = stream.getReader();
     }
 
-    cancel(reason?: any) {
+    cancel(reason?: unknown) {
         this.chunk = undefined;
         this.chunkOffset = 0;
         return this.reader.cancel(reason);
@@ -549,59 +481,197 @@ export class ByteStreamCursor {
         return true;
     }
 
-    async readExact(byteLength: number) {
-        const result = new Uint8Array(byteLength);
-        let offset = 0;
-        while (offset < byteLength) {
+    private advance(byteLength: number) {
+        this.chunkOffset += byteLength;
+        if (this.chunkOffset === this.chunk!.byteLength) {
+            this.chunk = undefined;
+            this.chunkOffset = 0;
+        }
+    }
+
+    async readInto(target: Uint8Array, offset = 0, byteLength = target.byteLength - offset) {
+        if (
+            !Number.isSafeInteger(offset) ||
+            !Number.isSafeInteger(byteLength) ||
+            offset < 0 ||
+            byteLength < 0 ||
+            offset + byteLength > target.byteLength
+        ) {
+            throw new RangeError('Invalid stream read range');
+        }
+
+        const end = offset + byteLength;
+        while (offset < end) {
             if (!(await this.ensureChunk())) {
-                throw new Error('Invalid SPZ file: stream ended unexpectedly');
+                throw new Error('Stream ended unexpectedly');
             }
-            const source = this.chunk!;
-            const copyLength = Math.min(byteLength - offset, source.byteLength - this.chunkOffset);
-            result.set(source.subarray(this.chunkOffset, this.chunkOffset + copyLength), offset);
-            this.chunkOffset += copyLength;
-            if (this.chunkOffset >= source.byteLength) {
-                this.chunk = undefined;
-                this.chunkOffset = 0;
-            }
+            const copyLength = Math.min(end - offset, this.chunk!.byteLength - this.chunkOffset);
+            target.set(this.chunk!.subarray(this.chunkOffset, this.chunkOffset + copyLength), offset);
+            this.advance(copyLength);
             offset += copyLength;
         }
-        return result;
     }
 
-    async skip(byteLength: number) {
-        let skipped = 0;
-        while (skipped < byteLength) {
-            if (!(await this.ensureChunk())) {
-                throw new Error('Invalid SPZ file: stream ended unexpectedly');
-            }
-            const source = this.chunk!;
-            const step = Math.min(byteLength - skipped, source.byteLength - this.chunkOffset);
-            this.chunkOffset += step;
-            if (this.chunkOffset >= source.byteLength) {
-                this.chunk = undefined;
-                this.chunkOffset = 0;
-            }
-            skipped += step;
+    async readChunks(byteLength: number, onChunk: (chunk: Uint8Array) => void | Promise<void>) {
+        if (!Number.isSafeInteger(byteLength) || byteLength < 0) {
+            throw new RangeError(`Invalid stream read length: ${byteLength}`);
         }
-    }
 
-    async readChunks(byteLength: number, onChunk: (chunk: Uint8Array) => void) {
         let remaining = byteLength;
         while (remaining > 0) {
             if (!(await this.ensureChunk())) {
-                throw new Error('Invalid SPZ file: stream ended unexpectedly');
+                throw new Error('Stream ended unexpectedly');
             }
+            const chunkLength = Math.min(remaining, this.chunk!.byteLength - this.chunkOffset);
+            const chunk = this.chunk!.subarray(this.chunkOffset, this.chunkOffset + chunkLength);
+            this.advance(chunkLength);
+            remaining -= chunkLength;
+            await onChunk(chunk);
+        }
+    }
+
+    async skip(byteLength: number) {
+        await this.readChunks(byteLength, () => {});
+    }
+
+    async readUntil(delimiter: Uint8Array) {
+        if (delimiter.byteLength === 0) {
+            throw new RangeError('Stream delimiter must not be empty');
+        }
+
+        const prefix = new Uint32Array(delimiter.byteLength);
+        for (let i = 1, matched = 0; i < delimiter.byteLength; i++) {
+            while (matched > 0 && delimiter[i] !== delimiter[matched]) {
+                matched = prefix[matched - 1];
+            }
+            if (delimiter[i] === delimiter[matched]) {
+                matched++;
+            }
+            prefix[i] = matched;
+        }
+
+        const chunks: Uint8Array[] = [];
+        let byteLength = 0;
+        let matched = 0;
+        while (await this.ensureChunk()) {
             const source = this.chunk!;
-            const emitLength = Math.min(remaining, source.byteLength - this.chunkOffset);
-            const chunk = source.subarray(this.chunkOffset, this.chunkOffset + emitLength);
-            this.chunkOffset += emitLength;
-            if (this.chunkOffset >= source.byteLength) {
-                this.chunk = undefined;
-                this.chunkOffset = 0;
+            const start = this.chunkOffset;
+            let end = start;
+            for (; end < source.byteLength; end++) {
+                const value = source[end];
+                while (matched > 0 && value !== delimiter[matched]) {
+                    matched = prefix[matched - 1];
+                }
+                if (value === delimiter[matched]) {
+                    matched++;
+                }
+                if (matched === delimiter.byteLength) {
+                    end++;
+                    const chunk = source.subarray(start, end);
+                    this.advance(chunk.byteLength);
+                    if (chunks.length === 0) {
+                        return chunk;
+                    }
+                    chunks.push(chunk);
+                    byteLength += chunk.byteLength;
+                    const result = new Uint8Array(byteLength);
+                    let offset = 0;
+                    for (const part of chunks) {
+                        result.set(part, offset);
+                        offset += part.byteLength;
+                    }
+                    return result;
+                }
             }
-            remaining -= emitLength;
-            onChunk(chunk);
+
+            const chunk = source.subarray(start, end);
+            chunks.push(chunk);
+            byteLength += chunk.byteLength;
+            this.advance(chunk.byteLength);
+        }
+
+        throw new Error('Stream ended unexpectedly');
+    }
+
+    async readExact(byteLength: number) {
+        if (!Number.isSafeInteger(byteLength) || byteLength < 0) {
+            throw new RangeError(`Invalid stream read length: ${byteLength}`);
+        }
+        if (byteLength === 0) {
+            return new Uint8Array(0);
+        }
+        if (!(await this.ensureChunk())) {
+            throw new Error('Stream ended unexpectedly');
+        }
+
+        const available = this.chunk!.byteLength - this.chunkOffset;
+        if (byteLength <= available) {
+            const result = this.chunk!.subarray(this.chunkOffset, this.chunkOffset + byteLength);
+            this.advance(byteLength);
+            return result;
+        }
+
+        const result = new Uint8Array(byteLength);
+        await this.readInto(result);
+        return result;
+    }
+
+    async readUint32(littleEndian: boolean = true) {
+        const buffer = await this.readExact(4);
+        return new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength).getUint32(0, littleEndian);
+    }
+}
+
+export interface ChunkDecoder {
+    init(): Promise<[number, number]> | [number, number]; // [totals, itemSize]
+    decode(offset: number, counts: number, buffer: Uint8Array): void;
+}
+
+export class StreamChunkDecoder {
+    constructor(private cursor: ByteStreamCursor) {}
+
+    async decode(decoders: ChunkDecoder[]) {
+        for (const decoder of decoders) {
+            const [totals, itemSize] = await decoder.init();
+            if (totals === 0 || itemSize === 0) {
+                continue;
+            }
+
+            const pending = new Uint8Array(itemSize);
+            let pendingByteLength = 0;
+            let decoded = 0;
+            await this.cursor.readChunks(totals * itemSize, chunk => {
+                let chunkOffset = 0;
+                if (pendingByteLength > 0) {
+                    const copyLength = Math.min(itemSize - pendingByteLength, chunk.byteLength);
+                    pending.set(chunk.subarray(0, copyLength), pendingByteLength);
+                    pendingByteLength += copyLength;
+                    chunkOffset += copyLength;
+                    if (pendingByteLength === itemSize) {
+                        decoder.decode(decoded, 1, pending);
+                        decoded++;
+                        pendingByteLength = 0;
+                    }
+                }
+
+                const counts = Math.floor((chunk.byteLength - chunkOffset) / itemSize);
+                if (counts > 0) {
+                    const batchByteLength = counts * itemSize;
+                    decoder.decode(decoded, counts, chunk.subarray(chunkOffset, chunkOffset + batchByteLength));
+                    decoded += counts;
+                    chunkOffset += batchByteLength;
+                }
+
+                if (chunkOffset < chunk.byteLength) {
+                    const remainder = chunk.subarray(chunkOffset);
+                    pending.set(remainder);
+                    pendingByteLength = remainder.byteLength;
+                }
+            });
+
+            if (pendingByteLength !== 0 || decoded !== totals) {
+                throw new Error(`Invalid stream data: expected ${totals} items, got ${decoded}`);
+            }
         }
     }
 }

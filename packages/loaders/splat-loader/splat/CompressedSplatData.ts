@@ -10,21 +10,9 @@ import {
     fromHalf,
     encodeQuatOct,
     decodeQuatOct,
+    encode111011s,
+    decode111011s,
 } from '../utils.js';
-
-function encode111011s(a: number, b: number, c: number) {
-    return (
-        (clamp(((a * 0.5 + 0.5) * 2047) | 0, 0, 2047) << 21) |
-        (clamp(((b * 0.5 + 0.5) * 1023) | 0, 0, 1023) << 11) |
-        clamp(((c * 0.5 + 0.5) * 2047) | 0, 0, 2047)
-    );
-}
-
-function decode111011s(decode: number, out: number[], offset: number) {
-    out[offset + 0] = (((decode >>> 21) & 2047) / 2047) * 2 - 1;
-    out[offset + 1] = (((decode >>> 11) & 1023) / 1023) * 2 - 1;
-    out[offset + 2] = ((decode & 2047) / 2047) * 2 - 1;
-}
 
 export class CompressedSplatData extends SplatData {
     counts: number = 0;
@@ -77,7 +65,7 @@ export class CompressedSplatData extends SplatData {
             height,
             depth,
             format: ISamplerFormat.RGBA_UINT,
-            source: new Uint8Array((shDegree >= 1 ? 16 : 0) * pixelCounts),
+            source: new Uint8Array((this.shDegree >= 1 ? 16 : 0) * pixelCounts),
         });
         this.sh1Uint32Buffer = new Uint32Array(sh1Sampler.source.buffer);
         const sh2Sampler = (this.sh2Sampler = {
@@ -85,7 +73,7 @@ export class CompressedSplatData extends SplatData {
             height,
             depth,
             format: ISamplerFormat.RGBA_UINT,
-            source: new Uint8Array((shDegree >= 2 ? 16 : 0) * pixelCounts),
+            source: new Uint8Array((this.shDegree >= 2 ? 16 : 0) * pixelCounts),
         });
         this.sh2Uint32Buffer = new Uint32Array(sh2Sampler.source.buffer);
         const sh3Sampler = (this.sh3Sampler = {
@@ -93,7 +81,7 @@ export class CompressedSplatData extends SplatData {
             height,
             depth,
             format: ISamplerFormat.RGBA_UINT,
-            source: new Uint8Array((shDegree >= 3 ? 16 : 0) * pixelCounts),
+            source: new Uint8Array((this.shDegree >= 3 ? 16 : 0) * pixelCounts),
         });
         this.sh3Uint32Buffer = new Uint32Array(sh3Sampler.source.buffer);
         const sh4Sampler = (this.sh4Sampler = {
@@ -101,7 +89,7 @@ export class CompressedSplatData extends SplatData {
             height,
             depth,
             format: ISamplerFormat.RGBA_UINT,
-            source: new Uint8Array((shDegree >= 3 ? 16 : 0) * pixelCounts),
+            source: new Uint8Array((this.shDegree >= 3 ? 16 : 0) * pixelCounts),
         });
         this.sh4Uint32Buffer = new Uint32Array(sh4Sampler.source.buffer);
     }

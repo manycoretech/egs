@@ -5,7 +5,6 @@ import {
     type IFile,
     SH_MAPS,
     SH_C0,
-    BufferReader,
     fromHalf,
     clamp,
     StreamChunkDecoder,
@@ -18,6 +17,7 @@ const SPZ_VERSION = 4;
 const SPZ_LEGACY_VERSION = 3;
 const FLAG_ANTIALIASED = 0x1;
 const MAX_SAFE_STREAM_SIZE = BigInt(Number.MAX_SAFE_INTEGER);
+const STREAM_CHUNK_BYTE_LENGTH = 128 * 1024;
 
 const COLOR_SCALE = SH_C0 / 0.15;
 const rotation: number[] = new Array(4);
@@ -31,8 +31,8 @@ for (let i = 0; i < 256; i++) {
     COLOR_LUT[i] = (i / 255 - 0.5) * COLOR_SCALE + 0.5;
 }
 
-function createAttributeDecoder(
-    reader: BufferReader,
+async function decodeAttributes(
+    cursor: ByteStreamCursor,
     data: IData,
     blockOffset: number,
     version: number,
@@ -160,9 +160,40 @@ function createAttributeDecoder(
         });
     }
 
-    const decoder = new StreamChunkDecoder(reader);
-    decoder.setDecoders(decoders);
-    return decoder;
+    await new StreamChunkDecoder(cursor).decode(decoders);
+}
+
+async function pipeZstdStream(
+    cursor: ByteStreamCursor,
+    writer: WritableStreamDefaultWriter<Uint8Array>,
+    compressedSize: number,
+    uncompressedSize: number,
+    streamIndex: number,
+) {
+    const decompressor = await createZstdDecompressor(STREAM_CHUNK_BYTE_LENGTH);
+    let produced = 0;
+    const writeOutputs = async (chunks: Uint8Array[]) => {
+        for (const chunk of chunks) {
+            produced += chunk.byteLength;
+            if (produced > uncompressedSize) {
+                throw new Error(`Invalid SPZ v4 decompressed size at index ${streamIndex}`);
+            }
+            await writer.write(chunk);
+        }
+    };
+
+    try {
+        await cursor.readChunks(compressedSize, async chunk => {
+            await writeOutputs(decompressor.feed(chunk) as Uint8Array[]);
+        });
+        await writeOutputs(decompressor.finish() as Uint8Array[]);
+    } finally {
+        decompressor.free();
+    }
+
+    if (produced !== uncompressedSize) {
+        throw new Error(`Invalid SPZ v4 decompressed size at index ${streamIndex}`);
+    }
 }
 
 export class SpzFile implements IFile {
@@ -203,94 +234,78 @@ export class SpzFile implements IFile {
 
         const toc = await cursor.readExact(numStreams * 16);
         const tocView = new DataView(toc.buffer, toc.byteOffset, toc.byteLength);
-        const reader = new BufferReader();
         const blockOffset = await data.initBlock(counts, shDegree);
-        const decoder = createAttributeDecoder(reader, data, blockOffset, version, counts, shCounts, fractionalBits);
+        const attributeStream = new TransformStream<Uint8Array, Uint8Array>();
+        const attributeCursor = new ByteStreamCursor(attributeStream.readable);
+        const writer = attributeStream.writable.getWriter();
+        const decodePromise = decodeAttributes(
+            attributeCursor,
+            data,
+            blockOffset,
+            version,
+            counts,
+            shCounts,
+            fractionalBits,
+        );
+        const feedPromise = (async () => {
+            for (let i = 0; i < numStreams; i++) {
+                const entryOffset = i * 16;
+                const compressedSize64 = tocView.getBigUint64(entryOffset, true);
+                const uncompressedSize64 = tocView.getBigUint64(entryOffset + 8, true);
+                if (compressedSize64 > MAX_SAFE_STREAM_SIZE || uncompressedSize64 > MAX_SAFE_STREAM_SIZE) {
+                    throw new Error(`SPZ stream size is too large at index ${i}`);
+                }
 
-        for (let i = 0; i < numStreams; i++) {
-            const entryOffset = i * 16;
-            const compressedSize64 = tocView.getBigUint64(entryOffset, true);
-            const uncompressedSize64 = tocView.getBigUint64(entryOffset + 8, true);
-            if (compressedSize64 > MAX_SAFE_STREAM_SIZE || uncompressedSize64 > MAX_SAFE_STREAM_SIZE) {
-                throw new Error(`SPZ stream size is too large at index ${i}`);
+                const compressedSize = Number(compressedSize64);
+                const uncompressedSize = Number(uncompressedSize64);
+                if (uncompressedSize !== expectedSizes[i]) {
+                    throw new Error(`Invalid SPZ v4 stream size at index ${i}`);
+                }
+
+                await pipeZstdStream(cursor, writer, compressedSize, uncompressedSize, i);
             }
+            await writer.close();
+        })();
 
-            const compressedSize = Number(compressedSize64);
-            const uncompressedSize = Number(uncompressedSize64);
-            if (uncompressedSize !== expectedSizes[i]) {
-                throw new Error(`Invalid SPZ v4 stream size at index ${i}`);
-            }
-
-            const decompressor = await createZstdDecompressor(128 * 1024);
-            let produced = 0;
-            const onChunk = (chunk: Uint8Array) => {
-                produced += chunk.byteLength;
-                reader.write(chunk);
-                decoder.flush();
-            };
-
-            try {
-                await cursor.readChunks(compressedSize, chunk => decompressor.feedView(chunk, onChunk));
-                decompressor.finishView(onChunk);
-            } finally {
-                decompressor.free();
-            }
-
-            if (produced !== uncompressedSize) {
-                throw new Error(`Invalid SPZ v4 decompressed size at index ${i}`);
-            }
+        try {
+            await Promise.all([feedPromise, decodePromise]);
+        } catch (error) {
+            await Promise.allSettled([writer.abort(error), attributeCursor.cancel(error)]);
+            await Promise.allSettled([feedPromise, decodePromise]);
+            throw error;
         }
     }
 
     private async readLegacyStream(stream: ReadableStream<Uint8Array>, data: IData) {
-        const source = stream.pipeThrough<Uint8Array>(new (self as any).DecompressionStream('gzip')).getReader();
-        const reader = new BufferReader();
-        let decoder: StreamChunkDecoder | undefined;
-
-        while (true) {
-            const { done, value } = await source.read();
-            if (done) {
-                break;
-            }
-            reader.write(value);
-
-            if (!decoder) {
-                if (reader.remaining < 16) {
-                    continue;
-                }
-
-                const header = reader.read(16);
-                const view = new DataView(header.buffer, header.byteOffset, header.byteLength);
-                if (view.getUint32(0, true) !== SPZ_MAGIC) {
-                    throw new Error('Invalid SPZ file');
-                }
-
-                const version = view.getUint32(4, true);
-                if (version < 1 || version > SPZ_LEGACY_VERSION) {
-                    throw new Error(`Unsupported SPZ version: ${version}`);
-                }
-                const counts = view.getUint32(8, true);
-                const shDegree = view.getUint8(12);
-                const shCounts = SH_MAPS[shDegree];
-                if (shCounts === undefined) {
-                    throw new Error(`Unsupported SPZ SH degree: ${shDegree}`);
-                }
-                const fractionalBits = view.getUint8(13);
-
-                const blockOffset = await data.initBlock(counts, shDegree);
-                decoder = createAttributeDecoder(reader, data, blockOffset, version, counts, shCounts, fractionalBits);
-            }
-
-            decoder.flush();
+        const source = stream.pipeThrough<Uint8Array>(new (self as any).DecompressionStream('gzip'));
+        const cursor = new ByteStreamCursor(source);
+        const header = await cursor.readExact(16);
+        const view = new DataView(header.buffer, header.byteOffset, header.byteLength);
+        if (view.getUint32(0, true) !== SPZ_MAGIC) {
+            throw new Error('Invalid SPZ file');
         }
+
+        const version = view.getUint32(4, true);
+        if (version < 1 || version > SPZ_LEGACY_VERSION) {
+            throw new Error(`Unsupported SPZ version: ${version}`);
+        }
+        const counts = view.getUint32(8, true);
+        const shDegree = view.getUint8(12);
+        const shCounts = SH_MAPS[shDegree];
+        if (shCounts === undefined) {
+            throw new Error(`Unsupported SPZ SH degree: ${shDegree}`);
+        }
+        const fractionalBits = view.getUint8(13);
+        const blockOffset = await data.initBlock(counts, shDegree);
+        await decodeAttributes(cursor, data, blockOffset, version, counts, shCounts, fractionalBits);
     }
 
     async read(stream: ReadableStream<Uint8Array>, _contentLength: number, data: IData) {
         const [probeStream, dataStream] = stream.tee();
         const cursor = new ByteStreamCursor(probeStream);
-        let prefix: Uint8Array;
+        let magicCode: number;
         try {
-            prefix = await cursor.readExact(4);
+            magicCode = await cursor.readUint32(true);
         } catch (error) {
             dataStream.cancel(error).catch(() => {});
             throw error;
@@ -298,8 +313,11 @@ export class SpzFile implements IFile {
             cursor.cancel().catch(() => {});
         }
 
-        const isSpz = new Uint32Array(prefix.buffer)[0] === SPZ_MAGIC;
-        await (isSpz ? this.readStream(dataStream, data) : this.readLegacyStream(dataStream, data));
+        if (magicCode === SPZ_MAGIC) {
+            await this.readStream(dataStream, data);
+        } else {
+            await this.readLegacyStream(dataStream, data);
+        }
         data.finishBlock();
     }
 

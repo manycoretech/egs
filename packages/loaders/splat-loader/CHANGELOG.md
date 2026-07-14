@@ -1,9 +1,12 @@
 # changelog
 
-## DEV
+## 1.1.0
 
 - 改造为标准`ESM`
 - 优化 spz v4 解析，支持完整的流式解析，解析时间降低 20%，内存峰值大幅降低且解析后 worker 不会出现大内存占用
+- 修复 `SuperCompressedSplatData` 的 SH 边界值量化溢出及二阶 SH 系数读取偏移错误
+- 优化流式解析，减少中间缓冲与数据复制
+- ESZ 升级至 v2，采用 Zstandard 流式容器并支持 low/high layout；不再支持 ESZ v1
 
 ## 1.0.6
 
