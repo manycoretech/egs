@@ -58,6 +58,7 @@ export interface LodConfig {
     schedulerParallelCounts: number;
     schedulerExistingTaskLimit: number;
     schedulerMinDuration: number;
+    mergeNodeEnabled: boolean;
     debuggerEnabled: boolean;
 }
 
@@ -119,6 +120,7 @@ export class LodSplat {
     private schedulerParallelCounts: number;
     private schedulerExistingTaskLimit: number;
     private schedulerMinDuration: number;
+    private mergeNodeEnabled: boolean;
     private debuggerEnabled: boolean;
 
     private viewerCtx?: IViewerContext;
@@ -150,6 +152,7 @@ export class LodSplat {
         this.schedulerParallelCounts = config?.schedulerParallelCounts ?? 4;
         this.schedulerExistingTaskLimit = config?.schedulerExistingTaskLimit ?? 64;
         this.schedulerMinDuration = config?.schedulerMinDuration ?? 160;
+        this.mergeNodeEnabled = config?.mergeNodeEnabled ?? true;
         this.debuggerEnabled = config?.debuggerEnabled ?? false;
 
         this.viewerCtx = viewerCtx;
@@ -210,6 +213,7 @@ export class LodSplat {
         this.schedulerParallelCounts = config?.schedulerParallelCounts ?? this.schedulerParallelCounts;
         this.schedulerExistingTaskLimit = config?.schedulerExistingTaskLimit ?? this.schedulerExistingTaskLimit;
         this.schedulerMinDuration = config?.schedulerMinDuration ?? this.schedulerMinDuration;
+        this.mergeNodeEnabled = config?.mergeNodeEnabled ?? this.mergeNodeEnabled;
         this.debuggerEnabled = config?.debuggerEnabled ?? this.debuggerEnabled;
     }
 
@@ -219,6 +223,7 @@ export class LodSplat {
             hysteresisTicks,
             schedulerParallelCounts,
             schedulerExistingTaskLimit,
+            mergeNodeEnabled,
             debuggerEnabled,
             container,
             resourceManager,
@@ -228,7 +233,7 @@ export class LodSplat {
             realUsedBudget,
         } = this;
 
-        // create merged proxies
+        // create target proxies
         const targetLevels = new Array<number>(nodes.length);
         const targetProxies: LodProxy[] = [];
         let prevProxy: LodProxy | undefined;
@@ -248,6 +253,7 @@ export class LodSplat {
                 node.unstableTicks = 0;
             }
             if (
+                mergeNodeEnabled &&
                 prevProxy &&
                 prevProxy.resourceIdx === lod.resourceIdx &&
                 prevProxy.offset + prevProxy.counts === lod.offset
@@ -276,6 +282,7 @@ export class LodSplat {
             budgetDelta: number;
             cachedCount: number;
             loadingCount: number;
+            isUnloaded: boolean;
             isReady: boolean;
             isUsed: boolean;
         };
@@ -293,16 +300,12 @@ export class LodSplat {
                 component.isReady ||=
                     node.currentLevel < 0 ||
                     (node.currentLevel !== node.targetLevel && node.unstableTicks >= hysteresisTicks);
+                component.isUnloaded ||= node.currentLevel < 0;
                 if (node.currentLevel < 0 || node.currentLevel !== node.targetLevel) {
                     hasChange = true;
                 }
             }
-            if (
-                !hasChange &&
-                component.newList.length > 0 &&
-                component.newList.length < component.oldList.length &&
-                component.budgetDelta <= 0
-            ) {
+            if (!hasChange && component.newList.length !== component.oldList.length && component.budgetDelta <= 0) {
                 hasChange = true;
                 component.isReady = true;
             }
@@ -326,6 +329,7 @@ export class LodSplat {
                     loadingCount: 0,
                     isReady: false,
                     isUsed: false,
+                    isUnloaded: false,
                 };
             } else if (proxy.nodeEnd > component.nodeEnd) {
                 component.nodeEnd = proxy.nodeEnd;
@@ -379,6 +383,17 @@ export class LodSplat {
         let restBudget = maxBudget - realUsedBudget;
         let cachedNodes = 0;
         let loadingNodes = 0;
+        // unload node
+        for (let i = 0; i < components.length; i++) {
+            const component = components[i];
+            if (!component.isUnloaded) {
+                continue;
+            }
+            component.isUsed = true;
+            applyComponents.push(component);
+            restBudget -= component.budgetDelta;
+            cachedNodes += component.newList.length;
+        }
         // ready & cached & downsample component. prerelease budget
         for (let i = 0; i < components.length; i++) {
             const component = components[i];

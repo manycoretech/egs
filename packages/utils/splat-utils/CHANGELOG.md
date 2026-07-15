@@ -1,8 +1,10 @@
 # changelog
 
-## DEV
+## 1.0.9
 
 - 改造为标准`ESM`
+- lod 修复最低 level 总数大于 maxBudget 时加载残缺的异常
+- lod 新增`mergeNodeEnabled`参数控制节点合并是否开启，用于降低调度峰值
 
 ## 1.0.8
 

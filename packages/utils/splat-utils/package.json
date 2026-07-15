@@ -1,6 +1,6 @@
 {
   "name": "@qunhe/egs-splat-utils",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "egs-splat-utils",
   "main": "index.js",
   "module": "index.js",
