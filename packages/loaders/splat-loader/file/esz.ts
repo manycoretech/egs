@@ -62,7 +62,7 @@ export class EszFile implements IFile {
         const readImage = async () => {
             const size = await cursor.readUint32();
             const buffer = await cursor.readExact(size);
-            return (await decodeImage(buffer.buffer as ArrayBuffer)).data;
+            return (await decodeImage(buffer as Uint8Array<ArrayBuffer>)).data;
         };
 
         {

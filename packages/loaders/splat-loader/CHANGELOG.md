@@ -1,5 +1,11 @@
 # changelog
 
+## 1.1.2
+
+- 优化 parse worker 最大值为 navigator.hardwareConcurrency - 1
+- 修复 esz decode image 异常
+- 修复 zstd 解析小文件异常
+
 ## 1.1.1
 
 - 修复 zstd wasm 文件缺失异常

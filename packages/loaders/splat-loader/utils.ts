@@ -148,7 +148,7 @@ export function computeTextureSize(counts: number, maxTextureSize: number): { w:
 
 let canvas: OffscreenCanvas;
 let context: OffscreenCanvasRenderingContext2D | undefined;
-export async function decodeImage(fileBytes: ArrayBuffer) {
+export async function decodeImage(fileBytes: Uint8Array<ArrayBuffer>) {
     if (!context) {
         canvas = new OffscreenCanvas(1, 1);
         context =

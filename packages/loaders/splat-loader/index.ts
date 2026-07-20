@@ -30,7 +30,7 @@ try {
 } catch {
     WorkerFactor = () => new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
 }
-const poll = new FactoryWorkerPool('splat', WorkerFactor, 4, 1);
+const poll = new FactoryWorkerPool('splat', WorkerFactor, Math.max(0, navigator.hardwareConcurrency - 1), 1);
 export async function parseSplatData(
     type: SplatFileType,
     input: Uint8Array | string | File | { stream: ReadableStream<Uint8Array>; contentLength: number },

@@ -359,7 +359,7 @@ export class SogFile implements IFile {
         if (!buffer) {
             throw new Error(`Cannot load texture: ${path}`);
         }
-        return decodeImage(buffer.buffer as ArrayBuffer);
+        return decodeImage(buffer as Uint8Array<ArrayBuffer>);
     }
 
     async read(stream: ReadableStream<Uint8Array>, contentLength: number, data: IData) {
