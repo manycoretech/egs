@@ -17,7 +17,7 @@ interface SplatModifierShaderBlock {
 type SplatModifierShaderBlockFactory<T extends UniformValues> = (
     input: Readonly<{ idx: string; splat: string }>,
     uniform: Readonly<{ [K in keyof T]: string }>,
-    isWebgpu: boolean,
+    language: 'wgsl' | 'glsl',
 ) => SplatModifierShaderBlock;
 
 export class SplatModifier<T extends UniformValues = UniformValues> extends EventDispatcher {
@@ -44,7 +44,7 @@ export class SplatModifier<T extends UniformValues = UniformValues> extends Even
         Object.keys(uniformValues).forEach(key => (shaderUniforms[key] = `${shaderName}_${key}`));
         this.shaderUniforms = shaderUniforms as { [K in keyof T]: string };
 
-        const shaderBlock = createShaderBlock({ idx: 'idx', splat: 'splat' }, this.shaderUniforms, false);
+        const shaderBlock = createShaderBlock({ idx: 'idx', splat: 'splat' }, this.shaderUniforms, 'glsl');
         this.header = shaderBlock.header ?? '';
         this.content = shaderBlock.content;
 

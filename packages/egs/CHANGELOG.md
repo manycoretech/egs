@@ -1,5 +1,10 @@
 # EGS 发布说明 Release Notes
 
+## 1.2.94
+
+1. 优化
+    - `SplatModifierShaderBlockFactory`中`isWebgpu`参数改为`language`
+
 ## 1.2.93
 
 1. 新功能
