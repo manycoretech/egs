@@ -11,6 +11,7 @@ import {
     Vector4,
     type IViewerContext,
     type __INTERNAL__,
+    SplatModifier,
 } from '@qunhe/egs';
 import { parseSplatData, detectSplatFileType } from '@qunhe/egs-splat-loader';
 import { ResourceManager } from './ResourceManager.js';
@@ -69,6 +70,16 @@ const LOD_LEVEL_COLORS = [
     new Vector4(0.0, 0.8, 1.0, 1),
     new Vector4(0.0, 0.4, 1.0, 1),
 ];
+
+const OverrideModifier = new SplatModifier(
+    'Override',
+    {
+        color: new Vector4(0, 0, 0, 1),
+    },
+    (input, uniform) => ({
+        content: `${input.splat}.color = ${uniform.color};`,
+    }),
+);
 
 const DEFAULT_NODE_WEIGHT = 2;
 const DEFAULT_DISTANCE_STEP: DistanceStep[] = [
@@ -214,7 +225,19 @@ export class LodSplat {
         this.schedulerExistingTaskLimit = config?.schedulerExistingTaskLimit ?? this.schedulerExistingTaskLimit;
         this.schedulerMinDuration = config?.schedulerMinDuration ?? this.schedulerMinDuration;
         this.mergeNodeEnabled = config?.mergeNodeEnabled ?? this.mergeNodeEnabled;
-        this.debuggerEnabled = config?.debuggerEnabled ?? this.debuggerEnabled;
+        {
+            const { nodes, proxies } = this;
+            const debuggerEnabled = config?.debuggerEnabled ?? this.debuggerEnabled;
+            if (debuggerEnabled !== this.debuggerEnabled) {
+                proxies.forEach(proxy => {
+                    const modifiers = debuggerEnabled
+                        ? [OverrideModifier.copy({ color: LOD_LEVEL_COLORS[nodes[proxy.nodeStart].currentLevel] })]
+                        : [];
+                    proxy.splat.setModifiers(modifiers);
+                });
+                this.debuggerEnabled = debuggerEnabled;
+            }
+        }
     }
 
     private flush = async () => {
@@ -507,11 +530,11 @@ export class LodSplat {
             const { splat, nodeStart } = loadedProxies[i];
             const { promise, resolve } = deferred();
             if (debuggerEnabled) {
-                splat.setEffectConfig({
-                    enabled: true,
-                    overrideEnabled: true,
-                    overrideColor: LOD_LEVEL_COLORS[targetLevels[nodeStart]],
-                });
+                splat.setModifiers([
+                    OverrideModifier.copy({
+                        color: LOD_LEVEL_COLORS[targetLevels[nodeStart]],
+                    }),
+                ]);
             }
             splat.once(SplatSortedEvent, resolve);
             container.add(splat);

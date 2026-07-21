@@ -1,5 +1,11 @@
 # changelog
 
+## 1.0.10
+
+- 升级依赖版本`@qunhe/egs: ^1.2.93`
+- 移除 subgroup transform 相关支持
+- 优化`LodSplat`的`debuggerEnabled`行为
+
 ## 1.0.9
 
 - 改造为标准`ESM`

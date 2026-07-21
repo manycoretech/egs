@@ -1,10 +1,7 @@
 import {
     type Splat,
     SplatState,
-    Vector3,
     WGLCapabilities,
-    Quaternion,
-    Matrix4,
     type __INTERNAL__,
     SourceTexture,
     TextureViewDimension,
@@ -17,9 +14,6 @@ interface IVector3 {
     set(x: number, y: number, z: number): void;
 }
 
-const tempVec = new Vector3();
-const tempQuat = new Quaternion();
-const tempMat = new Matrix4();
 const DEFAULT_SINGLE_SPLAT: ISingleSplat = {
     x: 0,
     y: 0,
@@ -73,27 +67,9 @@ export class SplatOperator {
     }
 
     readSplatCenter<T extends IVector3>(index: number, result: T): T {
-        const {
-            centers,
-            splat: { groupTex, groupTransformTex },
-        } = this;
-        const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
-        const groupTransformBuffer = groupTransformTex
-            ? (groupTransformTex.getLevelLayerSource(0) as Float32Array)
-            : undefined;
-
+        const { centers } = this;
         const i3 = index * 3;
-        tempVec.set(centers[i3], centers[i3 + 1], centers[i3 + 2]);
-        if (groupBuffer && groupTransformBuffer) {
-            const groupIdx = groupBuffer[index];
-            if (groupIdx !== 0) {
-                const offset = groupIdx * 12;
-                tempMat.identity();
-                tempMat.elements.set(groupTransformBuffer.subarray(offset, offset + 12));
-                tempVec.applyMatrix4(tempMat.transpose());
-            }
-        }
-        result.set(tempVec.x, tempVec.y, tempVec.z);
+        result.set(centers[i3], centers[i3 + 1], centers[i3 + 2]);
         return result;
     }
 
@@ -101,129 +77,34 @@ export class SplatOperator {
         const {
             counts,
             centers,
-            splat: { stateTex, groupTex, groupTransformTex },
+            splat: { stateTex },
         } = this;
         const stateBuffer = stateTex ? (stateTex.getLevelLayerSource(0) as Uint8Array) : undefined;
-        const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
-        const groupTransformBuffer = groupTransformTex
-            ? (groupTransformTex.getLevelLayerSource(0) as Float32Array)
-            : undefined;
-        const transforms: Matrix4[] = [];
-
         for (let i = 0; i < counts; i++) {
             if (stateBuffer && (stateBuffer[i] & SplatState.Deleted) !== 0) {
                 continue;
             }
-            tempVec.set(centers[i * 3], centers[i * 3 + 1], centers[i * 3 + 2]);
-            if (groupBuffer && groupTransformBuffer) {
-                const groupIdx = groupBuffer[i];
-                if (groupIdx !== 0) {
-                    let mat = transforms[groupIdx];
-                    if (!mat) {
-                        mat = transforms[groupIdx] = new Matrix4();
-                        const offset = groupIdx * 12;
-                        mat.elements.set(groupTransformBuffer.subarray(offset, offset + 12));
-                        mat.transpose();
-                    }
-                    tempVec.applyMatrix4(mat);
-                }
-            }
-            callback(i, tempVec.x, tempVec.y, tempVec.z);
+            callback(i, centers[i * 3], centers[i * 3 + 1], centers[i * 3 + 2]);
         }
     }
 
     readSplat(index: number, single: ISingleSplat = DEFAULT_SINGLE_SPLAT): ISingleSplat {
-        const {
-            splat: { groupTex, groupTransformTex },
-            data,
-        } = this;
-        const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
-        const groupTransformBuffer = groupTransformTex
-            ? (groupTransformTex.getLevelLayerSource(0) as Float32Array)
-            : undefined;
-
-        data.get(index, single);
-        if (groupBuffer && groupTransformBuffer) {
-            const groupIdx = groupBuffer[index];
-            if (groupIdx !== 0) {
-                const offset = groupIdx * 12;
-                tempMat.identity();
-                tempMat.elements.set(groupTransformBuffer.subarray(offset, offset + 12));
-                tempMat.transpose();
-                const scale = new Vector3();
-                const quat = new Quaternion();
-                tempMat.decompose(tempVec, quat, scale);
-                tempVec.set(single.x, single.y, single.z).applyMatrix4(tempMat);
-                single.x = tempVec.x;
-                single.y = tempVec.y;
-                single.z = tempVec.z;
-                tempVec.set(single.sx, single.sy, single.sz).multiply(scale);
-                single.sx = tempVec.x;
-                single.sy = tempVec.y;
-                single.sz = tempVec.z;
-                tempQuat.set(single.qx, single.qy, single.qz, single.qw).premultiply(quat);
-                single.qx = tempQuat.x;
-                single.qy = tempQuat.y;
-                single.qz = tempQuat.z;
-                single.qw = tempQuat.w;
-            }
-        }
-
+        this.data.get(index, single);
         return single;
     }
 
     foreachSplat(callback: (i: number, single: ISingleSplat) => void, single: ISingleSplat = DEFAULT_SINGLE_SPLAT) {
         const {
             counts,
-            splat: { stateTex, groupTex, groupTransformTex },
+            splat: { stateTex },
             data,
         } = this;
         const stateBuffer = stateTex ? (stateTex.getLevelLayerSource(0) as Uint8Array) : undefined;
-        const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
-        const groupTransformBuffer = groupTransformTex
-            ? (groupTransformTex.getLevelLayerSource(0) as Float32Array)
-            : undefined;
-
-        const transforms: Array<{
-            mat: Matrix4;
-            scale: Vector3;
-            quat: Quaternion;
-        }> = [];
         for (let i = 0; i < counts; i++) {
             if (stateBuffer && (stateBuffer[i] & SplatState.Deleted) !== 0) {
                 continue;
             }
             data.get(i, single);
-            if (groupBuffer && groupTransformBuffer) {
-                const groupIdx = groupBuffer[i];
-                if (groupIdx !== 0) {
-                    let transform = transforms[groupIdx];
-                    if (!transform) {
-                        transform = transforms[groupIdx] = {
-                            mat: new Matrix4(),
-                            scale: new Vector3(),
-                            quat: new Quaternion(),
-                        };
-                        const offset = groupIdx * 12;
-                        transform.mat.elements.set(groupTransformBuffer.subarray(offset, offset + 12));
-                        transform.mat.transpose();
-                        transform.mat.decompose(tempVec, transform.quat, transform.scale);
-                    }
-                    tempVec.set(single.x, single.y, single.z).applyMatrix4(transform.mat);
-                    single.x = tempVec.x;
-                    single.y = tempVec.y;
-                    single.z = tempVec.z;
-                    tempVec.set(single.sx, single.sy, single.sz).multiply(transform.scale);
-                    single.sx = tempVec.x;
-                    single.sy = tempVec.y;
-                    single.sz = tempVec.z;
-                    tempQuat.set(single.qx, single.qy, single.qz, single.qw).premultiply(transform.quat);
-                    single.qx = tempQuat.x;
-                    single.qy = tempQuat.y;
-                    single.qz = tempQuat.z;
-                    single.qw = tempQuat.w;
-                }
-            }
             callback(i, single);
         }
     }

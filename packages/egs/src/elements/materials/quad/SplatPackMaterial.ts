@@ -9,7 +9,7 @@ import { WebGLShaderDataType } from '../../../renderer/webgl/WGLConstants.js';
 import { Vector2 } from '../../../math/Vector2.js';
 import { Vector3 } from '../../../math/Vector3.js';
 import { HashKeyBuilder } from '../../../utils/HashKeyBuilder.js';
-import type { Splat, SplatEffectConfig } from '../../../scene/splat/Splat.js';
+import type { Splat } from '../../../scene/splat/Splat.js';
 import { ShaderBlockPool } from '../../../renderer/shader/builders/ShaderBlockPool.js';
 import { Layers } from '../../../scene/tools/Layers.js';
 import { TextureDataType } from '../../../utils/Constants.js';
@@ -53,24 +53,13 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
             .bool(this.outputColorAttachment)
             .raw(splat.PackType)
             .bool(!!splat.stateTex)
-            .bool(!!splat.groupTex)
             .raw('e' + splat.extrasTex.length)
-            .bool(splat.effect.enabled)
-            .bool(splat.effect.pulseEnabled)
-            .bool(splat.effect.ringEnabled)
-            .bool(splat.effect.spreadEnabled)
-            .bool(splat.effect.remyEnabled)
-            .bool(splat.effect.magicEnabled)
-            .bool(splat.effect.overrideEnabled)
+            .raw(splat.modifiers.map(m => m.name).join(','))
             .getKey();
     }
 
     extendShaderShading(builder: ShaderBuilder) {
         const { current: splat, highPrecisionEnabled, outputColorAttachment } = this;
-        const enableState = !!splat.stateTex;
-        const enableGroupTransform = !!splat.groupTex && !!splat.groupTransformTex;
-        const effect = splat.effect;
-
         for (let i = 0; i < splat.extrasTex.length; i++) {
             builder
                 .addUniform(
@@ -83,6 +72,10 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
         }
         for (let i = 0; i < splat.extrasUBO.length; i++) {
             builder.addUBO(splat.extrasUBO[i]);
+        }
+        for (let i = 0; i < splat.modifiers.length; i++) {
+            const modifier = splat.modifiers[i];
+            builder.addUBO(modifier.UBO).addFragmentCustom(modifier.header);
         }
         builder.addDefaultFragColor = false;
         builder
@@ -99,18 +92,11 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
             .addUniform('visible', WebGLShaderDataType.Bool)
             .addUniform('modelMatrix', WebGLShaderDataType.Mat4)
             .addUniform('origin', WebGLShaderDataType.Vec3)
-            .when(enableState, builder =>
+            .when(!!splat.stateTex, builder =>
                 builder
                     .addUniform('stateTex', WebGLShaderDataType.USampler2D)
                     .addUniform('stateTexWidth', WebGLShaderDataType.UInt),
             )
-            .when(enableGroupTransform, builder =>
-                builder
-                    .addUniform('groupTex', WebGLShaderDataType.USampler2D)
-                    .addUniform('groupTexWidth', WebGLShaderDataType.UInt)
-                    .addUniform('groupTransformTex', WebGLShaderDataType.Sampler2D),
-            )
-            .when(effect.enabled, builder => updateShaderBuilder(effect, builder))
             .addFragment(ShaderBlockPool.SplatHeader)
             .addFragmentCustom(`
                 mat3 scaleQuaternionToMatrix(vec3 s, vec4 q) {
@@ -127,6 +113,13 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
                     );
                 }
             `)
+            .when(!!splat.modifiers.length, builder =>
+                builder.addFragmentCustom(`
+                    void modifySplat(uint idx, out Splat splat) {
+                        ${splat.modifiers.map(modify => modify.content).join('\r')}
+                    }
+                `),
+            )
             .addFragmentCustom(splat.createUnpackSplatShader())
             .inject(ShaderInjectionTypes.gl_FragColor, createFragShader(this));
     }
@@ -142,7 +135,7 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
         program.setUniform('visible', splat.netVisibility && this.layer.test(splat.netLayer));
         program.setUniform('modelMatrix', splat.matrixWorld);
 
-        const { extrasTex, extrasUBO, stateTex, groupTex, groupTransformTex, effect } = splat;
+        const { extrasTex, extrasUBO, stateTex, modifiers } = splat;
         for (let i = 0; i < extrasTex.length; i++) {
             program.setTexture2D(`extraTex${i}`, extrasTex[i], true);
             program.setUniform(`extraTex${i}_width`, extrasTex[i].width, true);
@@ -154,20 +147,14 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
             program.setTexture2D('stateTex', stateTex);
             program.setUniform('stateTexWidth', stateTex.width);
         }
-        if (groupTex && groupTransformTex) {
-            program.setTexture2D('groupTex', groupTex);
-            program.setUniform('groupTexWidth', groupTex.width);
-            program.setTexture2D('groupTransformTex', groupTransformTex);
+        for (let i = 0; i < modifiers.length; i++) {
+            modifiers[i].UBO.updateWebGL(program);
         }
-        updateEffectUniform(effect, program);
     }
 }
 
 function createFragShader(material: SplatPackMaterial): string {
     const { current: splat, highPrecisionEnabled, outputColorAttachment } = material;
-    const enableState = !!splat.stateTex;
-    const enableGroupTransform = !!splat.groupTex && !!splat.groupTransformTex;
-    const effect = splat.effect;
     return `
         ivec2 fragCoord = ivec2(gl_FragCoord);
         int splatIndex_i = fragCoord.y * resolution.x + fragCoord.x - offset;
@@ -187,7 +174,7 @@ function createFragShader(material: SplatPackMaterial): string {
         uint splatIndex = uint(splatIndex_i + targetOffset);
         uint state = 1u;
         ${
-            enableState
+            !!splat.stateTex
                 ? `
                     state = texelFetch(stateTex, ivec2(splatIndex % stateTexWidth, splatIndex / stateTexWidth), 0).r;
                     if ((state & 1u) != 0u) {
@@ -207,25 +194,10 @@ function createFragShader(material: SplatPackMaterial): string {
             return;
         }
 
-        mat4 mMatrix = modelMatrix;
-        ${
-            enableGroupTransform
-                ? `
-                    uint paletteIdx = texelFetch(groupTex, ivec2(splatIndex % groupTexWidth, splatIndex / groupTexWidth), 0).r;
-                    mat4 transform;
-                    transform[0] = texelFetch(groupTransformTex, ivec2(0, paletteIdx), 0);
-                    transform[1] = texelFetch(groupTransformTex, ivec2(1, paletteIdx), 0);
-                    transform[2] = texelFetch(groupTransformTex, ivec2(2, paletteIdx), 0);
-                    transform[3] = vec4(0.0, 0.0, 0.0, 1.0);
-                    mMatrix = mMatrix * transpose(transform);
-                `
-                : ''
-        }
+        ${!!splat.modifiers.length ? 'modifySplat(splatIndex, splat);' : ''}
 
-        ${createEffectShader(effect)}
-
-        vec3 center = (mMatrix * vec4(splat.center, 1.0)).xyz - origin;
-        mat3 rs = mat3(mMatrix) * scaleQuaternionToMatrix(splat.scales, splat.quaternion);
+        vec3 center = (modelMatrix * vec4(splat.center, 1.0)).xyz - origin;
+        mat3 rs = mat3(modelMatrix) * scaleQuaternionToMatrix(splat.scales, splat.quaternion);
         mat3 cov = rs * transpose(rs);
 
         pc_fragColor_0 = vec4(center, float(state));
@@ -281,290 +253,3 @@ function createFragShader(material: SplatPackMaterial): string {
         }
     `;
 }
-
-//#region effect
-function updateEffectUniform(effect: SplatEffectConfig, program: WGLProgram) {
-    if (!effect.enabled) {
-        return;
-    }
-    if (effect.pulseEnabled) {
-        program.setUniform('pulseSparseThreshold', effect.pulseSparseThreshold);
-        program.setUniform('pulseJitterPhase', effect.pulseJitterPhase);
-        program.setUniform('pulseJitterAmount', effect.pulseJitterAmount);
-        program.setUniform('pulsePhase', effect.pulsePhase);
-        program.setUniform('pulseAmount', effect.pulseAmount);
-        program.setUniform('pulseSize', effect.pulseSize);
-        program.setUniform('pulseSizeVariance', effect.pulseSizeVariance);
-        program.setUniform('pulseColorBoost', effect.pulseColorBoost);
-    }
-    if (effect.ringEnabled) {
-        program.setUniform('ringInnerRegionVisible', effect.ringInnerRegionVisible);
-        program.setUniform('ringOrigin', effect.ringOrigin);
-        program.setUniform('ringRadius', effect.ringRadius);
-        program.setUniform('ringWidth', effect.ringWidth);
-        program.setUniform('ringColor', effect.ringColor);
-    }
-    if (effect.spreadEnabled) {
-        program.setUniform('spreadRadius', effect.spreadRadius);
-        program.setUniform('spreadOrigin', effect.spreadOrigin);
-        program.setUniform('spreadPreRadius', effect.spreadPreRadius);
-        program.setUniform('spreadPreScale', effect.spreadPreScale);
-        program.setUniform('spreadColorBlendRadius', effect.spreadColorBlendRadius);
-        program.setUniform('spreadColorBlendBase', effect.spreadColorBlendBase);
-    }
-    if (effect.remyEnabled) {
-        program.setUniform('remyOrigin', effect.remyOrigin);
-        program.setUniform('remyPreRadius', effect.remyPreRadius);
-        program.setUniform('remyPreScale', effect.remyPreScale);
-        program.setUniform('remyDenseRadius', effect.remyDenseRadius);
-        program.setUniform('remyDenseScale', effect.remyDenseScale);
-        program.setUniform('remyDenseMinRatio', effect.remyDenseMinRatio);
-        program.setUniform('remyDenseMaxRatio', effect.remyDenseMaxRatio);
-        program.setUniform('remyColorBlendRadius', effect.remyColorBlendRadius);
-        program.setUniform('remyColorBlendBase', effect.remyColorBlendBase);
-        program.setUniform('remyNormalRadius', effect.remyNormalRadius);
-        program.setUniform('remyRingRadius', effect.remyRingRadius);
-        program.setUniform('remyRingWidth', effect.remyRingWidth);
-        program.setUniform('remyRingInnerColor', effect.remyRingInnerColor);
-        program.setUniform('remyRingMidRatios', effect.remyRingMidRatios);
-        program.setUniform('remyRingMidColor', effect.remyRingMidColor);
-        program.setUniform('remyRingOuterColor', effect.remyRingOuterColor);
-    }
-    if (effect.magicEnabled) {
-        program.setUniform('magicOrigin', effect.magicOrigin);
-        program.setUniform('magicInitialSize', effect.magicInitialSize);
-        program.setUniform('magicInitialAlpha', effect.magicInitialAlpha);
-        program.setUniform('magicInitialDensity', effect.magicInitialDensity);
-        program.setUniform('magicExpandRadius', effect.magicExpandRadius);
-        program.setUniform('magicExpandJitterAmount', effect.magicExpandJitterAmount);
-        program.setUniform('magicExpandScale', effect.magicExpandScale);
-        program.setUniform('magicColorBlendRadius', effect.magicColorBlendRadius);
-        program.setUniform('magicColorBlendBase', effect.magicColorBlendBase);
-        program.setUniform('magicRingRadius', effect.magicRingRadius);
-        program.setUniform('magicRingWidth', effect.magicRingWidth);
-        program.setUniform('magicRingColor', effect.magicRingColor);
-        program.setUniform('magicRingJitterAmount', effect.magicRingJitterAmount);
-    }
-    if (effect.overrideEnabled) {
-        program.setUniform('overrideColor', effect.overrideColor);
-    }
-}
-
-function updateShaderBuilder(effect: SplatEffectConfig, builder: ShaderBuilder) {
-    if (effect.pulseEnabled) {
-        builder
-            .addUniform('pulseSparseThreshold', WebGLShaderDataType.Float)
-            .addUniform('pulseJitterPhase', WebGLShaderDataType.Float)
-            .addUniform('pulseJitterAmount', WebGLShaderDataType.Float)
-            .addUniform('pulsePhase', WebGLShaderDataType.Float)
-            .addUniform('pulseAmount', WebGLShaderDataType.Float)
-            .addUniform('pulseSize', WebGLShaderDataType.Float)
-            .addUniform('pulseSizeVariance', WebGLShaderDataType.Float)
-            .addUniform('pulseColorBoost', WebGLShaderDataType.Float)
-            .addFragment(ShaderBlockPool.Hash);
-    }
-    if (effect.ringEnabled) {
-        builder
-            .addUniform('ringEnabled', WebGLShaderDataType.Bool)
-            .addUniform('ringInnerRegionVisible', WebGLShaderDataType.Bool)
-            .addUniform('ringOrigin', WebGLShaderDataType.Vec3)
-            .addUniform('ringRadius', WebGLShaderDataType.Float)
-            .addUniform('ringWidth', WebGLShaderDataType.Float)
-            .addUniform('ringColor', WebGLShaderDataType.Vec3);
-    }
-    if (effect.spreadEnabled) {
-        builder
-            .addUniform('spreadRadius', WebGLShaderDataType.Float)
-            .addUniform('spreadOrigin', WebGLShaderDataType.Vec3)
-            .addUniform('spreadPreRadius', WebGLShaderDataType.Float)
-            .addUniform('spreadPreScale', WebGLShaderDataType.Float)
-            .addUniform('spreadColorBlendRadius', WebGLShaderDataType.Float)
-            .addUniform('spreadColorBlendBase', WebGLShaderDataType.Vec4);
-    }
-    if (effect.remyEnabled) {
-        builder
-            .addFragment(ShaderBlockPool.Hash)
-            .addUniform('remyOrigin', WebGLShaderDataType.Vec3)
-            .addUniform('remyPreRadius', WebGLShaderDataType.Float)
-            .addUniform('remyPreScale', WebGLShaderDataType.Float)
-            .addUniform('remyDenseRadius', WebGLShaderDataType.Float)
-            .addUniform('remyDenseScale', WebGLShaderDataType.Float)
-            .addUniform('remyDenseMinRatio', WebGLShaderDataType.Float)
-            .addUniform('remyDenseMaxRatio', WebGLShaderDataType.Float)
-            .addUniform('remyColorBlendRadius', WebGLShaderDataType.Float)
-            .addUniform('remyColorBlendBase', WebGLShaderDataType.Vec4)
-            .addUniform('remyNormalRadius', WebGLShaderDataType.Float)
-            .addUniform('remyRingRadius', WebGLShaderDataType.Float)
-            .addUniform('remyRingWidth', WebGLShaderDataType.Float)
-            .addUniform('remyRingInnerColor', WebGLShaderDataType.Vec4)
-            .addUniform('remyRingMidRatios', WebGLShaderDataType.Float)
-            .addUniform('remyRingMidColor', WebGLShaderDataType.Vec4)
-            .addUniform('remyRingOuterColor', WebGLShaderDataType.Vec4);
-    }
-    if (effect.magicEnabled) {
-        builder
-            .addFragment(ShaderBlockPool.Hash)
-            .addUniform('magicOrigin', WebGLShaderDataType.Vec3)
-            .addUniform('magicInitialSize', WebGLShaderDataType.Float)
-            .addUniform('magicInitialAlpha', WebGLShaderDataType.Float)
-            .addUniform('magicInitialDensity', WebGLShaderDataType.Float)
-            .addUniform('magicExpandRadius', WebGLShaderDataType.Float)
-            .addUniform('magicExpandJitterAmount', WebGLShaderDataType.Float)
-            .addUniform('magicExpandScale', WebGLShaderDataType.Float)
-            .addUniform('magicColorBlendRadius', WebGLShaderDataType.Float)
-            .addUniform('magicColorBlendBase', WebGLShaderDataType.Vec4)
-            .addUniform('magicRingRadius', WebGLShaderDataType.Float)
-            .addUniform('magicRingWidth', WebGLShaderDataType.Float)
-            .addUniform('magicRingColor', WebGLShaderDataType.Vec4)
-            .addUniform('magicRingJitterAmount', WebGLShaderDataType.Float);
-    }
-    if (effect.overrideEnabled) {
-        builder.addUniform('overrideColor', WebGLShaderDataType.Vec4);
-    }
-
-    return builder;
-}
-
-function createEffectShader(effect: SplatEffectConfig): string {
-    if (!effect.enabled) {
-        return '';
-    }
-
-    return `
-        ${
-            effect.pulseEnabled
-                ? `
-                    float hash_id = hash(float(splatIndex));
-                    if (hash_id < pulseSparseThreshold) {
-                        return;
-                    }
-                    float h = fract(hash_id * 1.318 + hash_id * hash_id * 0.233);
-                    vec3 jitter = sin(vec3(
-                        pulseJitterPhase + h * PI2,
-                        pulseJitterPhase * 1.13 + h * PI,
-                        pulseJitterPhase * 0.87 + h * PI_HALF
-                    )) * pulseJitterAmount;
-                    splat.center += jitter;
-                    float pulse = 1.0 + sin(pulsePhase + h * PI2 * 0.8) * pulseAmount;
-                    float scaleFactor = pulseSize * (1.0 + h * pulseSizeVariance);
-                    splat.scales = vec3(pulse * scaleFactor);
-                    splat.color *= pulseColorBoost;
-                `
-                : ''
-        }
-
-        ${
-            effect.ringEnabled
-                ? `
-                    float distanceToReference = length(splat.center - ringOrigin);
-                    if ((distanceToReference <= ringRadius) != ringInnerRegionVisible) {
-                        return;
-                    }
-                    float distanceFromRing = abs(distanceToReference - ringRadius);
-                    float ringFactor = 1.0 - smoothstep(0.0, ringWidth, distanceFromRing);
-                    vec3 finalColor = mix(splat.color.rgb, ringColor, ringFactor * 0.8);
-                    splat.color.rgb = finalColor;
-                `
-                : ''
-        }
-
-        ${
-            effect.spreadEnabled
-                ? `
-                    float distance = length((splat.center - spreadOrigin).xy);
-                    float t_main = saturate(spreadRadius - distance);
-                    vec3 scale_main = mix(vec3(0.0), splat.scales, t_main);
-                    float t_pre = saturate(spreadPreRadius - distance);
-                    vec3 scale_pre = mix(vec3(0.0), splat.scales * spreadPreScale, t_pre);
-                    splat.scales = max(scale_main, scale_pre);
-                    float t_col = saturate(spreadColorBlendRadius - distance);
-                    splat.color = mix(spreadColorBlendBase, splat.color, t_col);
-                `
-                : ''
-        }
-
-        ${
-            effect.remyEnabled
-                ? `
-                    float hash_id = hash(float(splatIndex));
-                    float distance = length(splat.center - remyOrigin);
-                    vec3 scale = splat.scales;
-                    vec4 color = splat.color;
-
-                    float stage_0_mask = saturate(remyPreRadius - distance);
-                    scale = mix(vec3(0.0), vec3(remyPreScale), stage_0_mask);
-
-                    float stage_1_mask = saturate(remyDenseRadius - distance);
-                    scale += scale * remyDenseScale * stage_1_mask;
-                    scale *= step(hash_id, remyDenseMinRatio + (remyDenseMaxRatio - remyDenseMinRatio) * smoothstep(0., 1., stage_1_mask));
-
-                    float stage_2_mask = saturate(remyColorBlendRadius - distance);
-                    color = mix(color, remyColorBlendBase, stage_2_mask);
-
-                    float stage_3_mask = step(0., remyNormalRadius - distance);
-                    if (stage_3_mask == 1.0) {
-                        scale = splat.scales;
-                        color = splat.color;
-                    }
-
-                    float stage_4_mask = clamp(remyRingRadius - distance, 0.0, remyRingWidth);
-                    float phase = stage_4_mask / remyRingWidth;
-                    vec4 cloudColor;
-                    if (phase < remyRingMidRatios) {
-                        float u = smoothstep(0.0, remyRingMidRatios, phase);
-                        cloudColor = mix(remyRingOuterColor, remyRingMidColor, u);
-                    } else {
-                        float u = smoothstep(remyRingMidRatios, 1.0, phase);
-                        cloudColor = mix(remyRingMidColor, remyRingInnerColor, u);
-                    }
-                    float cloudMask = smoothstep(0.0, 0.4, stage_4_mask) * (1.0 - smoothstep(remyRingWidth - 0.4, remyRingWidth, stage_4_mask));
-                    color += cloudColor * cloudMask;
-
-                    splat.scales = scale;
-                    splat.color = color;
-                `
-                : ''
-        }
-
-        ${
-            effect.magicEnabled
-                ? `
-                    float hash_id = hash(float(splatIndex));
-                    float distance = length(splat.center - magicOrigin);
-                    float distanceXY = length(splat.center.xy - magicOrigin.xy);
-                    vec3 effectCenter = splat.center;
-                    vec3 effectScale = splat.scales;
-                    vec4 effectColor = splat.color;
-
-                    float stage_0_mask = saturate(magicExpandRadius - distance);
-                    vec3 jitter = normalize(vec3(
-                        sin(hash_id * 12.9898),
-                        cos(hash_id * 78.233),
-                        sin(hash_id * 45.164)
-                    )) * magicExpandJitterAmount;
-                    effectCenter -= jitter * (1.0 - saturate(pow(stage_0_mask, 2.0)));
-                    effectScale = mix(vec3(magicInitialSize), vec3(magicInitialSize * magicExpandScale), stage_0_mask) * step(hash_id, magicInitialDensity);
-                    effectColor.a *= magicInitialAlpha;
-
-                    float stage_1_mask = saturate(magicColorBlendRadius - distance);
-                    effectColor = mix(effectColor, magicColorBlendBase, stage_1_mask);
-
-                    float distanceToRing = magicRingRadius - distanceXY;
-                    float ringMask = step(0.0, distanceToRing);
-                    float phase = 1.0 - distanceToRing / magicRingWidth;
-                    float phaseMask = step(0.0, phase);
-                    effectCenter += vec3(0., 0., magicRingJitterAmount) * sin(saturate(phase) * PI) * phaseMask;
-                    effectColor = mix(effectColor, magicRingColor, phaseMask * ringMask);
-
-                    float resetMask = ringMask * (1.0 - phaseMask);
-                    splat.center = mix(effectCenter, splat.center, resetMask);
-                    splat.scales = mix(effectScale, splat.scales, resetMask);
-                    splat.color = mix(effectColor, splat.color, resetMask);
-                `
-                : ''
-        }
-
-        ${effect.overrideEnabled ? `splat.color = overrideColor;` : ''}
-    `;
-}
-//#endregion

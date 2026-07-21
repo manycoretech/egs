@@ -41,12 +41,8 @@ export interface ISplatModifyData {
 }
 
 export function createSplatModifyData(splat: Splat): ISplatModifyData {
-    const { counts, stateTex, groupTex, groupTransformTex } = splat;
+    const { counts, stateTex } = splat;
     const stateBuffer = stateTex ? (stateTex.getLevelLayerSource(0) as Uint8Array) : undefined;
-    const groupBuffer = groupTex ? (groupTex.getLevelLayerSource(0) as Uint16Array) : undefined;
-    const groupTransformBuffer = groupTransformTex
-        ? (groupTransformTex.getLevelLayerSource(0) as Float32Array)
-        : undefined;
 
     const transform = splat.matrixWorld.clone();
     const deletedIndices: number[] = [];
@@ -58,28 +54,7 @@ export function createSplatModifyData(splat: Splat): ISplatModifyData {
             deletedIndices.push(i);
         }
     }
-    const indicesTransforms: ISplatModifyData['indicesTransforms'] = [];
-    if (groupBuffer && groupTransformBuffer) {
-        for (let i = 0; i < counts; i++) {
-            const groupIdx = groupBuffer[i];
-            if (groupIdx === 0) {
-                continue;
-            }
-            let indicesTransform = indicesTransforms[groupIdx];
-            if (!indicesTransform) {
-                const mat = new Matrix4();
-                mat.elements.set(groupTransformBuffer.subarray(groupIdx * 12, (groupIdx + 1) * 12));
-                mat.transpose();
-                indicesTransform = indicesTransforms[groupIdx] = {
-                    indices: [],
-                    transform: mat,
-                };
-            }
-            indicesTransform.indices.push(i);
-        }
-    }
-
-    return { transform, deletedIndices, indicesTransforms };
+    return { transform, deletedIndices, indicesTransforms: [] };
 }
 
 export function createSourceTextureFromSampler(sampler: ISampler): SourceTexture {

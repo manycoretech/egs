@@ -553,8 +553,6 @@ export class SplattingPlugin extends PipelinePlugin {
                             renderer.renderer.setViewportInRenderPass(0, height - yOffset - h, width, h);
                             packQuad.render(renderer);
                             if (splat.autoFreeResourceOnGpuPacked) {
-                                splat.groupTex?.freeGPU();
-                                splat.groupTransformTex?.freeGPU();
                                 splat.stateTex?.freeGPU();
                                 splat.onGpuDataPacked();
                             }

@@ -1,14 +1,18 @@
 # EGS 发布说明 Release Notes
 
-## DEV
+## 1.2.93
 
 1. 新功能
     - `Splatting`支持环渲染模式
     - 新增`highlightKernel.selectedColor`支持高亮
+    - 新增`SplatModifier`用于支持部分自定义渲染能力，允许业务自行实现动画
 2. 修复
     - 修复`SplatReorderMaterial`移动端兼容性异常
 3. 优化
     - 改造为标准的`ESM`
+4. **<font color="red">Breaking Changes</font>**
+    - 删除内置高斯动画相关实现与接口
+    - 移除 subgroup transform 相关能力
 
 ## 1.2.92
 

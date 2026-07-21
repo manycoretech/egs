@@ -180,7 +180,7 @@ export { PopMesh } from './scene/drawables/PopMesh.js';
 export { Sprite } from './scene/drawables/Sprite.js';
 export { SkinnedMesh } from './scene/drawables/SkinnedMesh.js';
 export { Splat, SplatState, SplatRenderingStabilityChangedEvent, SplatSortedEvent } from './scene/splat/Splat.js';
-export type { SplatEffectConfig } from './scene/splat/Splat.js';
+export { SplatModifier } from './scene/splat/SplatModifier.js';
 
 export { InstanceMesh } from './scene/drawables/InstanceMesh.js';
 export { FatLineSegments } from './scene/drawables/FatLineSegments.js';

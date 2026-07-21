@@ -463,14 +463,6 @@ vec3 applyQuat(in vec4 q, in vec3 v) {
             return intBitsToFloat(int(x * 12102203.0) + 1064866808);
         }
     `),
-    Hash: createShaderBlock(`
-        float hash(float n) {
-            return fract(sin(n) * 43758.5453123);
-        }
-        float hash(vec3 n) {
-            return fract(sin(dot(n, vec3(12.9898, 78.233, 45.164))) * 43758.5453);
-        }
-    `),
     SplatHeader: createShaderBlock(`
         const float MIN_ALPHA = 1.0 / 255.0;
         const float INV_255 = 1.0 / 255.0;
