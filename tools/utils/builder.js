@@ -6,16 +6,16 @@ import { $ } from './process.js';
 import { rollup } from './dts-rollup.js';
 import { applyCatalogs, resolveCatalogs } from './catalogs.js';
 
-const workspaceRoot =
-    $('git rev-parse --show-superproject-working-tree', undefined, false).trimEnd('\n') ||
-    resolve(import.meta.dirname, '../../');
+const workspace =
+    $('git rev-parse --show-superproject-working-tree', undefined, false).trim() ||
+    resolve($('pnpm root -w', undefined, false).trim(), '../');
 
 export function build(cp, release, typeOnly) {
     if (existsSync('./build')) {
         rmSync('./build', { recursive: true });
     }
 
-    const catalogs = resolveCatalogs(workspaceRoot);
+    const catalogs = resolveCatalogs(workspace);
 
     $(`pnpm tsc -b ${typeOnly ? '--emitDeclarationOnly' : ''}`);
 
@@ -47,8 +47,8 @@ export function build(cp, release, typeOnly) {
             process.cwd(),
             typeOnlyExports
                 ? {
-                      typeOnlyExports,
-                  }
+                    typeOnlyExports,
+                }
                 : undefined,
         );
     }
