@@ -25,7 +25,7 @@
     "@qunhe/egs-lib": "^1.0.3"
   },
   "devDependencies": {
-    "typescript": "^6.0.3"
+    "typescript": "catalog:"
   },
   "release": {
     "scripts": {

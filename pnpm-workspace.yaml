@@ -4,6 +4,9 @@ packages:
   - 'packages/utils/*'
   - 'tools/*'
 
+catalog:
+  'typescript': '^6.0.3'
+
 overrides:
   '@qunhe/egs-typings': 'workspace:*'
   '@qunhe/egs-lib': 'workspace:*'
@@ -16,5 +19,4 @@ overrides:
   '@internal/cli': 'workspace:*'
   '@internal/utils': 'workspace:*'
   '@types/node': '^22.20.0'
-  'typescript': '^6.0.3'
   'tslib': '^2.8.1'

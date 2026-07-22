@@ -27,8 +27,8 @@
     "tslib": "^2.8.1"
   },
   "devDependencies": {
-    "@qunhe/egs-typings": "0.0.1",
-    "typescript": "^6.0.3"
+    "@qunhe/egs-typings": "workspace:*",
+    "typescript": "catalog:"
   },
   "release": {
     "scripts": {
