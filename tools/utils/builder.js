@@ -47,8 +47,8 @@ export function build(cp, release, typeOnly) {
             process.cwd(),
             typeOnlyExports
                 ? {
-                    typeOnlyExports,
-                }
+                      typeOnlyExports,
+                  }
                 : undefined,
         );
     }
