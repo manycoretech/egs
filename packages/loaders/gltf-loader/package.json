@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@qunhe/egs": "^1.1.228",
-    "tslib": "^2.8.1"
+    "tslib": "catalog:"
   },
   "devDependencies": {
     "typescript": "catalog:"

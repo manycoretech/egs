@@ -27,7 +27,7 @@
     "build:types:release": "pnpm build --release --type-only"
   },
   "dependencies": {
-    "tslib": "^2.8.1"
+    "tslib": "catalog:"
   },
   "devDependencies": {
     "typescript": "catalog:"
