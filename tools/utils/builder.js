@@ -4,51 +4,18 @@ import chalk from 'chalk';
 import { sync } from 'glob';
 import { $ } from './process.js';
 import { rollup } from './dts-rollup.js';
+import { applyCatalogs, resolveCatalogs } from './catalogs.js';
 
 const workspaceRoot =
     $('git rev-parse --show-superproject-working-tree', undefined, false).trimEnd('\n') ||
     resolve(import.meta.dirname, '../../');
-
-const publishDependencyFields = ['dependencies', 'peerDependencies', 'optionalDependencies'];
-
-function resolveCatalogs() {
-    const data = {};
-    const result = {};
-    let r = $('pnpm config get catalogs --location=project --json', workspaceRoot, false);
-    if (r) {
-        Object.assign(data, JSON.parse(r));
-    } else {
-        r = $('pnpm config get catalog --location=project --json', workspaceRoot, false);
-        if (r) {
-            Object.assign(data, JSON.parse(r));
-        }
-    }
-
-    for (const key of Object.keys(data)) {
-        if (typeof data[key] === 'string') {
-            if (!result[key]) {
-                result[key] = {};
-            }
-            result[key]['default'] = data[key];
-        } else {
-            const versions = data[key];
-            for (const p of Object.keys(versions)) {
-                if (!result[p]) {
-                    result[p] = {};
-                }
-                result[p][`${key}`] = versions[p];
-            }
-        }
-    }
-    return result;
-}
 
 export function build(cp, release, typeOnly) {
     if (existsSync('./build')) {
         rmSync('./build', { recursive: true });
     }
 
-    const catalogs = resolveCatalogs();
+    const catalogs = resolveCatalogs(workspaceRoot);
 
     $(`pnpm tsc -b ${typeOnly ? '--emitDeclarationOnly' : ''}`);
 
@@ -70,18 +37,7 @@ export function build(cp, release, typeOnly) {
     delete packageJson.scripts;
     delete packageJson.release;
 
-    // resolve catalog
-    for (const field of publishDependencyFields) {
-        const dependencies = packageJson[field];
-        if (dependencies) {
-            for (const p of Object.keys(dependencies)) {
-                if (dependencies[p].startsWith('catalog:')) {
-                    const version = dependencies[p].slice('catalog:'.length) || 'default';
-                    dependencies[p] = catalogs[p][version];
-                }
-            }
-        }
-    }
+    applyCatalogs(packageJson, ['dependencies', 'peerDependencies', 'optionalDependencies'], catalogs);
 
     writeFileSync(relative('.', resolve('./build', './package.json')), JSON.stringify(packageJson, undefined, 2));
     console.log(chalk.bold.green('[build]: package.json for publish written.'));
