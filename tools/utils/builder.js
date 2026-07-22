@@ -12,7 +12,7 @@ export function build(cp, release, typeOnly) {
 
     $(`pnpm tsc -b ${typeOnly ? '--emitDeclarationOnly' : ''}`);
 
-    const movePatterns = ['./package.json', './README.md', './CHANGELOG.md', './LICENSE', ...(cp ?? [])];
+    const movePatterns = ['./README.md', './CHANGELOG.md', './LICENSE', ...(cp ?? [])];
     for (let i = 0; i < movePatterns.length; i++) {
         const files = sync(movePatterns[i]);
         files.forEach(item => {
@@ -25,21 +25,20 @@ export function build(cp, release, typeOnly) {
     console.log(chalk.bold.green('[build]: copy file finished.'));
     const packageJson = JSON.parse(readFileSync('./package.json', 'utf-8'));
     const typeOnlyExports = packageJson.typeOnlyExports;
-    const distPackageJsonPath = relative('.', resolve('./build', './package.json'));
     delete packageJson.typeOnlyExports;
     delete packageJson.devDependencies;
     delete packageJson.scripts;
     delete packageJson.release;
-    writeFileSync(distPackageJsonPath, JSON.stringify(packageJson, undefined, 2));
-    console.log(chalk.bold.green('[build]: package.json prepared.'));
+    writeFileSync(relative('.', resolve('./build', './package.json')), JSON.stringify(packageJson, undefined, 2));
+    console.log(chalk.bold.green('[build]: package.json for publish written.'));
 
     if (release) {
         rollup(
             process.cwd(),
             typeOnlyExports
                 ? {
-                    typeOnlyExports,
-                }
+                      typeOnlyExports,
+                  }
                 : undefined,
         );
     }
