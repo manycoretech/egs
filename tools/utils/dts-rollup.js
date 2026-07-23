@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { createRequire, findPackageJSON } from 'node:module';
+import { findPackageJSON } from 'node:module';
 import chalk from 'chalk';
 import { sync } from 'glob';
 import ts from 'typescript';
@@ -561,7 +561,6 @@ export function rollup(projectDir, options) {
     configObject.bundledPackages = bundledPackageInfos.map(packageInfo => packageInfo.name);
     const packageJsonFullPath = path.resolve(projectDir, 'package.json');
     const tsconfigFilePath = prepareApiExtractorTsconfig(projectDir, bundledPackageInfos);
-    const projectRequire = createRequire(path.join(projectDir, 'package.json'));
     configObject.compiler.tsconfigFilePath = tsconfigFilePath;
     const extractorConfig = ExtractorConfig.prepare({
         configObject,
@@ -570,7 +569,7 @@ export function rollup(projectDir, options) {
     });
     const extractorResult = Extractor.invoke(extractorConfig, {
         showVerboseMessages: false,
-        typescriptCompilerFolder: path.dirname(projectRequire.resolve('typescript/package.json')),
+        typescriptCompilerFolder: fs.realpathSync(path.dirname(findPackageJSON('typescript', import.meta.url))),
     });
     if (!extractorResult.succeeded) {
         throw new Error(
