@@ -120,7 +120,7 @@ export class PanoSelectionMaterial<T extends TextureCube | TextureV2 = TextureCu
     }
 
     clone() {
-        return new PanoSelectionMaterial().copy(this);
+        return new PanoSelectionMaterial<T>().copy(this);
     }
 
     copy(other: PanoSelectionMaterial<T>) {
