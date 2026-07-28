@@ -1,0 +1,34 @@
+{
+  "name": "@qunhe/egs-xr",
+  "version": "1.0.0",
+  "description": "egs WebXR plugin",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "types": "./index.d.ts"
+    }
+  },
+  "license": "MIT",
+  "repository": "git@gitlab.qunhequnhe.com:egs/egs-main.git",
+  "release": {
+    "scripts": {
+      "pre-release": "pnpm build:release"
+    },
+    "publishRoot": "./build"
+  },
+  "scripts": {
+    "build": "pnpm egs-build",
+    "build:release": "pnpm build --release"
+  },
+  "dependencies": {
+    "@qunhe/egs": "^1.2.88",
+    "tslib": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:"
+  }
+}
