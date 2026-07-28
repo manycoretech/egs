@@ -1,4 +1,4 @@
-import { type Deferred, deferred, sleep } from '@qunhe/egs-lib';
+import { type Deferred, deferred } from '@qunhe/egs-lib';
 import {
     Box3,
     Vector3,
@@ -50,16 +50,13 @@ export interface LodConfig {
     minLevel: number;
     maxBudget: number;
     backgroundPenalty: number;
-    outsidePenalty: number;
-    behindPenalty: number;
-    behindTolerance: number;
-    behindDistanceTolerance: number;
     distanceStep: DistanceStep[];
     hysteresisTicks: number;
     schedulerParallelCounts: number;
     schedulerExistingTaskLimit: number;
     schedulerMinDuration: number;
     mergeNodeEnabled: boolean;
+    frustumCullingEnabled: boolean;
     debuggerEnabled: boolean;
 }
 
@@ -69,6 +66,7 @@ const LOD_LEVEL_COLORS = [
     new Vector4(0.0, 1.0, 0.4, 1),
     new Vector4(0.0, 0.8, 1.0, 1),
     new Vector4(0.0, 0.4, 1.0, 1),
+    new Vector4(0.0, 0.0, 1.0, 1),
 ];
 
 const OverrideModifier = new SplatModifier(
@@ -82,10 +80,7 @@ const OverrideModifier = new SplatModifier(
 );
 
 const DEFAULT_NODE_WEIGHT = 2;
-const DEFAULT_DISTANCE_STEP: DistanceStep[] = [
-    { distance: 5, step: 3 },
-    { distance: 10, step: 2 },
-];
+const DEFAULT_DISTANCE_STEP: DistanceStep[] = [{ distance: 10, step: 2 }];
 
 function DefaultLoadResource(url: string) {
     const type = detectSplatFileType(url, new Uint8Array());
@@ -122,21 +117,17 @@ export class LodSplat {
     private maxLevel: number;
     private maxBudget: number;
     private backgroundPenalty: number;
-    private outsidePenalty: number;
-    private behindPenalty: number;
-    private behindTolerance: number;
-    private behindDistanceTolerance: number;
     private distanceStep: DistanceStep[];
     private hysteresisTicks: number;
     private schedulerParallelCounts: number;
     private schedulerExistingTaskLimit: number;
     private schedulerMinDuration: number;
     private mergeNodeEnabled: boolean;
+    private frustumCullingEnabled: boolean;
     private debuggerEnabled: boolean;
 
     private viewerCtx?: IViewerContext;
     private resourceManager: ResourceManager;
-    private lessUsedBudget: number;
     private forwardBox: Box3;
     private nodes: LodNode[];
     private proxies: LodProxy[] = [];
@@ -154,24 +145,22 @@ export class LodSplat {
         this.maxLevel = meta.levels - 1;
         this.maxBudget = config?.maxBudget ?? 3_000_000;
         this.backgroundPenalty = config?.backgroundPenalty ?? 0.5;
-        this.outsidePenalty = config?.outsidePenalty ?? 0.4;
-        this.behindPenalty = config?.behindPenalty ?? 0.1;
-        this.behindTolerance = config?.behindTolerance ?? -0.2;
-        this.behindDistanceTolerance = config?.behindDistanceTolerance ?? 2;
         this.distanceStep = config?.distanceStep ?? DEFAULT_DISTANCE_STEP;
         this.hysteresisTicks = config?.hysteresisTicks ?? 4;
         this.schedulerParallelCounts = config?.schedulerParallelCounts ?? 4;
         this.schedulerExistingTaskLimit = config?.schedulerExistingTaskLimit ?? 64;
         this.schedulerMinDuration = config?.schedulerMinDuration ?? 160;
         this.mergeNodeEnabled = config?.mergeNodeEnabled ?? true;
+        this.frustumCullingEnabled = config?.frustumCullingEnabled ?? true;
         this.debuggerEnabled = config?.debuggerEnabled ?? false;
 
         this.viewerCtx = viewerCtx;
         this.resourceManager = new ResourceManager(meta.files, meta.permanentFiles, loadResource);
-
-        const { maxLevel, backgroundPenalty } = this;
-        const { forwardBox, tree } = meta;
-        const nodes = (this.nodes = tree.map(({ bound, lods }) => ({
+        this.forwardBox = new Box3(
+            new Vector3(meta.forwardBox.min[0], meta.forwardBox.min[1], meta.forwardBox.min[2]),
+            new Vector3(meta.forwardBox.max[0], meta.forwardBox.max[1], meta.forwardBox.max[2]),
+        );
+        this.nodes = meta.tree.map(({ bound, lods }) => ({
             box: new Box3(
                 new Vector3(bound.min[0], bound.min[1], bound.min[2]),
                 new Vector3(bound.max[0], bound.max[1], bound.max[2]),
@@ -180,23 +169,19 @@ export class LodSplat {
             weight: DEFAULT_NODE_WEIGHT,
             currentLevel: -1,
             targetWeight: 0,
-            targetLevel: maxLevel,
+            targetLevel: -1,
             unstableTicks: 0,
-        })));
+        }));
 
-        const box = (this.forwardBox = new Box3(
-            new Vector3(forwardBox.min[0], forwardBox.min[1], forwardBox.min[2]),
-            new Vector3(forwardBox.max[0], forwardBox.max[1], forwardBox.max[2]),
-        ));
-        let lessBudget = 0;
-        for (let i = 0; i < nodes.length; i++) {
-            const node = nodes[i];
-            if (!box.intersectsBox(node.box)) {
-                node.weight *= backgroundPenalty;
+        {
+            const { backgroundPenalty, forwardBox, nodes } = this;
+            for (let i = 0; i < nodes.length; i++) {
+                const node = nodes[i];
+                if (!forwardBox.intersectsBox(node.box)) {
+                    node.weight *= backgroundPenalty;
+                }
             }
-            lessBudget += node.lods[maxLevel].counts;
         }
-        this.lessUsedBudget = lessBudget;
     }
 
     setConfig(config: Partial<LodConfig>) {
@@ -215,33 +200,41 @@ export class LodSplat {
                 this.backgroundPenalty = backgroundPenalty;
             }
         }
-        this.outsidePenalty = config?.outsidePenalty ?? this.outsidePenalty;
-        this.behindPenalty = config?.behindPenalty ?? this.behindPenalty;
-        this.behindTolerance = config?.behindTolerance ?? this.behindTolerance;
-        this.behindDistanceTolerance = config?.behindDistanceTolerance ?? this.behindDistanceTolerance;
         this.distanceStep = config?.distanceStep ?? this.distanceStep;
         this.hysteresisTicks = config?.hysteresisTicks ?? this.hysteresisTicks;
         this.schedulerParallelCounts = config?.schedulerParallelCounts ?? this.schedulerParallelCounts;
         this.schedulerExistingTaskLimit = config?.schedulerExistingTaskLimit ?? this.schedulerExistingTaskLimit;
         this.schedulerMinDuration = config?.schedulerMinDuration ?? this.schedulerMinDuration;
         this.mergeNodeEnabled = config?.mergeNodeEnabled ?? this.mergeNodeEnabled;
-        {
-            const { nodes, proxies } = this;
-            const debuggerEnabled = config?.debuggerEnabled ?? this.debuggerEnabled;
-            if (debuggerEnabled !== this.debuggerEnabled) {
-                proxies.forEach(proxy => {
-                    const modifiers = debuggerEnabled
-                        ? [OverrideModifier.copy({ color: LOD_LEVEL_COLORS[nodes[proxy.nodeStart].currentLevel] })]
-                        : [];
-                    proxy.splat.setModifiers(modifiers);
-                });
-                this.debuggerEnabled = debuggerEnabled;
-            }
+        this.frustumCullingEnabled = config?.frustumCullingEnabled ?? this.frustumCullingEnabled;
+        const debuggerEnabled = config?.debuggerEnabled ?? this.debuggerEnabled;
+        if (debuggerEnabled !== this.debuggerEnabled) {
+            this.debuggerEnabled = debuggerEnabled;
+            this.updateModifiers();
         }
     }
 
-    private flush = async () => {
+    private modifiers: SplatModifier[] = [];
+    setModifiers(modifiers: SplatModifier[]) {
+        this.modifiers = [...modifiers];
+        this.updateModifiers();
+    }
+
+    private updateModifiers() {
+        const { nodes, proxies, debuggerEnabled } = this;
+        proxies.forEach(proxy => {
+            proxy.splat.setModifiers([
+                ...this.modifiers,
+                ...(debuggerEnabled
+                    ? [OverrideModifier.copy({ color: LOD_LEVEL_COLORS[nodes[proxy.nodeStart].currentLevel] })]
+                    : []),
+            ]);
+        });
+    }
+
+    private flush = async (isScheduleFrame: boolean) => {
         const {
+            maxLevel,
             maxBudget,
             hysteresisTicks,
             schedulerParallelCounts,
@@ -253,6 +246,7 @@ export class LodSplat {
             viewerCtx,
             nodes,
             proxies,
+            modifiers,
             realUsedBudget,
         } = this;
 
@@ -262,7 +256,19 @@ export class LodSplat {
         let prevProxy: LodProxy | undefined;
         for (let i = 0; i < nodes.length; i++) {
             const node = nodes[i];
-            const { currentLevel, targetLevel, lods } = node;
+            const { currentLevel, lods } = node;
+            let { targetLevel } = node;
+            if (targetLevel < 0) {
+                targetLevels[i] = targetLevel;
+                continue;
+            }
+
+            const isCached = resourceManager.has(lods[targetLevel].resourceIdx);
+            if (isScheduleFrame) {
+                targetLevel = currentLevel >= 0 || isCached ? targetLevel : maxLevel;
+            } else {
+                targetLevel = currentLevel >= 0 ? currentLevel : isCached ? targetLevel : maxLevel;
+            }
             targetLevels[i] = targetLevel;
             const lod = lods[targetLevel];
             const currentLod = currentLevel >= 0 ? lods[currentLevel] : undefined;
@@ -270,7 +276,8 @@ export class LodSplat {
                 currentLod &&
                 currentLod.resourceIdx === lod.resourceIdx &&
                 currentLod.offset === lod.offset &&
-                currentLod.counts === lod.counts
+                currentLod.counts === lod.counts &&
+                currentLevel !== targetLevel
             ) {
                 node.currentLevel = targetLevel;
                 node.unstableTicks = 0;
@@ -305,7 +312,7 @@ export class LodSplat {
             budgetDelta: number;
             cachedCount: number;
             loadingCount: number;
-            isUnloaded: boolean;
+            isVisibilityChange: boolean;
             isReady: boolean;
             isUsed: boolean;
         };
@@ -319,12 +326,13 @@ export class LodSplat {
             let hasChange = false;
             for (let i = component.nodeStart; i <= component.nodeEnd; i++) {
                 const node = nodes[i];
+                const targetLevel = targetLevels[i];
                 component.weight = Math.max(component.weight, node.targetWeight);
                 component.isReady ||=
                     node.currentLevel < 0 ||
-                    (node.currentLevel !== node.targetLevel && node.unstableTicks >= hysteresisTicks);
-                component.isUnloaded ||= node.currentLevel < 0;
-                if (node.currentLevel < 0 || node.currentLevel !== node.targetLevel) {
+                    (node.currentLevel !== targetLevel && node.unstableTicks >= hysteresisTicks);
+                component.isVisibilityChange ||= node.currentLevel < 0 || targetLevel < 0;
+                if (node.currentLevel !== targetLevel) {
                     hasChange = true;
                 }
             }
@@ -350,9 +358,9 @@ export class LodSplat {
                     budgetDelta: 0,
                     cachedCount: 0,
                     loadingCount: 0,
+                    isVisibilityChange: false,
                     isReady: false,
                     isUsed: false,
-                    isUnloaded: false,
                 };
             } else if (proxy.nodeEnd > component.nodeEnd) {
                 component.nodeEnd = proxy.nodeEnd;
@@ -406,10 +414,10 @@ export class LodSplat {
         let restBudget = maxBudget - realUsedBudget;
         let cachedNodes = 0;
         let loadingNodes = 0;
-        // unload node
+        // visibility change component
         for (let i = 0; i < components.length; i++) {
             const component = components[i];
-            if (!component.isUnloaded) {
+            if (!component.isVisibilityChange) {
                 continue;
             }
             component.isUsed = true;
@@ -417,81 +425,83 @@ export class LodSplat {
             restBudget -= component.budgetDelta;
             cachedNodes += component.newList.length;
         }
-        // ready & cached & downsample component. prerelease budget
-        for (let i = 0; i < components.length; i++) {
-            const component = components[i];
-            if (!component.isReady || !!component.loadingCount || component.budgetDelta > 0) {
-                continue;
-            }
-            component.isUsed = true;
-            applyComponents.push(component);
-            restBudget -= component.budgetDelta;
-            cachedNodes += component.newList.length;
-            if (cachedNodes > schedulerExistingTaskLimit) {
-                break;
-            }
-        }
-        // ready component
-        while (true) {
-            if (cachedNodes >= schedulerExistingTaskLimit && loadingNodes >= schedulerParallelCounts) {
-                break;
-            }
-            let pick: DiffComponent | undefined;
+        if (isScheduleFrame) {
+            // ready & cached & downsample component. prerelease budget
             for (let i = 0; i < components.length; i++) {
                 const component = components[i];
-                if (
-                    component.isUsed ||
-                    !component.isReady ||
-                    component.budgetDelta > restBudget ||
-                    (!!component.cachedCount && cachedNodes >= schedulerExistingTaskLimit) ||
-                    (!!component.loadingCount && loadingNodes >= schedulerParallelCounts)
-                ) {
+                if (component.isUsed || !component.isReady || !!component.loadingCount || component.budgetDelta > 0) {
                     continue;
                 }
-                pick = component;
-                break;
-            }
-            if (!pick) {
-                break;
-            }
-
-            pick.isUsed = true;
-            applyComponents.push(pick);
-            restBudget -= pick.budgetDelta;
-            cachedNodes += pick.cachedCount;
-            loadingNodes += pick.loadingCount;
-        }
-        // not ready component
-        const hasApplyComponents = !!applyComponents.length;
-        while (true) {
-            if (cachedNodes >= schedulerExistingTaskLimit && loadingNodes >= schedulerParallelCounts) {
-                break;
-            }
-
-            let pick: DiffComponent | undefined;
-            for (let i = 0; i < components.length; i++) {
-                const component = components[i];
-                if (
-                    component.isUsed ||
-                    restBudget < 0 ||
-                    (hasApplyComponents && !!component.loadingCount) ||
-                    (!!component.cachedCount && cachedNodes >= schedulerExistingTaskLimit) ||
-                    (!!component.loadingCount && loadingNodes >= schedulerParallelCounts)
-                ) {
-                    continue;
+                component.isUsed = true;
+                applyComponents.push(component);
+                restBudget -= component.budgetDelta;
+                cachedNodes += component.newList.length;
+                if (cachedNodes > schedulerExistingTaskLimit) {
+                    break;
                 }
-                pick = component;
-                break;
             }
-            if (!pick) {
-                break;
-            }
+            // ready component
+            while (true) {
+                if (cachedNodes >= schedulerExistingTaskLimit && loadingNodes >= schedulerParallelCounts) {
+                    break;
+                }
+                let pick: DiffComponent | undefined;
+                for (let i = 0; i < components.length; i++) {
+                    const component = components[i];
+                    if (
+                        component.isUsed ||
+                        !component.isReady ||
+                        (component.budgetDelta > 0 && component.budgetDelta > restBudget) ||
+                        (!!component.cachedCount && cachedNodes >= schedulerExistingTaskLimit) ||
+                        (!!component.loadingCount && loadingNodes >= schedulerParallelCounts)
+                    ) {
+                        continue;
+                    }
+                    pick = component;
+                    break;
+                }
+                if (!pick) {
+                    break;
+                }
 
-            pick.isUsed = true;
-            applyComponents.push(pick);
-            restBudget -= pick.budgetDelta;
-            cachedNodes += pick.cachedCount;
-            loadingNodes += pick.loadingCount;
+                pick.isUsed = true;
+                applyComponents.push(pick);
+                restBudget -= pick.budgetDelta;
+                cachedNodes += pick.cachedCount;
+                loadingNodes += pick.loadingCount;
+            }
+            // not ready component
+            const hasApplyComponents = !!applyComponents.length;
+            while (true) {
+                if (cachedNodes >= schedulerExistingTaskLimit && loadingNodes >= schedulerParallelCounts) {
+                    break;
+                }
+
+                let pick: DiffComponent | undefined;
+                for (let i = 0; i < components.length; i++) {
+                    const component = components[i];
+                    if (
+                        component.isUsed ||
+                        restBudget < 0 ||
+                        (hasApplyComponents && !!component.loadingCount) ||
+                        (!!component.cachedCount && cachedNodes >= schedulerExistingTaskLimit) ||
+                        (!!component.loadingCount && loadingNodes >= schedulerParallelCounts)
+                    ) {
+                        continue;
+                    }
+                    pick = component;
+                    break;
+                }
+                if (!pick) {
+                    break;
+                }
+
+                pick.isUsed = true;
+                applyComponents.push(pick);
+                restBudget -= pick.budgetDelta;
+                cachedNodes += pick.cachedCount;
+                loadingNodes += pick.loadingCount;
+            }
         }
 
         // modify container
@@ -529,13 +539,12 @@ export class LodSplat {
         for (let i = 0; i < loadedProxies.length; i++) {
             const { splat, nodeStart } = loadedProxies[i];
             const { promise, resolve } = deferred();
-            if (debuggerEnabled) {
-                splat.setModifiers([
-                    OverrideModifier.copy({
-                        color: LOD_LEVEL_COLORS[targetLevels[nodeStart]],
-                    }),
-                ]);
-            }
+            splat.setModifiers([
+                ...modifiers,
+                ...(debuggerEnabled
+                    ? [OverrideModifier.copy({ color: LOD_LEVEL_COLORS[targetLevels[nodeStart]] })]
+                    : []),
+            ]);
             splat.once(SplatSortedEvent, resolve);
             container.add(splat);
             sortPromises.push(promise);
@@ -550,6 +559,11 @@ export class LodSplat {
             }
             container.remove(proxy.splat);
             resourceManager.release(proxy.resourceIdx);
+            for (let i = proxy.nodeStart; i <= proxy.nodeEnd; i++) {
+                if (targetLevels[i] < 0) {
+                    nodes[i].currentLevel = targetLevels[i];
+                }
+            }
         }
         for (let i = 0; i < loadedProxies.length; i++) {
             const proxy = loadedProxies[i];
@@ -566,88 +580,56 @@ export class LodSplat {
     };
 
     tick(camera: Camera) {
-        const {
-            nodes,
-            minLevel,
-            maxLevel,
-            maxBudget,
-            lessUsedBudget,
-            outsidePenalty,
-            behindPenalty,
-            behindTolerance,
-            behindDistanceTolerance,
-            distanceStep,
-        } = this;
+        const { nodes, minLevel, maxLevel, maxBudget, distanceStep, frustumCullingEnabled } = this;
         camera.updateMatrixWorld();
 
-        const { position: cameraPos, quaternion: cameraQuat } = camera;
+        const { position: cameraPos } = camera;
         const frustum = new Frustum().setFromMatrix(
             new Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse),
         );
-        const cameraDir = new Vector3(0, 0, -1).applyQuaternion(cameraQuat);
-        const nodeWeights = nodes
+        const weightNodes = nodes
             .map((node, idx) => {
                 const closestPoint = node.box.clampPoint(cameraPos, tempVec3);
                 const insideBox = node.box.containsPoint(cameraPos);
                 const dist = insideBox ? 0 : cameraPos.distanceTo(closestPoint);
-                const dirDot = cameraDir.dot(closestPoint.sub(cameraPos).normalize());
                 const isInside = frustum.intersectsBox(node.box);
-                const isBehind = !insideBox && dirDot < behindTolerance && dist > behindDistanceTolerance;
-                const weight =
-                    (node.weight / (1 + 0.1 * dist * dist)) *
-                    (isInside ? 1 : outsidePenalty * (isBehind ? behindPenalty : 1));
-                return { idx, node, weight, isInside, isBehind, dist };
+                const weight = node.weight / (1 + 0.1 * dist * dist);
+                return { idx, node, weight, isInside, dist };
             })
             .sort((a, b) => b.weight - a.weight);
+
         const steppedNodes: Array<
             DistanceStep & {
-                nodes: typeof nodeWeights;
+                nodes: typeof weightNodes;
             }
-        > = distanceStep.map(e => ({
-            ...e,
-            nodes: [],
-        }));
-        // step 1 fallback slice.
-        steppedNodes.push({
-            distance: Infinity,
-            step: 1,
-            nodes: [],
-        });
-        let stepIndex = 0;
-        // split inside nodes by distance according to the weight order.
-        for (const node of nodeWeights) {
-            // not inside, always use step 1.
+        > = [...distanceStep, { distance: Infinity, step: 1 }].map(e => ({ ...e, nodes: [] }));
+        let lessUsedBudget = 0;
+        for (const node of weightNodes) {
             if (!node.isInside) {
-                steppedNodes[steppedNodes.length - 1].nodes.push(node);
+                if (!frustumCullingEnabled) {
+                    lessUsedBudget += node.node.lods[maxLevel].counts;
+                }
                 continue;
             }
-            if (node.dist <= steppedNodes[stepIndex].distance) {
-                steppedNodes[stepIndex].nodes.push(node);
-            } else {
-                stepIndex++;
-                steppedNodes[stepIndex].nodes.push(node);
-            }
-        }
-        const levels = new Uint8Array(nodes.length).fill(maxLevel);
-        let insideOnly: boolean = true;
-        let restBudget = maxBudget - lessUsedBudget;
-
-        while (restBudget > 0) {
-            const prev = restBudget;
             for (const stepped of steppedNodes) {
-                for (let step = 0; step < stepped.step; step++) {
-                    for (const node of stepped.nodes) {
-                        const {
-                            idx,
-                            node: { lods },
-                            isInside,
-                        } = node;
-                        if (insideOnly && !isInside) {
-                            continue;
-                        }
+                if (node.dist <= stepped.distance) {
+                    stepped.nodes.push(node);
+                    break;
+                }
+            }
+            lessUsedBudget += node.node.lods[maxLevel].counts;
+        }
+
+        const levels = new Uint8Array(nodes.length).fill(maxLevel);
+        let restBudget = maxBudget - lessUsedBudget;
+        while (restBudget > 0) {
+            const prevBudget = restBudget;
+            for (const { step, nodes } of steppedNodes) {
+                for (let i = 0; i < step; i++) {
+                    for (const { idx, node } of nodes) {
                         const level = levels[idx];
                         if (level > minLevel) {
-                            restBudget -= lods[level - 1].counts - lods[level].counts;
+                            restBudget -= node.lods[level - 1].counts - node.lods[level].counts;
                             levels[idx] = level - 1;
                         }
                         if (restBudget <= 0) {
@@ -662,16 +644,13 @@ export class LodSplat {
                     break;
                 }
             }
-            if (prev === restBudget) {
-                if (!insideOnly) {
-                    break;
-                }
-                insideOnly = false;
+            if (prevBudget === restBudget) {
+                break;
             }
         }
 
-        for (let i = 0; i < nodeWeights.length; i++) {
-            const { idx, node, weight } = nodeWeights[i];
+        for (let i = 0; i < weightNodes.length; i++) {
+            const { idx, node, weight, isInside } = weightNodes[i];
             const level = levels[idx];
             if (
                 (node.targetLevel >= node.currentLevel && level > node.currentLevel) ||
@@ -682,7 +661,7 @@ export class LodSplat {
                 node.unstableTicks = 0;
             }
             node.targetWeight = weight;
-            node.targetLevel = level;
+            node.targetLevel = isInside || !frustumCullingEnabled ? level : -1;
         }
     }
 
@@ -696,10 +675,14 @@ export class LodSplat {
 
     private rafId?: number;
     start() {
+        let lastScheduleTime = performance.now();
         const loop = async () => {
-            const counts = await this.flush();
-            await sleep(this.schedulerMinDuration);
-            if (!counts && this.running) {
+            const isScheduleFrame = performance.now() - lastScheduleTime >= this.schedulerMinDuration;
+            const counts = await this.flush(isScheduleFrame);
+            if (isScheduleFrame) {
+                lastScheduleTime = performance.now();
+            }
+            if (isScheduleFrame && !counts && this.running) {
                 this.running.resolve();
                 this.running = undefined;
             }

@@ -115,7 +115,7 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
             `)
             .when(!!splat.modifiers.length, builder =>
                 builder.addFragmentCustom(`
-                    void modifySplat(uint idx, out Splat splat) {
+                    void modifySplat(uint idx, inout Splat splat) {
                         ${splat.modifiers.map(modify => modify.content).join('\r')}
                     }
                 `),

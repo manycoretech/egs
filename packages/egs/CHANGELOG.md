@@ -1,5 +1,10 @@
 # EGS 发布说明 Release Notes
 
+## 1.2.95
+
+1. 修复
+    - 修复`SplatModifier`兼容性异常
+
 ## 1.2.94
 
 1. 优化

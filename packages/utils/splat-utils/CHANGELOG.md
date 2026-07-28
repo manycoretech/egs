@@ -1,5 +1,11 @@
 # changelog
 
+## 1.0.11
+
+- `LodSplat`新增`setModifiers`接口用以支持动画
+- `LodSplat`优化调度逻辑，目前视锥外会彻底卸载 block 用以优化超大场景下的画面质量
+- `LodSplat`移除无效的`outsidePenalty` & `behindPenalty`等参数
+
 ## 1.0.10
 
 - 升级依赖版本`@qunhe/egs: ^1.2.93`
