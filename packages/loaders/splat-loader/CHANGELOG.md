@@ -1,5 +1,9 @@
 # changelog
 
+## 1.1.3
+
+- 修复 CompressedSplatData 解析 quat 值异常
+
 ## 1.1.2
 
 - 优化 parse worker 最大值为 navigator.hardwareConcurrency - 1

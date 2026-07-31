@@ -203,9 +203,9 @@ export class CompressedSplatData extends SplatData {
         single.sz = Math.exp(fromHalf(splat2Uint16Buffer[i8 + 5]));
 
         const quatEncode = splat2Uint32Buffer[i4 + 3];
-        const u = (quatEncode & (0x3ff / 1023)) * 2 - 1;
-        const v = ((quatEncode >>> 10) & (0x3ff / 1023)) * 2 - 1;
-        const angle = (quatEncode >>> 20) & (0xfff / 4095);
+        const u = ((quatEncode & 0x3ff) / 1023) * 2 - 1;
+        const v = (((quatEncode >>> 10) & 0x3ff) / 1023) * 2 - 1;
+        const angle = ((quatEncode >>> 20) & 0xfff) / 4095;
         const quat = decodeQuatOct(u, v, angle);
         single.qx = quat[0];
         single.qy = quat[1];
@@ -233,9 +233,9 @@ export class CompressedSplatData extends SplatData {
         const { splat2Uint32Buffer } = this;
         const i4 = i * 4;
         const quatEncode = splat2Uint32Buffer[i4 + 3];
-        const u = (quatEncode & (0x3ff / 1023)) * 2 - 1;
-        const v = ((quatEncode >>> 10) & (0x3ff / 1023)) * 2 - 1;
-        const angle = (quatEncode >>> 20) & (0xfff / 4095);
+        const u = ((quatEncode & 0x3ff) / 1023) * 2 - 1;
+        const v = (((quatEncode >>> 10) & 0x3ff) / 1023) * 2 - 1;
+        const angle = ((quatEncode >>> 20) & 0xfff) / 4095;
         const quat = decodeQuatOct(u, v, angle);
         single.qx = quat[0];
         single.qy = quat[1];
