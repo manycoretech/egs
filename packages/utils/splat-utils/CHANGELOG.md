@@ -1,5 +1,9 @@
 # changelog
 
+# DEV
+
+- `LodSplat`对齐`Camera & LodContainer`坐标系，修复剔除等计算异常
+
 ## 1.0.11
 
 - `LodSplat`新增`setModifiers`接口用以支持动画

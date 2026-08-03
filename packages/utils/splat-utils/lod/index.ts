@@ -580,12 +580,14 @@ export class LodSplat {
     };
 
     tick(camera: Camera) {
-        const { nodes, minLevel, maxLevel, maxBudget, distanceStep, frustumCullingEnabled } = this;
+        const { nodes, minLevel, maxLevel, maxBudget, distanceStep, frustumCullingEnabled, container } = this;
         camera.updateMatrixWorld();
+        container.updateMatrixWorld();
 
-        const { position: cameraPos } = camera;
+        const viewMatrix = new Matrix4().multiplyMatrices(camera.matrixWorldInverse, container.matrixWorld);
+        const cameraPos = new Matrix4().getInverse(viewMatrix).getPosition(new Vector3());
         const frustum = new Frustum().setFromMatrix(
-            new Matrix4().multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse),
+            new Matrix4().multiplyMatrices(camera.projectionMatrix, viewMatrix),
         );
         const weightNodes = nodes
             .map((node, idx) => {
