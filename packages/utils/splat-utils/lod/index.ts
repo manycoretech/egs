@@ -10,7 +10,6 @@ import {
     type Splat,
     Vector4,
     type IViewerContext,
-    type __INTERNAL__,
     SplatModifier,
 } from '@qunhe/egs';
 import { parseSplatData, detectSplatFileType } from '@qunhe/egs-splat-loader';

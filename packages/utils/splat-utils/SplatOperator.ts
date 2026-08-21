@@ -2,7 +2,6 @@ import {
     type Splat,
     SplatState,
     WGLCapabilities,
-    type __INTERNAL__,
     SourceTexture,
     TextureViewDimension,
     TextureDimension,
