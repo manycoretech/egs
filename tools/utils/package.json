@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@microsoft/api-extractor": "^7.58.12",
+    "@microsoft/api-extractor": "^7.58.13",
     "chalk": "^6.0.0",
     "glob": "^13.0.6",
     "typescript": "catalog:"
