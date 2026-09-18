@@ -3,8 +3,8 @@
   "compilerOptions": {
     "newLine": "lf",
     "target": "esnext",
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "strict": false,
     "strictNullChecks": true,
     "noImplicitAny": true,
