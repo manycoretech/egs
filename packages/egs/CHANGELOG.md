@@ -2,7 +2,10 @@
 
 ## dev
 
-1. 修复
+1. 新功能
+    - `SplatModifier`支持`SourceTexture`
+
+2. 修复
     - 修复`SplattingPlugin.flushSortTask`未处理异常
 
 ## 1.2.95

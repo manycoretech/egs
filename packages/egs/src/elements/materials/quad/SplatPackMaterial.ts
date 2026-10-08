@@ -75,7 +75,18 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
         }
         for (let i = 0; i < splat.modifiers.length; i++) {
             const modifier = splat.modifiers[i];
-            builder.addUBO(modifier.UBO).addFragmentCustom(modifier.header);
+            if (modifier.UBO.uniforms.length) {
+                builder.addUBO(modifier.UBO);
+            }
+            modifier.textures.forEach((texture, name) =>
+                builder.addUniform(
+                    name,
+                    isUSamplerType(texture.glFormat.dataType(RendererBackend.WEBGL2_JS))
+                        ? WebGLShaderDataType.USampler2D
+                        : WebGLShaderDataType.Sampler2D,
+                ),
+            );
+            builder.addFragmentCustom(modifier.header);
         }
         builder.addDefaultFragColor = false;
         builder
@@ -148,7 +159,11 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
             program.setUniform('stateTexWidth', stateTex.width);
         }
         for (let i = 0; i < modifiers.length; i++) {
-            modifiers[i].UBO.updateWebGL(program);
+            const modifier = modifiers[i];
+            if (modifier.UBO.uniforms.length) {
+                modifier.UBO.updateWebGL(program);
+            }
+            modifier.textures.forEach((texture, name) => program.setTexture2D(name, texture, true));
         }
     }
 }

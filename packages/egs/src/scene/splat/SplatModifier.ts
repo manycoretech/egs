@@ -1,3 +1,6 @@
+import { TypeAssert } from '../tools/TypeAssert.js';
+import { SourceTexture } from '../../elements/textures/SourceTexture.js';
+import { formatMeta, TextureSampleType, TextureViewDimension } from '../../elements/textures/types.js';
 import { Vector3 } from '../../math/Vector3.js';
 import { Vector4 } from '../../math/Vector4.js';
 import { UniformBlockObject } from '../../renderer/shader/components/UniformBlockObject.js';
@@ -6,7 +9,7 @@ import { EventDispatcher, EventType } from '../../utils/EventDispatcher.js';
 
 export const SplatModifierUpdateEvent = new EventType();
 
-type UniformValue = boolean | number | Vector3 | Vector4;
+type UniformValue = boolean | number | Vector3 | Vector4 | SourceTexture;
 type UniformValues = Record<string, UniformValue>;
 
 interface SplatModifierShaderBlock {
@@ -28,6 +31,8 @@ export class SplatModifier<T extends UniformValues = UniformValues> extends Even
     content: string;
     /** @internal */
     UBO: UniformBlockObject;
+    /** @internal */
+    textures = new Map<string, SourceTexture>();
 
     private readonly uniformValues: Readonly<T>;
     private readonly shaderUniforms: Readonly<{ [K in keyof T]: string }>;
@@ -62,13 +67,33 @@ export class SplatModifier<T extends UniformValues = UniformValues> extends Even
                 ubo.createItem(uniformName, WebGLShaderDataType.Vec3, v.clone());
             }
         });
+        this.update(uniformValues);
     }
 
     update(uniforms: Partial<T>) {
-        const { UBO, shaderUniforms } = this;
+        Object.keys(uniforms).forEach(key => {
+            const value = uniforms[key];
+            if (TypeAssert.isSourceTexture(value)) {
+                const sampleType = formatMeta(value.format).sampleType.all;
+                if (
+                    value.viewDimension !== TextureViewDimension.D2 ||
+                    (sampleType !== TextureSampleType.Float && sampleType !== TextureSampleType.Uint)
+                ) {
+                    throw new Error(
+                        `SplatModifier texture '${key}' must be a 2D Float or Uint texture (${value.format}).`,
+                    );
+                }
+            }
+        });
+
+        const { UBO, textures, shaderUniforms } = this;
         Object.keys(uniforms).forEach(key => {
             const v = uniforms[key];
-            UBO.setItem(shaderUniforms[key], typeof v === 'boolean' ? Number(v) : v);
+            if (TypeAssert.isSourceTexture(v)) {
+                textures.set(shaderUniforms[key], v);
+            } else {
+                UBO.setItem(shaderUniforms[key], typeof v === 'boolean' ? Number(v) : v);
+            }
         });
         this.emit(SplatModifierUpdateEvent);
     }
