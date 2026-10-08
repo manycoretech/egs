@@ -19,10 +19,10 @@ self.onmessage = async (event: MessageEvent) => {
                     packType,
                     stream,
                     contentLength,
-                    extras: { maxShDegree, maxTextureSize },
+                    extras: { maxShDegree, maxTextureSize, lodLevel },
                 } = (event.data as SendMessage<TaskType.ParseSplat>).payload;
                 const splatData = createSplatData(packType, maxShDegree, maxTextureSize);
-                const file = createSplatFile(type);
+                const file = createSplatFile(type, lodLevel);
 
                 let reader = stream;
                 if (!reader) {

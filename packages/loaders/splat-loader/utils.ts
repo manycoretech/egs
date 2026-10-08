@@ -7,6 +7,7 @@ export enum SplatFileType {
     KSPLAT,
     SOG,
     LCC,
+    LCC2,
     ESZ,
 }
 
@@ -105,6 +106,7 @@ export interface IFile {
 export interface ParseExtras {
     maxShDegree: number;
     maxTextureSize: number;
+    lodLevel: number; // LCC2 LOD level
 }
 
 export const SH_C0 = 0.28209479177387814;
@@ -300,8 +302,10 @@ export function detectSplatFileType(filename: string, buffer: Uint8Array) {
                 const name = file.name;
                 if (name.endsWith('meta.json')) {
                     ext = 'sog';
-                } else if (name.endsWith('meta.lcc')) {
+                } else if (name.endsWith('.lcc')) {
                     ext = 'lcc';
+                } else if (name.endsWith('.lcc2')) {
+                    ext = 'lcc2';
                 }
                 return false;
             },
@@ -339,6 +343,10 @@ export function detectSplatFileType(filename: string, buffer: Uint8Array) {
         }
         case 'lcc': {
             type = SplatFileType.LCC;
+            break;
+        }
+        case 'lcc2': {
+            type = SplatFileType.LCC2;
             break;
         }
         case 'esz': {

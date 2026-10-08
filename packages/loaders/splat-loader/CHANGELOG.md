@@ -1,5 +1,9 @@
 # changelog
 
+## 1.1.4
+
+- 支持 lcc2
+
 ## 1.1.3
 
 - 修复 CompressedSplatData 解析 quat 值异常

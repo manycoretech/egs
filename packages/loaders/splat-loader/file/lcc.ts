@@ -62,6 +62,7 @@ function mix(min: number, max: number, s: number) {
     return (1.0 - s) * min + s * max;
 }
 
+// https://github.com/xgrids/LCCWhitepaper
 export class LccFile implements IFile {
     private counts: number = 0;
     private shDegree: number = 0;

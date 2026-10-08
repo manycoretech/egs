@@ -1,6 +1,6 @@
 # EGS 发布说明 Release Notes
 
-## dev
+## 1.2.96
 
 1. 新功能
     - `SplatModifier`支持`SourceTexture`

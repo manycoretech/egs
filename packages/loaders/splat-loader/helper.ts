@@ -5,10 +5,10 @@ import {
     SuperCompressedSplatData,
     SogSplatData,
 } from './splat/index.js';
-import { EszFile, KsplatFile, LccFile, PlyFile, SogFile, SplatFile, SpzFile } from './file/index.js';
+import { EszFile, KsplatFile, LccFile, Lcc2File, PlyFile, SogFile, SplatFile, SpzFile } from './file/index.js';
 import { type IFile, SplatFileType, SplatPackType } from './utils.js';
 
-export function createSplatFile(type: SplatFileType): IFile {
+export function createSplatFile(type: SplatFileType, lodLevel: number = 0): IFile {
     switch (type) {
         case SplatFileType.PLY: {
             return new PlyFile();
@@ -27,6 +27,9 @@ export function createSplatFile(type: SplatFileType): IFile {
         }
         case SplatFileType.LCC: {
             return new LccFile();
+        }
+        case SplatFileType.LCC2: {
+            return new Lcc2File(lodLevel);
         }
         case SplatFileType.ESZ: {
             return new EszFile();

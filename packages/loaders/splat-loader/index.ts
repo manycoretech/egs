@@ -1,4 +1,4 @@
-export { KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, EszFile } from './file/index.js';
+export { KsplatFile, PlyFile, SogFile, SplatFile, SpzFile, LccFile, Lcc2File, EszFile } from './file/index.js';
 export { SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat/index.js';
 export {
     type ISingleSplat,
@@ -87,6 +87,7 @@ export async function parseSplatData(
             extras: {
                 maxShDegree: extras.maxShDegree ?? 3,
                 maxTextureSize: extras.maxTextureSize ?? getMaxTextureSize(),
+                lodLevel: extras.lodLevel ?? 0,
             },
         },
     };
