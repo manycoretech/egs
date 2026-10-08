@@ -4,7 +4,7 @@ import { PipelinePlugin } from './PipelinePlugin.js';
 import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
 import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
 import { pass, target, pingpong, colorAttachment } from '../../rendergraph/NodeMakers.js';
-import { RendererBackend } from '../../renderer/IRenderer.js';
+import { RendererBackend, RendererState } from '../../renderer/IRenderer.js';
 import type { SceneAdaptor, SceneAdaptorDispatcher } from '../SceneAdaptor.js';
 import { drawQuad, type RendererAdaptor } from '../RendererAdaptor.js';
 import { DrawMode, SamplerFilter } from '../../utils/Constants.js';
@@ -63,6 +63,7 @@ const SPLAT_BLOCK_COUNT = 128;
 export class SplattingPlugin extends PipelinePlugin {
     PLUGIN_NAME = 'Splatting';
 
+    private isDestroyed: boolean = false;
     private forceUpdate: boolean = false;
     private shouldRenderNextFrame: boolean = false;
 
@@ -170,94 +171,118 @@ export class SplattingPlugin extends PipelinePlugin {
     private orderBuffer?: Uint32Array;
     private orderLayout: Array<{ id: number; count: number }> = [];
     private async flushSortTask() {
+        const renderer = this.renderer.renderer;
+        const isCancelled = () => this.isDestroyed || renderer.rendererStatus.state !== RendererState.Ready;
         // this.pendingSortTask maybe undefined because of async
-        if (this.sortCurrentVersion === this.sortLastVersion || this.sortTaskRunning || !this.pendingSortTask) {
+        if (
+            isCancelled() ||
+            this.sortCurrentVersion === this.sortLastVersion ||
+            this.sortTaskRunning ||
+            !this.pendingSortTask
+        ) {
             return;
         }
 
         this.sortTaskRunning = true;
         this.isSorting = true;
-        this.sortPingPongTarget.tick();
+        const { reorderMaterial, sortLastVersion } = this;
+        try {
+            this.sortPingPongTarget.tick();
 
-        const { renderer, reorderMaterial, sortLastVersion } = this;
-        const { count, target, splats, highPrecision } = this.pendingSortTask;
-        const orderLayout: Array<{ id: number; count: number }> = [];
-        for (let i = 0; i < splats.length; i++) {
-            const splat = splats[i];
-            orderLayout[i] = { id: splat.id, count: splat.counts };
-        }
+            const { count, target, splats, highPrecision } = this.pendingSortTask;
+            const orderLayout: Array<{ id: number; count: number }> = [];
+            for (let i = 0; i < splats.length; i++) {
+                const splat = splats[i];
+                orderLayout[i] = { id: splat.id, count: splat.counts };
+            }
 
-        const { width, height } = target;
-        const pixelCount = width * height;
-        let sorting = this.sortingBuffer;
-        if (!sorting || pixelCount > sorting.length) {
-            sorting = new Uint32Array(pixelCount);
-        }
-        await renderer.renderer.readPixelsAsync(target, { x: 0, y: 0, width, height }, sorting);
+            const { width, height } = target;
+            const pixelCount = width * height;
+            let sorting = this.sortingBuffer;
+            if (!sorting || pixelCount > sorting.length) {
+                sorting = new Uint32Array(pixelCount);
+            }
+            await renderer.readPixelsAsync(target, { x: 0, y: 0, width, height }, sorting);
+            if (isCancelled()) {
+                return;
+            }
 
-        let orderBuffer = this.orderBuffer;
-        if (!orderBuffer || count > orderBuffer.length) {
-            const width = Math.min(
-                2 ** Math.ceil(Math.log2(Math.sqrt(count))),
-                this.renderer.renderer.limits.maxTextureDimension2D,
+            let orderBuffer = this.orderBuffer;
+            if (!orderBuffer || count > orderBuffer.length) {
+                const width = Math.min(
+                    2 ** Math.ceil(Math.log2(Math.sqrt(count))),
+                    renderer.limits.maxTextureDimension2D,
+                );
+                const height = Math.ceil(count / width);
+                orderBuffer = new Uint32Array(width * height);
+            }
+            const {
+                activeCount,
+                sorting: backSorting,
+                ordering,
+            } = await sortSplats(
+                count,
+                highPrecision ? new Uint32Array(sorting.buffer) : new Uint16Array(sorting.buffer),
+                orderBuffer,
             );
-            const height = Math.ceil(count / width);
-            orderBuffer = new Uint32Array(width * height);
-        }
-        const {
-            activeCount,
-            sorting: backSorting,
-            ordering,
-        } = await sortSplats(
-            count,
-            highPrecision ? new Uint32Array(sorting.buffer) : new Uint16Array(sorting.buffer),
-            orderBuffer,
-        );
+            if (isCancelled()) {
+                return;
+            }
 
-        this.sortingBuffer = new Uint32Array(backSorting.buffer);
-        const prevOrderTex = reorderMaterial.orderTex;
-        if (prevOrderTex) {
-            prevOrderTex.freeGPU();
-            this.orderBuffer = prevOrderTex.getLevelLayerSource(0) as Uint32Array;
-        }
+            this.sortingBuffer = new Uint32Array(backSorting.buffer);
+            const prevOrderTex = reorderMaterial.orderTex;
+            if (prevOrderTex) {
+                prevOrderTex.freeGPU();
+                this.orderBuffer = prevOrderTex.getLevelLayerSource(0) as Uint32Array;
+            }
 
-        this.splattingGeometry.instancedCount = Math.ceil(activeCount / SPLAT_BLOCK_COUNT);
-        this.splattingMaterial.count =
-            this.packSortedLayoutMaterial.count =
-            this.highlightKernelGeometry.instancedCount =
-                activeCount;
-        const w = Math.max(
-            1,
-            Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(count))), this.renderer.renderer.limits.maxTextureDimension2D),
-        );
-        const h = Math.max(1, Math.ceil(activeCount / w));
-        reorderMaterial.orderTex = new SourceTexture(
-            TextureDimension.D2,
-            TextureViewDimension.D2,
-            TextureFormat.R32Uint,
-            w,
-            h,
-            1,
-            false,
-            false,
-        )
-            .configAsDataTexture()
-            .setLevelData(ordering.subarray(0, w * h), 0);
+            this.splattingGeometry.instancedCount = Math.ceil(activeCount / SPLAT_BLOCK_COUNT);
+            this.splattingMaterial.count =
+                this.packSortedLayoutMaterial.count =
+                this.highlightKernelGeometry.instancedCount =
+                    activeCount;
+            const w = Math.max(
+                1,
+                Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(count))), renderer.limits.maxTextureDimension2D),
+            );
+            const h = Math.max(1, Math.ceil(activeCount / w));
+            reorderMaterial.orderTex = new SourceTexture(
+                TextureDimension.D2,
+                TextureViewDimension.D2,
+                TextureFormat.R32Uint,
+                w,
+                h,
+                1,
+                false,
+                false,
+            )
+                .configAsDataTexture()
+                .setLevelData(ordering.subarray(0, w * h), 0);
 
-        renderer.renderer.queueFlushTexture(reorderMaterial.orderTex);
-        renderer.renderer.flushCommands();
-        this.orderLayout = orderLayout;
-        for (let i = 0; i < splats.length; i++) {
-            splats[i].onSorted();
-        }
+            renderer.queueFlushTexture(reorderMaterial.orderTex);
+            renderer.flushCommands();
+            this.orderLayout = orderLayout;
+            for (let i = 0; i < splats.length; i++) {
+                splats[i].onSorted();
+            }
 
-        this.sortTaskRunning = false;
-        this.reorderIsDirty = true;
-        this.packSortedLayoutIsDirty = true;
-        this.sortCurrentVersion = sortLastVersion;
-        if (this.sortCurrentVersion >= this.sortLastVersion) {
-            this.isSorting = false;
-            this.shouldRenderNextFrame = true;
+            this.reorderIsDirty = true;
+            this.packSortedLayoutIsDirty = true;
+            this.sortCurrentVersion = sortLastVersion;
+            if (this.sortCurrentVersion >= this.sortLastVersion) {
+                this.isSorting = false;
+                this.shouldRenderNextFrame = true;
+            }
+        } catch (error) {
+            if (!isCancelled()) {
+                logger.warn('Failed to sort splats', error);
+            }
+            return;
+        } finally {
+            this.sortTaskRunning = false;
+            if (!this.isDestroyed && this.sortCurrentVersion !== sortLastVersion) {
+                this.isSortDirty = true;
+            }
         }
         this.flushSortTask();
     }
@@ -267,7 +292,11 @@ export class SplattingPlugin extends PipelinePlugin {
         this.sortLastVersion++;
     }
 
-    destroy() {}
+    destroy() {
+        this.isDestroyed = true;
+        this.isSorting = false;
+        this.pendingSortTask = undefined;
+    }
 
     private prevSceneVersion: number = 0;
     private prevSplatCache = new Map<number, SplatCache>(); // <objectId, SplatCache>

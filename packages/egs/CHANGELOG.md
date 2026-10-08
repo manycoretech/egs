@@ -1,5 +1,10 @@
 # EGS 发布说明 Release Notes
 
+## dev
+
+1. 修复
+    - 修复`SplattingPlugin.flushSortTask`未处理异常
+
 ## 1.2.95
 
 1. 修复
