@@ -6,13 +6,14 @@ export {
     type ISampler,
     type ISplatData,
     type IFile,
+    type ParseExtras,
     SH_MAPS,
     NUM_F_REST_TO_SH_DEGREE,
     SplatFileType,
     SplatPackType,
     detectSplatFileType,
 } from './utils.js';
-export { createSplatFile, createSplatData } from './helper.js';
+export { createSplatFile, createSplatData, prepareSplatFiles, readSplatFiles } from './helper.js';
 
 import { FactoryWorkerPool, deferred } from '@qunhe/egs-lib';
 import { type ParseExtras, getMaxTextureSize, SplatFileType, SplatPackType } from './utils.js';
@@ -88,6 +89,7 @@ export async function parseSplatData(
                 maxShDegree: extras.maxShDegree ?? 3,
                 maxTextureSize: extras.maxTextureSize ?? getMaxTextureSize(),
                 lodLevel: extras.lodLevel ?? 0,
+                includeOtherFormats: extras.includeOtherFormats ?? false,
             },
         },
     };

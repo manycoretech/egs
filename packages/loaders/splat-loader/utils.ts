@@ -1,4 +1,5 @@
 import { unzipSync } from 'fflate';
+import type { FileContext } from './zip.js';
 
 export enum SplatFileType {
     PLY,
@@ -99,7 +100,7 @@ export interface IData {
 }
 
 export interface IFile {
-    read(stream: ReadableStream<Uint8Array>, contentLength: number, data: IData): Promise<void>;
+    read(stream: ReadableStream<Uint8Array>, contentLength: number, data: IData, context?: FileContext): Promise<void>;
     write(stream: WritableStream<Uint8Array>, data: IData): Promise<void>;
 }
 
@@ -107,6 +108,7 @@ export interface ParseExtras {
     maxShDegree: number;
     maxTextureSize: number;
     lodLevel: number; // LCC2 LOD level
+    includeOtherFormats: boolean; // Include other independent splat formats in ZIP archives
 }
 
 export const SH_C0 = 0.28209479177387814;
@@ -279,38 +281,25 @@ export function isUrl(str: string): boolean {
     return url.protocol === 'http:' || url.protocol === 'https:';
 }
 
-export function extractFromRootDir(entries: Record<string, Uint8Array>): Record<string, Uint8Array> {
-    let dir: string = '';
-    for (const path in entries) {
-        if (path.endsWith('/')) {
-            dir = path;
-            break;
-        }
-    }
-    const result: Record<string, Uint8Array> = {};
-    for (const path in entries) {
-        result[path.replace(dir, '')] = entries[path];
-    }
-    return result;
-}
-
 export function detectSplatFileType(filename: string, buffer: Uint8Array) {
     let ext = filename.split('.').pop();
     if (ext === 'zip') {
+        let type: SplatFileType | undefined;
         unzipSync(buffer, {
             filter: file => {
-                const name = file.name;
-                if (name.endsWith('meta.json')) {
-                    ext = 'sog';
-                } else if (name.endsWith('.lcc')) {
-                    ext = 'lcc';
-                } else if (name.endsWith('.lcc2')) {
-                    ext = 'lcc2';
+                if (
+                    !file.name.endsWith('/') &&
+                    !file.name.endsWith('.zip') &&
+                    type !== SplatFileType.LCC &&
+                    type !== SplatFileType.LCC2
+                ) {
+                    type = detectSplatFileType(file.name, new Uint8Array());
                 }
                 return false;
             },
         });
-    } else if (ext === 'json') {
+        return type;
+    } else if (ext === 'json' && !!buffer.byteLength) {
         // fast check sog json
         const json = JSON.parse(new TextDecoder().decode(buffer));
         const isSogMetadata = ['means', 'scales', 'quats', 'sh0'].every(k => !!json[k]);

@@ -1,5 +1,5 @@
-import { unzipSync } from 'fflate';
-import { type IFile, type IData, type ISingleSplat, extractFromRootDir } from '../utils.js';
+import { type IFile, type IData, type ISingleSplat } from '../utils.js';
+import { type FileContext, getFileEntry, resolveFilePath } from '../zip.js';
 
 interface MetaAttribute {
     name: string;
@@ -25,8 +25,6 @@ interface BlockInfo {
     y: number;
     lods: LodInfo[];
 }
-
-const ZIP_MAGIC = 0x04034b50;
 
 const SQRT_2 = 1.414213562373095;
 const SQRT_2_INV = 0.7071067811865475;
@@ -67,49 +65,27 @@ export class LccFile implements IFile {
     private counts: number = 0;
     private shDegree: number = 0;
     private meta: Metadata;
-    private refs: Record<string, Uint8Array> = {};
 
-    private load(buffer: Uint8Array) {
-        const view = new DataView(buffer.buffer);
-        if (view.getUint32(0, true) !== ZIP_MAGIC) {
-            throw new Error('LCC file is not a valid zip archive.');
+    async read(stream: ReadableStream<Uint8Array>, _contentLength: number, data: IData, context?: FileContext) {
+        if (!context) {
+            throw new Error('LCC metadata requires a file index.');
         }
-        this.refs = extractFromRootDir(unzipSync(buffer));
-
-        if (!['meta.lcc', 'index.bin', 'data.bin'].every(name => !!this.refs[name])) {
-            throw new Error('LCC file is missing required files.');
-        }
-        this.meta = JSON.parse(new TextDecoder().decode(this.refs['meta.lcc']));
+        this.meta = await new Response(stream).json();
         this.counts = this.meta.splats[0];
-        this.shDegree = !!this.refs['shcoef.bin'] ? 3 : 0;
-    }
-
-    async read(stream: ReadableStream<Uint8Array>, contentLength: number, data: IData) {
-        let BlockOffset: number = 0;
-        {
-            const buffer = new Uint8Array(contentLength);
-            const reader = stream.getReader();
-            let offset = 0;
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) {
-                    break;
-                }
-                buffer.set(value!, offset);
-                offset += value!.length;
-            }
-            this.load(buffer);
-            BlockOffset = await data.initBlock(this.counts, this.shDegree);
-        }
+        this.shDegree = context.files[resolveFilePath(context.path, 'shcoef.bin')] ? 3 : 0;
+        const BlockOffset = await data.initBlock(this.counts, this.shDegree);
+        const names = ['index.bin', 'data.bin', ...(this.shDegree ? ['shcoef.bin'] : [])];
+        const refs = Object.fromEntries(names.map(name => [name, getFileEntry(context, name)]));
 
         const setFn = data.set.bind(data) as IData['set'];
         const setShFn = data.setShN.bind(data) as IData['setShN'];
 
-        const { meta, refs } = this;
+        const { meta } = this;
 
         const infos: BlockInfo[] = [];
         {
-            const index = new DataView(refs['index.bin'].buffer);
+            const buffer = refs['index.bin'];
+            const index = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
             const infoCounts = Math.floor(index.byteLength / (4 + 16 * meta.totalLevel));
             let offset = 0;
             for (let i = 0; i < infoCounts; i++) {
@@ -163,8 +139,10 @@ export class LccFile implements IFile {
         for (let i = 0; i < infos.length; i++) {
             const info = infos[i];
             const { points, offset, size } = info.lods[0];
-            const dataview = new DataView(refs['data.bin'].buffer, offset, size);
-            const shN = refs['shcoef.bin'] ? new DataView(refs['shcoef.bin'].buffer, offset * 2, size * 2) : undefined;
+            const dataview = new DataView(refs['data.bin'].buffer, refs['data.bin'].byteOffset + offset, size);
+            const shN = refs['shcoef.bin']
+                ? new DataView(refs['shcoef.bin'].buffer, refs['shcoef.bin'].byteOffset + offset * 2, size * 2)
+                : undefined;
             for (let j = 0; j < points; j++) {
                 const off = j * 32;
 

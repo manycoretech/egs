@@ -1,12 +1,8 @@
 /// <reference lib="webworker" />
 
 import { TaskType, type SendMessage, TaskStatus, type ReceiveMessage } from './WorkerMessage.js';
-import { SogFile } from './file/index.js';
-import type { SogMetadataV1, SogMetadataV2 } from './file/sog.js';
-import { SogSplatData } from './splat/index.js';
-import type { SogMetadata } from './splat/SogSplatData.js';
-import { NUM_F_REST_TO_SH_DEGREE, SplatPackType, type ISplatData } from './utils.js';
-import { createSplatData, createSplatFile } from './helper.js';
+import type { ISplatData } from './utils.js';
+import { createSplatData, prepareSplatFiles, readSplatFiles } from './helper.js';
 
 let writer: WritableStreamDefaultWriter<Uint8Array> | undefined;
 self.onmessage = async (event: MessageEvent) => {
@@ -14,15 +10,9 @@ self.onmessage = async (event: MessageEvent) => {
         const message = event.data as { taskType: TaskType };
         switch (message.taskType) {
             case TaskType.ParseSplat: {
-                const {
-                    type,
-                    packType,
-                    stream,
-                    contentLength,
-                    extras: { maxShDegree, maxTextureSize, lodLevel },
-                } = (event.data as SendMessage<TaskType.ParseSplat>).payload;
-                const splatData = createSplatData(packType, maxShDegree, maxTextureSize);
-                const file = createSplatFile(type, lodLevel);
+                const { type, packType, stream, contentLength, extras } = (
+                    event.data as SendMessage<TaskType.ParseSplat>
+                ).payload;
 
                 let reader = stream;
                 if (!reader) {
@@ -30,72 +20,10 @@ self.onmessage = async (event: MessageEvent) => {
                     writer = stream.writable.getWriter();
                     reader = stream.readable;
                 }
-                if (packType === SplatPackType.Sog) {
-                    await (file as SogFile).load(reader, contentLength);
-                    const { meta, refs } = file as SogFile;
+                const splatData = createSplatData(packType, extras.maxShDegree, extras.maxTextureSize);
+                const splatFiles = await prepareSplatFiles(type, reader, contentLength, extras.includeOtherFormats);
+                await readSplatFiles(splatFiles, splatData, extras.lodLevel);
 
-                    let splatMeta: SogMetadata;
-                    if (meta.version === undefined) {
-                        const m = meta as SogMetadataV1;
-                        splatMeta = {
-                            version: 1,
-                            counts: m.means.shape[0],
-                            shDegree: NUM_F_REST_TO_SH_DEGREE[m.shN?.shape?.[1] ?? 0],
-                            means: {
-                                mins: [m.means.mins[0], m.means.mins[1], m.means.mins[2]],
-                                maxs: [m.means.maxs[0], m.means.maxs[1], m.means.maxs[2]],
-                            },
-                            scales: {
-                                mins: [m.scales.mins[0], m.scales.mins[1], m.scales.mins[2]],
-                                maxs: [m.scales.maxs[0], m.scales.maxs[1], m.scales.maxs[2]],
-                            },
-                            sh0: {
-                                mins: [m.sh0.mins[0], m.sh0.mins[1], m.sh0.mins[2], m.sh0.mins[3]],
-                                maxs: [m.sh0.maxs[0], m.sh0.maxs[1], m.sh0.maxs[2], m.sh0.maxs[3]],
-                            },
-                            shN: m.shN
-                                ? {
-                                      mins: m.shN.mins,
-                                      maxs: m.shN.maxs,
-                                  }
-                                : undefined,
-                        };
-                    } else {
-                        const m = meta as SogMetadataV2;
-                        splatMeta = {
-                            version: 2,
-                            counts: m.count,
-                            shDegree: m.shN?.bands ?? 0,
-                            means: {
-                                mins: [m.means.mins[0], m.means.mins[1], m.means.mins[2]],
-                                maxs: [m.means.maxs[0], m.means.maxs[1], m.means.maxs[2]],
-                            },
-                            scales: {
-                                codebook: m.scales.codebook,
-                            },
-                            sh0: {
-                                codebook: m.sh0.codebook,
-                            },
-                            shN: m.shN
-                                ? {
-                                      codebook: m.shN.codebook,
-                                  }
-                                : undefined,
-                        };
-                    }
-
-                    (splatData as SogSplatData).load(
-                        splatMeta,
-                        refs[meta.means.files[0]],
-                        refs[meta.means.files[1]],
-                        refs[meta.scales.files[0]],
-                        refs[meta.quats.files[0]],
-                        refs[meta.sh0.files[0]],
-                        ...(meta.shN ? [refs[meta.shN.files[0]], refs[meta.shN.files[1]]] : []),
-                    );
-                } else {
-                    await file.read(reader, contentLength, splatData);
-                }
                 writer = undefined;
 
                 const splats: ISplatData = splatData.serialize();

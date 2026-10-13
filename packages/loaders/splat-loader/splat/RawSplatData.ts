@@ -30,7 +30,7 @@ export class RawSplatData extends SplatData {
     init(counts: number, shDegree: number) {
         this.counts = counts;
         this.shDegree = Math.min(shDegree, this.maxShDegree);
-        const shCounts = (this.shCounts = SH_MAPS[shDegree]);
+        const shCounts = (this.shCounts = SH_MAPS[this.shDegree]);
         this.table = new Array(14 + shCounts).fill(0).map(() => new Float32Array(counts));
     }
 

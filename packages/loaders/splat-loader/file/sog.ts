@@ -1,4 +1,3 @@
-import { unzipSync } from 'fflate';
 import {
     type IFile,
     type IData,
@@ -7,9 +6,9 @@ import {
     SH_MAPS,
     isUrl,
     decodeImage,
-    extractFromRootDir,
     NUM_F_REST_TO_SH_DEGREE,
 } from '../utils.js';
+import { type FileContext, getFileEntry } from '../zip.js';
 
 export interface SogMetadataV1 {
     version: undefined;
@@ -72,7 +71,6 @@ export interface SogMetadataV2 {
 
 export type SogMetadata = SogMetadataV1 | SogMetadataV2;
 
-const ZIP_MAGIC = 0x04034b50;
 const PERM_TABLE = [
     // original quat idx ---> actual storage idx
     [0, 1, 2, 3],
@@ -83,47 +81,15 @@ const PERM_TABLE = [
 const TEMP_ROT = new Float32Array(4);
 
 export class SogFile implements IFile {
-    private counts: number = 0;
-    private shDegree: number = 0;
-    /**
-     * @internal
-     */
+    counts: number = 0;
+    shDegree: number = 0;
     version: number;
-    /**
-     * @internal
-     */
     meta: SogMetadata;
-    /**
-     * @internal
-     */
-    refs: Record<string, Uint8Array> = {};
-
+    texturePaths: string[];
     private cached: Array<{ width: number; height: number; data: Uint8Array }>;
 
-    async load(stream: ReadableStream<Uint8Array>, contentLength: number) {
-        const buffer = new Uint8Array(contentLength);
-        const reader = stream.getReader();
-        let offset = 0;
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) {
-                break;
-            }
-            buffer.set(value!, offset);
-            offset += value!.length;
-        }
-
-        let metaBuffer: Uint8Array = buffer;
-        const view = new DataView(buffer.buffer);
-        if (view.getUint32(0, true) === ZIP_MAGIC) {
-            this.refs = extractFromRootDir(unzipSync(buffer));
-            metaBuffer = this.refs['meta.json'];
-            if (!metaBuffer) {
-                throw new Error('SOG meta.json not found in the zip archive.');
-            }
-        }
-
-        this.meta = JSON.parse(new TextDecoder().decode(metaBuffer));
+    async load(stream: ReadableStream<Uint8Array>) {
+        this.meta = await new Response(stream).json();
         if (this.meta.version === undefined) {
             const { means, quats, shN } = this.meta as SogMetadataV1;
             if (quats.encoding !== 'quaternion_packed') {
@@ -141,6 +107,16 @@ export class SogFile implements IFile {
             this.shDegree = shN?.bands ?? 0;
             this.version = version;
         }
+        const { means, scales, quats, sh0, shN } = this.meta;
+        this.texturePaths = [
+            means.files[0],
+            means.files[1],
+            scales.files[0],
+            quats.files[0],
+            sh0.files[0],
+            shN?.files[0],
+            shN?.files[1],
+        ].filter((path): path is string => !!path);
     }
 
     private parse_v1(data: IData, offset: number) {
@@ -349,37 +325,24 @@ export class SogFile implements IFile {
         }
     }
 
-    private async loadTexture(path: string) {
-        let buffer: Uint8Array | undefined = this.refs[path];
-        if (!buffer && isUrl(path)) {
-            buffer = await fetch(path)
-                .then(res => res.arrayBuffer())
-                .then(buf => new Uint8Array(buf));
-        }
-        if (!buffer) {
+    private async loadTexture(path: string, context?: FileContext) {
+        let buffer: Uint8Array;
+        if (isUrl(path)) {
+            const response = await fetch(path);
+            buffer = new Uint8Array(await response.arrayBuffer());
+        } else if (context) {
+            buffer = getFileEntry(context, path);
+        } else {
             throw new Error(`Cannot load texture: ${path}`);
         }
         return decodeImage(buffer as Uint8Array<ArrayBuffer>);
     }
 
-    async read(stream: ReadableStream<Uint8Array>, contentLength: number, data: IData) {
-        await this.load(stream, contentLength);
-        const BlockOffset = await data.initBlock(this.counts, this.shDegree);
+    async read(stream: ReadableStream<Uint8Array>, _contentLength: number, data: IData, context?: FileContext) {
+        await this.load(stream);
 
-        const { means, scales, quats, sh0, shN } = this.meta;
-        this.cached = await Promise.all(
-            [
-                means.files[0],
-                means.files[1],
-                scales.files[0],
-                quats.files[0],
-                sh0.files[0],
-                shN?.files[0],
-                shN?.files[1],
-            ]
-                .filter(path => !!path)
-                .map(path => this.loadTexture(path!)),
-        );
+        const BlockOffset = await data.initBlock(this.counts, this.shDegree);
+        this.cached = await Promise.all(this.texturePaths.map(path => this.loadTexture(path, context)));
 
         if (this.version === 1) {
             this.parse_v1(data, BlockOffset);

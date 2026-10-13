@@ -48,6 +48,8 @@ export class SogSplatData extends SplatData {
         shNCentroids?: Uint8Array,
     ) {
         this.meta = meta;
+        this.counts = meta.counts;
+        this.shDegree = meta.shDegree;
         this.meansL = meansL;
         this.meansU = meansU;
         this.quats = quats;
@@ -144,17 +146,15 @@ export class SogSplatData extends SplatData {
 
     deserialize(data: ISplatData) {
         const { samplers, extras = [] } = data;
-        this.meta = extras[0];
-        this.meansL = samplers[0].source;
-        this.meansU = samplers[1].source;
-        this.quats = samplers[2].source;
-        this.scales = samplers[3].source;
-        this.colors = samplers[4].source;
-        if (samplers[5]) {
-            this.shNLabels = samplers[5].source;
-        }
-        if (samplers[6]) {
-            this.shNCentroids = samplers[6].source;
-        }
+        this.load(
+            extras[0],
+            samplers[0].source,
+            samplers[1].source,
+            samplers[2].source,
+            samplers[3].source,
+            samplers[4].source,
+            samplers[5]?.source,
+            samplers[6]?.source,
+        );
     }
 }

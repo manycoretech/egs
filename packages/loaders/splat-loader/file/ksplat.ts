@@ -134,12 +134,8 @@ export class KsplatFile implements IFile {
     private header: KSplatHeader;
     private sections: KSplatSection[];
 
-    private buffer: Uint8Array;
-
     private load(buffer: Uint8Array) {
-        this.buffer = buffer;
-
-        const header = new DataView(buffer.buffer, 0, HEADER_BYTES);
+        const header = new DataView(buffer.buffer, buffer.byteOffset, HEADER_BYTES);
         const versionMajor = header.getUint8(0);
         const versionMinor = header.getUint8(1);
         if (versionMajor !== 0 || versionMinor < 1) {
@@ -162,7 +158,11 @@ export class KsplatFile implements IFile {
         let maxSHDegree: number = 0;
         const sections: KSplatSection[] = [];
         for (let i = 0; i < maxSectionCount; i++) {
-            const section = new DataView(buffer.buffer, HEADER_BYTES + i * SECTION_BYTES, SECTION_BYTES);
+            const section = new DataView(
+                buffer.buffer,
+                buffer.byteOffset + HEADER_BYTES + i * SECTION_BYTES,
+                SECTION_BYTES,
+            );
             const sectionSplatCount = section.getUint32(0, true);
             const sectionMaxSplatCount = section.getUint32(4, true);
             const bucketSize = section.getUint32(8, true);
@@ -206,27 +206,24 @@ export class KsplatFile implements IFile {
     }
 
     async read(stream: ReadableStream<Uint8Array>, contentLength: number, data: IData) {
-        let BlockOffset: number = 0;
-        {
-            const buffer = new Uint8Array(contentLength);
-            const reader = stream.getReader();
-            let offset = 0;
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) {
-                    break;
-                }
-                buffer.set(value!, offset);
-                offset += value!.length;
+        const buffer = new Uint8Array(contentLength);
+        const reader = stream.getReader();
+        let offset = 0;
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                break;
             }
-            this.load(buffer);
-            BlockOffset = await data.initBlock(this.counts, this.shDegree);
+            buffer.set(value, offset);
+            offset += value.length;
         }
-
+        reader.releaseLock();
+        this.load(buffer);
+        const BlockOffset = await data.initBlock(this.counts, this.shDegree);
         const setFn = data.set.bind(data) as IData['set'];
         const setShFn = data.setShN.bind(data) as IData['setShN'];
 
-        const { buffer, header, sections, shDegree: maxSHDegree } = this;
+        const { header, sections, shDegree: maxSHDegree } = this;
         const {
             maxSectionCount,
             compressionLevel,
@@ -295,11 +292,11 @@ export class KsplatFile implements IFile {
             const compressionScaleFactor = bucketBlockSize / 2 / compressionScaleRange;
             const bucketsBase = sectionBase + bucketsMetaDataSizeBytes;
             const dataBase = sectionBase + bucketsStorageSizeBytes;
-            const data = new DataView(buffer.buffer, dataBase, splatDataStorageSizeBytes);
-            const bucketArray = new Float32Array(buffer.buffer, bucketsBase, bucketCount * 3);
+            const data = new DataView(buffer.buffer, buffer.byteOffset + dataBase, splatDataStorageSizeBytes);
+            const bucketArray = new Float32Array(buffer.buffer, buffer.byteOffset + bucketsBase, bucketCount * 3);
             const partiallyFilledBucketLengths = new Uint32Array(
                 buffer.buffer,
-                sectionBase,
+                buffer.byteOffset + sectionBase,
                 partiallyFilledBucketCount,
             );
 
@@ -307,18 +304,6 @@ export class KsplatFile implements IFile {
             let partialBucketBase = fullBucketSplats;
             for (let j = 0; j < sectionSplatCount; j++) {
                 const splatOffset = j * bytesPerSplat;
-
-                let bucketIndex: number;
-                if (j < fullBucketSplats) {
-                    bucketIndex = Math.floor(j / bucketSize);
-                } else {
-                    const bucketLength = partiallyFilledBucketLengths[partialBucketIndex - fullBucketCount];
-                    if (j >= partialBucketBase + bucketLength) {
-                        partialBucketIndex += 1;
-                        partialBucketBase += bucketLength;
-                    }
-                    bucketIndex = partialBucketIndex;
-                }
 
                 if (isHighQualitySplatData) {
                     single.x = data.getFloat32(splatOffset + 0, true);
@@ -332,6 +317,17 @@ export class KsplatFile implements IFile {
                     single.qy = data.getFloat32(splatOffset + rotationOffsetBytes + 8, true);
                     single.qz = data.getFloat32(splatOffset + rotationOffsetBytes + 12, true);
                 } else {
+                    let bucketIndex: number;
+                    if (j < fullBucketSplats) {
+                        bucketIndex = Math.floor(j / bucketSize);
+                    } else {
+                        const bucketLength = partiallyFilledBucketLengths[partialBucketIndex - fullBucketCount];
+                        if (j >= partialBucketBase + bucketLength) {
+                            partialBucketIndex += 1;
+                            partialBucketBase += bucketLength;
+                        }
+                        bucketIndex = partialBucketIndex;
+                    }
                     single.x =
                         (data.getUint16(splatOffset + 0, true) - compressionScaleRange) * compressionScaleFactor +
                         bucketArray[3 * bucketIndex + 0];
