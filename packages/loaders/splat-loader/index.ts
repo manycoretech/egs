@@ -7,16 +7,16 @@ export {
     type ISplatData,
     type IFile,
     type ParseExtras,
-    SH_MAPS,
-    NUM_F_REST_TO_SH_DEGREE,
     SplatFileType,
     SplatPackType,
-    detectSplatFileType,
-} from './utils.js';
+} from './types.js';
+export { SH_MAPS, NUM_F_REST_TO_SH_DEGREE } from './utils/splat.js';
+export { detectSplatFileType } from './utils/file.js';
 export { createSplatFile, createSplatData, prepareSplatFiles, readSplatFiles } from './helper.js';
 
 import { FactoryWorkerPool, deferred } from '@qunhe/egs-lib';
-import { type ParseExtras, getMaxTextureSize, SplatFileType, SplatPackType } from './utils.js';
+import { type ParseExtras, SplatFileType, SplatPackType } from './types.js';
+import { getMaxTextureSize } from './utils/texture.js';
 import { type SendMessage, TaskType, type ReceiveMessage, TaskStatus } from './WorkerMessage.js';
 import type { SplatData } from './splat/index.js';
 import { createSplatData } from './helper.js';

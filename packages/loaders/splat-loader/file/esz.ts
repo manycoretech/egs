@@ -1,17 +1,11 @@
 import { CompressedSplatData } from '../splat/index.js';
-import { createZstdDecompressor } from '../zstd/index.js';
-import {
-    ByteStreamCursor,
-    decode111011s,
-    decodeImage,
-    decodeQuatOct,
-    fromHalf,
-    type IData,
-    type IFile,
-    SH_C0,
-    SH_MAPS,
-    StreamChunkDecoder,
-} from '../utils.js';
+import { createZstdDecompressor } from '../utils/zstd.js';
+import { ByteStreamCursor, StreamChunkDecoder } from '../utils/stream.js';
+import { decode111011s, fromHalf } from '../utils/packing.js';
+import { decodeImage } from '../utils/texture.js';
+import { decodeQuatOct, logTransform } from '../utils/math.js';
+import { type IData, type IFile } from '../types.js';
+import { SH_C0, SH_MAPS } from '../utils/splat.js';
 
 interface Metadata {
     version: number;
@@ -42,10 +36,6 @@ const COLOR_LUT = new Float32Array(256);
 for (let i = 0; i < 256; i++) {
     SCALE_LUT[i] = Math.exp(i / 16 - 10);
     COLOR_LUT[i] = (i / 255 - 0.5) * COLOR_SCALE + 0.5;
-}
-
-function logTransform(value: number) {
-    return Math.sign(value) * Math.log(Math.abs(value) + 1);
 }
 
 export class EszFile implements IFile {

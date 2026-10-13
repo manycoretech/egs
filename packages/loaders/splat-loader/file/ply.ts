@@ -1,13 +1,6 @@
-import {
-    type IFile,
-    type IData,
-    SH_MAPS,
-    SH_C0,
-    ByteStreamCursor,
-    createSingleSplat,
-    StreamChunkDecoder,
-    NUM_F_REST_TO_SH_DEGREE,
-} from '../utils.js';
+import { type IFile, type IData } from '../types.js';
+import { SH_MAPS, SH_C0, createSingleSplat, NUM_F_REST_TO_SH_DEGREE } from '../utils/splat.js';
+import { ByteStreamCursor, StreamChunkDecoder } from '../utils/stream.js';
 
 type PlyPropertyType = 'char' | 'uchar' | 'short' | 'ushort' | 'int' | 'uint' | 'float' | 'double';
 

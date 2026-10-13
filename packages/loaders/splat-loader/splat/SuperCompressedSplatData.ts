@@ -1,82 +1,18 @@
 import { SplatData } from './SplatData.js';
+import { type ISampler, ISamplerFormat, type ISingleSplat, type ISplatData } from '../types.js';
+import { computeTextureSize } from '../utils/texture.js';
+import { clamp, encodeQuatOct, decodeQuatOct } from '../utils/math.js';
 import {
-    type ISampler,
-    ISamplerFormat,
-    type ISingleSplat,
-    type ISplatData,
-    computeTextureSize,
-    clamp,
     toHalf,
     fromHalf,
-    encodeQuatOct,
-    decodeQuatOct,
-} from '../utils.js';
-
-function packSint5x9ToUint32x2(data: number[], out: Uint32Array, offset: number) {
-    const q0 = clamp((data[0] * 16 + 16.5) | 0, 0, 31);
-    const q1 = clamp((data[1] * 16 + 16.5) | 0, 0, 31);
-    const q2 = clamp((data[2] * 16 + 16.5) | 0, 0, 31);
-    const q3 = clamp((data[3] * 16 + 16.5) | 0, 0, 31);
-    const q4 = clamp((data[4] * 16 + 16.5) | 0, 0, 31);
-    const q5 = clamp((data[5] * 16 + 16.5) | 0, 0, 31);
-    const q6 = clamp((data[6] * 16 + 16.5) | 0, 0, 31);
-    const q7 = clamp((data[7] * 16 + 16.5) | 0, 0, 31);
-    const q8 = clamp((data[8] * 16 + 16.5) | 0, 0, 31);
-
-    let low = 0;
-    let high = 0;
-    low |= q0 << 0;
-    low |= q1 << 5;
-    low |= q2 << 10;
-    low |= q3 << 15;
-    low |= q4 << 20;
-    low |= q5 << 25;
-    low |= (q6 & 0x3) << 30;
-    high |= q6 >>> 2;
-    high |= q7 << 3;
-    high |= q8 << 8;
-
-    out[offset] = low;
-    out[offset + 1] = high;
-}
-
-function unpackSint5x9FromUint32x2(low: number, high: number, out: number[], offset: number) {
-    out[offset + 0] = (((low >>> 0) & 0x1f) - 16) * 0.0625;
-    out[offset + 1] = (((low >>> 5) & 0x1f) - 16) * 0.0625;
-    out[offset + 2] = (((low >>> 10) & 0x1f) - 16) * 0.0625;
-    out[offset + 3] = (((low >>> 15) & 0x1f) - 16) * 0.0625;
-    out[offset + 4] = (((low >>> 20) & 0x1f) - 16) * 0.0625;
-    out[offset + 5] = (((low >>> 25) & 0x1f) - 16) * 0.0625;
-
-    const lowBits = (low >>> 30) & 0x3;
-    const highBits = (high & 0x7) << 2;
-    out[offset + 6] = ((lowBits | highBits) - 16) * 0.0625;
-    out[offset + 7] = (((high >>> 3) & 0x1f) - 16) * 0.0625;
-    out[offset + 8] = (((high >>> 8) & 0x1f) - 16) * 0.0625;
-}
-
-function packSint4ToUint8(v0: number, v1: number): number {
-    const l = clamp((v0 * 8 + 8.5) | 0, 0, 15);
-    const h = clamp((v1 * 8 + 8.5) | 0, 0, 15);
-    return (h << 4) | l;
-}
-
-function unpackUint8ToSint4x2(value: number, out: number[], offset: number) {
-    out[offset] = (value & 0x0f) * 0.125 - 1.0;
-    out[offset + 1] = ((value >> 4) & 0x0f) * 0.125 - 1.0;
-}
-
-function toUnsignedChar(v: number): number {
-    return clamp((v * 128 + 128.5) | 0, 0, 255);
-}
-
-function fromUnsignedChar(v: number): number {
-    return (v - 128) / 128;
-}
-
-function toUnsignedCharV2(v: number): number {
-    return clamp((v * 255 + 0.5) | 0, 0, 255);
-}
+    packSint5x9ToUint32x2,
+    unpackSint5x9FromUint32x2,
+    packSint4ToUint8,
+    unpackUint8ToSint4x2,
+    toUnsignedChar,
+    fromUnsignedChar,
+    toUnsignedCharV2,
+} from '../utils/packing.js';
 
 const LN_SCALE_MIN = -12;
 const LN_SCALE_MAX = 9;

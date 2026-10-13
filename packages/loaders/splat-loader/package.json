@@ -1,6 +1,6 @@
 {
   "name": "@qunhe/egs-splat-loader",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "EGS 3d gaussian splatting loader",
   "main": "index.js",
   "module": "index.js",
@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": "https://github.com/manycoretech/egs.git",
   "scripts": {
-    "build": "pnpm egs-build --cp ./zstd/wasm/*",
+    "build": "pnpm egs-build --cp ./utils/zstd-wasm/*",
     "build:release": "pnpm build --release",
     "build:types": "pnpm build --type-only",
     "build:types:release": "pnpm build --release --type-only"

@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 
 import { TaskType, type SendMessage, TaskStatus, type ReceiveMessage } from './WorkerMessage.js';
-import type { ISplatData } from './utils.js';
+import type { ISplatData } from './types.js';
 import { createSplatData, prepareSplatFiles, readSplatFiles } from './helper.js';
 
 let writer: WritableStreamDefaultWriter<Uint8Array> | undefined;

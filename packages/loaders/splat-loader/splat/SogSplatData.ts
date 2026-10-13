@@ -1,5 +1,5 @@
 import { SplatData } from './SplatData.js';
-import { type ISplatData, type ISingleSplat, ISamplerFormat } from '../utils.js';
+import { type ISplatData, type ISingleSplat, ISamplerFormat } from '../types.js';
 
 export type SogMetadata = {
     counts: number;

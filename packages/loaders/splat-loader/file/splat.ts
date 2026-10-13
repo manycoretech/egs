@@ -1,4 +1,7 @@
-import { type IFile, type IData, ByteStreamCursor, clamp, createSingleSplat, StreamChunkDecoder } from '../utils.js';
+import { type IFile, type IData } from '../types.js';
+import { ByteStreamCursor, StreamChunkDecoder } from '../utils/stream.js';
+import { clamp } from '../utils/math.js';
+import { createSingleSplat } from '../utils/splat.js';
 
 const ITEM_SIZE = 32;
 const STREAM_CHUNK_BYTE_LENGTH = 128 * 1024;

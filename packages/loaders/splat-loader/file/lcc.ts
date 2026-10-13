@@ -1,5 +1,6 @@
-import { type IFile, type IData, type ISingleSplat } from '../utils.js';
-import { type FileContext, getFileEntry, resolveFilePath } from '../zip.js';
+import { type IFile, type IData, type ISingleSplat } from '../types.js';
+import { mix } from '../utils/math.js';
+import { type FileContext, getFileEntry, resolveFilePath } from '../utils/zip.js';
 
 interface MetaAttribute {
     name: string;
@@ -54,10 +55,6 @@ function decodeRotation(v: number) {
 
 function DecodePacked_11_10_11(enc: number) {
     return [(enc & 0x7ff) / 2047.0, ((enc >> 11) & 0x3ff) / 1023.0, ((enc >> 21) & 0x7ff) / 2047.0];
-}
-
-function mix(min: number, max: number, s: number) {
-    return (1.0 - s) * min + s * max;
 }
 
 // https://github.com/xgrids/LCCWhitepaper

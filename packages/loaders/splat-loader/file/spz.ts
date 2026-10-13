@@ -1,16 +1,9 @@
-import { createZstdDecompressor } from '../zstd/index.js';
-import {
-    type ISingleSplat,
-    type IData,
-    type IFile,
-    SH_MAPS,
-    SH_C0,
-    fromHalf,
-    clamp,
-    StreamChunkDecoder,
-    type ChunkDecoder,
-    ByteStreamCursor,
-} from '../utils.js';
+import { createZstdDecompressor } from '../utils/zstd.js';
+import { type ISingleSplat, type IData, type IFile } from '../types.js';
+import { SH_MAPS, SH_C0 } from '../utils/splat.js';
+import { fromHalf } from '../utils/packing.js';
+import { clamp } from '../utils/math.js';
+import { StreamChunkDecoder, type ChunkDecoder, ByteStreamCursor } from '../utils/stream.js';
 
 const SPZ_MAGIC = 0x5053474e; // NGSP = Niantic gaussian splat
 const SPZ_VERSION = 4;

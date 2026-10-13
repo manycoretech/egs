@@ -1,6 +1,6 @@
 import { type SplatFileInput, prepareSplatFiles, readSplatFiles } from '../helper.js';
-import { type IFile, type IData, SplatFileType } from '../utils.js';
-import { type FileContext, openZipEntry, resolveFilePath } from '../zip.js';
+import { type IFile, type IData, SplatFileType } from '../types.js';
+import { type FileContext, openZipEntry, resolveFilePath } from '../utils/zip.js';
 
 interface Lcc2Node {
     data?: {

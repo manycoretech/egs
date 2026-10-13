@@ -10,8 +10,17 @@ import { EszFile, KsplatFile, LccFile, Lcc2File, PlyFile, SogFile, SplatFile, Sp
 import { getLcc2References } from './file/lcc2.js';
 import type { SogMetadataV1, SogMetadataV2 } from './file/sog.js';
 import type { SogMetadata as SogDataMetadata } from './splat/SogSplatData.js';
-import { type IFile, type IData, detectSplatFileType, isUrl, SH_MAPS, SplatFileType, SplatPackType } from './utils.js';
-import { type FileContext, probeZipStream, readZipIndex, openZipEntry, resolveFilePath, getFileEntry } from './zip.js';
+import { type IFile, type IData, SplatFileType, SplatPackType } from './types.js';
+import { detectSplatFileType, isUrl } from './utils/file.js';
+import { SH_MAPS } from './utils/splat.js';
+import {
+    type FileContext,
+    probeZipStream,
+    readZipIndex,
+    openZipEntry,
+    resolveFilePath,
+    getFileEntry,
+} from './utils/zip.js';
 
 export interface SplatFileInput {
     type: SplatFileType;

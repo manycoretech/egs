@@ -81,10 +81,12 @@ if (Symbol.dispose) ZstdDecompressor.prototype[Symbol.dispose] = ZstdDecompresso
 export function __wbg___wbindgen_throw_1506f2235d1bdba0(arg0, arg1) {
     throw new Error(getStringFromWasm0(arg0, arg1));
 }
-export function __wbg_call_9c758de292015997() { return handleError(function (arg0, arg1, arg2) {
-    const ret = arg0.call(arg1, arg2);
-    return ret;
-}, arguments); }
+export function __wbg_call_9c758de292015997() {
+    return handleError(function (arg0, arg1, arg2) {
+        const ret = arg0.call(arg1, arg2);
+        return ret;
+    }, arguments);
+}
 export function __wbg_new_50bb5ebeecef71a8(arg0, arg1) {
     const ret = new Error(getStringFromWasm0(arg0, arg1));
     return ret;
@@ -115,9 +117,10 @@ export function __wbindgen_init_externref_table() {
     table.set(offset + 2, true);
     table.set(offset + 3, false);
 }
-const ZstdDecompressorFinalization = (typeof FinalizationRegistry === 'undefined')
-    ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_zstddecompressor_free(ptr, 1));
+const ZstdDecompressorFinalization =
+    typeof FinalizationRegistry === 'undefined'
+        ? { register: () => {}, unregister: () => {} }
+        : new FinalizationRegistry(ptr => wasm.__wbg_zstddecompressor_free(ptr, 1));
 
 function addToExternrefTable0(obj) {
     const idx = wasm.__externref_table_alloc();
@@ -179,7 +182,6 @@ function decodeText(ptr, len) {
 }
 
 let WASM_VECTOR_LEN = 0;
-
 
 let wasm;
 export function __wbg_set_wasm(val) {

@@ -1,14 +1,8 @@
-import {
-    type IFile,
-    type IData,
-    type ISingleSplat,
-    SH_C0,
-    SH_MAPS,
-    isUrl,
-    decodeImage,
-    NUM_F_REST_TO_SH_DEGREE,
-} from '../utils.js';
-import { type FileContext, getFileEntry } from '../zip.js';
+import { type IFile, type IData, type ISingleSplat } from '../types.js';
+import { SH_C0, SH_MAPS, NUM_F_REST_TO_SH_DEGREE } from '../utils/splat.js';
+import { isUrl } from '../utils/file.js';
+import { decodeImage } from '../utils/texture.js';
+import { type FileContext, getFileEntry } from '../utils/zip.js';
 
 export interface SogMetadataV1 {
     version: undefined;

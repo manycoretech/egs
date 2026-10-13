@@ -1,5 +1,5 @@
 import { deferred } from '@qunhe/egs-lib';
-import type { ISplatData, ISingleSplat, IData } from '../utils.js';
+import type { ISplatData, ISingleSplat, IData } from '../types.js';
 
 export abstract class SplatData implements IData {
     readonly counts: number;

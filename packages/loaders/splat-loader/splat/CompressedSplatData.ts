@@ -1,18 +1,8 @@
 import { SplatData } from './SplatData.js';
-import {
-    type ISampler,
-    type ISplatData,
-    type ISingleSplat,
-    ISamplerFormat,
-    computeTextureSize,
-    clamp,
-    toHalf,
-    fromHalf,
-    encodeQuatOct,
-    decodeQuatOct,
-    encode111011s,
-    decode111011s,
-} from '../utils.js';
+import { type ISampler, type ISplatData, type ISingleSplat, ISamplerFormat } from '../types.js';
+import { computeTextureSize } from '../utils/texture.js';
+import { clamp, encodeQuatOct, decodeQuatOct } from '../utils/math.js';
+import { toHalf, fromHalf, encode111011s, decode111011s } from '../utils/packing.js';
 
 export class CompressedSplatData extends SplatData {
     counts: number = 0;
