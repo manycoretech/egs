@@ -50,6 +50,8 @@ export function setSortSplats(fn: typeof sortSplats) {
 interface SplatCache {
     version: number;
     modelViewMatrix: Matrix4;
+    offset: number;
+    count: number;
 }
 
 const tempMat = new Matrix4();
@@ -382,7 +384,12 @@ export class SplattingPlugin extends PipelinePlugin {
             const key = splat.id;
             if (!prevSplats.delete(key)) {
                 splat.updateMatrixWorld();
-                prevSplatCache.set(key, { version: splat.version, modelViewMatrix: splat.matrixWorld.clone() });
+                prevSplatCache.set(key, {
+                    version: splat.version,
+                    modelViewMatrix: splat.matrixWorld.clone(),
+                    offset: -1,
+                    count: 0,
+                });
             }
         }
         Array.from(prevSplats).forEach(v => prevSplatCache.delete(v));
@@ -399,19 +406,34 @@ export class SplattingPlugin extends PipelinePlugin {
         const packCameraRelativeCenterIsDirty =
             packCameraRelativeEnabled &&
             tempVec0.sub(packCameraRelativeOrigin).length() > packCameraRelativeUpdateDistanceThreshold;
+        if (forceUpdate || packCameraRelativeCenterIsDirty) {
+            if (packCameraRelativeEnabled) {
+                camera.matrixWorld.getPosition(packCameraRelativeOrigin);
+            } else {
+                packCameraRelativeOrigin.set(0, 0, 0);
+            }
+        }
+        const storageChanged = splatManager.totalCount > this.packAttachSize.width * this.packAttachSize.height;
+        let packedOffset = 0;
         for (let i = 0; i < splats.length; i++) {
             const splat = splats[i];
             const cache = prevSplatCache.get(splat.id)!;
+            const offset = packedOffset;
+            packedOffset += splat.counts;
             const isDirty =
                 packForceUnstableEnabled ||
                 forceUpdate ||
-                isSceneDirty ||
+                storageChanged ||
+                cache.offset !== offset ||
+                cache.count !== splat.counts ||
                 isCameraLayerDirty ||
                 cache.version !== splat.version ||
                 packCameraRelativeCenterIsDirty;
             if (!isDirty) {
                 continue;
             }
+            cache.offset = offset;
+            cache.count = splat.counts;
             cache.version = splat.version;
             packQueue.add(i);
         }
@@ -511,7 +533,13 @@ export class SplattingPlugin extends PipelinePlugin {
                 packAttachSize.width = width;
                 packAttachSize.height = 1;
             }
-            const height = Math.ceil(pixels / packAttachSize.width);
+            let height = Math.ceil(pixels / packAttachSize.width);
+            if (splatManager.splats.length > 1) {
+                height = Math.min(
+                    2 ** Math.ceil(Math.log2(height)),
+                    this.renderer.renderer.limits.maxTextureDimension2D,
+                );
+            }
             packAttachSize.height = Math.max(height, packAttachSize.height);
             return packAttachSize;
         };
@@ -552,11 +580,6 @@ export class SplattingPlugin extends PipelinePlugin {
                     .use((renderer, target) => {
                         if (!this.packQueue.size) {
                             return;
-                        }
-                        if (this.packCameraRelativeEnabled) {
-                            scene.camera.matrixWorld.getPosition(packCameraRelativeOrigin);
-                        } else {
-                            packCameraRelativeOrigin.set(0, 0, 0);
                         }
 
                         const { width, height } = target!;

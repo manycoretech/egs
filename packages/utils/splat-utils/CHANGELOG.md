@@ -1,8 +1,12 @@
 # changelog
 
-# DEV
+# 1.1.0
 
 - `LodSplat`对齐`Camera & LodContainer`坐标系，修复剔除等计算异常
+- 重构`LodSplat`
+    - 优化任务调度逻辑
+    - 优化`level`计算逻辑
+    - 支持利用体素数据进行遮挡降级
 
 ## 1.0.11
 
