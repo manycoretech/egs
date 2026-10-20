@@ -15,6 +15,8 @@ import { WebGLExtEnums, type WGLExtensions } from './webgl/WGLExtensions.js';
 import { Platform } from '../utils/Platform.js';
 import type { Texture } from '../elements/textures/Texture.js';
 import type { ShaderComponentRegistry } from '../scene/ShaderComponentRegistry.js';
+import type { Splat } from '../scene/splat/Splat.js';
+import type { SplattingOptions, SplatKernelOptions } from '../fx/plugins/Splatting.js';
 
 export type RendererParameters = Required<
     Pick<
@@ -239,6 +241,16 @@ export interface IRenderer extends EventDispatcher {
     ): void;
 
     renderRenderable(renderable: Renderable): void;
+
+    prepareSplats?(
+        owner: object,
+        splats: Splat[],
+        camera: Camera3D,
+        size: { width: number; height: number },
+        options: SplattingOptions,
+    ): void;
+    renderSplats?(owner: object): void;
+    renderSplatKernels?(owner: object, options: SplatKernelOptions): void;
 
     resetRenderState(): void;
 

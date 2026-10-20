@@ -1,5 +1,12 @@
 # changelog
 
+## 1.1.1
+
+- `LodSplat`新增`pixelLimitEnabled`，默认开启；关闭后不再因像素密度限制停止 LOD 细化，仍遵守点数预算等约束。
+- `LodSplat`适配 WebGPU 帧内排序，替换节点不再等待 CPU 排序事件，并处理上下文丢失及渲染器重置。
+- 修复 sampler 与`SourceTexture`相互转换时忽略 TypedArray 的`byteOffset`和`byteLength`，错误使用整个底层缓冲的问题。
+- 图片数据纹理改用`createImageBitmap`解码，关闭颜色空间转换及预乘 Alpha，避免改变编码数据。
+
 # 1.1.0
 
 - `LodSplat`对齐`Camera & LodContainer`坐标系，修复剔除等计算异常

@@ -34,9 +34,12 @@ export class SplatModifier<T extends UniformValues = UniformValues> extends Even
     /** @internal */
     textures = new Map<string, SourceTexture>();
 
-    private readonly uniformValues: Readonly<T>;
-    private readonly shaderUniforms: Readonly<{ [K in keyof T]: string }>;
-    private readonly createShaderBlock: SplatModifierShaderBlockFactory<T>;
+    /** @internal */
+    readonly uniformValues: Readonly<T>;
+    /** @internal */
+    readonly shaderUniforms: Readonly<{ [K in keyof T]: string }>;
+    /** @internal */
+    readonly createShaderBlock: SplatModifierShaderBlockFactory<T>;
 
     constructor(name: string, uniformValues: T, createShaderBlock: SplatModifierShaderBlockFactory<T>) {
         super();

@@ -23,7 +23,6 @@ export class SplattingMaterial extends Material {
     side = Side.DoubleSide;
 
     highPrecisionEnabled: boolean = false;
-    sortedLayoutEnabled: boolean = false;
     normalizedFalloff: boolean = false;
     maxStdDev: number = Math.sqrt(8);
     maxPixelRadius: number = 1024;
@@ -66,7 +65,6 @@ export class SplattingMaterial extends Material {
         return HashKeyBuilder.getInstance()
             .raw(this.className())
             .bool(this.highPrecisionEnabled)
-            .bool(this.sortedLayoutEnabled)
             .bool(this.normalizedFalloff)
             .raw(this.renderMode)
             .getKey();
@@ -97,11 +95,8 @@ export class SplattingMaterial extends Material {
             .addUniform('packedTexWidth', WebGLShaderDataType.UInt)
             .addUniform('covTex', WebGLShaderDataType.USampler2D)
             .when(this.highPrecisionEnabled, builder => builder.addUniform('covExtTex', WebGLShaderDataType.USampler2D))
-            .when(!this.sortedLayoutEnabled, builder =>
-                builder
-                    .addUniform('orderTex', WebGLShaderDataType.USampler2D)
-                    .addUniform('orderTexWidth', WebGLShaderDataType.UInt),
-            )
+            .addUniform('orderTex', WebGLShaderDataType.USampler2D)
+            .addUniform('orderTexWidth', WebGLShaderDataType.UInt)
             .addVaryingCustom('vColor', WebGLShaderDataType.Vec4)
             .addVaryingCustom('vSplatUv', WebGLShaderDataType.Vec2)
             .when(this.renderMode === SplattingRenderMode.PickingId, builder =>
@@ -132,10 +127,8 @@ export class SplattingMaterial extends Material {
         if (this.highPrecisionEnabled) {
             program.setTexture2D('covExtTex', this.covExtTex);
         }
-        if (!this.sortedLayoutEnabled) {
-            program.setTexture2D('orderTex', this.orderTex);
-            program.setUniform('orderTexWidth', this.orderTex.width);
-        }
+        program.setTexture2D('orderTex', this.orderTex);
+        program.setUniform('orderTexWidth', this.orderTex.width);
     }
 
     clone(): Material {
@@ -145,7 +138,7 @@ export class SplattingMaterial extends Material {
 }
 
 function createVertexShader(material: SplattingMaterial): string {
-    const { sortedLayoutEnabled, highPrecisionEnabled, renderMode } = material;
+    const { highPrecisionEnabled, renderMode } = material;
     return `
         gl_Position = vec4(0.0, 0.0, 2.0, 1.0);
 
@@ -153,7 +146,7 @@ function createVertexShader(material: SplattingMaterial): string {
         if (splatIndex >= count) {
             return;
         }
-        ${!sortedLayoutEnabled ? `splatIndex = texelFetch(orderTex, ivec2(splatIndex % orderTexWidth, splatIndex / orderTexWidth), 0).r;` : ''}
+        splatIndex = texelFetch(orderTex, ivec2(splatIndex % orderTexWidth, splatIndex / orderTexWidth), 0).r;
 
         ivec2 texCoord = ivec2(splatIndex % packedTexWidth, splatIndex / packedTexWidth);
         vec4 pixel_0 = texelFetch(centerTex, texCoord, 0);

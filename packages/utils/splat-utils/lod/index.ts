@@ -11,6 +11,10 @@ import {
     Vector4,
     type IViewerContext,
     SplatModifier,
+    RendererBackend,
+    ContextLostEvent,
+    ResetRendererEvent,
+    __INTERNAL__,
 } from '@qunhe/egs';
 import { parseSplatData, detectSplatFileType } from '@qunhe/egs-splat-loader';
 import { ResourceManager, type LoadResourceFn } from './ResourceManager.js';
@@ -50,6 +54,8 @@ export interface LodConfig {
     /** Finest level admitted while the camera is moving. Zero is the finest level. */
     movingMinLevel: number;
     maxBudget: number;
+    /** Stop refinement at one weighted render pixel per point. */
+    pixelLimitEnabled: boolean;
     /** Stability duration in nominal 60 Hz ticks, independent of the caller's tick frequency. */
     hysteresisTicks: number;
     schedulerParallelCounts: number;
@@ -130,6 +136,7 @@ export class LodSplat {
     private movingMinLevel = 2;
     private maxLevel: number;
     private maxBudget = 3_000_000;
+    private pixelLimitEnabled = true;
     private hysteresisTicks = 4;
     private schedulerParallelCounts = 4;
     private schedulerExistingTaskLimit = 64;
@@ -139,6 +146,7 @@ export class LodSplat {
     private debuggerEnabled = false;
 
     private viewerCtx?: IViewerContext;
+    private gpuSorting: boolean;
     private resourceManager: ResourceManager;
     private voxels?: LodVoxelData[];
     private voxelLoading?: AbortController;
@@ -175,6 +183,12 @@ export class LodSplat {
     ) {
         this.maxLevel = meta.levels - 1;
         this.viewerCtx = viewerCtx;
+        const engine = viewerCtx?.viewer._getEngine();
+        this.gpuSorting = engine
+            ? engine.renderer.backend === RendererBackend.WEBGPU_WASM
+            : __INTERNAL__.Capabilities.IS_WEBGPU;
+        engine?.on(ContextLostEvent, this.onContextLost);
+        engine?.on(ResetRendererEvent, this.onRendererReset);
         this.resourceManager = new ResourceManager(meta.files, meta.permanentFiles, loadResource, () => {
             this.workDirty = true;
         });
@@ -230,6 +244,7 @@ export class LodSplat {
             Math.max(0, Math.floor(config.movingMinLevel ?? this.movingMinLevel)),
         );
         this.maxBudget = config.maxBudget ?? this.maxBudget;
+        this.pixelLimitEnabled = config.pixelLimitEnabled ?? this.pixelLimitEnabled;
         this.hysteresisTicks = Math.max(0, config.hysteresisTicks ?? this.hysteresisTicks);
         this.schedulerParallelCounts = Math.max(
             1,
@@ -464,9 +479,8 @@ export class LodSplat {
             const node = nodes[idx];
             return node.targetWeight / Math.max(1, node.lods[levels[idx]].counts);
         };
-        // Stop once the weighted sampling area is at most one render pixel per point.
-        // Without a viewport, only relative allocation and the point budget apply.
-        const pixelLimit = 1 / this.viewportPixels;
+        // Without a pixel limit or viewport, only relative allocation and the point budget apply.
+        const pixelLimit = this.pixelLimitEnabled ? 1 / this.viewportPixels : 0;
         const heap = this.orderedNodes.filter(idx => levels[idx] > finest && priority(idx) > pixelLimit);
         const siftDown = (start: number) => {
             let index = start;
@@ -712,6 +726,16 @@ export class LodSplat {
         }
     }
 
+    private onContextLost = () => {
+        this.gpuSorting = false;
+        this.cancelReplacement();
+    };
+
+    private onRendererReset = () => {
+        this.gpuSorting = this.viewerCtx!.viewer._getEngine().renderer.backend === RendererBackend.WEBGPU_WASM;
+        this.workDirty = true;
+    };
+
     private commit(changes: Map<number, number>, now: number, interval: number) {
         const old = new Set<LodProxy>();
         const levels = new Map(changes);
@@ -726,8 +750,9 @@ export class LodSplat {
                 }
             }
         }
-        // Only replacing displayed contents needs a sort barrier. New coverage has no old owner.
-        const immediate = old.size === 0;
+        const gpuSorting = this.gpuSorting;
+        // GPU ordering consumes the new scene in this frame; there is no CPU sort result to await.
+        const immediate = gpuSorting || old.size === 0;
         if (this.replacement && !immediate) {
             return;
         }
@@ -800,6 +825,13 @@ export class LodSplat {
             }
             if (!this.validReplacement(transaction)) {
                 this.cancelReplacement(undefined, transaction);
+                return;
+            }
+            if (gpuSorting) {
+                for (const proxy of transaction.newProxies) {
+                    this.container.add(proxy.splat);
+                }
+                this.finishReplacement(transaction);
                 return;
             }
             // Fully evicted proxies have no replacement to sort. Retire them in this batch now.
@@ -914,6 +946,7 @@ export class LodSplat {
             this.cancelReplacement(undefined, transaction);
             return;
         }
+        transaction.pending.forEach((listener, splat) => splat.off(SplatSortedEvent, listener));
         const old = new Set(transaction.oldProxies);
         this.proxies = this.proxies.filter(proxy => !old.has(proxy));
         for (const proxy of transaction.oldProxies) {
@@ -968,6 +1001,9 @@ export class LodSplat {
 
     /** Advance pending work once. Use this directly when the application owns the frame loop. */
     flush() {
+        if (this.gpuSorting && this.replacement) {
+            this.finishReplacement();
+        }
         if (this.isDestroy || !this.hasCamera) {
             return;
         }
@@ -1042,6 +1078,9 @@ export class LodSplat {
             return;
         }
         this.isDestroy = true;
+        const engine = this.viewerCtx?.viewer._getEngine();
+        engine?.off(ContextLostEvent, this.onContextLost);
+        engine?.off(ResetRendererEvent, this.onRendererReset);
         this.voxelLoading?.abort();
         this.voxels = undefined;
         this.stop();

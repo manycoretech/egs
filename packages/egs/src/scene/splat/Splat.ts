@@ -14,11 +14,12 @@ export const SplatRenderingStabilityChangedEvent = new EventType<boolean>();
 export const SplatSortedEvent = new EventType();
 
 /**
- * Bit flags that describe splat selection state.
+ * Bit flags that control splat visibility and appearance.
  */
 export enum SplatState {
     Deleted = 1,
     Selected = 2,
+    DisableSH = 4,
 }
 
 /**

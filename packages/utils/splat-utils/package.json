@@ -1,6 +1,6 @@
 {
   "name": "@qunhe/egs-splat-utils",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "egs-splat-utils",
   "main": "index.js",
   "module": "index.js",
@@ -27,9 +27,9 @@
     "build:types:release": "pnpm build --release --type-only"
   },
   "dependencies": {
-    "@qunhe/egs": "^1.2.95",
+    "@qunhe/egs": "^1.2.98",
     "@qunhe/egs-lib": "^1.0.3",
-    "@qunhe/egs-splat-loader": "^1.0.0",
+    "@qunhe/egs-splat-loader": "^1.2.0",
     "tslib": "catalog:"
   },
   "devDependencies": {

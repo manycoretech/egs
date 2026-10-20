@@ -1,5 +1,22 @@
 # EGS 发布说明 Release Notes
 
+## 1.2.98
+
+1. 新功能
+    - 支持 3DGS WebGPU 渲染，通过`@qunhe/egs-wasm-bridge@1.2.98`启用`WEBGPU_WASM`后端，在 GPU 上完成预处理、排序和绘制。
+    - WebGPU 支持自定义`SplatModifier`，需在 shader 工厂中提供`language === 'wgsl'`对应的实现。
+    - 新增逐高斯状态位`SplatState.DisableSH`，禁用视角相关的 SH 颜色贡献，保留基础色。
+2. **<font color="red">Breaking Changes</font>**
+    - 移除`Splatting.pack.sortedLayoutEnabled`，调用方需删除相关配置。
+    - 移除`Splatting.sort.frustumCullingEnabled`和`Splatting.sort.frustumCullingClipScale`，调用方需删除相关配置。
+    - 将`Splatting.toneMapping`并入`Splatting.composite`：
+        - `toneMapping.toneMapping`迁移为`composite.toneMapping`。
+        - `toneMapping.exposure`迁移为`composite.exposure`。
+        - 删除独立的`toneMapping.enabled`，改由`composite.enabled`统一控制离屏合成及色调映射；`composite.highPrecisionEnabled`仍控制中间颜色缓冲精度。
+3. WebGPU 后端说明
+    - WebGPU 在渲染帧内执行 GPU 排序；WebGL 的排序间隔、相机/对象变化阈值及`pack.cameraRelativeUpdateDistanceThreshold`不作用于此路径。
+    - `SplatSortedEvent`随 WebGPU 绘制流程触发，不再对应异步 CPU 排序任务的完成。
+
 ## 1.2.97
 
 1. 优化

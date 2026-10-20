@@ -84,7 +84,7 @@ export {
     DeferredDrawRectAreaLightMaterial,
     DeferredDrawSpotLightMaterial,
 } from './fx/plugins/Deferred.js';
-export { setSortSplats } from './fx/plugins/Splatting.js';
+export { setSortSplats, type SplattingOptions, type SplatKernelOptions } from './fx/plugins/Splatting.js';
 
 export { registerPipelineContentAPI, removePipelineContentAPI } from './fx/PipelineAPI.js';
 export {
@@ -96,7 +96,7 @@ export {
 } from './ContentAPI.js';
 export type { ContentManagedAPI, ContentAPI, WorldRebuildConfig } from './ContentAPI.js';
 export { LegacySourceTexture } from './elements/textures/Texture.js';
-export { textureCopyInfo, textureCopyFootprint } from './elements/textures/types.js';
+export { textureCopyInfo, textureCopyFootprint, formatMeta, TextureSampleType } from './elements/textures/types.js';
 
 export { RenderInfo } from './utils/RenderInfo.js';
 export type { Renderable } from './scene/renderables/IRenderable.js';

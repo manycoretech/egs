@@ -51,6 +51,7 @@ export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
         return HashKeyBuilder.getInstance()
             .raw(this.className())
             .bool(this.highPrecisionEnabled)
+            .bool(!!splat.stateTex)
             .raw(splat.PackType)
             .raw(splat.shDegree)
             .raw(splat.maxShDegree)
@@ -191,9 +192,9 @@ function createFragShader(material: SplatPrecalculateMaterial): string {
         ${
             splat.shDegree > 0
                 ? `
-                    vec3 center = texelFetch(centerTex, fragCoord, 0).xyz;
-                    vec3 normal = normalize(transpose(mat3(modelMatrix)) * (center - origin));
-                    color.rgb += evaluateSH(uint(splatIndex + targetOffset), normal);
+                    vec4 center = texelFetch(centerTex, fragCoord, 0);
+                    vec3 normal = normalize(transpose(mat3(modelMatrix)) * (center.xyz - origin));
+                    color.rgb += float((uint(center.w) & 4u) == 0u) * evaluateSH(uint(splatIndex + targetOffset), normal);
                 `
                 : ''
         }

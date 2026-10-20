@@ -1,4 +1,3 @@
-import { deferred } from '@qunhe/egs-lib';
 import {
     type Splat,
     Vector3,
@@ -80,34 +79,29 @@ export function createSourceTextureFromSampler(sampler: ISampler): SourceTexture
         false,
     )
         .configAsDataTexture()
-        .setLevelData(new Uint32Array(sampler.source.buffer), 0);
+        .setLevelData(
+            new Uint32Array(sampler.source.buffer, sampler.source.byteOffset, sampler.source.byteLength / 4),
+            0,
+        );
 }
 
-export function createSourceTextureFromImageSource(buffer: Uint8Array, type: string = 'image/webp') {
-    const { promise, resolve } = deferred<SourceTexture>();
-    const blob = new Blob([buffer as Uint8Array<ArrayBuffer>], { type });
-    const url = URL.createObjectURL(blob);
-    const img = new Image();
-    img.src = url;
-    img.onload = () => {
-        URL.revokeObjectURL(url);
-        resolve(
-            new SourceTexture(
-                TextureDimension.D2,
-                TextureViewDimension.D2,
-                TextureFormat.Rgba8Unorm,
-                img.width,
-                img.height,
-                1,
-                false,
-                false,
-            )
-                .configAsDataTexture()
-                .setLevelLayerData(img, 0, 0),
-        );
-    };
-
-    return promise;
+export async function createSourceTextureFromImageSource(buffer: Uint8Array, type: string = 'image/webp') {
+    const image = await createImageBitmap(new Blob([buffer as Uint8Array<ArrayBuffer>], { type }), {
+        premultiplyAlpha: 'none',
+        colorSpaceConversion: 'none',
+    });
+    return new SourceTexture(
+        TextureDimension.D2,
+        TextureViewDimension.D2,
+        TextureFormat.Rgba8Unorm,
+        image.width,
+        image.height,
+        1,
+        false,
+        false,
+    )
+        .configAsDataTexture()
+        .setLevelLayerData(image, 0, 0);
 }
 
 export async function createSplat(data: SplatData): Promise<Splat> {
@@ -151,6 +145,7 @@ export async function createSplat(data: SplatData): Promise<Splat> {
 }
 
 export function createSamplerFromSourceTexture(texture: SourceTexture): ISampler {
+    const data = texture.getLevelLayerSource(0) as Uint32Array;
     let format: ISamplerFormat;
     switch (texture.format) {
         case TextureFormat.Rg32Uint: {
@@ -170,7 +165,7 @@ export function createSamplerFromSourceTexture(texture: SourceTexture): ISampler
         height: texture.height,
         depth: 1,
         format,
-        source: new Uint8Array((texture.getLevelLayerSource(0) as Uint32Array).buffer),
+        source: new Uint8Array(data.buffer, data.byteOffset, data.byteLength),
     };
 }
 
