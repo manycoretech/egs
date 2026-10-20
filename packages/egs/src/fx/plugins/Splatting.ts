@@ -29,7 +29,7 @@ import type { Splat } from '../../scene/splat/Splat.js';
 import { TextureFormat, TextureDimension, TextureViewDimension } from '../../elements/textures/types.js';
 import { SourceTexture } from '../../elements/textures/SourceTexture.js';
 
-/** @internal Parameters shared by the Splatting plugin and native GPU renderer. */
+/** Parameters shared by the Splatting plugin and native GPU renderer. */
 export interface SplattingOptions {
     preBlurAmount: number;
     blurAmount: number;
