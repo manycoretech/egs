@@ -1,3 +1,4 @@
+import { forEachSplatChunk } from '../utils/stream.js';
 import { type IFile, type IData, type ISingleSplat } from '../types.js';
 import { SH_C0, SH_MAPS, NUM_F_REST_TO_SH_DEGREE } from '../utils/splat.js';
 import { isUrl } from '../utils/file.js';
@@ -113,7 +114,7 @@ export class SogFile implements IFile {
         ].filter((path): path is string => !!path);
     }
 
-    private parse_v1(data: IData, offset: number) {
+    private async parse_v1(data: IData, offset: number) {
         const setFn = data.set.bind(data) as IData['set'];
         const setShFn = data.setShN.bind(data) as IData['setShN'];
 
@@ -176,39 +177,50 @@ export class SogFile implements IFile {
             b: 0,
             a: 0,
         };
-        for (let i = 0; i < counts; i++) {
-            const i4 = i * 4;
+        await forEachSplatChunk(
+            data,
+            offset,
+            counts,
+            (start, size) => {
+                for (let i = start; i < start + size; i++) {
+                    const i4 = i * 4;
 
-            const x = centerMinX + rangeX * (mean0[i4 + 0] + (mean1[i4 + 0] << 8));
-            const y = centerMinY + rangeY * (mean0[i4 + 1] + (mean1[i4 + 1] << 8));
-            const z = centerMinZ + rangeZ * (mean0[i4 + 2] + (mean1[i4 + 2] << 8));
-            single.x = Math.sign(x) * (Math.exp(Math.abs(x)) - 1);
-            single.y = Math.sign(y) * (Math.exp(Math.abs(y)) - 1);
-            single.z = Math.sign(z) * (Math.exp(Math.abs(z)) - 1);
+                    const x = centerMinX + rangeX * (mean0[i4 + 0] + (mean1[i4 + 0] << 8));
+                    const y = centerMinY + rangeY * (mean0[i4 + 1] + (mean1[i4 + 1] << 8));
+                    const z = centerMinZ + rangeZ * (mean0[i4 + 2] + (mean1[i4 + 2] << 8));
+                    single.x = Math.sign(x) * (Math.exp(Math.abs(x)) - 1);
+                    single.y = Math.sign(y) * (Math.exp(Math.abs(y)) - 1);
+                    single.z = Math.sign(z) * (Math.exp(Math.abs(z)) - 1);
 
-            single.sx = SX_LUT[scale0[i4 + 0]];
-            single.sy = SY_LUT[scale0[i4 + 1]];
-            single.sz = SZ_LUT[scale0[i4 + 2]];
+                    single.sx = SX_LUT[scale0[i4 + 0]];
+                    single.sy = SY_LUT[scale0[i4 + 1]];
+                    single.sz = SZ_LUT[scale0[i4 + 2]];
 
-            TEMP_ROT[0] = (quat0[i4 + 0] / 255 - 0.5) * Math.SQRT2;
-            TEMP_ROT[1] = (quat0[i4 + 1] / 255 - 0.5) * Math.SQRT2;
-            TEMP_ROT[2] = (quat0[i4 + 2] / 255 - 0.5) * Math.SQRT2;
-            TEMP_ROT[3] = Math.sqrt(
-                Math.max(0, 1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2]),
-            );
-            const PERM = PERM_TABLE[quat0[i4 + 3] - 252];
-            single.qx = TEMP_ROT[PERM[0]];
-            single.qy = TEMP_ROT[PERM[1]];
-            single.qz = TEMP_ROT[PERM[2]];
-            single.qw = TEMP_ROT[PERM[3]];
+                    TEMP_ROT[0] = (quat0[i4 + 0] / 255 - 0.5) * Math.SQRT2;
+                    TEMP_ROT[1] = (quat0[i4 + 1] / 255 - 0.5) * Math.SQRT2;
+                    TEMP_ROT[2] = (quat0[i4 + 2] / 255 - 0.5) * Math.SQRT2;
+                    TEMP_ROT[3] = Math.sqrt(
+                        Math.max(
+                            0,
+                            1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2],
+                        ),
+                    );
+                    const PERM = PERM_TABLE[quat0[i4 + 3] - 252];
+                    single.qx = TEMP_ROT[PERM[0]];
+                    single.qy = TEMP_ROT[PERM[1]];
+                    single.qz = TEMP_ROT[PERM[2]];
+                    single.qw = TEMP_ROT[PERM[3]];
 
-            single.r = SH_C0 * (colorMinR + colorRangeR * color0[i4 + 0]) + 0.5;
-            single.g = SH_C0 * (colorMinG + colorRangeG * color0[i4 + 1]) + 0.5;
-            single.b = SH_C0 * (colorMinB + colorRangeB * color0[i4 + 2]) + 0.5;
-            single.a = A_LUT[color0[i4 + 3]];
+                    single.r = SH_C0 * (colorMinR + colorRangeR * color0[i4 + 0]) + 0.5;
+                    single.g = SH_C0 * (colorMinG + colorRangeG * color0[i4 + 1]) + 0.5;
+                    single.b = SH_C0 * (colorMinB + colorRangeB * color0[i4 + 2]) + 0.5;
+                    single.a = A_LUT[color0[i4 + 3]];
 
-            setFn(offset + i, single);
-        }
+                    setFn(offset + i, single);
+                }
+            },
+            'splat',
+        );
 
         if (shN) {
             const centroidTexWidth = cached[5].width;
@@ -217,21 +229,29 @@ export class SogFile implements IFile {
             const shCounts = SH_MAPS[shDegree];
             const sh = new Array(shCounts);
             const shCoeffs = shCounts / 3;
-            for (let i = 0; i < counts; i++) {
-                const i4 = i * 4;
-                const label = labels[i4] + (labels[i4 + 1] << 8);
-                const o = ((label >>> 6) * centroidTexWidth + (label & 63) * 15) * 4;
-                for (let j = 0; j < shCoeffs; j++) {
-                    sh[j * 3 + 0] = min + range * centroids[o + j * 4 + 0];
-                    sh[j * 3 + 1] = min + range * centroids[o + j * 4 + 1];
-                    sh[j * 3 + 2] = min + range * centroids[o + j * 4 + 2];
-                }
-                setShFn(offset + i, sh);
-            }
+            await forEachSplatChunk(
+                data,
+                offset,
+                counts,
+                (start, size) => {
+                    for (let i = start; i < start + size; i++) {
+                        const i4 = i * 4;
+                        const label = labels[i4] + (labels[i4 + 1] << 8);
+                        const o = ((label >>> 6) * centroidTexWidth + (label & 63) * 15) * 4;
+                        for (let j = 0; j < shCoeffs; j++) {
+                            sh[j * 3 + 0] = min + range * centroids[o + j * 4 + 0];
+                            sh[j * 3 + 1] = min + range * centroids[o + j * 4 + 1];
+                            sh[j * 3 + 2] = min + range * centroids[o + j * 4 + 2];
+                        }
+                        setShFn(offset + i, sh);
+                    }
+                },
+                'sh',
+            );
         }
     }
 
-    private parse_v2(data: IData, offset: number) {
+    private async parse_v2(data: IData, offset: number) {
         const setFn = data.set.bind(data) as IData['set'];
         const setShFn = data.setShN.bind(data) as IData['setShN'];
 
@@ -266,39 +286,50 @@ export class SogFile implements IFile {
             b: 0,
             a: 0,
         };
-        for (let i = 0; i < counts; i++) {
-            const i4 = i * 4;
+        await forEachSplatChunk(
+            data,
+            offset,
+            counts,
+            (start, size) => {
+                for (let i = start; i < start + size; i++) {
+                    const i4 = i * 4;
 
-            const x = centerMinX + rangeX * (mean0[i4 + 0] + (mean1[i4 + 0] << 8));
-            const y = centerMinY + rangeY * (mean0[i4 + 1] + (mean1[i4 + 1] << 8));
-            const z = centerMinZ + rangeZ * (mean0[i4 + 2] + (mean1[i4 + 2] << 8));
-            single.x = Math.sign(x) * (Math.exp(Math.abs(x)) - 1);
-            single.y = Math.sign(y) * (Math.exp(Math.abs(y)) - 1);
-            single.z = Math.sign(z) * (Math.exp(Math.abs(z)) - 1);
+                    const x = centerMinX + rangeX * (mean0[i4 + 0] + (mean1[i4 + 0] << 8));
+                    const y = centerMinY + rangeY * (mean0[i4 + 1] + (mean1[i4 + 1] << 8));
+                    const z = centerMinZ + rangeZ * (mean0[i4 + 2] + (mean1[i4 + 2] << 8));
+                    single.x = Math.sign(x) * (Math.exp(Math.abs(x)) - 1);
+                    single.y = Math.sign(y) * (Math.exp(Math.abs(y)) - 1);
+                    single.z = Math.sign(z) * (Math.exp(Math.abs(z)) - 1);
 
-            single.sx = SCALE_LUT[scale0[i4 + 0]];
-            single.sy = SCALE_LUT[scale0[i4 + 1]];
-            single.sz = SCALE_LUT[scale0[i4 + 2]];
+                    single.sx = SCALE_LUT[scale0[i4 + 0]];
+                    single.sy = SCALE_LUT[scale0[i4 + 1]];
+                    single.sz = SCALE_LUT[scale0[i4 + 2]];
 
-            TEMP_ROT[0] = (quat0[i4 + 0] / 255 - 0.5) * Math.SQRT2;
-            TEMP_ROT[1] = (quat0[i4 + 1] / 255 - 0.5) * Math.SQRT2;
-            TEMP_ROT[2] = (quat0[i4 + 2] / 255 - 0.5) * Math.SQRT2;
-            TEMP_ROT[3] = Math.sqrt(
-                Math.max(0, 1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2]),
-            );
-            const PERM = PERM_TABLE[quat0[i4 + 3] - 252];
-            single.qx = TEMP_ROT[PERM[0]];
-            single.qy = TEMP_ROT[PERM[1]];
-            single.qz = TEMP_ROT[PERM[2]];
-            single.qw = TEMP_ROT[PERM[3]];
+                    TEMP_ROT[0] = (quat0[i4 + 0] / 255 - 0.5) * Math.SQRT2;
+                    TEMP_ROT[1] = (quat0[i4 + 1] / 255 - 0.5) * Math.SQRT2;
+                    TEMP_ROT[2] = (quat0[i4 + 2] / 255 - 0.5) * Math.SQRT2;
+                    TEMP_ROT[3] = Math.sqrt(
+                        Math.max(
+                            0,
+                            1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2],
+                        ),
+                    );
+                    const PERM = PERM_TABLE[quat0[i4 + 3] - 252];
+                    single.qx = TEMP_ROT[PERM[0]];
+                    single.qy = TEMP_ROT[PERM[1]];
+                    single.qz = TEMP_ROT[PERM[2]];
+                    single.qw = TEMP_ROT[PERM[3]];
 
-            single.r = SH_C0 * sh0Codebook[color0[i4 + 0]] + 0.5;
-            single.g = SH_C0 * sh0Codebook[color0[i4 + 1]] + 0.5;
-            single.b = SH_C0 * sh0Codebook[color0[i4 + 2]] + 0.5;
-            single.a = color0[i4 + 3] / 255;
+                    single.r = SH_C0 * sh0Codebook[color0[i4 + 0]] + 0.5;
+                    single.g = SH_C0 * sh0Codebook[color0[i4 + 1]] + 0.5;
+                    single.b = SH_C0 * sh0Codebook[color0[i4 + 2]] + 0.5;
+                    single.a = color0[i4 + 3] / 255;
 
-            setFn(offset + i, single);
-        }
+                    setFn(offset + i, single);
+                }
+            },
+            'splat',
+        );
 
         if (shN) {
             const { codebook } = shN;
@@ -306,16 +337,24 @@ export class SogFile implements IFile {
             const shCoeffs = shCounts / 3;
             const offsetItemSize = shCoeffs * 4;
             const sh = new Array(shCounts);
-            for (let i = 0; i < counts; i++) {
-                const i4 = i * 4;
-                const o = (labels[i4 + 0] + (labels[i4 + 1] << 8)) * offsetItemSize;
-                for (let j = 0; j < shCoeffs; j++) {
-                    sh[j * 3] = codebook[centroids[o + j * 4 + 0]];
-                    sh[j * 3 + 1] = codebook[centroids[o + j * 4 + 1]];
-                    sh[j * 3 + 2] = codebook[centroids[o + j * 4 + 2]];
-                }
-                setShFn(offset + i, sh);
-            }
+            await forEachSplatChunk(
+                data,
+                offset,
+                counts,
+                (start, size) => {
+                    for (let i = start; i < start + size; i++) {
+                        const i4 = i * 4;
+                        const o = (labels[i4 + 0] + (labels[i4 + 1] << 8)) * offsetItemSize;
+                        for (let j = 0; j < shCoeffs; j++) {
+                            sh[j * 3] = codebook[centroids[o + j * 4 + 0]];
+                            sh[j * 3 + 1] = codebook[centroids[o + j * 4 + 1]];
+                            sh[j * 3 + 2] = codebook[centroids[o + j * 4 + 2]];
+                        }
+                        setShFn(offset + i, sh);
+                    }
+                },
+                'sh',
+            );
         }
     }
 
@@ -339,9 +378,9 @@ export class SogFile implements IFile {
         this.cached = await Promise.all(this.texturePaths.map(path => this.loadTexture(path, context)));
 
         if (this.version === 1) {
-            this.parse_v1(data, BlockOffset);
+            await this.parse_v1(data, BlockOffset);
         } else if (this.version === 2) {
-            this.parse_v2(data, BlockOffset);
+            await this.parse_v2(data, BlockOffset);
         } else {
             throw new Error(`Unsupported SOG version: ${this.version}`);
         }

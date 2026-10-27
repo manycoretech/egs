@@ -103,7 +103,7 @@ export type { Renderable } from './scene/renderables/IRenderable.js';
 export { WebGLExtEnums } from './renderer/webgl/WGLExtensions.js';
 export { WGLConstantsConvertor } from './renderer/webgl/WGLConstantsConvertor.js';
 export { WGLExtensions } from './renderer/webgl/WGLExtensions.js';
-export { getBufferSubDataAsync } from './utils/AsyncRead.js';
+export { getBufferSubDataAsync, waitForWebGL } from './utils/AsyncRead.js';
 export { Platform } from './utils/Platform.js';
 export { getMaterialShaderComponents, getMaterialProperties } from './ContentAPI.js';
 export { ToggleWebGPUEvent, WebGPUUnstable, WebGPUValidationFailed } from './Bridge/utils.js';
@@ -116,6 +116,7 @@ export {
     setupWebGPUCompressedTextureCapabilities,
 } from './renderer/Capabilities.js';
 export { CompressedSplat } from './scene/splat/CompressedSplat.js';
+export type { SplatSource } from './scene/splat/Splat.js';
 export { SuperCompressedSplat } from './scene/splat/SuperCompressedSplat.js';
 export { SogSplat } from './scene/splat/SogSplat.js';
 export type { SogSplatMeta } from './scene/splat/SogSplat.js';

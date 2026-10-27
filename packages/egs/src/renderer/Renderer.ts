@@ -94,6 +94,10 @@ export class Renderer extends EventDispatcher implements IRenderer {
     // you just need to add it to your page.
     gl: WebGLRenderingContext | WebGL2RenderingContext; // The HTML5 Canvas's 'webgl' context obtained from the canvas where the renderer will draw.
 
+    get gpuDevice() {
+        return this.gl;
+    }
+
     readonly renderInfo = new RenderInfo();
     wglState: WGLState;
     renderState: RenderState;
@@ -839,6 +843,10 @@ export class Renderer extends EventDispatcher implements IRenderer {
 
     queueFlushTexture(texture: Texture) {
         this.resourceManager.textureManager.get(texture, this.wglState);
+    }
+
+    getGPUTextureHandle(texture: Texture) {
+        return this.resourceManager.textureManager.get(texture, this.wglState).webglTexture;
     }
 }
 

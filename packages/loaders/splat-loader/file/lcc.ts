@@ -1,3 +1,4 @@
+import { forEachSplatChunk } from '../utils/stream.js';
 import { type IFile, type IData, type ISingleSplat } from '../types.js';
 import { mix } from '../utils/math.js';
 import { type FileContext, getFileEntry, resolveFilePath } from '../utils/zip.js';
@@ -140,43 +141,45 @@ export class LccFile implements IFile {
             const shN = refs['shcoef.bin']
                 ? new DataView(refs['shcoef.bin'].buffer, refs['shcoef.bin'].byteOffset + offset * 2, size * 2)
                 : undefined;
-            for (let j = 0; j < points; j++) {
-                const off = j * 32;
+            await forEachSplatChunk(data, index, points, (start, size) => {
+                for (let j = start; j < start + size; j++) {
+                    const off = j * 32;
 
-                single.x = dataview.getFloat32(off + 0, true);
-                single.y = dataview.getFloat32(off + 4, true);
-                single.z = dataview.getFloat32(off + 8, true);
+                    single.x = dataview.getFloat32(off + 0, true);
+                    single.y = dataview.getFloat32(off + 4, true);
+                    single.z = dataview.getFloat32(off + 8, true);
 
-                single.r = dataview.getUint8(off + 12) / 255.0;
-                single.g = dataview.getUint8(off + 13) / 255.0;
-                single.b = dataview.getUint8(off + 14) / 255.0;
-                single.a = dataview.getUint8(off + 15) / 255.0;
+                    single.r = dataview.getUint8(off + 12) / 255.0;
+                    single.g = dataview.getUint8(off + 13) / 255.0;
+                    single.b = dataview.getUint8(off + 14) / 255.0;
+                    single.a = dataview.getUint8(off + 15) / 255.0;
 
-                single.sx = mix(scaleMin[0], scaleMax[0], dataview.getUint16(off + 16, true) / 65535.0);
-                single.sy = mix(scaleMin[1], scaleMax[1], dataview.getUint16(off + 18, true) / 65535.0);
-                single.sz = mix(scaleMin[2], scaleMax[2], dataview.getUint16(off + 20, true) / 65535.0);
+                    single.sx = mix(scaleMin[0], scaleMax[0], dataview.getUint16(off + 16, true) / 65535.0);
+                    single.sy = mix(scaleMin[1], scaleMax[1], dataview.getUint16(off + 18, true) / 65535.0);
+                    single.sz = mix(scaleMin[2], scaleMax[2], dataview.getUint16(off + 20, true) / 65535.0);
 
-                const quat = decodeRotation(dataview.getUint32(off + 22, true));
-                single.qx = quat[0];
-                single.qy = quat[1];
-                single.qz = quat[2];
-                single.qw = quat[3];
+                    const quat = decodeRotation(dataview.getUint32(off + 22, true));
+                    single.qx = quat[0];
+                    single.qy = quat[1];
+                    single.qz = quat[2];
+                    single.qw = quat[3];
 
-                setFn(index, single);
+                    setFn(index, single);
 
-                if (shN) {
-                    const shOff = off * 2;
-                    for (let k = 0; k < 15; k++) {
-                        const v = DecodePacked_11_10_11(shN.getUint32(shOff + k * 4, true));
-                        shData[k * 3] = mix(shMin[0], shMax[0], v[0]);
-                        shData[k * 3 + 1] = mix(shMin[1], shMax[1], v[1]);
-                        shData[k * 3 + 2] = mix(shMin[2], shMax[2], v[2]);
+                    if (shN) {
+                        const shOff = off * 2;
+                        for (let k = 0; k < 15; k++) {
+                            const v = DecodePacked_11_10_11(shN.getUint32(shOff + k * 4, true));
+                            shData[k * 3] = mix(shMin[0], shMax[0], v[0]);
+                            shData[k * 3 + 1] = mix(shMin[1], shMax[1], v[1]);
+                            shData[k * 3 + 2] = mix(shMin[2], shMax[2], v[2]);
+                        }
+                        setShFn(index, shData);
                     }
-                    setShFn(index, shData);
-                }
 
-                index++;
-            }
+                    index++;
+                }
+            });
         }
         data.finishBlock();
     }

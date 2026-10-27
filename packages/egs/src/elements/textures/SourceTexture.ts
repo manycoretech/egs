@@ -271,9 +271,7 @@ export class SourceTexture extends TextureV2 {
         return this;
     }
 
-    /**
-     * @internal
-     */
+    /** @internal Synchronize existing source data to the WASM bridge. */
     syncAllLevels() {
         for (let i = 0; i < this.levels; i++) {
             const levelData = this.source[i];

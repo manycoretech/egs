@@ -37,7 +37,7 @@ export interface SplattingOptions {
     maxStdDev: number;
     maxPixelRadius: number;
     detailCullingThreshold: number;
-    normalizedFalloff: boolean;
+    detailCullingAlphaEnabled: boolean;
     renderMode: number;
     selectedColor: { x: number; y: number; z: number; w: number };
     ringSize: number;
@@ -239,25 +239,27 @@ export class SplattingPlugin extends PipelinePlugin {
 
             this.sortingBuffer = new Uint32Array(backSorting.buffer);
             const prevOrderTex = reorderMaterial.orderTex;
-            prevOrderTex.freeGPU();
-            this.orderBuffer = prevOrderTex.getLevelLayerSource(0) as Uint32Array;
+            // The texture view covers active rows; retain its full backing capacity for the next sort.
+            this.orderBuffer = new Uint32Array((prevOrderTex.getLevelLayerSource(0) as Uint32Array).buffer);
 
             this.splattingGeometry.instancedCount = Math.ceil(activeCount / SPLAT_BLOCK_COUNT);
             this.splattingMaterial.count = this.highlightKernelGeometry.instancedCount = activeCount;
             const w = Math.max(1, orderWidth);
             const h = Math.max(1, Math.ceil(activeCount / w));
-            reorderMaterial.orderTex = new SourceTexture(
-                TextureDimension.D2,
-                TextureViewDimension.D2,
-                TextureFormat.R32Uint,
-                w,
-                h,
-                1,
-                false,
-                false,
-            )
-                .configAsDataTexture()
-                .setLevelData(ordering.subarray(0, w * h), 0);
+            if (prevOrderTex.width !== w || prevOrderTex.height !== h) {
+                prevOrderTex.freeGPU();
+                reorderMaterial.orderTex = new SourceTexture(
+                    TextureDimension.D2,
+                    TextureViewDimension.D2,
+                    TextureFormat.R32Uint,
+                    w,
+                    h,
+                    1,
+                    false,
+                    false,
+                ).configAsDataTexture();
+            }
+            reorderMaterial.orderTex.setLevelData(ordering.subarray(0, w * h), 0);
 
             renderer.queueFlushTexture(reorderMaterial.orderTex);
             renderer.flushCommands();
@@ -365,6 +367,7 @@ export class SplattingPlugin extends PipelinePlugin {
 
         const prevSplats = new Set(prevSplatCache.keys());
         for (const splat of splats) {
+            splat.checkSource();
             if (!prevSplats.delete(splat.id)) {
                 splat.updateMatrixWorld();
                 prevSplatCache.set(splat.id, {
@@ -538,6 +541,7 @@ export class SplattingPlugin extends PipelinePlugin {
 
         const resourceSizeFN = () => {
             const pixels = splatManager.totalCount;
+            const capacity = packAttachSize.width * packAttachSize.height;
             const width = Math.min(
                 2 ** Math.ceil(Math.log2(Math.sqrt(pixels))),
                 this.renderer.renderer.limits.maxTextureDimension2D,
@@ -547,7 +551,8 @@ export class SplattingPlugin extends PipelinePlugin {
                 packAttachSize.height = 1;
             }
             let height = Math.ceil(pixels / packAttachSize.width);
-            if (splatManager.splats.length > 1) {
+            // Initial point counts are known; reserve growth room only after storage exists.
+            if (pixels > capacity && capacity > 1 && splatManager.splats.length > 1) {
                 height = Math.min(
                     2 ** Math.ceil(Math.log2(height)),
                     this.renderer.renderer.limits.maxTextureDimension2D,
@@ -815,7 +820,7 @@ export class SplattingPlugin extends PipelinePlugin {
                             maxStdDev: this.splattingMaterial.maxStdDev,
                             maxPixelRadius: this.splattingMaterial.maxPixelRadius,
                             detailCullingThreshold: this.splattingMaterial.detailCullingThreshold,
-                            normalizedFalloff: this.splattingMaterial.normalizedFalloff,
+                            detailCullingAlphaEnabled: this.splattingMaterial.detailCullingAlphaEnabled,
                             renderMode: this.splattingMaterial.renderMode,
                             selectedColor: this.splattingMaterial.selectedColor,
                             ringSize: this.splattingMaterial.ringSize,
@@ -957,11 +962,10 @@ export class SplattingPlugin extends PipelinePlugin {
                         this.splattingMaterial.detailCullingThreshold = v;
                     },
                 },
-                normalizedFalloff: {
-                    get: () => this.splattingMaterial.normalizedFalloff,
+                detailCullingAlphaEnabled: {
+                    get: () => this.splattingMaterial.detailCullingAlphaEnabled,
                     set: (v: boolean) => {
-                        this.splattingMaterial.normalizedFalloff = v;
-                        this.splattingMaterial.notifyRecompileShader();
+                        this.splattingMaterial.detailCullingAlphaEnabled = v;
                     },
                 },
                 selectedColor: {

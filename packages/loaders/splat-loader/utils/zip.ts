@@ -1,4 +1,5 @@
 import { unzipSync } from 'fflate';
+import { probeStream } from './stream.js';
 
 export interface FileContext {
     path: string;
@@ -22,27 +23,7 @@ export function resolveFilePath(path: string, relative: string) {
 export async function probeZipStream(
     stream: ReadableStream<Uint8Array>,
 ): Promise<{ isZip: boolean; stream: ReadableStream<Uint8Array> }> {
-    const [probe, source] = stream.tee();
-    const reader = probe.getReader();
-    let magic = 0;
-    let length = 0;
-    try {
-        while (length < 4) {
-            const { done, value } = await reader.read();
-            if (done) {
-                break;
-            }
-            for (let i = 0; i < value.length && length < 4; i++, length++) {
-                magic |= value[i] << (length * 8);
-            }
-        }
-    } catch (error) {
-        source.cancel(error).catch(() => {});
-        throw error;
-    } finally {
-        // Awaiting one branch's cancellation would wait for the other branch.
-        reader.cancel().catch(() => {});
-    }
+    const { magic, stream: source } = await probeStream(stream);
     return { isZip: magic === 0x04034b50 || magic === 0x06054b50, stream: source };
 }
 

@@ -27,6 +27,7 @@ import {
     type IFile,
 } from '@qunhe/egs-splat-loader';
 import { createSHRotateFn } from './utils.js';
+import { uploadSplatData, createStreamingSog } from './SplatSource.js';
 
 type ISingleSplat = Parameters<SplatData['get']>[1];
 
@@ -68,7 +69,7 @@ export function createSourceTextureFromSampler(sampler: ISampler): SourceTexture
             break;
         }
     }
-    return new SourceTexture(
+    const texture = new SourceTexture(
         TextureDimension.D2,
         TextureViewDimension.D2,
         format,
@@ -77,12 +78,14 @@ export function createSourceTextureFromSampler(sampler: ISampler): SourceTexture
         1,
         false,
         false,
-    )
-        .configAsDataTexture()
-        .setLevelData(
+    ).configAsDataTexture();
+    if (sampler.source.byteLength) {
+        texture.setLevelData(
             new Uint32Array(sampler.source.buffer, sampler.source.byteOffset, sampler.source.byteLength / 4),
             0,
         );
+    }
+    return texture;
 }
 
 export async function createSourceTextureFromImageSource(buffer: Uint8Array, type: string = 'image/webp') {
@@ -104,9 +107,14 @@ export async function createSourceTextureFromImageSource(buffer: Uint8Array, typ
         .setLevelLayerData(image, 0, 0);
 }
 
-export async function createSplat(data: SplatData): Promise<Splat> {
+export async function createSplat(data: SplatData, renderer?: __INTERNAL__.IRenderer): Promise<Splat> {
+    if (data.stream && !renderer) {
+        data.cancel();
+        throw new Error('A renderer is required to consume streaming splat data.');
+    }
     let splat: Splat;
     if (data instanceof RawSplatData) {
+        data.cancel();
         throw new Error('RawSplatData is not supported create splat.');
     } else if (data instanceof CompressedSplatData) {
         const { counts, shDegree, samplers } = data.serialize();
@@ -132,6 +140,7 @@ export async function createSplat(data: SplatData): Promise<Splat> {
             shDegree >= 3 ? textures[2] : undefined,
         );
     } else if (data instanceof SogSplatData) {
+        if (data.stream) return createStreamingSog(data, renderer!);
         const { samplers, extras = [] } = data.serialize();
         const [meansL, meansU, scales, quats, sh0, shNLabels, shNCentroids] = await Promise.all(
             samplers.map(v => createSourceTextureFromImageSource(v.source)),
@@ -141,6 +150,15 @@ export async function createSplat(data: SplatData): Promise<Splat> {
         throw new Error('Unsupported splat data type.');
     }
 
+    if (data.stream) {
+        try {
+            await uploadSplatData(splat, data, renderer!);
+        } catch (error) {
+            data.cancel(error);
+            splat.destroy();
+            throw error;
+        }
+    }
     return splat;
 }
 
@@ -170,6 +188,7 @@ export function createSamplerFromSourceTexture(texture: SourceTexture): ISampler
 }
 
 export function createSplatData(splat: Splat): SplatData {
+    if (splat.stream) throw new Error('Call splat.readback() before accessing CPU data.');
     let splatData: SplatData | undefined;
     const samplers: ISampler[] = [];
     if (splat instanceof __INTERNAL__.CompressedSplat) {

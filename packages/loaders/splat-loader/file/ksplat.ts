@@ -1,3 +1,4 @@
+import { forEachSplatChunk } from '../utils/stream.js';
 import { type IFile, type IData, type ISingleSplat } from '../types.js';
 import { fromHalf } from '../utils/packing.js';
 import { SH_MAPS } from '../utils/splat.js';
@@ -294,7 +295,7 @@ export class KsplatFile implements IFile {
             const compressionScaleFactor = bucketBlockSize / 2 / compressionScaleRange;
             const bucketsBase = sectionBase + bucketsMetaDataSizeBytes;
             const dataBase = sectionBase + bucketsStorageSizeBytes;
-            const data = new DataView(buffer.buffer, buffer.byteOffset + dataBase, splatDataStorageSizeBytes);
+            const view = new DataView(buffer.buffer, buffer.byteOffset + dataBase, splatDataStorageSizeBytes);
             const bucketArray = new Float32Array(buffer.buffer, buffer.byteOffset + bucketsBase, bucketCount * 3);
             const partiallyFilledBucketLengths = new Uint32Array(
                 buffer.buffer,
@@ -304,70 +305,72 @@ export class KsplatFile implements IFile {
 
             let partialBucketIndex = fullBucketCount;
             let partialBucketBase = fullBucketSplats;
-            for (let j = 0; j < sectionSplatCount; j++) {
-                const splatOffset = j * bytesPerSplat;
+            await forEachSplatChunk(data, BlockOffset, sectionSplatCount, (start, size) => {
+                for (let j = start; j < start + size; j++) {
+                    const splatOffset = j * bytesPerSplat;
 
-                if (isHighQualitySplatData) {
-                    single.x = data.getFloat32(splatOffset + 0, true);
-                    single.y = data.getFloat32(splatOffset + 4, true);
-                    single.z = data.getFloat32(splatOffset + 8, true);
-                    single.sx = data.getFloat32(splatOffset + scaleOffsetBytes + 0, true);
-                    single.sy = data.getFloat32(splatOffset + scaleOffsetBytes + 4, true);
-                    single.sz = data.getFloat32(splatOffset + scaleOffsetBytes + 8, true);
-                    single.qw = data.getFloat32(splatOffset + rotationOffsetBytes + 0, true);
-                    single.qx = data.getFloat32(splatOffset + rotationOffsetBytes + 4, true);
-                    single.qy = data.getFloat32(splatOffset + rotationOffsetBytes + 8, true);
-                    single.qz = data.getFloat32(splatOffset + rotationOffsetBytes + 12, true);
-                } else {
-                    let bucketIndex: number;
-                    if (j < fullBucketSplats) {
-                        bucketIndex = Math.floor(j / bucketSize);
+                    if (isHighQualitySplatData) {
+                        single.x = view.getFloat32(splatOffset + 0, true);
+                        single.y = view.getFloat32(splatOffset + 4, true);
+                        single.z = view.getFloat32(splatOffset + 8, true);
+                        single.sx = view.getFloat32(splatOffset + scaleOffsetBytes + 0, true);
+                        single.sy = view.getFloat32(splatOffset + scaleOffsetBytes + 4, true);
+                        single.sz = view.getFloat32(splatOffset + scaleOffsetBytes + 8, true);
+                        single.qw = view.getFloat32(splatOffset + rotationOffsetBytes + 0, true);
+                        single.qx = view.getFloat32(splatOffset + rotationOffsetBytes + 4, true);
+                        single.qy = view.getFloat32(splatOffset + rotationOffsetBytes + 8, true);
+                        single.qz = view.getFloat32(splatOffset + rotationOffsetBytes + 12, true);
                     } else {
-                        const bucketLength = partiallyFilledBucketLengths[partialBucketIndex - fullBucketCount];
-                        if (j >= partialBucketBase + bucketLength) {
-                            partialBucketIndex += 1;
-                            partialBucketBase += bucketLength;
+                        let bucketIndex: number;
+                        if (j < fullBucketSplats) {
+                            bucketIndex = Math.floor(j / bucketSize);
+                        } else {
+                            const bucketLength = partiallyFilledBucketLengths[partialBucketIndex - fullBucketCount];
+                            if (j >= partialBucketBase + bucketLength) {
+                                partialBucketIndex += 1;
+                                partialBucketBase += bucketLength;
+                            }
+                            bucketIndex = partialBucketIndex;
                         }
-                        bucketIndex = partialBucketIndex;
+                        single.x =
+                            (view.getUint16(splatOffset + 0, true) - compressionScaleRange) * compressionScaleFactor +
+                            bucketArray[3 * bucketIndex + 0];
+                        single.y =
+                            (view.getUint16(splatOffset + 2, true) - compressionScaleRange) * compressionScaleFactor +
+                            bucketArray[3 * bucketIndex + 1];
+                        single.z =
+                            (view.getUint16(splatOffset + 4, true) - compressionScaleRange) * compressionScaleFactor +
+                            bucketArray[3 * bucketIndex + 2];
+                        single.sx = fromHalf(view.getUint16(splatOffset + scaleOffsetBytes + 0, true));
+                        single.sy = fromHalf(view.getUint16(splatOffset + scaleOffsetBytes + 2, true));
+                        single.sz = fromHalf(view.getUint16(splatOffset + scaleOffsetBytes + 4, true));
+                        single.qw = fromHalf(view.getUint16(splatOffset + rotationOffsetBytes + 0, true));
+                        single.qx = fromHalf(view.getUint16(splatOffset + rotationOffsetBytes + 2, true));
+                        single.qy = fromHalf(view.getUint16(splatOffset + rotationOffsetBytes + 4, true));
+                        single.qz = fromHalf(view.getUint16(splatOffset + rotationOffsetBytes + 6, true));
                     }
-                    single.x =
-                        (data.getUint16(splatOffset + 0, true) - compressionScaleRange) * compressionScaleFactor +
-                        bucketArray[3 * bucketIndex + 0];
-                    single.y =
-                        (data.getUint16(splatOffset + 2, true) - compressionScaleRange) * compressionScaleFactor +
-                        bucketArray[3 * bucketIndex + 1];
-                    single.z =
-                        (data.getUint16(splatOffset + 4, true) - compressionScaleRange) * compressionScaleFactor +
-                        bucketArray[3 * bucketIndex + 2];
-                    single.sx = fromHalf(data.getUint16(splatOffset + scaleOffsetBytes + 0, true));
-                    single.sy = fromHalf(data.getUint16(splatOffset + scaleOffsetBytes + 2, true));
-                    single.sz = fromHalf(data.getUint16(splatOffset + scaleOffsetBytes + 4, true));
-                    single.qw = fromHalf(data.getUint16(splatOffset + rotationOffsetBytes + 0, true));
-                    single.qx = fromHalf(data.getUint16(splatOffset + rotationOffsetBytes + 2, true));
-                    single.qy = fromHalf(data.getUint16(splatOffset + rotationOffsetBytes + 4, true));
-                    single.qz = fromHalf(data.getUint16(splatOffset + rotationOffsetBytes + 6, true));
-                }
-                single.r = data.getUint8(splatOffset + colorOffsetBytes + 0) / 255;
-                single.g = data.getUint8(splatOffset + colorOffsetBytes + 1) / 255;
-                single.b = data.getUint8(splatOffset + colorOffsetBytes + 2) / 255;
-                single.a = data.getUint8(splatOffset + colorOffsetBytes + 3) / 255;
+                    single.r = view.getUint8(splatOffset + colorOffsetBytes + 0) / 255;
+                    single.g = view.getUint8(splatOffset + colorOffsetBytes + 1) / 255;
+                    single.b = view.getUint8(splatOffset + colorOffsetBytes + 2) / 255;
+                    single.a = view.getUint8(splatOffset + colorOffsetBytes + 3) / 255;
 
-                setFn(j + BlockOffset, single);
+                    setFn(j + BlockOffset, single);
 
-                const shOffsetBytes = splatOffset + sphericalHarmonicsOffsetBytes;
-                for (let k = 0; k < shComponents; k++) {
-                    shData[k] =
-                        compressionLevel === 0
-                            ? data.getFloat32(shOffsetBytes + SHIndex[k] * 4, true)
-                            : compressionLevel === 1
-                              ? fromHalf(data.getUint16(shOffsetBytes + SHIndex[k] * 2, true))
-                              : minSH + (data.getUint8(shOffsetBytes + SHIndex[k]) / 255) * (maxSH - minSH);
+                    const shOffsetBytes = splatOffset + sphericalHarmonicsOffsetBytes;
+                    for (let k = 0; k < shComponents; k++) {
+                        shData[k] =
+                            compressionLevel === 0
+                                ? view.getFloat32(shOffsetBytes + SHIndex[k] * 4, true)
+                                : compressionLevel === 1
+                                  ? fromHalf(view.getUint16(shOffsetBytes + SHIndex[k] * 2, true))
+                                  : minSH + (view.getUint8(shOffsetBytes + SHIndex[k]) / 255) * (maxSH - minSH);
+                    }
+                    for (let k = maxSHSize - 1; k >= shComponents; k--) {
+                        shData[k] = 0;
+                    }
+                    setShFn(j + BlockOffset, shData);
                 }
-                for (let k = maxSHSize - 1; k >= shComponents; k--) {
-                    shData[k] = 0;
-                }
-                setShFn(j + BlockOffset, shData);
-            }
+            });
             sectionBase += storageSizeBytes;
         }
         data.finishBlock();

@@ -148,29 +148,14 @@ export class CompressedSplatData extends SplatData {
     }
 
     setShN(i: number, shN: number[]) {
-        const { shDegree, sh1Uint32Buffer, sh2Uint32Buffer } = this;
+        const { shDegree, sh1Uint32Buffer, sh2Uint32Buffer, sh3Uint32Buffer, sh4Uint32Buffer } = this;
+        const words = shDegree >= 3 ? 15 : shDegree >= 2 ? 8 : shDegree >= 1 ? 3 : 0;
         const o = i * 4;
-        if (shDegree >= 1) {
-            sh1Uint32Buffer[o + 0] = encode111011s(shN[0], shN[1], shN[2]);
-            sh1Uint32Buffer[o + 1] = encode111011s(shN[3], shN[4], shN[5]);
-            sh1Uint32Buffer[o + 2] = encode111011s(shN[6], shN[7], shN[8]);
-        }
-        if (shDegree >= 2) {
-            sh1Uint32Buffer[o + 3] = encode111011s(shN[9], shN[10], shN[11]);
-            sh2Uint32Buffer[o + 0] = encode111011s(shN[12], shN[13], shN[14]);
-            sh2Uint32Buffer[o + 1] = encode111011s(shN[15], shN[16], shN[17]);
-            sh2Uint32Buffer[o + 2] = encode111011s(shN[18], shN[19], shN[20]);
-            sh2Uint32Buffer[o + 3] = encode111011s(shN[21], shN[22], shN[23]);
-        }
-        if (shDegree >= 3) {
-            const { sh3Uint32Buffer, sh4Uint32Buffer } = this;
-            sh3Uint32Buffer[o + 0] = encode111011s(shN[24], shN[25], shN[26]);
-            sh3Uint32Buffer[o + 1] = encode111011s(shN[27], shN[28], shN[29]);
-            sh3Uint32Buffer[o + 2] = encode111011s(shN[30], shN[31], shN[32]);
-            sh3Uint32Buffer[o + 3] = encode111011s(shN[33], shN[34], shN[35]);
-            sh4Uint32Buffer[o + 0] = encode111011s(shN[36], shN[37], shN[38]);
-            sh4Uint32Buffer[o + 1] = encode111011s(shN[39], shN[40], shN[41]);
-            sh4Uint32Buffer[o + 2] = encode111011s(shN[42], shN[43], shN[44]);
+        for (let word = 0; word < words; word++) {
+            const buffer =
+                word < 4 ? sh1Uint32Buffer : word < 8 ? sh2Uint32Buffer : word < 12 ? sh3Uint32Buffer : sh4Uint32Buffer;
+            const offset = word * 3;
+            buffer[o + (word & 3)] = encode111011s(shN[offset], shN[offset + 1], shN[offset + 2]);
         }
     }
 

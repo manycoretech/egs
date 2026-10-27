@@ -15,16 +15,11 @@ function createEmptyBlock(
     properties: Record<string, PlyPropertyType>,
     shDegree: number,
 ): Record<string, number | number[]> {
-    const result: Record<string, number | number[]> = {
-        f_rest: new Array(SH_MAPS[shDegree]),
-    };
-    for (const name of Object.keys(properties)) {
-        if (F_REST_REGEX.test(name)) {
-            continue;
-        }
-        result[name] = 0;
-    }
-    return result;
+    const fields = Object.keys(properties)
+        .filter(name => !F_REST_REGEX.test(name))
+        .map(name => `${JSON.stringify(name)}: 0`);
+    // Declare the complete shape so numeric fields stay in the object during decoding.
+    return new Function('f_rest', `return { f_rest, ${fields.join(', ')} };`)(new Array(SH_MAPS[shDegree]).fill(0));
 }
 
 const FIELD_BYTES: Record<PlyPropertyType, number> = {
@@ -426,13 +421,18 @@ export class PlyFile implements IFile {
 
                 return {
                     init: () => [count, itemSize],
-                    decode: (offset, counts, buffer) => {
+                    maxCounts: data.availableChunkCounts === undefined ? undefined : () => data.availableChunkCounts!,
+                    decode: async (offset, counts, buffer) => {
                         offset += BlockOffset;
+                        const channel = name === 'vertex' ? (isSuperSplatCompressed ? 'splat' : 'all') : 'sh';
+                        const isSplatData = name === 'vertex' || (isSuperSplatCompressed && name === 'sh');
+                        if (isSplatData) await data.beginChunk?.(offset, counts, channel);
                         const dataview = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
                         for (let i = 0; i < counts; i++) {
                             parseFn(dataview, i * itemSize, block);
                             fn(offset + i, block);
                         }
+                        if (isSplatData) await data.endChunk?.();
                     },
                 };
             }),

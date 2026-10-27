@@ -1,5 +1,16 @@
 # EGS 发布说明 Release Notes
 
+## 1.2.99
+
+1. 新功能
+    - `Splat`新增`stream`状态与`readback()`，支持仅在GPU保留编码源数据，并按需恢复CPU数据以供编辑、导出和GPU资源重建；未回读的数据在资源释放或设备丢失后需要重新加载。
+    - 新增`detailCullingAlphaEnabled`，默认关闭；开启后在细节剔除中计入高斯透明度，WebGL与WebGPU使用相同配置。
+2. 修复
+    - `SourceTexture.syncAllLevels()`同步WebGL纹理脏标记，确保回读后原位修改的CPU数据重新上传。
+    - 处理回读期间释放资源及并发回读，避免过期结果恢复已释放的源数据。
+3. **<font color="red">Breaking Changes</font>**
+    - 移除`Splatting.raster.normalizedFalloff`配置及对应材质、渲染参数，高斯衰减统一使用归一化的`fastExp`公式。
+
 ## 1.2.98
 
 1. 新功能

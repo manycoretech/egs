@@ -142,28 +142,17 @@ export class SuperCompressedSplatData extends SplatData {
 
         if (shDegree >= 2) {
             const offset = 16 * i + 8;
-            sh1Uint8Buffer[offset + 0] = packSint4ToUint8(shN[9], shN[10]);
-            sh1Uint8Buffer[offset + 1] = packSint4ToUint8(shN[11], shN[12]);
-            sh1Uint8Buffer[offset + 2] = packSint4ToUint8(shN[13], shN[14]);
-            sh1Uint8Buffer[offset + 3] = packSint4ToUint8(shN[15], shN[16]);
-            sh1Uint8Buffer[offset + 4] = packSint4ToUint8(shN[17], shN[18]);
-            sh1Uint8Buffer[offset + 5] = packSint4ToUint8(shN[19], shN[20]);
-            sh1Uint8Buffer[offset + 6] = packSint4ToUint8(shN[21], shN[22]);
+            for (let j = 0; j < 7; j++) {
+                sh1Uint8Buffer[offset + j] = packSint4ToUint8(shN[9 + j * 2], shN[10 + j * 2]);
+            }
             sh1Uint8Buffer[offset + 7] = packSint4ToUint8(shN[23], 0);
         }
 
         if (shDegree >= 3) {
             const offset = 16 * i;
-            sh2Uint8Buffer[offset + 0] = packSint4ToUint8(shN[24], shN[25]);
-            sh2Uint8Buffer[offset + 1] = packSint4ToUint8(shN[26], shN[27]);
-            sh2Uint8Buffer[offset + 2] = packSint4ToUint8(shN[28], shN[29]);
-            sh2Uint8Buffer[offset + 3] = packSint4ToUint8(shN[30], shN[31]);
-            sh2Uint8Buffer[offset + 4] = packSint4ToUint8(shN[32], shN[33]);
-            sh2Uint8Buffer[offset + 5] = packSint4ToUint8(shN[34], shN[35]);
-            sh2Uint8Buffer[offset + 6] = packSint4ToUint8(shN[36], shN[37]);
-            sh2Uint8Buffer[offset + 7] = packSint4ToUint8(shN[38], shN[39]);
-            sh2Uint8Buffer[offset + 8] = packSint4ToUint8(shN[40], shN[41]);
-            sh2Uint8Buffer[offset + 9] = packSint4ToUint8(shN[42], shN[43]);
+            for (let j = 0; j < 10; j++) {
+                sh2Uint8Buffer[offset + j] = packSint4ToUint8(shN[24 + j * 2], shN[25 + j * 2]);
+            }
             sh2Uint8Buffer[offset + 10] = packSint4ToUint8(shN[44], 0);
         }
     }
@@ -258,28 +247,17 @@ export class SuperCompressedSplatData extends SplatData {
 
         if (shDegree >= 2) {
             const offset = 16 * i + 8;
-            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 0], shN, 9);
-            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 1], shN, 11);
-            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 2], shN, 13);
-            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 3], shN, 15);
-            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 4], shN, 17);
-            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 5], shN, 19);
-            unpackUint8ToSint4x2(sh1Uint8Buffer[offset + 6], shN, 21);
+            for (let j = 0; j < 7; j++) {
+                unpackUint8ToSint4x2(sh1Uint8Buffer[offset + j], shN, 9 + j * 2);
+            }
             shN[23] = (sh1Uint8Buffer[offset + 7] & 0x0f) * 0.125 - 1.0;
         }
 
         if (shDegree >= 3) {
             const offset = 16 * i;
-            unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 0], shN, 24);
-            unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 1], shN, 26);
-            unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 2], shN, 28);
-            unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 3], shN, 30);
-            unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 4], shN, 32);
-            unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 5], shN, 34);
-            unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 6], shN, 36);
-            unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 7], shN, 38);
-            unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 8], shN, 40);
-            unpackUint8ToSint4x2(sh2Uint8Buffer[offset + 9], shN, 42);
+            for (let j = 0; j < 10; j++) {
+                unpackUint8ToSint4x2(sh2Uint8Buffer[offset + j], shN, 24 + j * 2);
+            }
             shN[44] = (sh2Uint8Buffer[offset + 10] & 0x0f) * 0.125 - 1.0;
         }
     }

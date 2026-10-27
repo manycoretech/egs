@@ -1,5 +1,12 @@
 # changelog
 
+## 1.3.0
+
+- `parseSplatData`新增`retainData`、`chunkBytes`和`signal`；默认保留完整CPU数据，`retainData: false`返回元数据与单次消费流，支持`readChunks()`、`collect()`和`cancel()`。
+- 统一各格式的分块编码路径，文件与URL在Worker内读取，流式结果不再预分配全量CPU编码缓冲；保留可转移流及MessagePort回退支持。
+- 复用内部消费完成的编码缓冲，减少SH编码、列式解码及数据传输中的临时分配和复制，公开消费接口默认保留块数据的所有权。
+- 加载失败或取消时释放读取器、传输端口及Worker任务，支持`AbortSignal`中止解析与消费。
+
 ## 1.2.0
 
 - 重构`zip`文件解析，支持多个高斯文件

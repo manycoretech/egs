@@ -1,5 +1,11 @@
 # changelog
 
+## 1.2.0
+
+- `createSplat(data, renderer)`支持消费流式`SplatData`，按块上传到WebGL纹理或WebGPU源缓冲；native SOG按图片逐个解码上传。
+- `createSplatData()`在仅有GPU源数据时提示先调用`Splat.readback()`，回读后恢复既有CPU数据访问方式。
+- WebGL回读后保留已有纹理内容，避免重复上传；上传失败时取消剩余解析并释放已创建的资源。
+
 ## 1.1.1
 
 - `LodSplat`新增`pixelLimitEnabled`，默认开启；关闭后不再因像素密度限制停止 LOD 细化，仍遵守点数预算等约束。

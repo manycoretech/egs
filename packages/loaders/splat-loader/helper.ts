@@ -215,6 +215,7 @@ export async function readSplatFiles(files: SplatFileInput[], data: IData, lodLe
     let offset = 0;
     const reads: Promise<void>[] = files.map(async (file, index) => {
         let paddedSh: number[] = [];
+        let fileShDegree = 0;
         const target: IData = {
             get counts() {
                 return data.counts;
@@ -223,6 +224,7 @@ export async function readSplatFiles(files: SplatFileInput[], data: IData, lodLe
                 return data.shDegree;
             },
             async initBlock(count, degree) {
+                fileShDegree = degree;
                 counts += count;
                 shDegree = Math.max(shDegree, degree);
                 if (--pending === 0) {
@@ -236,14 +238,19 @@ export async function readSplatFiles(files: SplatFileInput[], data: IData, lodLe
                 const blockOffset = offset;
                 offset += count;
                 paddedSh = new Array(SH_MAPS[data.shDegree]).fill(0);
-                if (degree === 0 && data.shDegree > 0) {
-                    for (let i = 0; i < count; i++) {
-                        data.setShN(blockOffset + i, paddedSh);
-                    }
-                }
                 return blockOffset;
             },
             finishBlock() {},
+            get availableChunkCounts() {
+                return data.availableChunkCounts;
+            },
+            async beginChunk(offset, counts, channel) {
+                await data.beginChunk?.(offset, counts, channel);
+                if (fileShDegree === 0 && data.shDegree > 0) {
+                    for (let i = 0; i < counts; i++) data.setShN(offset + i, paddedSh);
+                }
+            },
+            endChunk: data.endChunk?.bind(data),
             set: data.set.bind(data),
             setCenter: data.setCenter.bind(data),
             setScale: data.setScale.bind(data),

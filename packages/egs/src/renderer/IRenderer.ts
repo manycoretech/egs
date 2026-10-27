@@ -171,6 +171,8 @@ export interface IRenderer extends EventDispatcher {
      * @internal
      */
     readonly backend: RendererBackend;
+    /** Native resources belong to this renderer's current device/context. */
+    readonly gpuDevice?: GPUDevice | WebGLRenderingContext | WebGL2RenderingContext;
     /**
      * @internal
      */
@@ -289,4 +291,5 @@ export interface IRenderer extends EventDispatcher {
      * queue a task to upload texture to gpu.
      */
     queueFlushTexture(texture: Texture): void;
+    getGPUTextureHandle(texture: Texture): GPUTexture | WebGLTexture;
 }

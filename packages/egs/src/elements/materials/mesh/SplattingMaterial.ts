@@ -23,13 +23,13 @@ export class SplattingMaterial extends Material {
     side = Side.DoubleSide;
 
     highPrecisionEnabled: boolean = false;
-    normalizedFalloff: boolean = false;
     maxStdDev: number = Math.sqrt(8);
     maxPixelRadius: number = 1024;
     preBlurAmount: number = 0.3;
     blurAmount: number = 0;
     focalAdjustment: number = 2;
     detailCullingThreshold: number = 1;
+    detailCullingAlphaEnabled: boolean = false;
     selectedColor: Vector4 = new Vector4(1, 1, 0, 1);
     ringSize: number = 0.04;
 
@@ -65,7 +65,6 @@ export class SplattingMaterial extends Material {
         return HashKeyBuilder.getInstance()
             .raw(this.className())
             .bool(this.highPrecisionEnabled)
-            .bool(this.normalizedFalloff)
             .raw(this.renderMode)
             .getKey();
     }
@@ -88,6 +87,7 @@ export class SplattingMaterial extends Material {
             .addUniform('blurAmount', WebGLShaderDataType.Float)
             .addUniform('focalAdjustment', WebGLShaderDataType.Float)
             .addUniform('detailCullingThreshold', WebGLShaderDataType.Float)
+            .addUniform('detailCullingAlphaEnabled', WebGLShaderDataType.Bool)
             .addUniform('selectedColor', WebGLShaderDataType.Vec4)
             .addUniform('ringSize', WebGLShaderDataType.Float)
             .addUniform('origin', WebGLShaderDataType.Vec3)
@@ -118,6 +118,7 @@ export class SplattingMaterial extends Material {
         program.setUniform('blurAmount', this.blurAmount);
         program.setUniform('focalAdjustment', this.focalAdjustment);
         program.setUniform('detailCullingThreshold', this.detailCullingThreshold);
+        program.setUniform('detailCullingAlphaEnabled', this.detailCullingAlphaEnabled);
         program.setUniform('selectedColor', this.selectedColor);
         program.setUniform('ringSize', 1.0 - this.ringSize, true);
         program.setUniform('origin', this.origin);
@@ -246,6 +247,9 @@ function createVertexShader(material: SplattingMaterial): string {
         if (detailCullingThreshold > 0.) {
             float Ek = 1.0 - exp(-0.5 * k * k);
             float effArea = PI * Ek * sqrt(det);
+            if (detailCullingAlphaEnabled) {
+                effArea *= color.a;
+            }
             if (effArea < detailCullingThreshold) {
                 return;
             }
@@ -279,7 +283,7 @@ function createVertexShader(material: SplattingMaterial): string {
 }
 
 function createFragmentShader(material: SplattingMaterial): string {
-    const { normalizedFalloff, renderMode } = material;
+    const { renderMode } = material;
 
     return `
         float z = dot(vSplatUv, vSplatUv);
@@ -287,7 +291,7 @@ function createFragmentShader(material: SplattingMaterial): string {
         if (z > MaxVariance) {
             discard;
         }
-        float alpha = vColor.a * ${normalizedFalloff ? `(exp(-0.5 * z) - EXP4) * INV_EXP4` : 'fastExp(-0.5 * z)'};
+        float alpha = vColor.a * (fastExp(-0.5 * z) - EXP4) * INV_EXP4;
         ${renderMode === SplattingRenderMode.Ring ? 'alpha = z < MaxVariance * ringSize ? max(0.05, alpha) : 0.6;' : ``}
         if (alpha < MIN_ALPHA) {
             discard;

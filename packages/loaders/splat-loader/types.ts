@@ -55,12 +55,20 @@ export interface ISplatData {
     extras?: any[];
 }
 
+/** Byte ranges in the serialized sampler layout. Buffers are owned by the consumer. */
+export interface SplatStreamChunk {
+    samplers: { index: number; offset: number; source: Uint8Array }[];
+}
+
 export interface IData {
     readonly counts: number;
     readonly shDegree: number;
 
     initBlock(counts: number, shDegree: number): Promise<number>;
     finishBlock(): void;
+    readonly availableChunkCounts?: number;
+    beginChunk?(offset: number, counts: number, channel: 'all' | 'splat' | 'sh' | number): Promise<void>;
+    endChunk?(): Promise<void>;
 
     set(i: number, single: ISingleSplat): void;
     setCenter(i: number, x: number, y: number, z: number): void;
@@ -85,6 +93,11 @@ export interface IFile {
 }
 
 export interface ParseExtras {
+    /** Retain complete CPU samplers. Defaults to true. */
+    retainData?: boolean;
+    /** Maximum encoded bytes per block; not a rendering quality setting. */
+    chunkBytes?: number;
+    signal?: AbortSignal;
     maxShDegree: number;
     maxTextureSize: number;
     lodLevel: number; // LCC2 LOD level

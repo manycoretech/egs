@@ -3,7 +3,7 @@ import { type ISingleSplat, type IData, type IFile } from '../types.js';
 import { SH_MAPS, SH_C0 } from '../utils/splat.js';
 import { fromHalf } from '../utils/packing.js';
 import { clamp } from '../utils/math.js';
-import { StreamChunkDecoder, type ChunkDecoder, ByteStreamCursor } from '../utils/stream.js';
+import { StreamChunkDecoder, type ChunkDecoder, ByteStreamCursor, probeStream } from '../utils/stream.js';
 
 const SPZ_MAGIC = 0x5053474e; // NGSP = Niantic gaussian splat
 const SPZ_VERSION = 4;
@@ -153,7 +153,7 @@ async function decodeAttributes(
         });
     }
 
-    await new StreamChunkDecoder(cursor).decode(decoders);
+    await new StreamChunkDecoder(cursor).decodeColumns(decoders, data, blockOffset);
 }
 
 async function pipeZstdStream(
@@ -225,7 +225,7 @@ export class SpzFile implements IFile {
             await cursor.skip(tocByteOffset - 32);
         }
 
-        const toc = await cursor.readExact(numStreams * 16);
+        const toc = (await cursor.readExact(numStreams * 16)).slice();
         const tocView = new DataView(toc.buffer, toc.byteOffset, toc.byteLength);
         const blockOffset = await data.initBlock(counts, shDegree);
         const attributeStream = new TransformStream<Uint8Array, Uint8Array>();
@@ -294,17 +294,7 @@ export class SpzFile implements IFile {
     }
 
     async read(stream: ReadableStream<Uint8Array>, _contentLength: number, data: IData) {
-        const [probeStream, dataStream] = stream.tee();
-        const cursor = new ByteStreamCursor(probeStream);
-        let magicCode: number;
-        try {
-            magicCode = await cursor.readUint32(true);
-        } catch (error) {
-            dataStream.cancel(error).catch(() => {});
-            throw error;
-        } finally {
-            cursor.cancel().catch(() => {});
-        }
+        const { magic: magicCode, stream: dataStream } = await probeStream(stream);
 
         if (magicCode === SPZ_MAGIC) {
             await this.readStream(dataStream, data);

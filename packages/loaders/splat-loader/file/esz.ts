@@ -1,6 +1,6 @@
 import { CompressedSplatData } from '../splat/index.js';
 import { createZstdDecompressor } from '../utils/zstd.js';
-import { ByteStreamCursor, StreamChunkDecoder } from '../utils/stream.js';
+import { ByteStreamCursor, StreamChunkDecoder, forEachSplatChunk, type ChunkDecoder } from '../utils/stream.js';
 import { decode111011s, fromHalf } from '../utils/packing.js';
 import { decodeImage } from '../utils/texture.js';
 import { decodeQuatOct, logTransform } from '../utils/math.js';
@@ -49,6 +49,7 @@ export class EszFile implements IFile {
             },
         } = meta;
 
+        const decoders: Array<(start: number, size: number) => void> = [];
         const readImage = async () => {
             const size = await cursor.readUint32();
             const buffer = await cursor.readExact(size);
@@ -68,66 +69,74 @@ export class EszFile implements IFile {
 
             const meansL = await readImage();
             const meansU = await readImage();
-            for (let i = 0; i < counts; i++) {
-                const target = blockOffset + i;
-                const o = i * 4;
-                const x = minX + rangeX * (meansL[o + 0] + (meansU[o + 0] << 8));
-                const y = minY + rangeY * (meansL[o + 1] + (meansU[o + 1] << 8));
-                const z = minZ + rangeZ * (meansL[o + 2] + (meansU[o + 2] << 8));
-                data.setCenter(
-                    target,
-                    Math.sign(x) * (Math.exp(Math.abs(x)) - 1),
-                    Math.sign(y) * (Math.exp(Math.abs(y)) - 1),
-                    Math.sign(z) * (Math.exp(Math.abs(z)) - 1),
-                );
-            }
+            decoders.push((start, size) => {
+                for (let i = start; i < start + size; i++) {
+                    const target = blockOffset + i;
+                    const o = i * 4;
+                    const x = minX + rangeX * (meansL[o + 0] + (meansU[o + 0] << 8));
+                    const y = minY + rangeY * (meansL[o + 1] + (meansU[o + 1] << 8));
+                    const z = minZ + rangeZ * (meansL[o + 2] + (meansU[o + 2] << 8));
+                    data.setCenter(
+                        target,
+                        Math.sign(x) * (Math.exp(Math.abs(x)) - 1),
+                        Math.sign(y) * (Math.exp(Math.abs(y)) - 1),
+                        Math.sign(z) * (Math.exp(Math.abs(z)) - 1),
+                    );
+                }
+            });
         }
 
         {
             const scales = await readImage();
-            for (let i = 0; i < counts; i++) {
-                const o = i * 4;
-                data.setScale(
-                    blockOffset + i,
-                    SCALE_LUT[scales[o + 0]],
-                    SCALE_LUT[scales[o + 1]],
-                    SCALE_LUT[scales[o + 2]],
-                );
-            }
+            decoders.push((start, size) => {
+                for (let i = start; i < start + size; i++) {
+                    const o = i * 4;
+                    data.setScale(
+                        blockOffset + i,
+                        SCALE_LUT[scales[o + 0]],
+                        SCALE_LUT[scales[o + 1]],
+                        SCALE_LUT[scales[o + 2]],
+                    );
+                }
+            });
         }
 
         {
             const quats = await readImage();
-            for (let i = 0; i < counts; i++) {
-                const o = i * 4;
-                TEMP_ROT[0] = (quats[o + 0] / 255 - 0.5) * Math.SQRT2;
-                TEMP_ROT[1] = (quats[o + 1] / 255 - 0.5) * Math.SQRT2;
-                TEMP_ROT[2] = (quats[o + 2] / 255 - 0.5) * Math.SQRT2;
-                TEMP_ROT[3] = Math.sqrt(
-                    Math.max(
-                        0,
-                        1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2],
-                    ),
-                );
-                const perm = PERM_TABLE[quats[o + 3] - 252];
-                data.setQuat(
-                    blockOffset + i,
-                    TEMP_ROT[perm[0]],
-                    TEMP_ROT[perm[1]],
-                    TEMP_ROT[perm[2]],
-                    TEMP_ROT[perm[3]],
-                );
-            }
+            decoders.push((start, size) => {
+                for (let i = start; i < start + size; i++) {
+                    const o = i * 4;
+                    TEMP_ROT[0] = (quats[o + 0] / 255 - 0.5) * Math.SQRT2;
+                    TEMP_ROT[1] = (quats[o + 1] / 255 - 0.5) * Math.SQRT2;
+                    TEMP_ROT[2] = (quats[o + 2] / 255 - 0.5) * Math.SQRT2;
+                    TEMP_ROT[3] = Math.sqrt(
+                        Math.max(
+                            0,
+                            1.0 - TEMP_ROT[0] * TEMP_ROT[0] - TEMP_ROT[1] * TEMP_ROT[1] - TEMP_ROT[2] * TEMP_ROT[2],
+                        ),
+                    );
+                    const perm = PERM_TABLE[quats[o + 3] - 252];
+                    data.setQuat(
+                        blockOffset + i,
+                        TEMP_ROT[perm[0]],
+                        TEMP_ROT[perm[1]],
+                        TEMP_ROT[perm[2]],
+                        TEMP_ROT[perm[3]],
+                    );
+                }
+            });
         }
 
         {
             const colors = await readImage();
-            for (let i = 0; i < counts; i++) {
-                const target = blockOffset + i;
-                const o = i * 4;
-                data.setColor(target, COLOR_LUT[colors[o + 0]], COLOR_LUT[colors[o + 1]], COLOR_LUT[colors[o + 2]]);
-                data.setAlpha(target, colors[o + 3] / 255);
-            }
+            decoders.push((start, size) => {
+                for (let i = start; i < start + size; i++) {
+                    const target = blockOffset + i;
+                    const o = i * 4;
+                    data.setColor(target, COLOR_LUT[colors[o + 0]], COLOR_LUT[colors[o + 1]], COLOR_LUT[colors[o + 2]]);
+                    data.setAlpha(target, colors[o + 3] / 255);
+                }
+            });
         }
 
         if (shDegree > 0) {
@@ -135,16 +144,21 @@ export class EszFile implements IFile {
             const shCoeffs = shCounts / 3;
             const shN = new Array(shCounts).fill(0);
             const buffer = await readImage();
-            for (let i = 0; i < counts; i++) {
-                const o = i * shCoeffs * 4;
-                for (let j = 0; j < shCoeffs; j++) {
-                    shN[j * 3 + 0] = (buffer[o + j * 4 + 0] - 128) / 128;
-                    shN[j * 3 + 1] = (buffer[o + j * 4 + 1] - 128) / 128;
-                    shN[j * 3 + 2] = (buffer[o + j * 4 + 2] - 128) / 128;
+            decoders.push((start, size) => {
+                for (let i = start; i < start + size; i++) {
+                    const o = i * shCoeffs * 4;
+                    for (let j = 0; j < shCoeffs; j++) {
+                        shN[j * 3 + 0] = (buffer[o + j * 4 + 0] - 128) / 128;
+                        shN[j * 3 + 1] = (buffer[o + j * 4 + 1] - 128) / 128;
+                        shN[j * 3 + 2] = (buffer[o + j * 4 + 2] - 128) / 128;
+                    }
+                    data.setShN(blockOffset + i, shN);
                 }
-                data.setShN(blockOffset + i, shN);
-            }
+            });
         }
+        await forEachSplatChunk(data, blockOffset, counts, (start, size) => {
+            for (const decode of decoders) decode(start, size);
+        });
     }
 
     private async readHighPrecisionLayout(data: IData, blockOffset: number, meta: Metadata, cursor: ByteStreamCursor) {
@@ -154,24 +168,41 @@ export class EszFile implements IFile {
         const expectedLength = counts * HIGH_PRECISION_STRIDE;
 
         if (data instanceof CompressedSplatData) {
-            const samplers = data.serialize().samplers;
             for (let segmentIndex = 0; segmentIndex < segmentCount; segmentIndex++) {
                 const length = await cursor.readUint32(true);
                 if (length !== expectedLength) {
                     throw new Error(`Invalid ESZ high segment size: expected ${expectedLength}, got ${length}`);
                 }
-                const target = samplers[segmentIndex].source;
-                if (target.byteLength) {
-                    await cursor.readInto(target, blockOffset * HIGH_PRECISION_STRIDE, length);
-                } else {
-                    await cursor.skip(length);
-                }
+                await forEachSplatChunk(
+                    data,
+                    blockOffset,
+                    counts,
+                    async (start, size) => {
+                        const target = data.serialize().samplers[segmentIndex].source;
+                        if (target.byteLength) {
+                            const offset = (data as IData).availableChunkCounts === undefined ? blockOffset + start : 0;
+                            await cursor.readInto(target, offset * HIGH_PRECISION_STRIDE, size * HIGH_PRECISION_STRIDE);
+                        } else await cursor.skip(size * HIGH_PRECISION_STRIDE);
+                    },
+                    segmentIndex,
+                );
             }
             return;
         }
 
-        const decoder = new StreamChunkDecoder(cursor);
-        await this.readHighPrecisionSegment(cursor, decoder, counts, (view, start, batchCounts) => {
+        const decoders: ChunkDecoder[] = [];
+        const segment = (decode: (view: DataView, start: number, counts: number) => void) => {
+            decoders.push({
+                async init() {
+                    const length = await cursor.readUint32(true);
+                    if (length !== expectedLength) throw new Error('Invalid ESZ high segment size.');
+                    return [counts, HIGH_PRECISION_STRIDE];
+                },
+                decode: (start, size, bytes) =>
+                    decode(new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength), start, size),
+            });
+        };
+        segment((view, start, batchCounts) => {
             for (let i = 0; i < batchCounts; i++) {
                 const target = blockOffset + start + i;
                 const o = i * HIGH_PRECISION_STRIDE;
@@ -185,7 +216,7 @@ export class EszFile implements IFile {
             }
         });
 
-        await this.readHighPrecisionSegment(cursor, decoder, counts, (view, start, batchCounts) => {
+        segment((view, start, batchCounts) => {
             for (let i = 0; i < batchCounts; i++) {
                 const target = blockOffset + start + i;
                 const o = i * HIGH_PRECISION_STRIDE;
@@ -214,12 +245,12 @@ export class EszFile implements IFile {
         const shN = new Array(SH_MAPS[shDegree]).fill(0);
         for (let groupOffset = 0; groupOffset < shGroups; groupOffset += 4) {
             const groupCounts = Math.min(4, shGroups - groupOffset);
-            await this.readHighPrecisionSegment(cursor, decoder, counts, (view, start, batchCounts) => {
+            segment((view, start, batchCounts) => {
                 for (let i = 0; i < batchCounts; i++) {
                     const target = blockOffset + start + i;
                     if (groupOffset > 0) {
                         data.getShN(target, shN);
-                    }
+                    } else shN.fill(0);
                     const o = i * HIGH_PRECISION_STRIDE;
                     for (let j = 0; j < groupCounts; j++) {
                         decode111011s(view.getUint32(o + j * 4, true), shN, (groupOffset + j) * 3);
@@ -228,27 +259,7 @@ export class EszFile implements IFile {
                 }
             });
         }
-    }
-
-    private async readHighPrecisionSegment(
-        cursor: ByteStreamCursor,
-        decoder: StreamChunkDecoder,
-        counts: number,
-        decode: (view: DataView, start: number, counts: number) => void,
-    ) {
-        const byteLength = await cursor.readUint32(true);
-        const expectedByteLength = counts * HIGH_PRECISION_STRIDE;
-        if (byteLength !== expectedByteLength) {
-            throw new Error(`Invalid ESZ high segment size: expected ${expectedByteLength}, got ${byteLength}`);
-        }
-
-        await decoder.decode([
-            {
-                init: () => [counts, HIGH_PRECISION_STRIDE],
-                decode: (start, batchCounts, buffer) =>
-                    decode(new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength), start, batchCounts),
-            },
-        ]);
+        await new StreamChunkDecoder(cursor).decodeColumns(decoders, data, blockOffset);
     }
 
     async read(stream: ReadableStream<Uint8Array>, _contentLength: number, data: IData) {
