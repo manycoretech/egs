@@ -27,11 +27,15 @@ self.onmessage = async ({ data }: MessageEvent<ParseRequest>) => {
         let contentLength: number;
         if (typeof input === 'string') {
             const response = await fetch(input, { signal: abort.signal });
-            if (!response.ok || !response.body) throw new Error(`Failed to load splats: HTTP ${response.status}.`);
+            if (!response.ok || !response.body) {
+                throw new Error(`Failed to load splats: HTTP ${response.status}.`);
+            }
             stream = response.body;
             contentLength = Number(response.headers.get('Content-Length') ?? NaN);
             const encoding = response.headers.get('Content-Encoding');
-            if (type === SplatFileType.SPLAT && encoding && encoding !== 'identity') contentLength = NaN;
+            if (type === SplatFileType.SPLAT && encoding && encoding !== 'identity') {
+                contentLength = NaN;
+            }
         } else if (input instanceof File) {
             stream = input.stream();
             contentLength = input.size;

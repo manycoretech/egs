@@ -247,7 +247,9 @@ export async function readSplatFiles(files: SplatFileInput[], data: IData, lodLe
             async beginChunk(offset, counts, channel) {
                 await data.beginChunk?.(offset, counts, channel);
                 if (fileShDegree === 0 && data.shDegree > 0) {
-                    for (let i = 0; i < counts; i++) data.setShN(offset + i, paddedSh);
+                    for (let i = 0; i < counts; i++) {
+                        data.setShN(offset + i, paddedSh);
+                    }
                 }
             },
             endChunk: data.endChunk?.bind(data),

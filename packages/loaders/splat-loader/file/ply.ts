@@ -426,13 +426,17 @@ export class PlyFile implements IFile {
                         offset += BlockOffset;
                         const channel = name === 'vertex' ? (isSuperSplatCompressed ? 'splat' : 'all') : 'sh';
                         const isSplatData = name === 'vertex' || (isSuperSplatCompressed && name === 'sh');
-                        if (isSplatData) await data.beginChunk?.(offset, counts, channel);
+                        if (isSplatData) {
+                            await data.beginChunk?.(offset, counts, channel);
+                        }
                         const dataview = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
                         for (let i = 0; i < counts; i++) {
                             parseFn(dataview, i * itemSize, block);
                             fn(offset + i, block);
                         }
-                        if (isSplatData) await data.endChunk?.();
+                        if (isSplatData) {
+                            await data.endChunk?.();
+                        }
                     },
                 };
             }),

@@ -48,8 +48,9 @@ export async function parseSplatData(
         throw new Error('SOG pack type is only supported for SOG file type.');
     }
     const { signal, retainData = true, chunkBytes = SPLAT_STREAM_CHUNK_BYTES } = extras;
-    if (!Number.isSafeInteger(chunkBytes) || chunkBytes <= 0)
+    if (!Number.isSafeInteger(chunkBytes) || chunkBytes <= 0) {
         throw new RangeError('chunkBytes must be a positive safe integer.');
+    }
     signal?.throwIfAborted();
     let transferInput: ((chunk: Uint8Array) => Transferable[]) | undefined;
     if (input instanceof Uint8Array) {
@@ -61,7 +62,9 @@ export async function parseSplatData(
             stream: new ReadableStream<Uint8Array>(
                 {
                     pull(controller) {
-                        if (offset === bytes.byteLength) return controller.close();
+                        if (offset === bytes.byteLength) {
+                            return controller.close();
+                        }
                         const end = Math.min(bytes.byteLength, offset + chunkBytes);
                         controller.enqueue(new Uint8Array(bytes.subarray(offset, end)));
                         offset = end;
@@ -80,7 +83,9 @@ export async function parseSplatData(
     let finished = false;
     let failure: unknown;
     const finish = () => {
-        if (finished) return;
+        if (finished) {
+            return;
+        }
         finished = true;
         signal?.removeEventListener('abort', abort);
         reader?.releaseLock();
@@ -105,16 +110,22 @@ export async function parseSplatData(
             returnedBuffers = [];
             return buffers;
         }).getReader();
-        if (failure !== undefined) void cancel(failure);
+        if (failure !== undefined) {
+            void cancel(failure);
+        }
         response.resolve(reader);
     };
     worker.onerror = event => {
         void cancel(new Error(event.message));
-        if (!reader) finish();
+        if (!reader) {
+            finish();
+        }
     };
     worker.onmessageerror = () => {
         void cancel(new Error('Failed to receive parsed splat data.'));
-        if (!reader) finish();
+        if (!reader) {
+            finish();
+        }
     };
     try {
         signal?.throwIfAborted();
@@ -135,8 +146,9 @@ export async function parseSplatData(
                 } satisfies ParseRequest,
                 transfers,
             );
-        if (typeof input === 'string' || input instanceof File) send(input);
-        else {
+        if (typeof input === 'string' || input instanceof File) {
+            send(input);
+        } else {
             const { contentLength } = input;
             const source = input.stream.pipeThrough(new TransformStream<Uint8Array, Uint8Array>(), {
                 signal: inputAbort.signal,
@@ -151,8 +163,12 @@ export async function parseSplatData(
     try {
         reader = await response.promise;
         const header = await reader.read();
-        if (failure !== undefined) throw failure;
-        if (header.done || !('data' in header.value)) throw new Error('Splat parser returned no metadata.');
+        if (failure !== undefined) {
+            throw failure;
+        }
+        if (header.done || !('data' in header.value)) {
+            throw new Error('Splat parser returned no metadata.');
+        }
         const data = createSplatData(packType, extras.maxShDegree, extras.maxTextureSize);
         data.setStream(
             header.value.data,
@@ -161,12 +177,17 @@ export async function parseSplatData(
                 try {
                     while (true) {
                         const next = await reader!.read();
-                        if (failure !== undefined) throw failure;
-                        if (next.done) break;
+                        if (failure !== undefined) {
+                            throw failure;
+                        }
+                        if (next.done) {
+                            break;
+                        }
                         const chunk = next.value as SplatStreamChunk;
                         await consume(chunk);
-                        if (release)
+                        if (release) {
                             returnedBuffers = chunk.samplers.map(sampler => sampler.source.buffer as ArrayBuffer);
+                        }
                     }
                 } catch (error) {
                     await cancel(error);
@@ -180,7 +201,9 @@ export async function parseSplatData(
             },
             signal,
         );
-        if (retainData) await data.collect();
+        if (retainData) {
+            await data.collect();
+        }
         return data;
     } catch (error) {
         await cancel(error);

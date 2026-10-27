@@ -192,7 +192,9 @@ export class SogSplat extends Splat {
     }
 
     onGpuDataPacked() {
-        if (this.stream) return;
+        if (this.stream) {
+            return;
+        }
         this.meansL.freeGPU();
         this.meansU.freeGPU();
         this.quats.freeGPU();

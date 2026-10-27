@@ -43,7 +43,9 @@ export abstract class SplatData implements IData {
     /** Consume once; release detaches chunk buffers after each callback resolves. Defaults to caller-owned buffers. */
     async readChunks(consume: (chunk: SplatStreamChunk) => Promise<void>, release = false): Promise<void> {
         const read = this.chunkReader;
-        if (!read) throw new Error('Splat data is not streaming or has already been consumed.');
+        if (!read) {
+            throw new Error('Splat data is not streaming or has already been consumed.');
+        }
         this.chunkReader = undefined;
         try {
             await read(consume, release);
@@ -54,15 +56,21 @@ export abstract class SplatData implements IData {
 
     /** Collect the same stream into complete CPU buffers without re-encoding. */
     async collect(): Promise<this> {
-        if (!this.stream) return this;
-        if (!this.chunkReader) throw new Error('Splat stream has already been consumed.');
+        if (!this.stream) {
+            return this;
+        }
+        if (!this.chunkReader) {
+            throw new Error('Splat stream has already been consumed.');
+        }
         const data = this.serialize();
         const samplers = data.samplers.map((sampler, index) => ({
             ...sampler,
             source: new Uint8Array(this.streamByteLengths[index]),
         }));
         await this.readChunks(async chunk => {
-            for (const { index, offset, source } of chunk.samplers) samplers[index].source.set(source, offset);
+            for (const { index, offset, source } of chunk.samplers) {
+                samplers[index].source.set(source, offset);
+            }
         }, true);
         this.deserialize({ ...data, samplers });
         this.stream = false;

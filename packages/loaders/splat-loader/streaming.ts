@@ -58,8 +58,9 @@ export function createStreamingData(
             this.components = probe.samplers.map(sampler => sampler.source.byteLength / 4);
             const bytesPerSplat = this.components.reduce((sum, value) => sum + value * 4, 0);
             const budgetCounts = Math.floor(chunkBytes / bytesPerSplat);
-            if (!budgetCounts)
+            if (!budgetCounts) {
                 throw new RangeError('chunkBytes must fit at least one encoded splat (' + bytesPerSplat + ' bytes).');
+            }
             const {
                 w: width,
                 h: height,
@@ -104,7 +105,9 @@ export function createStreamingData(
             }
             this.prepareChunk?.();
             this.prepareChunk = undefined;
-            if (!this.pendingCounts) this.chunkOffset = offset;
+            if (!this.pendingCounts) {
+                this.chunkOffset = offset;
+            }
             this.chunkCounts = counts;
             this.channel = channel;
         }
@@ -136,11 +139,15 @@ export function createStreamingData(
 
         async endChunk() {
             this.pendingCounts += this.chunkCounts;
-            if (this.pendingCounts === this.counts) await this.flush();
+            if (this.pendingCounts === this.counts) {
+                await this.flush();
+            }
         }
 
         async flush() {
-            if (!this.pendingCounts) return;
+            if (!this.pendingCounts) {
+                return;
+            }
             const data = this.serialize();
             const samplers = data.samplers.flatMap((sampler, index) => {
                 if (
@@ -148,8 +155,9 @@ export function createStreamingData(
                     (this.channel === 'splat' && index >= splatSamplers) ||
                     (this.channel === 'sh' && index < splatSamplers) ||
                     (typeof this.channel === 'number' && index !== this.channel)
-                )
+                ) {
                     return [];
+                }
                 return [
                     {
                         index,

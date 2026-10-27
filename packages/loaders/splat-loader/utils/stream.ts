@@ -206,7 +206,9 @@ export class StreamChunkDecoder {
             columns.push({ decoder, itemSize, bytes });
         }
         const last = decoders[decoders.length - 1];
-        if (!last) return;
+        if (!last) {
+            return;
+        }
         await this.decode([
             {
                 init: last.init,
@@ -290,7 +292,9 @@ export function bufferedInput(stream: ReadableStream<Uint8Array>, byteLength: nu
     let closed = false;
     let controller: ReadableStreamDefaultController<Uint8Array>;
     const close = async (reason?: unknown) => {
-        if (closed) return;
+        if (closed) {
+            return;
+        }
         closed = true;
         signal.removeEventListener('abort', abort);
         await reader.cancel(reason).catch(() => {});
@@ -312,12 +316,18 @@ export function bufferedInput(stream: ReadableStream<Uint8Array>, byteLength: nu
                     const { done, value } = buffer
                         ? await (reader as ReadableStreamBYOBReader).read(new Uint8Array(buffer))
                         : await (reader as ReadableStreamDefaultReader<Uint8Array>).read();
-                    if (closed) return;
-                    if (buffer && value) buffer = value.buffer as ArrayBuffer;
+                    if (closed) {
+                        return;
+                    }
+                    if (buffer && value) {
+                        buffer = value.buffer as ArrayBuffer;
+                    }
                     if (done) {
                         controller.close();
                         await close();
-                    } else controller.enqueue(value);
+                    } else {
+                        controller.enqueue(value);
+                    }
                 } catch (error) {
                     if (!closed) {
                         controller.error(error);
@@ -368,7 +378,9 @@ export async function probeStream(
                     if (done) {
                         controller.close();
                         reader.releaseLock();
-                    } else controller.enqueue(value);
+                    } else {
+                        controller.enqueue(value);
+                    }
                 },
                 async cancel(reason) {
                     await reader.cancel(reason).catch(() => {});

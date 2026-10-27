@@ -140,7 +140,9 @@ export async function createSplat(data: SplatData, renderer?: __INTERNAL__.IRend
             shDegree >= 3 ? textures[2] : undefined,
         );
     } else if (data instanceof SogSplatData) {
-        if (data.stream) return createStreamingSog(data, renderer!);
+        if (data.stream) {
+            return createStreamingSog(data, renderer!);
+        }
         const { samplers, extras = [] } = data.serialize();
         const [meansL, meansU, scales, quats, sh0, shNLabels, shNCentroids] = await Promise.all(
             samplers.map(v => createSourceTextureFromImageSource(v.source)),
@@ -188,7 +190,9 @@ export function createSamplerFromSourceTexture(texture: SourceTexture): ISampler
 }
 
 export function createSplatData(splat: Splat): SplatData {
-    if (splat.stream) throw new Error('Call splat.readback() before accessing CPU data.');
+    if (splat.stream) {
+        throw new Error('Call splat.readback() before accessing CPU data.');
+    }
     let splatData: SplatData | undefined;
     const samplers: ISampler[] = [];
     if (splat instanceof __INTERNAL__.CompressedSplat) {

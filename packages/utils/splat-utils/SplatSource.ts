@@ -73,8 +73,9 @@ function readTexture(gl: WebGL2RenderingContext, texture: SourceTexture, instanc
     try {
         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, framebuffer);
         gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, instance, 0);
-        if (gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE)
+        if (gl.checkFramebufferStatus(gl.READ_FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
             throw new Error('Splat readback framebuffer is incomplete.');
+        }
         gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
         keys.forEach((key, index) => gl.pixelStorei(key, index === 0 ? 4 : 0));
         gl.readPixels(
@@ -86,7 +87,9 @@ function readTexture(gl: WebGL2RenderingContext, texture: SourceTexture, instanc
             integer ? gl.UNSIGNED_INT : gl.UNSIGNED_BYTE,
             result,
         );
-        if (texture.format !== TextureFormat.Rg32Uint) return result;
+        if (texture.format !== TextureFormat.Rg32Uint) {
+            return result;
+        }
         const packed = new Uint32Array(result.length / 2);
         for (let i = 0; i < packed.length; i += 2) {
             packed[i] = result[i * 2];
@@ -154,10 +157,16 @@ export async function createStreamingSog(data: SogSplatData, renderer: Renderer)
             data.signal?.throwIfAborted();
             for (const { index, offset, source } of chunk.samplers) {
                 // The existing SOG renderer consumes the five base images.
-                if (index >= 5) continue;
-                if (!offset) imageBytes = new Uint8Array(data.byteLengths[index]);
+                if (index >= 5) {
+                    continue;
+                }
+                if (!offset) {
+                    imageBytes = new Uint8Array(data.byteLengths[index]);
+                }
                 imageBytes!.set(source, offset);
-                if (offset + source.byteLength !== imageBytes!.byteLength) continue;
+                if (offset + source.byteLength !== imageBytes!.byteLength) {
+                    continue;
+                }
                 const image = await createImageBitmap(new Blob([imageBytes! as Uint8Array<ArrayBuffer>]), {
                     premultiplyAlpha: 'none',
                     colorSpaceConversion: 'none',
@@ -176,13 +185,13 @@ export async function createStreamingSog(data: SogSplatData, renderer: Renderer)
                     ).configAsDataTexture();
                     textures.push(texture);
                     const instance = renderer.getGPUTextureHandle(texture);
-                    if ('queue' in context)
+                    if ('queue' in context) {
                         context.queue.copyExternalImageToTexture(
                             { source: image },
                             { texture: instance as GPUTexture },
                             [image.width, image.height],
                         );
-                    else if (context instanceof WebGL2RenderingContext)
+                    } else if (context instanceof WebGL2RenderingContext) {
                         withUnpackState(context, () => {
                             context.bindTexture(context.TEXTURE_2D, instance);
                             context.texSubImage2D(
@@ -195,16 +204,21 @@ export async function createStreamingSog(data: SogSplatData, renderer: Renderer)
                                 image,
                             );
                         });
-                    else throw new Error('SOG streaming requires WebGL2.');
+                    } else {
+                        throw new Error('SOG streaming requires WebGL2.');
+                    }
                 } finally {
                     image.close();
                 }
             }
         });
-        if ('queue' in context) await context.queue.onSubmittedWorkDone();
+        if ('queue' in context) {
+            await context.queue.onSubmittedWorkDone();
+        }
         data.signal?.throwIfAborted();
-        if (renderer.gpuDevice !== context || (!('queue' in context) && context.isContextLost()))
+        if (renderer.gpuDevice !== context || (!('queue' in context) && context.isContextLost())) {
             throw new Error('Splat context was lost.');
+        }
         const [meansL, meansU, scales, quats, color] = textures;
         const splat = new __INTERNAL__.SogSplat(data.serialize().extras![0], meansL, meansU, quats, scales, color);
         splat.setStreamSource(createTextureSource(splat.extrasTex, renderer));
@@ -235,7 +249,9 @@ function clearTextures(gl: WebGL2RenderingContext, instances: WebGLTexture[]) {
     } finally {
         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, drawBinding);
         gl.deleteFramebuffer(framebuffer);
-        if (scissor) gl.enable(gl.SCISSOR_TEST);
+        if (scissor) {
+            gl.enable(gl.SCISSOR_TEST);
+        }
         gl.colorMask(mask[0], mask[1], mask[2], mask[3]);
     }
 }
@@ -247,11 +263,13 @@ function createTextureSource(textures: SourceTexture[], renderer: Renderer) {
     }
     const instances = textures.map(texture => renderer.getGPUTextureHandle(texture));
     const validate = () => {
-        if (renderer.gpuDevice !== context || (!('queue' in context) && context.isContextLost()))
+        if (renderer.gpuDevice !== context || (!('queue' in context) && context.isContextLost())) {
             throw new Error('Splat context was lost.');
+        }
         textures.forEach((texture, index) => {
-            if (renderer.getGPUTextureHandle(texture) !== instances[index])
+            if (renderer.getGPUTextureHandle(texture) !== instances[index]) {
                 throw new Error('Splat source was released.');
+            }
         });
     };
     return {

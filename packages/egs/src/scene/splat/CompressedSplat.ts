@@ -149,7 +149,9 @@ export class CompressedSplat extends Splat {
     }
 
     onGpuDataPacked() {
-        if (this.stream) return;
+        if (this.stream) {
+            return;
+        }
         this.splat1Tex.freeGPU();
         this.splat2Tex.freeGPU();
     }

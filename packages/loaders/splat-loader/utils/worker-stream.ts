@@ -13,17 +13,23 @@ export function streamToPort<T>(
         port1.close();
     };
     port1.onmessage = async ({ data }) => {
-        if (closed) return;
+        if (closed) {
+            return;
+        }
         try {
             if (data.cancel) {
                 await reader.cancel(data.reason);
                 close();
             } else {
-                if (data.buffers) receive?.(data.buffers);
+                if (data.buffers) {
+                    receive?.(data.buffers);
+                }
                 const result = await reader.read();
                 if (!closed) {
                     port1.postMessage(result, result.done ? [] : (transfer?.(result.value) ?? []));
-                    if (result.done) close();
+                    if (result.done) {
+                        close();
+                    }
                 }
             }
         } catch (error) {

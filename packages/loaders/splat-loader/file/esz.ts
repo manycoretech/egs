@@ -157,7 +157,9 @@ export class EszFile implements IFile {
             });
         }
         await forEachSplatChunk(data, blockOffset, counts, (start, size) => {
-            for (const decode of decoders) decode(start, size);
+            for (const decode of decoders) {
+                decode(start, size);
+            }
         });
     }
 
@@ -182,7 +184,9 @@ export class EszFile implements IFile {
                         if (target.byteLength) {
                             const offset = (data as IData).availableChunkCounts === undefined ? blockOffset + start : 0;
                             await cursor.readInto(target, offset * HIGH_PRECISION_STRIDE, size * HIGH_PRECISION_STRIDE);
-                        } else await cursor.skip(size * HIGH_PRECISION_STRIDE);
+                        } else {
+                            await cursor.skip(size * HIGH_PRECISION_STRIDE);
+                        }
                     },
                     segmentIndex,
                 );
@@ -195,7 +199,9 @@ export class EszFile implements IFile {
             decoders.push({
                 async init() {
                     const length = await cursor.readUint32(true);
-                    if (length !== expectedLength) throw new Error('Invalid ESZ high segment size.');
+                    if (length !== expectedLength) {
+                        throw new Error('Invalid ESZ high segment size.');
+                    }
                     return [counts, HIGH_PRECISION_STRIDE];
                 },
                 decode: (start, size, bytes) =>
@@ -250,7 +256,9 @@ export class EszFile implements IFile {
                     const target = blockOffset + start + i;
                     if (groupOffset > 0) {
                         data.getShN(target, shN);
-                    } else shN.fill(0);
+                    } else {
+                        shN.fill(0);
+                    }
                     const o = i * HIGH_PRECISION_STRIDE;
                     for (let j = 0; j < groupCounts; j++) {
                         decode111011s(view.getUint32(o + j * 4, true), shN, (groupOffset + j) * 3);

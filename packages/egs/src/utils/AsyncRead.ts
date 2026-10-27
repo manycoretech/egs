@@ -52,7 +52,9 @@ function scheduleTask(gl: WebGL2RenderingContext, sync: WebGLSync): Task {
 
 export async function waitForWebGL(gl: WebGL2RenderingContext) {
     const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0);
-    if (!sync) throw new Error('Unable to create a WebGL completion fence.');
+    if (!sync) {
+        throw new Error('Unable to create a WebGL completion fence.');
+    }
     gl.flush();
     try {
         await scheduleTask(gl, sync).deferred.promise;
