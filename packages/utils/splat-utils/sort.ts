@@ -9,14 +9,14 @@ try {
     WorkerFactor = () => new Worker(new URL('./worker.js', import.meta.url), { type: 'module' });
 }
 
-const poll = new FactoryWorkerPool('sort-splat-order', WorkerFactor, 1, 1);
+const pool = new FactoryWorkerPool('sort-splat-order', WorkerFactor, 1, 1);
 export async function sortSplats(count: number, sorting: Uint16Array | Uint32Array, ordering: Uint32Array) {
     const { promise, resolve, reject } = deferred<{
         activeCount: number;
         sorting: Uint16Array | Uint32Array;
         ordering: Uint32Array;
     }>();
-    const worker = await poll.getWorker();
+    const worker = await pool.getWorker();
     worker.onmessage = (event: MessageEvent) => {
         const data = event.data as ReceiveMessage<TaskType.SortSplats>;
         if (data.status === TaskStatus.Success) {
