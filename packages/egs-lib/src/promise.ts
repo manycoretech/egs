@@ -4,9 +4,15 @@ export interface Deferred<T = void> {
     promise: Promise<T>;
 }
 
+function noop() {}
+
 export function deferred<T = void>(): Deferred<T> {
-    let resolve: (value?: T | PromiseLike<T>) => void = () => {};
-    let reject: (reason?: any) => void = () => {};
+    // use `Promise.withResolvers` when available
+    if (Promise.withResolvers) {
+        return Promise.withResolvers<T>();
+    }
+    let resolve: (value?: T | PromiseLike<T>) => void = noop;
+    let reject: (reason?: any) => void = noop;
     const promise = new Promise<T>(function (resolveInner, rejectInner) {
         resolve = resolveInner;
         reject = rejectInner;

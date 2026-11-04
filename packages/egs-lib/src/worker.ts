@@ -1,5 +1,6 @@
 import { logger } from './logger.js';
 import { setFlags, intersectFlags, disableFlags, hasFlags, enableFlags } from './flags.js';
+import { deferred, type Deferred } from './promise.js';
 
 const WorkerFlags = {
     BUSY: 1,
@@ -12,10 +13,12 @@ const WorkerFlags = {
 export type WebWorker = Worker & {
     readonly alive: boolean;
     readonly permanent: boolean;
+    readonly eventSignal: AbortSignal;
     release(): void;
 };
 
 type InternalWebWorker = WebWorker & {
+    eventSignalController: AbortController;
     pool: FactoryWorkerPool;
     flags: number;
 };
@@ -35,12 +38,21 @@ const workerProperties = {
         enumerable: true,
         configurable: false,
     },
+    eventSignal: {
+        get(this: InternalWebWorker) {
+            return this.eventSignalController.signal;
+        },
+        enumerable: true,
+        configurable: false,
+    },
     release: {
         value(this: InternalWebWorker) {
-            this.flags = disableFlags(this.flags, WorkerFlags.BUSY);
             this.onerror = null;
             this.onmessage = null;
             this.onmessageerror = null;
+            this.eventSignalController.abort();
+            this.eventSignalController = new AbortController();
+            this.flags = disableFlags(this.flags, WorkerFlags.BUSY);
             this.pool.flush();
         },
         enumerable: false,
@@ -51,7 +63,7 @@ const workerProperties = {
 export class FactoryWorkerPool {
     private workers: InternalWebWorker[] = [];
     private timeoutHandle: any = undefined;
-    private tasks: Array<(worker: InternalWebWorker) => void> = [];
+    private tasks: Array<Deferred<WebWorker>> = [];
 
     constructor(
         readonly name: string,
@@ -65,6 +77,7 @@ export class FactoryWorkerPool {
         const worker = this.workerFactory() as InternalWebWorker;
         worker.pool = this;
         worker.flags = setFlags(WorkerFlags.ALIVE, WorkerFlags.PERMANENT, this.workers.length < this.permanentWorkers);
+        worker.eventSignalController = new AbortController();
         Object.defineProperties(worker, workerProperties);
         this.workers.push(worker);
         return worker;
@@ -90,6 +103,11 @@ export class FactoryWorkerPool {
         this.timeoutHandle = undefined;
     }
 
+    private prepareWorker(worker: InternalWebWorker): WebWorker {
+        worker.flags = enableFlags(worker.flags, WorkerFlags.BUSY);
+        return worker;
+    }
+
     flush() {
         if (this.tasks.length === 0 && this.timeoutHandle == null) {
             this.timeoutHandle = globalThis.setTimeout(() => {
@@ -101,7 +119,7 @@ export class FactoryWorkerPool {
         }
         const worker = this.workers.find(w => !hasFlags(w.flags, WorkerFlags.BUSY));
         if (worker && this.tasks.length > 0) {
-            this.tasks.shift()!(worker);
+            this.tasks.shift()!.resolve(this.prepareWorker(worker));
         }
     }
 
@@ -118,15 +136,11 @@ export class FactoryWorkerPool {
         }
         const worker = this.workers.find(w => !hasFlags(w.flags, WorkerFlags.BUSY));
         if (worker) {
-            worker.flags = enableFlags(worker.flags, WorkerFlags.BUSY);
-            return Promise.resolve(worker);
+            return Promise.resolve(this.prepareWorker(worker));
         }
-        return new Promise<WebWorker>(resolve => {
-            this.tasks.push(function (worker) {
-                worker.flags = enableFlags(worker.flags, WorkerFlags.BUSY);
-                resolve(worker);
-            });
-        });
+        const d = deferred<WebWorker>();
+        this.tasks.push(d);
+        return d.promise;
     }
 }
 

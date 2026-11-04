@@ -3,6 +3,8 @@
 - 改进编码风格开启`verbatimModuleSyntax` & `isolatedModules`，迁移至`OXC`
 - 改造为标准`ESM`
 - `WorkerPool`清理`worker`事件优化
+- 改进`WorkerPool`临时函数对象的创建
+- `Promise.withResolvers`可用时，使用`Promise.withResolvers`
 
 # 1.0.3
 
