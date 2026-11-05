@@ -2,8 +2,8 @@
 
 import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
-import { build } from '@internal/utils/builder.js';
+import build from '@internal/utils/egs-builder.js';
 
 const argv = yargs(hideBin(process.argv)).boolean('release').boolean('typeOnly').array('cp').argv;
 
-build(argv.cp, argv.release, argv.typeOnly);
+build(argv);

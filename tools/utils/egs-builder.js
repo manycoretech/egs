@@ -10,16 +10,16 @@ const workspace =
     $('git rev-parse --show-superproject-working-tree', undefined, false).trim() ||
     resolve($('pnpm root -w', undefined, false).trim(), '../');
 
-export function build(cp, release, typeOnly) {
+export default function build(options) {
     if (existsSync('./build')) {
         rmSync('./build', { recursive: true });
     }
 
     const catalogs = resolveCatalogs(workspace);
 
-    $(`pnpm tsc -b ${typeOnly ? '--emitDeclarationOnly' : ''}`);
+    $(`pnpm tsc -b ${options.typeOnly ? '--emitDeclarationOnly' : ''}`);
 
-    const movePatterns = ['./README.md', './CHANGELOG.md', './LICENSE', ...(cp ?? [])];
+    const movePatterns = ['./README.md', './CHANGELOG.md', './LICENSE', ...(options.cp ?? [])];
     for (let i = 0; i < movePatterns.length; i++) {
         const files = sync(movePatterns[i]);
         files.forEach(item => {
@@ -42,7 +42,7 @@ export function build(cp, release, typeOnly) {
     writeFileSync(relative('.', resolve('./build', './package.json')), JSON.stringify(packageJson, undefined, 2));
     console.log(chalk.bold.green('[build]: package.json for publish written.'));
 
-    if (release) {
+    if (options.release) {
         rollup(
             process.cwd(),
             typeOnlyExports
