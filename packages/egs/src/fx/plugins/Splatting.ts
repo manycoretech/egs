@@ -469,6 +469,7 @@ export class SplattingPlugin extends PipelinePlugin {
         const camera = sceneAdaptor.camera;
         camera.updateMatrixWorld();
         for (const splat of manager.splats) {
+            splat.updateWorldMatrix(true, false);
             tempMat.multiplyMatrices(camera.matrixWorldInverse, splat.matrixWorld);
             let cache = this.prevSplatCache.get(splat.id);
             if (!cache) {
