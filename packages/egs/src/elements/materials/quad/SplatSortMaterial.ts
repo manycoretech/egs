@@ -14,6 +14,7 @@ export class SplatSortMaterial extends PassQuadMaterialBase {
 
     depthBias: number = 1;
     highPrecisionEnabled: boolean = false;
+    radial: boolean = false;
 
     count: number = 0;
     vpMatrix: Matrix4 = new Matrix4();
@@ -47,8 +48,9 @@ export class SplatSortMaterial extends PassQuadMaterialBase {
             .addUniform('direction', WebGLShaderDataType.Vec3)
             .addUniform('centerOrigin', WebGLShaderDataType.Vec3)
             .addUniform('depthBias', WebGLShaderDataType.Float)
+            .addUniform('radial', WebGLShaderDataType.Bool)
             .addUniform('centerTex', WebGLShaderDataType.Sampler2D)
-            .addUniform('packedTexWidth', WebGLShaderDataType.Int)
+            .addUniform('packedTexWidthShift', WebGLShaderDataType.Int)
             .addFragmentCustom(this.highPrecisionEnabled ? PRECISION_FLOAT32 : PRECISION_FLOAT16)
             .addFragmentCustom(COMPUTE_SORT)
             .inject(ShaderInjectionTypes.gl_FragColor, createFragShader(this));
@@ -62,8 +64,9 @@ export class SplatSortMaterial extends PassQuadMaterialBase {
         program.setUniform('direction', this.direction);
         program.setUniform('centerOrigin', this.centerOrigin);
         program.setUniform('depthBias', this.depthBias);
+        program.setUniform('radial', this.radial);
         program.setTexture2D('centerTex', this.centerTex);
-        program.setUniform('packedTexWidth', this.centerTex.width);
+        program.setUniform('packedTexWidthShift', Math.log2(this.centerTex.width));
     }
 }
 
@@ -71,8 +74,12 @@ const PRECISION_FLOAT16 = `const float INVALID_METRIC = 65504.0;`;
 const PRECISION_FLOAT32 = `const float INVALID_METRIC = 3.402823466e38;`;
 const COMPUTE_SORT = `
 float computeSort(vec3 center, vec3 origin, vec3 direction, float depthBias) {
-    float biasedDepth = dot(center - origin, direction) + depthBias;
-    return biasedDepth > 0.0 ? biasedDepth : INVALID_METRIC;
+    vec3 offset = center - origin;
+    float biasedDepth = dot(offset, direction) + depthBias;
+    if (biasedDepth <= 0.0) {
+        return INVALID_METRIC;
+    }
+    return radial ? length(offset) : biasedDepth;
 }
 `;
 
@@ -86,7 +93,7 @@ function createFragShader(material: SplatSortMaterial): string {
                 discard;
             }
 
-            vec4 pixel = texelFetch(centerTex, ivec2(splatIndex % packedTexWidth, splatIndex / packedTexWidth), 0);
+            vec4 pixel = texelFetch(centerTex, ivec2(splatIndex & ((1 << packedTexWidthShift) - 1), splatIndex >> packedTexWidthShift), 0);
             vec3 center = pixel.xyz + centerOrigin;
             float metric = pixel.w > 0.0 ? computeSort(center, origin, direction, depthBias) : INVALID_METRIC;
             uint packedMetric = floatBitsToUint(metric);
@@ -103,11 +110,11 @@ function createFragShader(material: SplatSortMaterial): string {
 
         vec4 pixel;
         vec3 center;
-        pixel = texelFetch(centerTex, ivec2(splatIndex % packedTexWidth, splatIndex / packedTexWidth), 0);
+        pixel = texelFetch(centerTex, ivec2(splatIndex & ((1 << packedTexWidthShift) - 1), splatIndex >> packedTexWidthShift), 0);
         center = pixel.xyz + centerOrigin;
         float metric0 = pixel.w > 0.0 ? computeSort(center, origin, direction, depthBias) : INVALID_METRIC;
 
-        pixel = texelFetch(centerTex, ivec2((splatIndex + 1) % packedTexWidth, (splatIndex + 1) / packedTexWidth), 0);
+        pixel = texelFetch(centerTex, ivec2((splatIndex + 1) & ((1 << packedTexWidthShift) - 1), (splatIndex + 1) >> packedTexWidthShift), 0);
         center = pixel.xyz + centerOrigin;
         float metric1 = pixel.w > 0.0 ? computeSort(center, origin, direction, depthBias) : INVALID_METRIC;
 

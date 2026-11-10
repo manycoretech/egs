@@ -1,5 +1,9 @@
 # changelog
 
+## 1.2.1
+
+- 优化Worker排序，高精度排序由32位改为24位稳定排序，与WebGPU对齐。
+
 ## 1.2.0
 
 - `createSplat(data, renderer)`支持消费流式`SplatData`，按块上传到WebGL纹理或WebGPU源缓冲；native SOG按图片逐个解码上传。

@@ -38,9 +38,9 @@ export class SplatKernelHighlightMaterial extends Material {
             .addUniform('selectedColor', WebGLShaderDataType.Vec4)
             .addUniform('origin', WebGLShaderDataType.Vec3)
             .addUniform('centerTex', WebGLShaderDataType.Sampler2D)
-            .addUniform('packedTexWidth', WebGLShaderDataType.UInt)
+            .addUniform('packedTexWidthShift', WebGLShaderDataType.UInt)
             .addUniform('orderTex', WebGLShaderDataType.USampler2D)
-            .addUniform('orderTexWidth', WebGLShaderDataType.UInt)
+            .addUniform('orderTexWidthShift', WebGLShaderDataType.UInt)
             .addVaryingCustom('vColor', WebGLShaderDataType.Vec3)
             .inject(ShaderInjectionTypes.gl_PointSize, 'gl_PointSize = size;')
             .inject(ShaderInjectionTypes.gl_Position, VERTEX_SHADER)
@@ -53,9 +53,9 @@ export class SplatKernelHighlightMaterial extends Material {
         program.setUniform('color', this.color);
         program.setUniform('selectedColor', this.selectedColor);
         program.setTexture2D('centerTex', this.centerTex);
-        program.setUniform('packedTexWidth', this.centerTex.width);
+        program.setUniform('packedTexWidthShift', Math.log2(this.centerTex.width));
         program.setTexture2D('orderTex', this.orderTex);
-        program.setUniform('orderTexWidth', this.orderTex.width);
+        program.setUniform('orderTexWidthShift', Math.log2(this.orderTex.width));
     }
 
     copy(_other: SplatKernelHighlightMaterial) {}
@@ -66,8 +66,8 @@ export class SplatKernelHighlightMaterial extends Material {
 
 const VERTEX_SHADER = `
 uint orderIndex = uint(gl_InstanceID);
-uint splatIndex = texelFetch(orderTex, ivec2(orderIndex % orderTexWidth, orderIndex / orderTexWidth), 0).r;
-ivec2 texCoord = ivec2(splatIndex % packedTexWidth, splatIndex / packedTexWidth);
+uint splatIndex = texelFetch(orderTex, ivec2(orderIndex & ((1u << orderTexWidthShift) - 1u), orderIndex >> orderTexWidthShift), 0).r;
+ivec2 texCoord = ivec2(splatIndex & ((1u << packedTexWidthShift) - 1u), splatIndex >> packedTexWidthShift);
 vec4 pixel_0 = texelFetch(centerTex, texCoord, 0);
 vec3 center = pixel_0.xyz + origin;
 uint vertexState = uint(pixel_0.w + 0.5);

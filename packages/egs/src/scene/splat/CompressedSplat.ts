@@ -1,4 +1,5 @@
 import { Splat } from './Splat.js';
+import { _Math } from '../../math/Math.js';
 import type { SourceTexture } from '../../elements/textures/SourceTexture.js';
 
 export class CompressedSplat extends Splat {
@@ -59,6 +60,11 @@ export class CompressedSplat extends Splat {
             this.sh4Tex = sh4Tex;
             this.extrasTex.push(sh4Tex);
         }
+        for (const texture of this.extrasTex) {
+            if (texture && !_Math.isPowerOfTwo(texture.width)) {
+                throw new Error(`Splat source texture width must be a power of two, received ${texture.width}.`);
+            }
+        }
     }
 
     createUnpackSplatShader() {
@@ -82,7 +88,7 @@ export class CompressedSplat extends Splat {
                 return vec4(axis * s, w);
             }
             void unpackSplat(uint splatIndex, out Splat splat) {
-                ivec2 coord = ivec2(splatIndex % extraTex0_width, splatIndex / extraTex0_width);
+                ivec2 coord = ivec2(splatIndex & ((1u << extraTex0_widthShift) - 1u), splatIndex >> extraTex0_widthShift);
                 uvec4 pixel_0 = texelFetch(extraTex0, coord, 0);
                 uvec4 pixel_1 = texelFetch(extraTex1, coord, 0);
                 splat.center = vec3(
@@ -110,7 +116,7 @@ export class CompressedSplat extends Splat {
             ${
                 shDegree > 0
                     ? `
-                        ivec2 coord = ivec2(index % extraTex2_width, index / extraTex2_width);
+                        ivec2 coord = ivec2(index & ((1u << extraTex2_widthShift) - 1u), index >> extraTex2_widthShift);
                         uvec4 pixel_0 = texelFetch(extraTex2, coord, 0);
                         vec3 sh1_0 = unpack111011s(pixel_0.x);
                         vec3 sh1_1 = unpack111011s(pixel_0.y);

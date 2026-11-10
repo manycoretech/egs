@@ -1,4 +1,5 @@
 import { Splat } from './Splat.js';
+import { _Math } from '../../math/Math.js';
 import type { SourceTexture } from '../../elements/textures/SourceTexture.js';
 
 export class SuperCompressedSplat extends Splat {
@@ -35,6 +36,11 @@ export class SuperCompressedSplat extends Splat {
             this.sh2Tex = sh2Tex;
             this.extrasTex.push(sh2Tex);
         }
+        for (const texture of this.extrasTex) {
+            if (texture && !_Math.isPowerOfTwo(texture.width)) {
+                throw new Error(`Splat source texture width must be a power of two, received ${texture.width}.`);
+            }
+        }
     }
 
     createUnpackSplatShader() {
@@ -55,7 +61,7 @@ export class SuperCompressedSplat extends Splat {
             const float LN_SCALE_MAX = 9.0;
             const float LN_RESCALE = (LN_SCALE_MAX - LN_SCALE_MIN) / 254.0;
             void unpackSplat(uint splatIndex, out Splat splat) {
-                uvec4 pixel_0 = texelFetch(extraTex0, ivec2(splatIndex % extraTex0_width, splatIndex / extraTex0_width), 0);
+                uvec4 pixel_0 = texelFetch(extraTex0, ivec2(splatIndex & ((1u << extraTex0_widthShift) - 1u), splatIndex >> extraTex0_widthShift), 0);
                 uint word0 = pixel_0.x, word1 = pixel_0.y, word2 = pixel_0.z, word3 = pixel_0.w;
                 splat.center = vec3(unpackHalf2x16(word0), unpackHalf2x16(word1 & 0xFFFFu).x);
                 uvec3 uScales = uvec3((word1 >> 16u) & 0xFFu, (word1 >> 24u) & 0xFFu, (word2 >> 0u) & 0xFFu);
@@ -84,7 +90,7 @@ export class SuperCompressedSplat extends Splat {
             ${
                 shDegree > 0
                     ? `
-                        ivec2 coord = ivec2(index % extraTex1_width, index / extraTex1_width);
+                        ivec2 coord = ivec2(index & ((1u << extraTex1_widthShift) - 1u), index >> extraTex1_widthShift);
                         uvec4 pixel = texelFetch(extraTex1, coord, 0);
                         uint word0 = pixel.x;
                         uint word1 = pixel.y;

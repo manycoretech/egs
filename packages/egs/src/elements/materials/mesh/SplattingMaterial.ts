@@ -23,6 +23,7 @@ export class SplattingMaterial extends Material {
     side = Side.DoubleSide;
 
     highPrecisionEnabled: boolean = false;
+    repackEnabled: boolean = false;
     maxStdDev: number = Math.sqrt(8);
     maxPixelRadius: number = 1024;
     preBlurAmount: number = 0.3;
@@ -65,6 +66,7 @@ export class SplattingMaterial extends Material {
         return HashKeyBuilder.getInstance()
             .raw(this.className())
             .bool(this.highPrecisionEnabled)
+            .bool(this.repackEnabled)
             .raw(this.renderMode)
             .getKey();
     }
@@ -92,11 +94,14 @@ export class SplattingMaterial extends Material {
             .addUniform('ringSize', WebGLShaderDataType.Float)
             .addUniform('origin', WebGLShaderDataType.Vec3)
             .addUniform('centerTex', WebGLShaderDataType.Sampler2D)
-            .addUniform('packedTexWidth', WebGLShaderDataType.UInt)
+            .addUniform('packedTexWidthShift', WebGLShaderDataType.UInt)
             .addUniform('covTex', WebGLShaderDataType.USampler2D)
             .when(this.highPrecisionEnabled, builder => builder.addUniform('covExtTex', WebGLShaderDataType.USampler2D))
-            .addUniform('orderTex', WebGLShaderDataType.USampler2D)
-            .addUniform('orderTexWidth', WebGLShaderDataType.UInt)
+            .when(!this.repackEnabled, builder =>
+                builder
+                    .addUniform('orderTex', WebGLShaderDataType.USampler2D)
+                    .addUniform('orderTexWidthShift', WebGLShaderDataType.UInt),
+            )
             .addVaryingCustom('vColor', WebGLShaderDataType.Vec4)
             .addVaryingCustom('vSplatUv', WebGLShaderDataType.Vec2)
             .when(this.renderMode === SplattingRenderMode.PickingId, builder =>
@@ -124,12 +129,14 @@ export class SplattingMaterial extends Material {
         program.setUniform('origin', this.origin);
         program.setTexture2D('centerTex', this.centerTex);
         program.setTexture2D('covTex', this.covTex);
-        program.setUniform('packedTexWidth', this.centerTex.width);
+        program.setUniform('packedTexWidthShift', Math.log2(this.centerTex.width));
         if (this.highPrecisionEnabled) {
             program.setTexture2D('covExtTex', this.covExtTex);
         }
-        program.setTexture2D('orderTex', this.orderTex);
-        program.setUniform('orderTexWidth', this.orderTex.width);
+        if (!this.repackEnabled) {
+            program.setTexture2D('orderTex', this.orderTex);
+            program.setUniform('orderTexWidthShift', Math.log2(this.orderTex.width));
+        }
     }
 
     clone(): Material {
@@ -139,17 +146,16 @@ export class SplattingMaterial extends Material {
 }
 
 function createVertexShader(material: SplattingMaterial): string {
-    const { highPrecisionEnabled, renderMode } = material;
+    const { highPrecisionEnabled, repackEnabled, renderMode } = material;
     return `
         gl_Position = vec4(0.0, 0.0, 2.0, 1.0);
 
-        uint splatIndex = uint(gl_VertexID / 4 + 128 * gl_InstanceID);
+        uint splatIndex = uint((gl_VertexID >> 2) + 128 * gl_InstanceID);
         if (splatIndex >= count) {
             return;
         }
-        splatIndex = texelFetch(orderTex, ivec2(splatIndex % orderTexWidth, splatIndex / orderTexWidth), 0).r;
-
-        ivec2 texCoord = ivec2(splatIndex % packedTexWidth, splatIndex / packedTexWidth);
+        ${repackEnabled ? '' : 'splatIndex = texelFetch(orderTex, ivec2(splatIndex & ((1u << orderTexWidthShift) - 1u), splatIndex >> orderTexWidthShift), 0).r;'}
+        ivec2 texCoord = ivec2(splatIndex & ((1u << packedTexWidthShift) - 1u), splatIndex >> packedTexWidthShift);
         vec4 pixel_0 = texelFetch(centerTex, texCoord, 0);
         uint vertexState = uint(pixel_0.w + 0.5);
         vec3 center = pixel_0.xyz + origin;
@@ -234,6 +240,9 @@ function createVertexShader(material: SplattingMaterial): string {
         a += blurAmount;
         d += blurAmount;
         float det = a * d - b * b;
+        if (det <= 0.0) {
+            return;
+        }
 
         float blurAdjust = sqrt(max(0.0, detOrig / det));
         color.a *= blurAdjust;
@@ -241,7 +250,7 @@ function createVertexShader(material: SplattingMaterial): string {
             return;
         }
 
-        float factor = min(1.0, 0.5 * sqrt(-log(INV_255 / color.a)));
+        float factor = min(1.0, sqrt(-2.0 * log(mix(EXP4, 1.0, MIN_ALPHA / color.a))) / maxStdDev);
         ${renderMode === SplattingRenderMode.Ring ? 'factor = 1.0;' : ''}
         float k = maxStdDev * factor;
         if (detailCullingThreshold > 0.) {
@@ -256,9 +265,10 @@ function createVertexShader(material: SplattingMaterial): string {
         }
 
         float avg = 0.5 * (a + d);
-        float delta = sqrt(max(0.0, avg * avg - det));
+        float halfDiagDiff = 0.5 * (a - d);
+        float delta = length(vec2(halfDiagDiff, b));
         float lambda1 = avg + delta;
-        float lambda2 = avg - delta;
+        float lambda2 = det / lambda1;
         float maxRadius = min(maxPixelRadius * focalAdjustment, min(scaledResolution.x, scaledResolution.y));
         float scale1 = min(maxRadius, maxStdDev * sqrt(lambda1));
         float scale2 = min(maxRadius, maxStdDev * sqrt(lambda2));
@@ -266,7 +276,8 @@ function createVertexShader(material: SplattingMaterial): string {
             return;
         }
 
-        vec2 v1 = normalize(vec2((abs(b) < 0.001) ? 1.0 : b, lambda1 - a));
+        vec2 v1 = halfDiagDiff >= 0.0 ? vec2(delta + halfDiagDiff, b) : vec2(b, delta - halfDiagDiff);
+        v1 = delta > 0.0 ? normalize(v1) : vec2(1.0, 0.0);
         vec2 v2 = vec2(v1.y, -v1.x);
         vec2 pixelOffset = position.x * v1 * scale1 + position.y * v2 * scale2;
         clipCenter.xy += (2.0 / scaledResolution) * pixelOffset * factor * clipCenter.w;

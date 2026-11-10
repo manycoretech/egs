@@ -63,7 +63,7 @@ export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
         for (let i = 0; i < splat.extrasTex.length; i++) {
             builder
                 .addUniform(`extraTex${i}`, WebGLShaderDataType.USampler2D)
-                .addUniform(`extraTex${i}_width`, WebGLShaderDataType.UInt);
+                .addUniform(`extraTex${i}_widthShift`, WebGLShaderDataType.UInt);
         }
         builder.addDefaultFragColor = false;
         builder
@@ -98,7 +98,7 @@ export class SplatPrecalculateMaterial extends PassQuadMaterialBase {
         const { extrasTex } = splat;
         for (let i = 0; i < extrasTex.length; i++) {
             program.setTexture2D(`extraTex${i}`, extrasTex[i], true);
-            program.setUniform(`extraTex${i}_width`, extrasTex[i].width, true);
+            program.setUniform(`extraTex${i}_widthShift`, Math.log2(extrasTex[i].width), true);
         }
     }
 }
@@ -108,10 +108,6 @@ function createSHShader(material: SplatPrecalculateMaterial): string {
     const renderShDegree = Math.min(splat.shDegree, splat.maxShDegree);
 
     return `
-        ivec2 shTexCoord(uint index, uint width) {
-            return ivec2(index % width, index / width);
-        }
-
         vec3 unpack111011s(uint bits) {
             uvec3 u = (uvec3(bits) >> uvec3(21u, 11u, 0u)) & uvec3(0x7ffu, 0x3ffu, 0x7ffu);
             return vec3(u) / vec3(2047.0, 1023.0, 2047.0) * 2.0 - 1.0;

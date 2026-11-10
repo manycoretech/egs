@@ -68,7 +68,8 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
                         ? WebGLShaderDataType.USampler2D
                         : WebGLShaderDataType.Sampler2D,
                 )
-                .addUniform(`extraTex${i}_width`, WebGLShaderDataType.UInt);
+                .addUniform(`extraTex${i}_width`, WebGLShaderDataType.UInt)
+                .addUniform(`extraTex${i}_widthShift`, WebGLShaderDataType.UInt);
         }
         for (let i = 0; i < splat.extrasUBO.length; i++) {
             builder.addUBO(splat.extrasUBO[i]);
@@ -106,7 +107,7 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
             .when(!!splat.stateTex, builder =>
                 builder
                     .addUniform('stateTex', WebGLShaderDataType.USampler2D)
-                    .addUniform('stateTexWidth', WebGLShaderDataType.UInt),
+                    .addUniform('stateTexWidthShift', WebGLShaderDataType.UInt),
             )
             .addFragment(ShaderBlockPool.SplatHeader)
             .addFragmentCustom(`
@@ -150,13 +151,14 @@ export class SplatPackMaterial extends PassQuadMaterialBase {
         for (let i = 0; i < extrasTex.length; i++) {
             program.setTexture2D(`extraTex${i}`, extrasTex[i], true);
             program.setUniform(`extraTex${i}_width`, extrasTex[i].width, true);
+            program.setUniform(`extraTex${i}_widthShift`, Math.log2(extrasTex[i].width), true);
         }
         for (let i = 0; i < extrasUBO.length; i++) {
             extrasUBO[i].updateWebGL(program);
         }
         if (stateTex) {
             program.setTexture2D('stateTex', stateTex);
-            program.setUniform('stateTexWidth', stateTex.width);
+            program.setUniform('stateTexWidthShift', Math.log2(stateTex.width));
         }
         for (let i = 0; i < modifiers.length; i++) {
             const modifier = modifiers[i];
@@ -191,7 +193,7 @@ function createFragShader(material: SplatPackMaterial): string {
         ${
             !!splat.stateTex
                 ? `
-                    state = texelFetch(stateTex, ivec2(splatIndex % stateTexWidth, splatIndex / stateTexWidth), 0).r;
+                    state = texelFetch(stateTex, ivec2(splatIndex & ((1u << stateTexWidthShift) - 1u), splatIndex >> stateTexWidthShift), 0).r;
                     if ((state & 1u) != 0u) {
                         return;
                     }
