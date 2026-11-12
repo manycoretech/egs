@@ -18,13 +18,14 @@ function init() {
         // @ts-ignore
         import('./wasm/basis_transcoder.js'),
     ]).then(async ([wasm, transcoder]) => {
-        // The prebuilt glue omits wasmBinary, so instantiate the embedded WASM explicitly.
-        const wasmModule = await WebAssembly.compile(wasm.default);
         BasisModule = await transcoder.default({
-            instantiateWasm(imports: WebAssembly.Imports, receiveInstance: (instance: WebAssembly.Instance) => void) {
+            async instantiateWasm(
+                imports: WebAssembly.Imports,
+                receiveInstance: (instance: WebAssembly.Instance, module: WebAssembly.Module) => void,
+            ) {
+                const wasmModule = await WebAssembly.compile(wasm.default);
                 const instance = new WebAssembly.Instance(wasmModule, imports);
-                receiveInstance(instance);
-                return instance.exports;
+                receiveInstance(instance, wasmModule);
             },
         });
         BasisModule.initializeBasis();
