@@ -19,5 +19,6 @@ export default defineConfig({
         '**/wasm/**',
         '**/zstd-wasm/**',
         '**/draco-loader/*.js',
+        '**/splat-utils/simd/*.{js,mjs,d.ts}',
     ],
 });

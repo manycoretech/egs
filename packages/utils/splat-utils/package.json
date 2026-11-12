@@ -21,7 +21,7 @@
     "publishRoot": "./build"
   },
   "scripts": {
-    "build": "pnpm egs-build --cp ./simd/sort.wasm.*",
+    "build": "pnpm egs-build --cp ./simd/sort.wasm.* ./simd/sort-module.js ./simd/sort-module.d.ts",
     "build:wasm": "node ./simd/build.mjs",
     "build:release": "pnpm build --release",
     "build:types": "pnpm build --type-only",

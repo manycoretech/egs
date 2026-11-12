@@ -17,6 +17,7 @@ export default defineConfig({
         '**/scripts/**',
         '**/*.impl.ts',
         '**/draco-loader/*.js',
+        '**/splat-utils/simd/*.{js,mjs,d.ts}',
     ],
     rules: {
         curly: 'error',

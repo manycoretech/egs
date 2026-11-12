@@ -1,2 +1,3 @@
-declare const buffer: ArrayBuffer;
-export default buffer;
+
+const data: ArrayBuffer;
+export default data;
