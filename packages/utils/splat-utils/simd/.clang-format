@@ -1,0 +1,25 @@
+Language: Cpp
+BasedOnStyle: LLVM
+UseTab: Never
+LineEnding: LF
+IndentWidth: 4
+TabWidth: 4
+BreakBeforeBraces: Attach
+InsertBraces: true
+AllowShortIfStatementsOnASingleLine: false
+IndentCaseLabels: false
+ColumnLimit: 0
+AccessModifierOffset: -4
+PointerAlignment: Left
+SpaceAfterTemplateKeyword: false
+Cpp11BracedListStyle: false
+SpaceBeforeCpp11BracedList: true
+AlignAfterOpenBracket: DontAlign
+ContinuationIndentWidth: 4
+InsertNewlineAtEOF: true
+# BreakAfterOpenBracketBracedList: true
+# BreakAfterOpenBracketFunction: true
+# BreakAfterOpenBracketIf: true
+# BreakBeforeCloseBracketBracedList: true
+# BreakBeforeCloseBracketFunction: true
+# BreakBeforeCloseBracketIf: true
