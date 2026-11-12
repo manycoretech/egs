@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": "https://github.com/manycoretech/egs.git",
   "scripts": {
-    "build": "pnpm egs-build",
+    "build": "pnpm egs-build --cp ./ktx2/basis/wasm/*",
     "build:release": "pnpm build --release",
     "build:types": "pnpm build --type-only",
     "build:types:release": "pnpm build --release --type-only"

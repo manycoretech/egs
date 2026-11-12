@@ -13,22 +13,22 @@ function waitForReady() {
 function init() {
     wasmInitializingOrReady = true;
 
-    // const wasmBinary = (await import('./wasm/basis_transcoder.wasm')).default;
-
-    BasisModule = {};
-
     p = Promise.all([
         import('./wasm/basis_transcoder.wasm.js'),
         // @ts-ignore
         import('./wasm/basis_transcoder.js'),
-    ])
-        .then(m => {
-            BasisModule.wasmBinary = m[0].default;
-            return m[1].default(BasisModule);
-        })
-        .then(_ => {
-            BasisModule.initializeBasis();
+    ]).then(async ([wasm, transcoder]) => {
+        // The prebuilt glue omits wasmBinary, so instantiate the embedded WASM explicitly.
+        const wasmModule = await WebAssembly.compile(wasm.default);
+        BasisModule = await transcoder.default({
+            instantiateWasm(imports: WebAssembly.Imports, receiveInstance: (instance: WebAssembly.Instance) => void) {
+                const instance = new WebAssembly.Instance(wasmModule, imports);
+                receiveInstance(instance);
+                return instance.exports;
+            },
         });
+        BasisModule.initializeBasis();
+    });
     return p;
 }
 
@@ -96,6 +96,9 @@ export async function transcode(
         }> = [];
         for (let i = 0; i < levels; i++) {
             const size = file.getImageTranscodedSizeInBytes(i, 0, 0, transcoder);
+            if (size === 0) {
+                throw new Error(`EGS.KTX2Loader.transcode: invalid transcoded size for level: ${i}`);
+            }
             mipmapInfo.push({
                 byteOffset: totalSize,
                 byteLength: size,
