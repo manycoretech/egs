@@ -16,8 +16,16 @@ interface IBasicMessage {
 
 export interface IMessage extends IBasicMessage {
     [TaskType.SortSplats]: {
-        send: { count: number; sorting: Uint16Array | Uint32Array; ordering: Uint32Array };
-        receive: { activeCount: number; sorting: Uint16Array | Uint32Array; ordering: Uint32Array };
+        send: {
+            count: number;
+            sorting: Float32Array;
+            cameraPosition: number[];
+            cameraDirection: number[];
+            radial: boolean;
+            depthBias: number;
+            ordering: Uint32Array;
+        };
+        receive: { activeCount: number; sorting: Float32Array; ordering: Uint32Array };
     };
 }
 

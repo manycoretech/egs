@@ -1,5 +1,5 @@
 import { deferred, FactoryWorkerPool } from '@qunhe/egs-lib';
-import { TaskStatus, TaskType, type ReceiveMessage, type SendMessage } from './WorkerMessage.js';
+import { TaskStatus, TaskType, type IMessage, type ReceiveMessage, type SendMessage } from './WorkerMessage.js';
 
 let WorkerFactor: () => Worker;
 try {
@@ -10,15 +10,10 @@ try {
 }
 
 const pool = new FactoryWorkerPool('sort-splat-order', WorkerFactor, 1, 1);
-export async function sortSplats(count: number, sorting: Uint16Array | Uint32Array, ordering: Uint32Array) {
-    const { promise, resolve, reject } = deferred<{
-        activeCount: number;
-        sorting: Uint16Array | Uint32Array;
-        ordering: Uint32Array;
-    }>();
+export async function sortSplats(request: SendMessage<TaskType.SortSplats>['payload']) {
+    const { promise, resolve, reject } = deferred<IMessage[TaskType.SortSplats]['receive']>();
     const worker = await pool.getWorker();
-    worker.onmessage = (event: MessageEvent) => {
-        const data = event.data as ReceiveMessage<TaskType.SortSplats>;
+    worker.onmessage = ({ data }: MessageEvent<ReceiveMessage<TaskType.SortSplats>>) => {
         if (data.status === TaskStatus.Success) {
             resolve(data.payload);
         } else if (data.status === TaskStatus.Fail) {
@@ -29,9 +24,9 @@ export async function sortSplats(count: number, sorting: Uint16Array | Uint32Arr
 
     const payload: SendMessage<TaskType.SortSplats> = {
         taskType: TaskType.SortSplats,
-        payload: { count, sorting, ordering },
+        payload: request,
     };
-    worker.postMessage(payload, [sorting.buffer, ordering.buffer]);
+    worker.postMessage(payload, [request.sorting.buffer, request.ordering.buffer]);
 
     return promise;
 }

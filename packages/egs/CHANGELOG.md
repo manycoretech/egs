@@ -1,5 +1,12 @@
 # EGS 发布说明 Release Notes
 
+## 1.2.102
+
+1. 优化
+    - WebGL 高斯排序复用点中心数据减少回读次数，让排序和索引上传并行。
+2. **<font color="red">Breaking Changes</font>**
+    - 删除`Splatting.sort.highPrecisionEnabled`，排序统一使用 24 位深度键和 WebGPU 版本一致。
+
 ## 1.2.101
 
 1. 新功能

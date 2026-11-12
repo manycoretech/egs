@@ -1,6 +1,6 @@
 {
   "name": "@qunhe/egs-splat-utils",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "egs-splat-utils",
   "main": "index.js",
   "module": "index.js",
@@ -21,13 +21,14 @@
     "publishRoot": "./build"
   },
   "scripts": {
-    "build": "pnpm egs-build",
+    "build": "pnpm egs-build --cp ./simd/sort.wasm.*",
+    "build:wasm": "node ./simd/build.mjs",
     "build:release": "pnpm build --release",
     "build:types": "pnpm build --type-only",
     "build:types:release": "pnpm build --release --type-only"
   },
   "dependencies": {
-    "@qunhe/egs": "^1.2.99",
+    "@qunhe/egs": "^1.2.102",
     "@qunhe/egs-lib": "^1.0.3",
     "@qunhe/egs-splat-loader": "^1.3.0",
     "tslib": "catalog:"

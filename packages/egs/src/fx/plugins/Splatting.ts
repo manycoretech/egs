@@ -1,18 +1,16 @@
-import { logger } from '@qunhe/egs-lib';
+import { logger, sleep } from '@qunhe/egs-lib';
 import type { Vector4 } from '../../math/Vector4.js';
 import { PipelinePlugin, type IEffectConfig } from './PipelinePlugin.js';
 import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
 import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
-import { pass, target, pingpong, colorAttachment } from '../../rendergraph/NodeMakers.js';
+import { pass, target, colorAttachment } from '../../rendergraph/NodeMakers.js';
 import { RendererBackend, RendererState } from '../../renderer/IRenderer.js';
 import type { Renderer as WebGLRenderer } from '../../renderer/Renderer.js';
 import type { SceneAdaptor, SceneAdaptorDispatcher } from '../SceneAdaptor.js';
 import { drawQuad, type RendererAdaptor } from '../RendererAdaptor.js';
 import { DrawMode, SamplerFilter } from '../../utils/Constants.js';
 import { SplatPackMaterial } from '../../elements/materials/quad/SplatPackMaterial.js';
-import { SplatSortMaterial } from '../../elements/materials/quad/SplatSortMaterial.js';
 import { SplatPrecalculateMaterial } from '../../elements/materials/quad/SplatPrecalculateMaterial.js';
-import type { RenderTarget } from '../../elements/textures/RenderTarget.js';
 import { Mesh } from '../../scene/drawables/Mesh.js';
 import { InstancedBufferGeometry } from '../../elements/geometries/containers/InstancedBufferGeometry.js';
 import { SplattingMaterial, SplattingRenderMode } from '../../elements/materials/mesh/SplattingMaterial.js';
@@ -31,7 +29,6 @@ import type { Splat } from '../../scene/splat/Splat.js';
 import { TextureFormat, TextureDimension, TextureViewDimension } from '../../elements/textures/types.js';
 import { SourceTexture } from '../../elements/textures/SourceTexture.js';
 import type { TextureV2 } from '../../elements/textures/TextureV2.js';
-import { TextureDisposeEvent } from '../../elements/textures/Texture.js';
 import { waitForWebGL } from '../../utils/AsyncRead.js';
 
 /** Parameters shared by the Splatting plugin and native GPU renderer. */
@@ -50,22 +47,25 @@ export interface SplattingOptions {
     highPrecisionEnabled: boolean;
     precalculateEnabled: boolean;
     cameraRelativeEnabled: boolean;
-    radial: boolean;
+    sortRadial: boolean;
 }
 
 export type SplatKernelOptions = Pick<SplatKernelHighlightMaterial, 'size' | 'color' | 'selectedColor'>;
 
-let sortSplats: (
-    count: number,
-    sorting: Uint16Array | Uint32Array,
-    order: Uint32Array,
-) => Promise<{ activeCount: number; sorting: Uint16Array | Uint32Array; ordering: Uint32Array }> = async function (
-    _count: number,
-    sorting: Uint16Array | Uint32Array,
-    order: Uint32Array,
-) {
-    logger.error(`sortSplats is not registered.`);
-    return { activeCount: 0, sorting, ordering: order.fill(0) };
+let sortSplats = async ({
+    sorting,
+    ordering,
+}: {
+    count: number;
+    sorting: Float32Array;
+    cameraPosition: number[];
+    cameraDirection: number[];
+    radial: boolean;
+    depthBias: number;
+    ordering: Uint32Array;
+}) => {
+    logger.error('sortSplats is not registered.');
+    return { activeCount: 0, sorting, ordering: ordering.fill(0) };
 };
 export function setSortSplats(fn: typeof sortSplats) {
     sortSplats = fn;
@@ -124,23 +124,19 @@ export class SplattingPlugin extends PipelinePlugin {
     private precalculateMaterial = new SplatPrecalculateMaterial();
     private precalculateQuad = drawQuad(this.precalculateMaterial);
 
-    private isSortDirty: boolean = false;
-    private isSorting: boolean = false;
+    private sortRadial: boolean = false;
+    private sortDepthBias: number = 1;
     private sortMinIntervalMs: number = 0;
-    private sortHighPrecisionEnabled: boolean = false;
     private sortSplatDistance: number = 0.1;
     private sortSplatCoorient: number = 0.99999;
     private sortCameraDistance: number = 1;
     private sortCameraCoorient: number = 0.99;
-    private sortLastTime: number = -Infinity;
-    private sortPingPongTarget = pingpong('sorted_splats_target');
-    private sortMaterial = new SplatSortMaterial();
-    private sortQuad = drawQuad(this.sortMaterial);
 
     private reorderEnabled: boolean = false;
     private reorderMaterial = new SplatReorderMaterial();
     private reorderQuad = drawQuad(this.reorderMaterial);
     private reorderIsDirty: boolean = false;
+    private orderLayout: Array<{ id: number; count: number }> = [];
 
     private repackEnabled: boolean = false;
     private repackIsDirty: boolean = true;
@@ -175,7 +171,7 @@ export class SplattingPlugin extends PipelinePlugin {
     }
 
     get shouldRender() {
-        return this.enabled && (this.shouldRenderNextFrame || this.isSortDirty || this.isSorting);
+        return this.enabled && (this.shouldRenderNextFrame || this.isSortDirty || this.isSorting || this.isUploading);
     }
 
     constructor(scene: SceneAdaptorDispatcher, renderer: RendererAdaptor) {
@@ -198,128 +194,164 @@ export class SplattingPlugin extends PipelinePlugin {
         this.toneMappingMaterial.inputTransfer = ColorTransfer.SrgbToLinear;
     }
 
+    private isSortCancelled(renderer: WebGLRenderer) {
+        return this.isDestroyed || renderer.rendererStatus.state !== RendererState.Ready;
+    }
+
+    private isSortDirty: boolean = false;
+    private isSorting: boolean = false;
+    private sortLastTime: number = -Infinity;
     private sortCurrentVersion: number = 0;
-    private sortLastVersion: number = 0;
-    private sortingBuffer?: Uint32Array;
-    private sortTaskRunning: boolean = false;
-    private pendingSortTask?: { count: number; target: RenderTarget; splats: Splat[]; highPrecision: boolean };
-    private orderBuffer?: Uint32Array;
-    private orderLayout: Array<{ id: number; count: number }> = [];
+    private sortSceneVersion: number = -1;
+    private sortTask?: {
+        texture: TextureV2;
+        count: number;
+        splats: Splat[];
+        cameraPosition: number[];
+        cameraDirection: number[];
+        updateSorting: boolean;
+    };
+    private sortingBuffer?: Float32Array;
+    private orderingBuffer?: Uint32Array;
     private async flushSortTask() {
         const renderer = this.renderer.renderer as WebGLRenderer;
-        const isCancelled = () => this.isDestroyed || renderer.rendererStatus.state !== RendererState.Ready;
-        // this.pendingSortTask maybe undefined because of async
-        if (
-            isCancelled() ||
-            this.sortCurrentVersion === this.sortLastVersion ||
-            this.sortTaskRunning ||
-            !this.pendingSortTask
-        ) {
+        if (this.isSortCancelled(renderer) || !this.sortTask || this.isSorting) {
+            return;
+        }
+        if (performance.now() - this.sortLastTime < this.sortMinIntervalMs) {
+            this.isSortDirty = true;
             return;
         }
 
-        this.sortTaskRunning = true;
         this.isSorting = true;
-        const { reorderMaterial, sortLastVersion } = this;
+        this.sortLastTime = performance.now();
+        if (this.uploadOrderTask) {
+            this.orderingBuffer = this.uploadOrderTask.ordering;
+            this.uploadOrderTask = undefined;
+        }
+
         try {
-            this.sortPingPongTarget.tick();
+            const { texture, count, splats, cameraPosition, cameraDirection, updateSorting } = this.sortTask;
+            this.sortTask = undefined;
 
-            const { count, target, splats, highPrecision } = this.pendingSortTask;
-            const orderLayout = splats.map(splat => ({ id: splat.id, count: splat.counts }));
-
-            const sorting = await readSortPixels(renderer, target.colors[0], this.sortingBuffer, 16 * 1024 * 1024);
-            if (isCancelled()) {
-                return;
+            let sorting = this.sortingBuffer;
+            if (!sorting || sorting.length < texture.width * texture.height * 4) {
+                sorting = this.sortingBuffer = new Float32Array(texture.width * texture.height * 4);
+            }
+            if (updateSorting) {
+                await readTextureInChunks(renderer, texture, count, sorting);
+                if (this.isSortCancelled(renderer)) {
+                    return;
+                }
             }
 
-            const prevOrderTex = reorderMaterial.orderTex;
-            const orderCapacity = prevOrderTex.width * prevOrderTex.height;
-            const orderWidth = Math.max(
-                1,
-                Math.min(2 ** Math.ceil(Math.log2(Math.sqrt(count))), renderer.limits.maxTextureDimension2D),
-            );
-            const maxOrderHeight = Math.ceil(count / (orderWidth * 2)) * 2;
-            const orderBufferCapacity = Math.max(orderCapacity, orderWidth * maxOrderHeight);
-            let orderBuffer = this.orderBuffer;
-            if (!orderBuffer || orderBufferCapacity > orderBuffer.length) {
-                orderBuffer = new Uint32Array(orderBufferCapacity);
+            let ordering = this.orderingBuffer;
+            this.orderingBuffer = undefined;
+            if (!ordering || ordering.length < texture.width * texture.height) {
+                ordering = new Uint32Array(texture.width * texture.height);
             }
             const {
                 activeCount,
                 sorting: backSorting,
+                ordering: backOrdering,
+            } = await sortSplats({
+                count,
+                sorting,
                 ordering,
-            } = await sortSplats(count, highPrecision ? sorting : new Uint16Array(sorting.buffer), orderBuffer);
-            if (isCancelled()) {
+                cameraPosition,
+                cameraDirection,
+                radial: this.sortRadial,
+                depthBias: this.sortDepthBias,
+            });
+            if (this.isSortCancelled(renderer)) {
                 return;
             }
 
-            this.sortingBuffer = new Uint32Array(backSorting.buffer);
-            this.orderBuffer = new Uint32Array((prevOrderTex.getLevelLayerSource(0) as Uint32Array).buffer);
-
-            let orderHeight = Math.max(2, prevOrderTex.height);
-            if (prevOrderTex.width !== orderWidth || activeCount > orderCapacity) {
-                const rows = Math.ceil(activeCount / orderWidth);
-                const requiredHeight = Math.max(2, Math.ceil(rows / 2) * 2);
-                const reservedHeight = Math.floor((rows * 1.2) / 2) * 2;
-                orderHeight = Math.min(maxOrderHeight, Math.max(requiredHeight, reservedHeight));
-            }
-            let orderTex = prevOrderTex;
-            if (orderTex.width !== orderWidth || orderTex.height !== orderHeight) {
-                orderTex = createOrderTexture(orderWidth, orderHeight);
-            }
-            await uploadOrderTexture(
-                renderer,
-                orderTex,
-                ordering.subarray(0, orderWidth * orderHeight),
-                16 * 1024 * 1024,
-            );
-            if (isCancelled()) {
-                return;
-            }
-            if (orderTex !== prevOrderTex) {
-                prevOrderTex.freeGPU();
-            }
-            this.splattingMaterial.orderTex =
-                this.highlightKernelMaterial.orderTex =
-                reorderMaterial.orderTex =
-                    orderTex;
-            this.splattingGeometry.instancedCount = Math.ceil(activeCount / SPLAT_BLOCK_COUNT);
-            this.splattingMaterial.count = this.highlightKernelGeometry.instancedCount = activeCount;
-            renderer.flushCommands();
-            this.orderLayout = orderLayout;
-            for (const splat of splats) {
-                splat.onSorted();
-            }
-
-            this.reorderIsDirty = true;
-            this.sortCurrentVersion = sortLastVersion;
-            if (this.sortCurrentVersion >= this.sortLastVersion) {
-                this.isSorting = false;
-                this.shouldRenderNextFrame = true;
-            }
+            this.sortingBuffer = backSorting;
+            this.uploadOrderTask = {
+                width: texture.width,
+                height: texture.height,
+                count: activeCount,
+                ordering: backOrdering,
+                splats,
+            };
+            this.flushUploadOrderTask();
         } catch (error) {
-            if (!isCancelled()) {
+            if (!this.isSortCancelled(renderer)) {
                 logger.warn('Failed to sort splats', error);
-            }
-            return;
-        } finally {
-            this.sortTaskRunning = false;
-            if (!this.isDestroyed && this.sortCurrentVersion !== sortLastVersion) {
                 this.isSortDirty = true;
+                this.sortSceneVersion = -1;
+                this.sortingBuffer = undefined;
+                if (this.sortTask) {
+                    this.sortTask.updateSorting = true;
+                }
             }
+        } finally {
+            this.isSorting = false;
+            this.flushSortTask();
         }
-        this.flushSortTask();
     }
 
-    private addSortTask(count: number, target: RenderTarget, splats: Splat[]) {
-        this.pendingSortTask = { count, target, splats, highPrecision: this.sortHighPrecisionEnabled };
-        this.sortLastVersion++;
+    private isUploading = false;
+    private uploadOrderTask?: {
+        width: number;
+        height: number;
+        count: number;
+        ordering: Uint32Array;
+        splats: Splat[];
+    };
+    private orderTex?: SourceTexture;
+    private async flushUploadOrderTask() {
+        const renderer = this.renderer.renderer as WebGLRenderer;
+        if (this.isUploading || !this.uploadOrderTask || this.isSortCancelled(renderer)) {
+            return;
+        }
+        this.isUploading = true;
+
+        const { width, height, count, ordering, splats } = this.uploadOrderTask;
+        this.uploadOrderTask = undefined;
+
+        try {
+            let orderTex = this.orderTex;
+            if (!orderTex || orderTex.width !== width || orderTex.height !== height) {
+                orderTex?.freeGPU();
+                orderTex = this.orderTex = createOrderTexture(width, height);
+            }
+            await uploadTextureInChunks(renderer, orderTex, count, ordering, () => this.isSortCancelled(renderer));
+            this.orderingBuffer = orderTex.getLevelLayerSource(0) as Uint32Array | undefined;
+            orderTex.setLevelData(ordering, 0).assumeUploaded();
+            if (this.isSortCancelled(renderer)) {
+                return;
+            }
+
+            this.orderTex = this.reorderMaterial.orderTex;
+            this.splattingMaterial.orderTex =
+                this.highlightKernelMaterial.orderTex =
+                this.reorderMaterial.orderTex =
+                    orderTex;
+            this.splattingGeometry.instancedCount = Math.ceil(count / SPLAT_BLOCK_COUNT);
+            this.splattingMaterial.count = this.highlightKernelGeometry.instancedCount = count;
+            this.orderLayout = splats.map(splat => ({ id: splat.id, count: splat.counts }));
+            this.reorderIsDirty = true;
+            this.sortCurrentVersion++;
+            this.shouldRenderNextFrame = true;
+            splats.forEach(splat => splat.onSorted());
+        } catch (error) {
+            if (!this.isSortCancelled(renderer)) {
+                logger.warn('Failed to upload splat order', error);
+                this.isSortDirty = true;
+            }
+        } finally {
+            this.isUploading = false;
+            this.flushUploadOrderTask();
+        }
     }
 
     destroy() {
         this.isDestroyed = true;
-        this.isSorting = false;
-        this.pendingSortTask = undefined;
+        this.sortTask = undefined;
+        this.uploadOrderTask = undefined;
+        this.orderingBuffer = undefined;
     }
 
     private prevSceneVersion: number = 0;
@@ -485,17 +517,9 @@ export class SplattingPlugin extends PipelinePlugin {
         }
         this.isSortDirty = this.isSortDirty || isSortDirty;
         this.reorderIsDirty = this.reorderIsDirty || isSceneDirty;
-        const repackChanged = this.splattingMaterial.repackEnabled !== this.repackEnabled;
-        if (repackChanged) {
-            this.splattingMaterial.repackEnabled = this.repackEnabled;
-            this.splattingMaterial.notifyRecompileShader();
-        }
         // Keep pending repacks until the graph actually executes.
         this.repackIsDirty ||=
-            repackChanged ||
-            !!packQueue.size ||
-            (this.precalculateEnabled && !!precalculateQueue.size) ||
-            this.reorderIsDirty;
+            !!packQueue.size || (this.precalculateEnabled && !!precalculateQueue.size) || this.reorderIsDirty;
         this.shouldRenderNextFrame ||= this.repackEnabled && this.repackIsDirty;
         if (this.reorderIsDirty && !this.reorderEnabled) {
             this.splattingMaterial.orderTex = this.highlightKernelMaterial.orderTex = reorderMaterial.orderTex;
@@ -552,7 +576,6 @@ export class SplattingPlugin extends PipelinePlugin {
             .bool(this.packHighPrecisionEnabled)
             .bool(this.precalculateEnabled)
             .bool(this.repackEnabled)
-            .bool(this.sortPingPongTarget.evenTick)
             .bool(this.reorderEnabled)
             .bool(this.compositeEnabled)
             .bool(this.compositeHighPrecisionEnabled)
@@ -574,9 +597,6 @@ export class SplattingPlugin extends PipelinePlugin {
             precalculateEnabled,
             precalculateMaterial,
             precalculateQuad,
-            sortMaterial,
-            sortQuad,
-            sortPingPongTarget,
             reorderEnabled,
             reorderQuad,
             repackEnabled,
@@ -684,6 +704,26 @@ export class SplattingPlugin extends PipelinePlugin {
                             }
                             start = end;
                         }
+                    })
+                    .after(({ target }) => {
+                        if (this.isSortDirty) {
+                            this.isSortDirty = false;
+                            const { totalCount, splats, sceneVersion } = scene.scene.splatManager;
+                            const camera = scene.camera.matrixWorld;
+                            this.sortTask = {
+                                texture: target!.colors[0],
+                                count: totalCount,
+                                splats,
+                                cameraPosition: camera.getPosition(tempVec0).sub(packCameraRelativeOrigin).toArray(),
+                                cameraDirection: tempVec1.set(0, 0, -1).transformDirection(camera).toArray(),
+                                updateSorting:
+                                    this.packQueue.size > 0 ||
+                                    this.sortSceneVersion !== sceneVersion ||
+                                    !!this.sortTask?.updateSorting,
+                            };
+                            this.sortSceneVersion = sceneVersion;
+                            this.flushSortTask();
+                        }
                         this.packQueue.clear();
                     }),
             ]);
@@ -755,36 +795,6 @@ export class SplattingPlugin extends PipelinePlugin {
                     }),
             ]);
 
-        const sortTarget = sortPingPongTarget
-            .ping()
-            .resize(() => {
-                const splatsPerPixel = this.sortHighPrecisionEnabled ? 1 : 2;
-                const width = Math.max(1, packAttachSize.width / splatsPerPixel);
-                const height = Math.ceil(splatManager.totalCount / (width * splatsPerPixel));
-                return { width, height };
-            })
-            .from([
-                pass('sort_splat_pass')
-                    .disableClear()
-                    .input('centerTex', packTarget, 0)
-                    .use((renderer, target) => {
-                        if (!this.isSortDirty || performance.now() - this.sortLastTime < this.sortMinIntervalMs) {
-                            return;
-                        }
-                        const { width, height } = target!;
-                        const count = splatManager.totalCount;
-                        sortMaterial.update(scene.camera);
-                        sortMaterial.centerOrigin.copy(packCameraRelativeOrigin);
-                        sortMaterial.resolution.set(width, height);
-                        sortMaterial.count = count;
-                        sortQuad.render(renderer);
-                        this.addSortTask(count, target!, splatManager.splats);
-                        this.flushSortTask();
-                        this.sortLastTime = performance.now();
-                        this.isSortDirty = false;
-                    }),
-            ]);
-
         let resourceTarget = packTarget;
         if (repackEnabled) {
             const textureNames = ['centerTex', 'covTex', packHighPrecisionEnabled ? 'covExtTex' : ''].filter(v => !!v);
@@ -840,7 +850,6 @@ export class SplattingPlugin extends PipelinePlugin {
         graph.addPass([
             pass('splatting_pass')
                 .depend(precalculateTarget)
-                .depend(sortTarget)
                 .disableClear()
                 .input('centerTex', resourceTarget, 0)
                 .input('covTex', resourceTarget, 1)
@@ -863,7 +872,9 @@ export class SplattingPlugin extends PipelinePlugin {
                         null,
                     );
                     this.shouldRenderNextFrame = false;
-                    splatManager.splats.forEach(item => item.onUpdateRenderingStability(!this.isSorting));
+                    splatManager.splats.forEach(item =>
+                        item.onUpdateRenderingStability(!(this.isSortDirty || this.isSorting || this.isUploading)),
+                    );
                 }),
         ]);
 
@@ -938,7 +949,7 @@ export class SplattingPlugin extends PipelinePlugin {
                             highPrecisionEnabled: this.packHighPrecisionEnabled,
                             precalculateEnabled: this.precalculateEnabled,
                             cameraRelativeEnabled: this.packCameraRelativeEnabled,
-                            radial: this.sortMaterial.radial,
+                            sortRadial: this.sortRadial,
                         },
                     );
                 })
@@ -1014,12 +1025,15 @@ export class SplattingPlugin extends PipelinePlugin {
                     set: (v: boolean) => {
                         this.forceUpdate = true;
                         this.precalculateEnabled = this.packMaterial.outputColorAttachment = v;
+                        this.packMaterial.notifyRecompileShader();
                     },
                 },
                 repackEnabled: {
                     get: () => this.repackEnabled,
                     set: (v: boolean) => {
-                        this.repackEnabled = v;
+                        this.repackEnabled = this.splattingMaterial.repackEnabled = v;
+                        this.splattingMaterial.notifyRecompileShader();
+                        this.repackIsDirty = true;
                         this.shouldRenderNextFrame = true;
                     },
                 },
@@ -1101,19 +1115,10 @@ export class SplattingPlugin extends PipelinePlugin {
             },
             sort: {
                 radial: {
-                    get: () => this.sortMaterial.radial,
+                    get: () => this.sortRadial,
                     set: (v: boolean) => {
+                        this.sortRadial = v;
                         this.isSortDirty = true;
-                        this.shouldRenderNextFrame = true;
-                        this.sortMaterial.radial = v;
-                    },
-                },
-                highPrecisionEnabled: {
-                    get: () => this.sortHighPrecisionEnabled,
-                    set: (v: boolean) => {
-                        this.isSortDirty = true;
-                        this.sortHighPrecisionEnabled = this.sortMaterial.highPrecisionEnabled = v;
-                        this.sortMaterial.notifyRecompileShader();
                     },
                 },
                 minIntervalMs: {
@@ -1147,9 +1152,10 @@ export class SplattingPlugin extends PipelinePlugin {
                     },
                 },
                 depthBias: {
-                    get: () => this.sortMaterial.depthBias,
+                    get: () => this.sortDepthBias,
                     set: (v: number) => {
-                        this.sortMaterial.depthBias = v;
+                        this.sortDepthBias = v;
+                        this.isSortDirty = true;
                     },
                 },
             },
@@ -1211,105 +1217,73 @@ export class SplattingPlugin extends PipelinePlugin {
 
     notifyChanged() {
         this.forceUpdate = true;
-        this.pendingSortTask = undefined;
+        this.sortLastTime = -Infinity;
+        this.sortTask = undefined;
+        this.uploadOrderTask = undefined;
     }
 }
 
-async function readSortPixels(
-    renderer: WebGLRenderer,
-    texture: TextureV2,
-    data: Uint32Array | undefined,
-    maxChunkBytes: number,
-) {
-    const pixelCount = texture.width * texture.height;
-    if (!data || data.length < pixelCount) {
-        data = new Uint32Array(pixelCount);
-    }
-    data = data.subarray(0, pixelCount);
+const TEXTURE_CHUNK_BYTES = 16 * 1024 * 1024;
+
+async function readTextureInChunks(renderer: WebGLRenderer, texture: TextureV2, count: number, data: Float32Array) {
+    const { width } = texture;
+    const height = Math.ceil(count / width);
+    const length = width * height * 4;
     const gl = renderer.gl as WebGL2RenderingContext;
     const handle = renderer.getGPUTextureHandle(texture);
     const framebuffer = gl.createFramebuffer()!;
     const buffer = gl.createBuffer()!;
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, framebuffer);
     gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, handle, 0);
-    gl.readBuffer(gl.COLOR_ATTACHMENT0);
     gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buffer);
-    gl.bufferData(gl.PIXEL_PACK_BUFFER, data.byteLength, gl.STREAM_READ);
-    // Sort keys are encoded as one RGBA8 pixel each.
-    gl.readPixels(0, 0, texture.width, texture.height, gl.RGBA, gl.UNSIGNED_BYTE, 0);
+    gl.bufferData(gl.PIXEL_PACK_BUFFER, length * data.BYTES_PER_ELEMENT, gl.STREAM_READ);
+    // FLOAT readback works for both RGBA16F and RGBA32F center attachments.
+    gl.readPixels(0, 0, width, height, gl.RGBA, gl.FLOAT, 0);
     gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
     gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
     gl.deleteFramebuffer(framebuffer);
     try {
         await waitForWebGL(gl);
-        const chunkLength = maxChunkBytes / data.BYTES_PER_ELEMENT;
-        for (let offset = 0; offset < data.length; offset += chunkLength) {
+        const chunkLength = TEXTURE_CHUNK_BYTES / data.BYTES_PER_ELEMENT;
+        for (let offset = 0; offset < length; offset += chunkLength) {
+            const chunk = data.subarray(offset, Math.min(offset + chunkLength, length));
             // Overlap the timer's minimum delay with the current copy.
-            const nextChunk =
-                offset + chunkLength < data.length ? new Promise(resolve => setTimeout(resolve, 0)) : undefined;
+            const nextChunk = offset + chunkLength < length ? sleep(0) : undefined;
             gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buffer);
-            gl.getBufferSubData(
-                gl.PIXEL_PACK_BUFFER,
-                offset * data.BYTES_PER_ELEMENT,
-                data,
-                offset,
-                Math.min(chunkLength, data.length - offset),
-            );
+            gl.getBufferSubData(gl.PIXEL_PACK_BUFFER, chunk.byteOffset, chunk);
             gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
             if (nextChunk) {
                 await nextChunk;
             }
         }
-        return data;
     } finally {
-        gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
         gl.deleteBuffer(buffer);
     }
 }
 
-const orderUploadBuffers = new WeakMap<WebGLTexture, WebGLBuffer>();
-async function uploadOrderTexture(
+async function uploadTextureInChunks(
     renderer: WebGLRenderer,
     texture: SourceTexture,
+    count: number,
     data: Uint32Array,
-    maxChunkBytes: number,
+    isCancelled: () => boolean,
 ) {
     const gl = renderer.gl as WebGL2RenderingContext;
     const handle = renderer.getGPUTextureHandle(texture);
-    let buffer = orderUploadBuffers.get(handle);
-    if (!buffer) {
-        buffer = gl.createBuffer()!;
-        orderUploadBuffers.set(handle, buffer);
-        texture.once(TextureDisposeEvent, () => {
-            gl.deleteBuffer(buffer!);
-            orderUploadBuffers.delete(handle);
-        });
-        gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER, buffer);
-        gl.bufferData(gl.PIXEL_UNPACK_BUFFER, data.byteLength, gl.STREAM_DRAW);
-        gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER, null);
-    }
-    try {
-        const chunkLength = maxChunkBytes / data.BYTES_PER_ELEMENT;
-        for (let offset = 0; offset < data.length; offset += chunkLength) {
-            gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER, buffer);
-            gl.bufferSubData(
-                gl.PIXEL_UNPACK_BUFFER,
-                offset * data.BYTES_PER_ELEMENT,
-                data.subarray(offset, offset + chunkLength),
-            );
-            gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER, null);
-            if (offset + chunkLength < data.length) {
-                await new Promise(resolve => setTimeout(resolve, 0));
+    const { width } = texture;
+    const height = Math.ceil(count / width);
+    const rowsPerChunk = Math.max(1, Math.floor(TEXTURE_CHUNK_BYTES / (width * data.BYTES_PER_ELEMENT)));
+    for (let y = 0; y < height; y += rowsPerChunk) {
+        if (y > 0) {
+            await sleep(0);
+            if (isCancelled()) {
+                return;
             }
         }
-        // Publish only after all chunks have reached the staging buffer.
+        const rows = Math.min(rowsPerChunk, height - y);
+        const chunk = data.subarray(y * width, (y + rows) * width);
         renderer.wglState.bindTextureAndActiveForUploading(gl.TEXTURE_2D, handle);
         texture.storageDescriptor.sync_webgl(gl, false);
-        gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER, buffer);
-        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, texture.width, texture.height, gl.RED_INTEGER, gl.UNSIGNED_INT, 0);
-        texture.setLevelData(data, 0);
-        texture.assumeUploaded();
-    } finally {
-        gl.bindBuffer(gl.PIXEL_UNPACK_BUFFER, null);
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, y, width, rows, gl.RED_INTEGER, gl.UNSIGNED_INT, chunk);
     }
 }
