@@ -1,4 +1,5 @@
 export { computeDenseBox } from './utils.js';
+export { readbackStream } from './readback.js';
 export {
     createSplat,
     createSplatData,

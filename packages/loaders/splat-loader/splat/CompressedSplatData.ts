@@ -1,10 +1,11 @@
 import { SplatData } from './SplatData.js';
-import { type ISampler, type ISplatData, type ISingleSplat, ISamplerFormat } from '../types.js';
+import { type ISampler, type ISplatData, type ISingleSplat, ISamplerFormat, SplatPackType } from '../types.js';
 import { computeTextureSize } from '../utils/texture.js';
-import { clamp, encodeQuatOct, decodeQuatOct } from '../utils/math.js';
+import { clampInteger, encodeQuatOct, decodeQuatOct } from '../utils/math.js';
 import { toHalf, fromHalf, encode111011s, decode111011s } from '../utils/packing.js';
 
 export class CompressedSplatData extends SplatData {
+    readonly packType = SplatPackType.Compressed;
     counts: number = 0;
     shDegree: number = 0;
 
@@ -101,9 +102,9 @@ export class CompressedSplatData extends SplatData {
         splat2Uint16Buffer[i8 + 4] = toHalf(Math.log(single.sy));
         splat2Uint16Buffer[i8 + 5] = toHalf(Math.log(single.sz));
         const oct = encodeQuatOct(single.qx, single.qy, single.qz, single.qw);
-        const quantU = clamp(((oct[0] * 0.5 + 0.5) * 1023.0) | 0, 0.0, 1023);
-        const quantV = clamp(((oct[1] * 0.5 + 0.5) * 1023.0) | 0, 0.0, 1023);
-        const angleInt = clamp((oct[2] * 4095.0) | 0, 0, 4095);
+        const quantU = clampInteger(((oct[0] * 0.5 + 0.5) * 1023.0) | 0, 1023);
+        const quantV = clampInteger(((oct[1] * 0.5 + 0.5) * 1023.0) | 0, 1023);
+        const angleInt = clampInteger((oct[2] * 4095.0) | 0, 4095);
         splat2Uint32Buffer[i4 + 3] = (angleInt << 20) | (quantV << 10) | quantU;
     }
 
@@ -116,20 +117,24 @@ export class CompressedSplatData extends SplatData {
     }
 
     setScale(i: number, sx: number, sy: number, sz: number) {
+        this.setLogScale(i, Math.log(sx), Math.log(sy), Math.log(sz));
+    }
+
+    setLogScale(i: number, sx: number, sy: number, sz: number) {
         const { splat2Uint16Buffer } = this;
         const i8 = i * 8;
-        splat2Uint16Buffer[i8 + 3] = toHalf(Math.log(sx));
-        splat2Uint16Buffer[i8 + 4] = toHalf(Math.log(sy));
-        splat2Uint16Buffer[i8 + 5] = toHalf(Math.log(sz));
+        splat2Uint16Buffer[i8 + 3] = toHalf(sx);
+        splat2Uint16Buffer[i8 + 4] = toHalf(sy);
+        splat2Uint16Buffer[i8 + 5] = toHalf(sz);
     }
 
     setQuat(i: number, qx: number, qy: number, qz: number, qw: number) {
         const { splat2Uint32Buffer } = this;
         const i4 = i * 4;
         const oct = encodeQuatOct(qx, qy, qz, qw);
-        const quantU = clamp(((oct[0] * 0.5 + 0.5) * 1023.0) | 0, 0.0, 1023);
-        const quantV = clamp(((oct[1] * 0.5 + 0.5) * 1023.0) | 0, 0.0, 1023);
-        const angleInt = clamp((oct[2] * 4095.0) | 0, 0, 4095);
+        const quantU = clampInteger(((oct[0] * 0.5 + 0.5) * 1023.0) | 0, 1023);
+        const quantV = clampInteger(((oct[1] * 0.5 + 0.5) * 1023.0) | 0, 1023);
+        const angleInt = clampInteger((oct[2] * 4095.0) | 0, 4095);
         splat2Uint32Buffer[i4 + 3] = (angleInt << 20) | (quantV << 10) | quantU;
     }
 

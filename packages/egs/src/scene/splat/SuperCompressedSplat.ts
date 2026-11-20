@@ -134,9 +134,6 @@ export class SuperCompressedSplat extends Splat {
     }
 
     onGpuDataPacked() {
-        if (this.stream) {
-            return;
-        }
         this.splatTex.freeGPU();
     }
 }

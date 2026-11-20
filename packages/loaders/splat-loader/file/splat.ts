@@ -8,22 +8,18 @@ const STREAM_CHUNK_BYTE_LENGTH = 128 * 1024;
 const STREAM_CHUNK_ITEM_COUNTS = Math.floor(STREAM_CHUNK_BYTE_LENGTH / ITEM_SIZE);
 export class SplatFile implements IFile {
     async read(stream: ReadableStream<Uint8Array>, contentLength: number, data: IData) {
-        if (!Number.isSafeInteger(contentLength) || contentLength < 0 || contentLength % ITEM_SIZE !== 0) {
-            throw new Error('SPLAT requires a valid byte length divisible by 32.');
-        }
         const setFn = data.set.bind(data) as IData['set'];
         const counts = Math.floor(contentLength / ITEM_SIZE);
         const BlockOffset = await data.initBlock(counts, 0);
         const single = createSingleSplat();
 
-        const decoder = new StreamChunkDecoder(new ByteStreamCursor(stream));
+        const decoder = new StreamChunkDecoder(new ByteStreamCursor(stream), data, BlockOffset);
         await decoder.decode([
             {
                 init: () => [counts, ITEM_SIZE],
-                maxCounts: data.availableChunkCounts === undefined ? undefined : () => data.availableChunkCounts!,
-                decode: async (offset, counts, buffer) => {
+                part: 'splat',
+                decode: (offset, counts, buffer) => {
                     offset += BlockOffset;
-                    await data.beginChunk?.(offset, counts, 'splat');
                     const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
                     for (let i = 0; i < counts; i++) {
                         const o = i * ITEM_SIZE;
@@ -43,7 +39,6 @@ export class SplatFile implements IFile {
                         single.qz = (buffer[o + 31] - 128) / 128;
                         setFn(offset + i, single);
                     }
-                    await data.endChunk?.();
                 },
             },
         ]);

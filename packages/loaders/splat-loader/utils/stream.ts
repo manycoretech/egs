@@ -1,4 +1,5 @@
-import type { IData } from '../types.js';
+import { deferred } from '@qunhe/egs-lib';
+import type { IData, SplatPart } from '../types.js';
 
 export class ByteStreamCursor {
     private reader: ReadableStreamDefaultReader<Uint8Array>;
@@ -36,16 +37,6 @@ export class ByteStreamCursor {
     }
 
     async readInto(target: Uint8Array, offset = 0, byteLength = target.byteLength - offset) {
-        if (
-            !Number.isSafeInteger(offset) ||
-            !Number.isSafeInteger(byteLength) ||
-            offset < 0 ||
-            byteLength < 0 ||
-            offset + byteLength > target.byteLength
-        ) {
-            throw new RangeError('Invalid stream read range');
-        }
-
         const end = offset + byteLength;
         while (offset < end) {
             if (!(await this.ensureChunk())) {
@@ -59,10 +50,6 @@ export class ByteStreamCursor {
     }
 
     async readChunks(byteLength: number, onChunk: (chunk: Uint8Array) => void | Promise<void>) {
-        if (!Number.isSafeInteger(byteLength) || byteLength < 0) {
-            throw new RangeError(`Invalid stream read length: ${byteLength}`);
-        }
-
         let remaining = byteLength;
         while (remaining > 0) {
             if (!(await this.ensureChunk())) {
@@ -81,10 +68,6 @@ export class ByteStreamCursor {
     }
 
     async readUntil(delimiter: Uint8Array) {
-        if (delimiter.byteLength === 0) {
-            throw new RangeError('Stream delimiter must not be empty');
-        }
-
         const prefix = new Uint32Array(delimiter.byteLength);
         for (let i = 1, matched = 0; i < delimiter.byteLength; i++) {
             while (matched > 0 && delimiter[i] !== delimiter[matched]) {
@@ -122,8 +105,7 @@ export class ByteStreamCursor {
             if (matched === delimiter.byteLength && chunks.length === 0) {
                 return chunk;
             }
-            // A BYOB reader may transfer and reuse the backing buffer on the next read.
-            chunks.push(chunk.slice());
+            chunks.push(chunk);
             byteLength += chunk.byteLength;
             if (matched === delimiter.byteLength) {
                 const result = new Uint8Array(byteLength);
@@ -140,9 +122,6 @@ export class ByteStreamCursor {
     }
 
     async readExact(byteLength: number) {
-        if (!Number.isSafeInteger(byteLength) || byteLength < 0) {
-            throw new RangeError(`Invalid stream read length: ${byteLength}`);
-        }
         if (byteLength === 0) {
             return new Uint8Array(0);
         }
@@ -170,64 +149,16 @@ export class ByteStreamCursor {
 
 export interface ChunkDecoder {
     init(): Promise<[number, number]> | [number, number]; // [totals, itemSize]
-    maxCounts?(): number;
     decode(offset: number, counts: number, buffer: Uint8Array): void | Promise<void>;
-}
-
-export const STREAM_CHUNK_COUNTS = 16384;
-
-/** Bound encoded output while keeping the format's point/column decoding order. */
-export async function forEachSplatChunk(
-    data: IData,
-    offset: number,
-    counts: number,
-    consume: (start: number, counts: number) => void | Promise<void>,
-    channel: 'all' | 'splat' | 'sh' | number = 'all',
-) {
-    for (let start = 0; start < counts;) {
-        const size = Math.min(data.availableChunkCounts ?? STREAM_CHUNK_COUNTS, counts - start);
-        await data.beginChunk?.(offset + start, size, channel);
-        await consume(start, size);
-        await data.endChunk?.();
-        start += size;
-    }
+    part?: SplatPart;
 }
 
 export class StreamChunkDecoder {
-    constructor(private cursor: ByteStreamCursor) {}
-
-    /** Column files require input columns before complete points can be emitted. */
-    async decodeColumns(decoders: ChunkDecoder[], data: IData, offset: number) {
-        const columns: { decoder: ChunkDecoder; itemSize: number; bytes: Uint8Array }[] = [];
-        for (const decoder of decoders.slice(0, -1)) {
-            const [totals, itemSize] = await decoder.init();
-            const bytes = new Uint8Array(totals * itemSize);
-            await this.cursor.readInto(bytes);
-            columns.push({ decoder, itemSize, bytes });
-        }
-        const last = decoders[decoders.length - 1];
-        if (!last) {
-            return;
-        }
-        await this.decode([
-            {
-                init: last.init,
-                maxCounts: () => data.availableChunkCounts ?? STREAM_CHUNK_COUNTS,
-                decode: async (start, size, bytes) => {
-                    await data.beginChunk?.(offset + start, size, 'all');
-                    for (const column of columns) {
-                        await column.decoder.decode(
-                            start,
-                            size,
-                            column.bytes.subarray(start * column.itemSize, (start + size) * column.itemSize),
-                        );
-                    }
-                    await last.decode(start, size, bytes);
-                    await data.endChunk?.();
-                },
-            },
-        ]);
-    }
+    constructor(
+        private cursor: ByteStreamCursor,
+        private data: IData,
+        private blockOffset = 0,
+    ) {}
 
     async decode(decoders: ChunkDecoder[]) {
         for (const decoder of decoders) {
@@ -236,109 +167,193 @@ export class StreamChunkDecoder {
                 continue;
             }
 
+            const part = decoder.part;
             const pending = new Uint8Array(itemSize);
             let pendingByteLength = 0;
             let decoded = 0;
-            await this.cursor.readChunks(totals * itemSize, async chunk => {
-                let chunkOffset = 0;
-                if (pendingByteLength > 0) {
-                    const copyLength = Math.min(itemSize - pendingByteLength, chunk.byteLength);
-                    pending.set(chunk.subarray(0, copyLength), pendingByteLength);
-                    pendingByteLength += copyLength;
-                    chunkOffset += copyLength;
-                    if (pendingByteLength === itemSize) {
-                        await decoder.decode(decoded, 1, pending);
-                        decoded++;
-                        pendingByteLength = 0;
+            while (decoded < totals) {
+                const counts =
+                    part === undefined
+                        ? totals - decoded
+                        : this.data.initChunk(this.blockOffset + decoded, totals - decoded, part);
+                await this.cursor.readChunks(counts * itemSize, async chunk => {
+                    let chunkOffset = 0;
+                    if (pendingByteLength > 0) {
+                        const copyLength = Math.min(itemSize - pendingByteLength, chunk.byteLength);
+                        pending.set(chunk.subarray(0, copyLength), pendingByteLength);
+                        pendingByteLength += copyLength;
+                        chunkOffset += copyLength;
+                        if (pendingByteLength === itemSize) {
+                            await decoder.decode(decoded, 1, pending);
+                            decoded++;
+                            pendingByteLength = 0;
+                        }
                     }
-                }
 
-                while (chunk.byteLength - chunkOffset >= itemSize) {
-                    const counts = Math.min(
-                        decoder.maxCounts?.() ?? STREAM_CHUNK_COUNTS,
-                        Math.floor((chunk.byteLength - chunkOffset) / itemSize),
-                    );
-                    const batchByteLength = counts * itemSize;
-                    await decoder.decode(decoded, counts, chunk.subarray(chunkOffset, chunkOffset + batchByteLength));
-                    decoded += counts;
-                    chunkOffset += batchByteLength;
-                }
+                    const counts = Math.floor((chunk.byteLength - chunkOffset) / itemSize);
+                    if (counts > 0) {
+                        const batchByteLength = counts * itemSize;
+                        await decoder.decode(
+                            decoded,
+                            counts,
+                            chunk.subarray(chunkOffset, chunkOffset + batchByteLength),
+                        );
+                        decoded += counts;
+                        chunkOffset += batchByteLength;
+                    }
 
-                if (chunkOffset < chunk.byteLength) {
-                    const remainder = chunk.subarray(chunkOffset);
-                    pending.set(remainder);
-                    pendingByteLength = remainder.byteLength;
+                    if (chunkOffset < chunk.byteLength) {
+                        const remainder = chunk.subarray(chunkOffset);
+                        pending.set(remainder);
+                        pendingByteLength = remainder.byteLength;
+                    }
+                });
+                if (part !== undefined) {
+                    await this.data.commitChunk();
                 }
-            });
-
-            if (pendingByteLength !== 0 || decoded !== totals) {
-                throw new Error(`Invalid stream data: expected ${totals} items, got ${decoded}`);
             }
         }
     }
 }
 
-/** Reuse a bounded input buffer without reading ahead of its consumer. */
-export function bufferedInput(stream: ReadableStream<Uint8Array>, byteLength: number, signal: AbortSignal) {
-    signal.throwIfAborted();
-    let reader: ReadableStreamDefaultReader<Uint8Array> | ReadableStreamBYOBReader;
-    let buffer: ArrayBuffer | undefined;
-    try {
-        reader = stream.getReader({ mode: 'byob' });
-        buffer = new ArrayBuffer(byteLength);
-    } catch {
-        reader = stream.getReader();
+export class WorkerStream<R, W> {
+    readonly readable: ReadableStream<R>;
+    readonly buffers: ArrayBuffer[] = [];
+    private controller: ReadableStreamDefaultController<R>;
+    private source?: ReadableStreamDefaultReader<W>;
+    private requested = deferred<void>();
+    private received = deferred<void>();
+    private recycled: ArrayBuffer[] = [];
+    private readClosed = false;
+    private writeClosed = false;
+    private error?: unknown;
+
+    constructor(
+        private port: MessagePort,
+        private transfer: (value: W) => ArrayBuffer[] = () => [],
+        recycle: (value: R) => ArrayBuffer[] = () => [],
+    ) {
+        this.readable = new ReadableStream<R>(
+            {
+                start: controller => {
+                    this.controller = controller;
+                },
+                pull: () => {
+                    const buffers = this.recycled;
+                    this.recycled = [];
+                    this.received = deferred();
+                    port.postMessage({ type: 'pull', buffers }, buffers);
+                    return this.received.promise;
+                },
+                cancel: () => {
+                    this.readClosed = true;
+                    port.postMessage({ type: 'cancel' });
+                    this.closePort();
+                },
+            },
+            { highWaterMark: 0 },
+        );
+        port.onmessage = ({ data }) => {
+            switch (data.type) {
+                case 'pull':
+                    this.buffers.push(...data.buffers);
+                    this.requested.resolve();
+                    break;
+                case 'data':
+                    this.recycled = recycle(data.value);
+                    this.controller.enqueue(data.value);
+                    this.received.resolve();
+                    break;
+                case 'end':
+                    if (!this.readClosed) {
+                        this.controller.close();
+                        this.readClosed = true;
+                    }
+                    this.closePort();
+                    break;
+                case 'cancel':
+                    this.writeClosed = true;
+                    this.source?.cancel();
+                    this.requested.resolve();
+                    this.closePort();
+                    break;
+                case 'close':
+                    this.finish(data.error);
+                    break;
+            }
+        };
     }
-    let closed = false;
-    let controller: ReadableStreamDefaultController<Uint8Array>;
-    const close = async (reason?: unknown) => {
-        if (closed) {
+
+    /** The next pull acknowledges consumption and returns reusable buffers. */
+    async write(value: W) {
+        await this.requested.promise;
+        if (this.error) {
+            throw this.error;
+        }
+        if (this.writeClosed) {
             return;
         }
-        closed = true;
-        signal.removeEventListener('abort', abort);
-        await reader.cancel(reason).catch(() => {});
-        reader.releaseLock();
-        buffer = undefined;
-    };
-    const abort = () => {
-        controller.error(signal.reason);
-        void close(signal.reason);
-    };
-    return new ReadableStream<Uint8Array>(
-        {
-            start(value) {
-                controller = value;
-                signal.addEventListener('abort', abort, { once: true });
-            },
-            async pull() {
-                try {
-                    const { done, value } = buffer
-                        ? await (reader as ReadableStreamBYOBReader).read(new Uint8Array(buffer))
-                        : await (reader as ReadableStreamDefaultReader<Uint8Array>).read();
-                    if (closed) {
-                        return;
-                    }
-                    if (buffer && value) {
-                        buffer = value.buffer as ArrayBuffer;
-                    }
-                    if (done) {
-                        controller.close();
-                        await close();
-                    } else {
-                        controller.enqueue(value);
-                    }
-                } catch (error) {
-                    if (!closed) {
-                        controller.error(error);
-                        await close(error);
-                    }
+        this.requested = deferred();
+        this.port.postMessage({ type: 'data', value }, this.transfer(value));
+        await this.requested.promise;
+        if (this.error) {
+            throw this.error;
+        }
+    }
+
+    async send(stream: ReadableStream<W>) {
+        const reader = (this.source = stream.getReader());
+        try {
+            await this.requested.promise;
+            while (!this.writeClosed) {
+                const { value, done } = await reader.read();
+                if (done) {
+                    break;
                 }
-            },
-            cancel: close,
-        },
-        { highWaterMark: 0 },
-    );
+                await this.write(value);
+            }
+        } finally {
+            reader.releaseLock();
+            this.source = undefined;
+        }
+        if (!this.writeClosed) {
+            // EOF ends this direction; the response may still be in progress.
+            this.writeClosed = true;
+            this.port.postMessage({ type: 'end' });
+            this.closePort();
+        }
+    }
+
+    close(error?: unknown) {
+        this.port.postMessage({ type: 'close', error });
+        this.finish(error);
+    }
+
+    private finish(error?: unknown) {
+        this.error = error;
+        if (!this.readClosed) {
+            if (error === undefined) {
+                this.controller.close();
+            } else {
+                this.controller.error(error);
+            }
+        }
+        this.source?.cancel();
+        this.readClosed = this.writeClosed = true;
+        this.requested.resolve();
+        this.closePort();
+    }
+
+    private closePort() {
+        if (this.readClosed) {
+            this.received.resolve();
+            this.recycled = [];
+        }
+        if (this.readClosed && this.writeClosed) {
+            this.port.onmessage = null;
+            this.port.close();
+        }
+    }
 }
 
 export async function probeStream(
@@ -348,22 +363,16 @@ export async function probeStream(
     const prefix: Uint8Array[] = [];
     let magic = 0;
     let length = 0;
-    try {
-        while (length < 4) {
-            const { done, value } = await reader.read();
-            if (done) {
-                break;
-            }
-            // A BYOB source can detach its previous buffer on the next read.
-            prefix.push(length + value.length < 4 ? value.slice() : value);
-            for (let i = 0; i < value.length && length < 4; i++, length++) {
-                magic |= value[i] << (length * 8);
-            }
+    while (length < 4) {
+        const { done, value } = await reader.read();
+        if (done) {
+            break;
         }
-    } catch (error) {
-        await reader.cancel(error).catch(() => {});
-        reader.releaseLock();
-        throw error;
+        // A BYOB source can detach its previous buffer on the next read.
+        prefix.push(length + value.length < 4 ? value.slice() : value);
+        for (let i = 0; i < value.length && length < 4; i++, length++) {
+            magic |= value[i] << (length * 8);
+        }
     }
     return {
         magic,
@@ -383,7 +392,7 @@ export async function probeStream(
                     }
                 },
                 async cancel(reason) {
-                    await reader.cancel(reason).catch(() => {});
+                    await reader.cancel(reason);
                     reader.releaseLock();
                 },
             },

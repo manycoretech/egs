@@ -1,7 +1,7 @@
 import { SplatData } from './SplatData.js';
-import { type ISampler, ISamplerFormat, type ISingleSplat, type ISplatData } from '../types.js';
+import { type ISampler, ISamplerFormat, type ISingleSplat, type ISplatData, SplatPackType } from '../types.js';
 import { computeTextureSize } from '../utils/texture.js';
-import { clamp, encodeQuatOct, decodeQuatOct } from '../utils/math.js';
+import { clampInteger, encodeQuatOct, decodeQuatOct } from '../utils/math.js';
 import {
     toHalf,
     fromHalf,
@@ -19,6 +19,7 @@ const LN_SCALE_MAX = 9;
 const LN_SCALE = 254.0 / (LN_SCALE_MAX - LN_SCALE_MIN);
 const LN_SCALE_INV = 1 / LN_SCALE;
 export class SuperCompressedSplatData extends SplatData {
+    readonly packType = SplatPackType.SuperCompressed;
     counts: number = 0;
     shDegree: number = 0;
 
@@ -54,8 +55,8 @@ export class SuperCompressedSplatData extends SplatData {
             width,
             height,
             depth,
-            format: shDegree === 1 ? ISamplerFormat.RG_UINT : ISamplerFormat.RGBA_UINT,
-            source: new Uint8Array((shDegree >= 1 ? (shDegree === 1 ? 8 : 16) : 0) * pixelCounts),
+            format: this.shDegree === 1 ? ISamplerFormat.RG_UINT : ISamplerFormat.RGBA_UINT,
+            source: new Uint8Array((this.shDegree >= 1 ? (this.shDegree === 1 ? 8 : 16) : 0) * pixelCounts),
         });
         this.sh1Uint8Buffer = sh1Sampler.source;
         this.sh1Uint32Buffer = new Uint32Array(sh1Sampler.source.buffer);
@@ -64,7 +65,7 @@ export class SuperCompressedSplatData extends SplatData {
             height,
             depth,
             format: ISamplerFormat.RGBA_UINT,
-            source: new Uint8Array((shDegree >= 3 ? 16 : 0) * pixelCounts),
+            source: new Uint8Array((this.shDegree >= 3 ? 16 : 0) * pixelCounts),
         });
         this.sh2Uint8Buffer = sh2Sampler.source;
     }
@@ -78,9 +79,9 @@ export class SuperCompressedSplatData extends SplatData {
         splatUint16Buffer[i8 + 1] = toHalf(single.y);
         splatUint16Buffer[i8 + 2] = toHalf(single.z);
 
-        splatUint8Buffer[i16 + 6] = clamp(((Math.log(single.sx) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
-        splatUint8Buffer[i16 + 7] = clamp(((Math.log(single.sy) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
-        splatUint8Buffer[i16 + 8] = clamp(((Math.log(single.sz) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
+        splatUint8Buffer[i16 + 6] = clampInteger(((Math.log(single.sx) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 255);
+        splatUint8Buffer[i16 + 7] = clampInteger(((Math.log(single.sy) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 255);
+        splatUint8Buffer[i16 + 8] = clampInteger(((Math.log(single.sz) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 255);
 
         const oct = encodeQuatOct(single.qx, single.qy, single.qz, single.qw);
         splatUint8Buffer[i16 + 9] = toUnsignedChar(oct[0]);
@@ -102,11 +103,15 @@ export class SuperCompressedSplatData extends SplatData {
     }
 
     setScale(i: number, sx: number, sy: number, sz: number) {
+        this.setLogScale(i, Math.log(sx), Math.log(sy), Math.log(sz));
+    }
+
+    setLogScale(i: number, sx: number, sy: number, sz: number) {
         const { splatUint8Buffer } = this;
         const offset = i * 16;
-        splatUint8Buffer[offset + 6] = clamp(((Math.log(sx) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
-        splatUint8Buffer[offset + 7] = clamp(((Math.log(sy) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
-        splatUint8Buffer[offset + 8] = clamp(((Math.log(sz) - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 0, 255);
+        splatUint8Buffer[offset + 6] = clampInteger(((sx - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 255);
+        splatUint8Buffer[offset + 7] = clampInteger(((sy - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 255);
+        splatUint8Buffer[offset + 8] = clampInteger(((sz - LN_SCALE_MIN) * LN_SCALE + 1.5) | 0, 255);
     }
 
     setQuat(i: number, qx: number, qy: number, qz: number, qw: number) {

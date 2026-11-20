@@ -1,5 +1,5 @@
 import { SplatData } from './SplatData.js';
-import { type ISplatData, type ISingleSplat, ISamplerFormat } from '../types.js';
+import { type ISplatData, type ISingleSplat, ISamplerFormat, SplatPackType } from '../types.js';
 
 export type SogMetadata = {
     counts: number;
@@ -21,6 +21,7 @@ export type SogMetadata = {
 );
 
 export class SogSplatData extends SplatData {
+    readonly packType = SplatPackType.Sog;
     counts: number = 0;
     shDegree: number = 0;
 
@@ -68,6 +69,10 @@ export class SogSplatData extends SplatData {
     }
 
     setScale(_i: number, _sx: number, _sy: number, _sz: number) {
+        throw new Error('Method not implemented.');
+    }
+
+    setLogScale(_i: number, _sx: number, _sy: number, _sz: number) {
         throw new Error('Method not implemented.');
     }
 

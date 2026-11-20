@@ -39,8 +39,11 @@ export async function decodeImage(fileBytes: Uint8Array<ArrayBuffer>) {
     canvas.height = height;
 
     context.drawImage(bitmap, 0, 0, width, height);
+    bitmap.close();
 
     const data = context.getImageData(0, 0, width, height);
+    canvas.width = 1;
+    canvas.height = 1;
     return {
         data: new Uint8Array(data.data.buffer, data.data.byteOffset, data.data.length),
         width,

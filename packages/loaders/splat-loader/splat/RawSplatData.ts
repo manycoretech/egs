@@ -1,5 +1,5 @@
 import { SplatData } from './SplatData.js';
-import { type ISplatData, type ISingleSplat, ISamplerFormat } from '../types.js';
+import { type ISplatData, type ISingleSplat, ISamplerFormat, SplatPackType } from '../types.js';
 import { Quaternion } from '../utils/math.js';
 import { SH_MAPS } from '../utils/splat.js';
 
@@ -23,6 +23,7 @@ enum ColIdx {
 }
 
 export class RawSplatData extends SplatData {
+    readonly packType = SplatPackType.Raw;
     counts: number = 0;
     shDegree: number = 0;
 
@@ -71,6 +72,13 @@ export class RawSplatData extends SplatData {
         table[ColIdx.sx][i] = sx;
         table[ColIdx.sy][i] = sy;
         table[ColIdx.sz][i] = sz;
+    }
+
+    setLogScale(i: number, sx: number, sy: number, sz: number) {
+        const { table } = this;
+        table[ColIdx.sx][i] = Math.exp(sx);
+        table[ColIdx.sy][i] = Math.exp(sy);
+        table[ColIdx.sz][i] = Math.exp(sz);
     }
 
     setQuat(i: number, qx: number, qy: number, qz: number, qw: number) {

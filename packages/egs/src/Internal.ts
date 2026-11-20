@@ -116,7 +116,6 @@ export {
     setupWebGPUCompressedTextureCapabilities,
 } from './renderer/Capabilities.js';
 export { CompressedSplat } from './scene/splat/CompressedSplat.js';
-export type { SplatSource } from './scene/splat/Splat.js';
 export { SuperCompressedSplat } from './scene/splat/SuperCompressedSplat.js';
 export { SogSplat } from './scene/splat/SogSplat.js';
 export type { SogSplatMeta } from './scene/splat/SogSplat.js';

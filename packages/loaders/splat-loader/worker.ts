@@ -1,85 +1,45 @@
 /// <reference lib="webworker" />
 
-import type { ParseRequest, ParseOutput } from './WorkerMessage.js';
-import { SplatFileType, SplatPackType } from './types.js';
+import { type SendMessage, TaskStatus, type ReceiveMessage } from './WorkerMessage.js';
 import { createSplatData, prepareSplatFiles, readSplatFiles } from './helper.js';
-import { createStreamingData, SPLAT_STREAM_CHUNK_BYTES, type SplatStreamSink } from './streaming.js';
-import { streamToPort, streamFromPort } from './utils/worker-stream.js';
-import { bufferedInput } from './utils/stream.js';
+import { SplatPackType, type SplatStreamMessage } from './types.js';
+import { WorkerStream } from './utils/stream.js';
+import { sortSplatData } from './utils/morton.js';
+import { StreamSplatData } from './splat/StreamSplatData.js';
 
-self.onmessage = async ({ data }: MessageEvent<ParseRequest>) => {
-    const { type, packType, extras, input } = data;
-    const abort = new AbortController();
-    const output = new TransformStream<ParseOutput, ParseOutput>();
-    const writer = output.writable.getWriter();
-    void writer.closed.catch(error => abort.abort(error));
-    const returnedBuffers: ArrayBuffer[] = [];
-    const port = streamToPort(
-        output.readable,
-        chunk => ('data' in chunk ? [] : chunk.samplers.map(sampler => sampler.source.buffer as ArrayBuffer)),
-        buffers => {
-            returnedBuffers.splice(0, returnedBuffers.length, ...buffers);
-        },
-    );
-    postMessage(port, [port]);
+self.onmessage = async (event: MessageEvent<SendMessage>) => {
+    const { type, packType, port, contentLength, extras } = event.data;
+    const channel = new WorkerStream<Uint8Array, SplatStreamMessage>(port, message => {
+        if ('data' in message) {
+            return message.data.samplers
+                .filter(sampler => sampler.source.byteLength)
+                .map(sampler => sampler.source.buffer as ArrayBuffer);
+        }
+        return [message.source.buffer as ArrayBuffer];
+    });
     try {
-        let stream: ReadableStream<Uint8Array>;
-        let contentLength: number;
-        if (typeof input === 'string') {
-            const response = await fetch(input, { signal: abort.signal });
-            if (!response.ok || !response.body) {
-                throw new Error(`Failed to load splats: HTTP ${response.status}.`);
-            }
-            stream = response.body;
-            contentLength = Number(response.headers.get('Content-Length') ?? NaN);
-            const encoding = response.headers.get('Content-Encoding');
-            if (type === SplatFileType.SPLAT && encoding && encoding !== 'identity') {
-                contentLength = NaN;
-            }
-        } else if (input instanceof File) {
-            stream = input.stream();
-            contentLength = input.size;
-        } else {
-            stream = input.stream instanceof MessagePort ? streamFromPort(input.stream) : input.stream;
-            contentLength = input.contentLength;
-        }
-        stream = bufferedInput(stream, extras.chunkBytes ?? SPLAT_STREAM_CHUNK_BYTES, abort.signal);
-        const files = await prepareSplatFiles(type, stream, contentLength, extras.includeOtherFormats);
-        const sink: SplatStreamSink = {
-            onHeader: (data, byteLengths) => writer.write({ data, byteLengths }),
-            onChunk: chunk => writer.write(chunk),
-        };
-        if (packType === SplatPackType.Sog) {
-            // Native SOG contains encoded images rather than point records.
-            const splats = createSplatData(packType, extras.maxShDegree, extras.maxTextureSize);
-            await readSplatFiles(files, splats, extras.lodLevel);
-            const serialized = splats.serialize();
-            await sink.onHeader(
-                {
-                    ...serialized,
-                    samplers: serialized.samplers.map(sampler => ({
-                        ...sampler,
-                        source: new Uint8Array(0),
-                    })),
-                },
-                serialized.samplers.map(sampler => sampler.source.byteLength),
+        const streaming = !extras.mortonSort && packType !== SplatPackType.Sog;
+        let splatData = createSplatData(packType, extras.maxShDegree, extras.maxTextureSize);
+        if (streaming) {
+            splatData = new StreamSplatData(
+                splatData,
+                message => channel.write(message),
+                extras.streamChunkBytes,
+                channel.buffers,
             );
-            const size = extras.chunkBytes ?? SPLAT_STREAM_CHUNK_BYTES;
-            for (let index = 0; index < serialized.samplers.length; index++) {
-                const bytes = serialized.samplers[index].source;
-                for (let offset = 0; offset < bytes.byteLength; offset += size) {
-                    await sink.onChunk({ samplers: [{ index, offset, source: bytes.slice(offset, offset + size) }] });
-                }
-            }
-        } else {
-            const splats = createStreamingData(packType, extras, sink, returnedBuffers);
-            await readSplatFiles(files, splats, extras.lodLevel);
-            await splats.flush();
         }
-        await writer.close();
+        const files = await prepareSplatFiles(type, channel.readable, contentLength, extras.includeOtherFormats);
+        await readSplatFiles(files, splatData, extras.lodLevel);
+        if (extras.mortonSort && packType !== SplatPackType.Sog) {
+            sortSplatData(splatData);
+        }
+        if (!streaming) {
+            await channel.write({ data: splatData.serialize() });
+        }
+        channel.close();
+        postMessage({ status: TaskStatus.Success } satisfies ReceiveMessage);
     } catch (error) {
-        await writer.abort(error).catch(() => {});
-    } finally {
-        abort.abort();
+        channel.close(error);
+        postMessage({ status: TaskStatus.Fail, error } satisfies ReceiveMessage);
     }
 };

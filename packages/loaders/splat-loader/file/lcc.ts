@@ -1,4 +1,3 @@
-import { forEachSplatChunk } from '../utils/stream.js';
 import { type IFile, type IData, type ISingleSplat } from '../types.js';
 import { mix } from '../utils/math.js';
 import { type FileContext, getFileEntry, resolveFilePath } from '../utils/zip.js';
@@ -30,7 +29,7 @@ interface BlockInfo {
 
 const SQRT_2 = 1.414213562373095;
 const SQRT_2_INV = 0.7071067811865475;
-function decodeRotation(v: number) {
+function decodeRotation(v: number, single: ISingleSplat) {
     const d0 = (v & 1023) / 1023.0;
     const d1 = ((v >> 10) & 1023) / 1023.0;
     const d2 = ((v >> 20) & 1023) / 1023.0;
@@ -44,18 +43,29 @@ function decodeRotation(v: number) {
     const qw = Math.sqrt(1 - sum);
 
     if (d3 === 0) {
-        return [qw, qx, qy, qz];
+        single.qx = qw;
+        single.qy = qx;
+        single.qz = qy;
+        single.qw = qz;
+        return;
     } else if (d3 === 1) {
-        return [qx, qw, qy, qz];
+        single.qx = qx;
+        single.qy = qw;
+        single.qz = qy;
+        single.qw = qz;
+        return;
     } else if (d3 === 2) {
-        return [qx, qy, qw, qz];
+        single.qx = qx;
+        single.qy = qy;
+        single.qz = qw;
+        single.qw = qz;
+        return;
     }
 
-    return [qx, qy, qz, qw];
-}
-
-function DecodePacked_11_10_11(enc: number) {
-    return [(enc & 0x7ff) / 2047.0, ((enc >> 11) & 0x3ff) / 1023.0, ((enc >> 21) & 0x7ff) / 2047.0];
+    single.qx = qx;
+    single.qy = qy;
+    single.qz = qz;
+    single.qw = qw;
 }
 
 // https://github.com/xgrids/LCCWhitepaper
@@ -133,7 +143,7 @@ export class LccFile implements IFile {
             a: 0,
         };
         const shData = new Array(45);
-        let index = BlockOffset;
+        let chunkOffset = BlockOffset;
         for (let i = 0; i < infos.length; i++) {
             const info = infos[i];
             const { points, offset, size } = info.lods[0];
@@ -141,9 +151,11 @@ export class LccFile implements IFile {
             const shN = refs['shcoef.bin']
                 ? new DataView(refs['shcoef.bin'].buffer, refs['shcoef.bin'].byteOffset + offset * 2, size * 2)
                 : undefined;
-            await forEachSplatChunk(data, index, points, (start, size) => {
-                for (let j = start; j < start + size; j++) {
-                    const off = j * 32;
+            for (let written = 0; written < points;) {
+                const position = chunkOffset + written;
+                const counts = data.initChunk(position, points - written, 'all');
+                for (let target = position; target < position + counts; target++) {
+                    const off = (target - chunkOffset) * 32;
 
                     single.x = dataview.getFloat32(off + 0, true);
                     single.y = dataview.getFloat32(off + 4, true);
@@ -158,28 +170,25 @@ export class LccFile implements IFile {
                     single.sy = mix(scaleMin[1], scaleMax[1], dataview.getUint16(off + 18, true) / 65535.0);
                     single.sz = mix(scaleMin[2], scaleMax[2], dataview.getUint16(off + 20, true) / 65535.0);
 
-                    const quat = decodeRotation(dataview.getUint32(off + 22, true));
-                    single.qx = quat[0];
-                    single.qy = quat[1];
-                    single.qz = quat[2];
-                    single.qw = quat[3];
+                    decodeRotation(dataview.getUint32(off + 22, true), single);
 
-                    setFn(index, single);
+                    setFn(target, single);
 
                     if (shN) {
                         const shOff = off * 2;
                         for (let k = 0; k < 15; k++) {
-                            const v = DecodePacked_11_10_11(shN.getUint32(shOff + k * 4, true));
-                            shData[k * 3] = mix(shMin[0], shMax[0], v[0]);
-                            shData[k * 3 + 1] = mix(shMin[1], shMax[1], v[1]);
-                            shData[k * 3 + 2] = mix(shMin[2], shMax[2], v[2]);
+                            const v = shN.getUint32(shOff + k * 4, true);
+                            shData[k * 3] = mix(shMin[0], shMax[0], (v & 0x7ff) / 2047.0);
+                            shData[k * 3 + 1] = mix(shMin[1], shMax[1], ((v >> 11) & 0x3ff) / 1023.0);
+                            shData[k * 3 + 2] = mix(shMin[2], shMax[2], ((v >> 21) & 0x7ff) / 2047.0);
                         }
-                        setShFn(index, shData);
+                        setShFn(target, shData);
                     }
-
-                    index++;
                 }
-            });
+                written += counts;
+                await data.commitChunk();
+            }
+            chunkOffset += points;
         }
         data.finishBlock();
     }

@@ -145,6 +145,7 @@ export class PostPipeline {
     }
 
     updateRenderer(renderer: IRenderer) {
+        this.splattingPlugin.updateRenderer();
         this.resetContentCache();
         this.rendererAdaptor.renderer = renderer;
     }

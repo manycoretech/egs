@@ -22,12 +22,12 @@ import {
     SuperCompressedSplatData,
     SogSplatData,
     type ISampler,
+    type SplatStreamChunk,
     ISamplerFormat,
     SH_MAPS,
     type IFile,
 } from '@qunhe/egs-splat-loader';
 import { createSHRotateFn } from './utils.js';
-import { uploadSplatData, createStreamingSog } from './SplatSource.js';
 
 type ISingleSplat = Parameters<SplatData['get']>[1];
 
@@ -57,7 +57,7 @@ export function createSplatModifyData(splat: Splat): ISplatModifyData {
     return { transform, deletedIndices, indicesTransforms: [] };
 }
 
-export function createSourceTextureFromSampler(sampler: ISampler): SourceTexture {
+export function createSourceTextureFromSampler(sampler: ISampler, setData = true): SourceTexture {
     let format: TextureFormat;
     switch (sampler.format) {
         case ISamplerFormat.RG_UINT: {
@@ -79,46 +79,23 @@ export function createSourceTextureFromSampler(sampler: ISampler): SourceTexture
         false,
         false,
     ).configAsDataTexture();
-    if (sampler.source.byteLength) {
-        texture.setLevelData(
-            new Uint32Array(sampler.source.buffer, sampler.source.byteOffset, sampler.source.byteLength / 4),
-            0,
-        );
+    if (setData) {
+        const { source } = sampler;
+        texture.setLevelData(new Uint32Array(source.buffer, source.byteOffset, source.byteLength / 4), 0);
     }
     return texture;
 }
 
-export async function createSourceTextureFromImageSource(buffer: Uint8Array, type: string = 'image/webp') {
-    const image = await createImageBitmap(new Blob([buffer as Uint8Array<ArrayBuffer>], { type }), {
-        premultiplyAlpha: 'none',
-        colorSpaceConversion: 'none',
-    });
-    return new SourceTexture(
-        TextureDimension.D2,
-        TextureViewDimension.D2,
-        TextureFormat.Rgba8Unorm,
-        image.width,
-        image.height,
-        1,
-        false,
-        false,
-    )
-        .configAsDataTexture()
-        .setLevelLayerData(image, 0, 0);
-}
-
 export async function createSplat(data: SplatData, renderer?: __INTERNAL__.IRenderer): Promise<Splat> {
-    if (data.stream && !renderer) {
-        data.cancel();
-        throw new Error('A renderer is required to consume streaming splat data.');
+    if (!renderer) {
+        await data.collect();
     }
+
+    const { counts, shDegree, samplers, extras = [] } = data.serialize();
     let splat: Splat;
-    if (data instanceof RawSplatData) {
-        data.cancel();
-        throw new Error('RawSplatData is not supported create splat.');
-    } else if (data instanceof CompressedSplatData) {
-        const { counts, shDegree, samplers } = data.serialize();
-        const textures = samplers.map(sampler => createSourceTextureFromSampler(sampler));
+    let images: ImageBitmap[] | undefined;
+    if (data instanceof CompressedSplatData) {
+        const textures = samplers.map(sampler => createSourceTextureFromSampler(sampler, !data.stream));
         splat = new __INTERNAL__.CompressedSplat(
             counts,
             shDegree,
@@ -130,8 +107,7 @@ export async function createSplat(data: SplatData, renderer?: __INTERNAL__.IRend
             shDegree >= 3 ? textures[5] : undefined,
         );
     } else if (data instanceof SuperCompressedSplatData) {
-        const { counts, shDegree, samplers } = data.serialize();
-        const textures = samplers.map(sampler => createSourceTextureFromSampler(sampler));
+        const textures = samplers.map(sampler => createSourceTextureFromSampler(sampler, !data.stream));
         splat = new __INTERNAL__.SuperCompressedSplat(
             counts,
             shDegree,
@@ -140,28 +116,112 @@ export async function createSplat(data: SplatData, renderer?: __INTERNAL__.IRend
             shDegree >= 3 ? textures[2] : undefined,
         );
     } else if (data instanceof SogSplatData) {
-        if (data.stream) {
-            return createStreamingSog(data, renderer!);
-        }
-        const { samplers, extras = [] } = data.serialize();
-        const [meansL, meansU, scales, quats, sh0, shNLabels, shNCentroids] = await Promise.all(
-            samplers.map(v => createSourceTextureFromImageSource(v.source)),
+        const [meansL, meansU, scales, quats, sh0] = samplers;
+        images = await Promise.all(
+            [meansL, meansU, quats, scales, sh0].map(sampler =>
+                createImageBitmap(new Blob([sampler.source as Uint8Array<ArrayBuffer>], { type: 'image/webp' }), {
+                    premultiplyAlpha: 'none',
+                    colorSpaceConversion: 'none',
+                }),
+            ),
         );
-        splat = new __INTERNAL__.SogSplat(extras[0], meansL, meansU, quats, scales, sh0, shNLabels, shNCentroids);
+        const textures = images.map(image => {
+            const texture = new SourceTexture(
+                TextureDimension.D2,
+                TextureViewDimension.D2,
+                TextureFormat.Rgba8Unorm,
+                image.width,
+                image.height,
+                1,
+                false,
+                false,
+            ).configAsDataTexture();
+            if (!data.stream) {
+                texture.setLevelLayerData(image, 0, 0);
+            }
+            return texture;
+        });
+        splat = new __INTERNAL__.SogSplat(extras[0], textures[0], textures[1], textures[2], textures[3], textures[4]);
     } else {
         throw new Error('Unsupported splat data type.');
     }
 
-    if (data.stream) {
-        try {
-            await uploadSplatData(splat, data, renderer!);
-        } catch (error) {
-            data.cancel(error);
-            splat.destroy();
-            throw error;
+    if (!!data.stream) {
+        const { stream } = data;
+        if (stream.chunks) {
+            const target = new WritableStream<SplatStreamChunk>({
+                write: ({ index, source, offset }) => {
+                    const texture = splat.extrasTex[index];
+                    const bytesPerRow = texture.width * __INTERNAL__.textureCopyInfo(texture.format).blockCopySize;
+                    const y = offset / bytesPerRow;
+                    const height = source.byteLength / bytesPerRow;
+                    uploadTexture(renderer!, texture, source, y, height);
+                },
+            });
+            await stream.chunks.pipeTo(target).catch(error => {
+                splat.destroy();
+                throw error;
+            });
+        } else {
+            for (const [index, texture] of splat.extrasTex.entries()) {
+                const source = images?.[index] ?? samplers[index].source;
+                uploadTexture(renderer!, texture, source, 0, texture.height);
+                images?.[index].close();
+            }
         }
+        splat.autoFreeResourceOnGpuPacked = false;
+        data.stream = undefined;
+        data.release();
     }
+
     return splat;
+}
+
+function uploadTexture(
+    renderer: __INTERNAL__.IRenderer,
+    texture: SourceTexture,
+    source: Uint8Array | ImageBitmap,
+    y: number,
+    height: number,
+) {
+    const device = renderer.gpuDevice!;
+    const handle = renderer.getGPUTextureHandle(texture);
+    if ('queue' in device) {
+        const destination = { texture: handle as GPUTexture, origin: [0, y] };
+        const size = { width: texture.width, height };
+        if (source instanceof ImageBitmap) {
+            device.queue.copyExternalImageToTexture({ source }, destination, size);
+        } else {
+            device.queue.writeTexture(
+                destination,
+                source as Uint8Array<ArrayBuffer>,
+                { bytesPerRow: source.byteLength / height },
+                size,
+            );
+        }
+        return;
+    }
+    const gl = device;
+    const previous = gl.getParameter(gl.TEXTURE_BINDING_2D);
+    gl.bindTexture(gl.TEXTURE_2D, handle as WebGLTexture);
+    texture.storageDescriptor.sync_webgl(gl, false);
+    if (source instanceof ImageBitmap) {
+        gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, y, gl.RGBA, gl.UNSIGNED_BYTE, source);
+    } else {
+        gl.texSubImage2D(
+            gl.TEXTURE_2D,
+            0,
+            0,
+            y,
+            texture.width,
+            height,
+            texture.glFormat.external(renderer.backend),
+            gl.UNSIGNED_INT,
+            new Uint32Array(source.buffer, source.byteOffset, source.byteLength / 4),
+        );
+    }
+    gl.bindTexture(gl.TEXTURE_2D, previous);
+    gl.flush();
 }
 
 export function createSamplerFromSourceTexture(texture: SourceTexture): ISampler {
@@ -190,9 +250,6 @@ export function createSamplerFromSourceTexture(texture: SourceTexture): ISampler
 }
 
 export function createSplatData(splat: Splat): SplatData {
-    if (splat.stream) {
-        throw new Error('Call splat.readback() before accessing CPU data.');
-    }
     let splatData: SplatData | undefined;
     const samplers: ISampler[] = [];
     if (splat instanceof __INTERNAL__.CompressedSplat) {

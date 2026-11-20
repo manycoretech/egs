@@ -55,24 +55,40 @@ export interface ISplatData {
     extras?: any[];
 }
 
-/** Byte ranges in the serialized sampler layout. Buffers are owned by the consumer. */
+export type SplatPart = 'all' | 'splat' | 'sh' | number;
+
 export interface SplatStreamChunk {
-    samplers: { index: number; offset: number; source: Uint8Array }[];
+    index: number;
+    offset: number;
+    source: Uint8Array;
+    recycle?: boolean;
 }
 
+export interface SplatStreamHeader {
+    data: ISplatData;
+    byteLengths?: number[];
+}
+
+export type SplatStreamMessage = SplatStreamHeader | SplatStreamChunk;
+
 export interface IData {
+    readonly packType: SplatPackType;
     readonly counts: number;
     readonly shDegree: number;
+    blockCounts: number;
 
     initBlock(counts: number, shDegree: number): Promise<number>;
     finishBlock(): void;
-    readonly availableChunkCounts?: number;
-    beginChunk?(offset: number, counts: number, channel: 'all' | 'splat' | 'sh' | number): Promise<void>;
-    endChunk?(): Promise<void>;
+
+    initChunk(offset: number, counts: number, part: SplatPart, chunkBytes?: number): number;
+    commitChunk(): Promise<void>;
+
+    getSamplerSource(index: number, offset: number): Uint8Array;
 
     set(i: number, single: ISingleSplat): void;
     setCenter(i: number, x: number, y: number, z: number): void;
     setScale(i: number, sx: number, sy: number, sz: number): void;
+    setLogScale(i: number, sx: number, sy: number, sz: number): void;
     setQuat(i: number, qx: number, qy: number, qz: number, qw: number): void;
     setColor(i: number, r: number, g: number, b: number): void;
     setAlpha(i: number, a: number): void;
@@ -93,11 +109,9 @@ export interface IFile {
 }
 
 export interface ParseExtras {
-    /** Retain complete CPU samplers. Defaults to true. */
-    retainData?: boolean;
-    /** Maximum encoded bytes per block; not a rendering quality setting. */
-    chunkBytes?: number;
-    signal?: AbortSignal;
+    stream: boolean;
+    streamChunkBytes: number;
+    mortonSort: boolean;
     maxShDegree: number;
     maxTextureSize: number;
     lodLevel: number; // LCC2 LOD level

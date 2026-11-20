@@ -93,10 +93,12 @@ async function DefaultLoadResource(url: string, signal?: AbortSignal) {
     if (!response.ok) {
         throw new Error('Failed to load LOD resource: ' + response.status + ' ' + url);
     }
-    return parseSplatData(type!, {
-        stream: response.body!,
-        contentLength: Number(response.headers.get('Content-Length')),
-    });
+    return parseSplatData(
+        type!,
+        { stream: response.body!, contentLength: Number(response.headers.get('Content-Length')) },
+        undefined,
+        { mortonSort: false },
+    );
 }
 
 interface LodNode {
@@ -189,9 +191,13 @@ export class LodSplat {
             : __INTERNAL__.Capabilities.IS_WEBGPU;
         engine?.on(ContextLostEvent, this.onContextLost);
         engine?.on(ResetRendererEvent, this.onRendererReset);
-        this.resourceManager = new ResourceManager(meta.files, meta.permanentFiles, loadResource, () => {
-            this.workDirty = true;
-        });
+        this.resourceManager = new ResourceManager(
+            meta.files,
+            meta.permanentFiles,
+            loadResource,
+            viewerCtx?.viewer,
+            () => (this.workDirty = true),
+        );
         this.nodes = meta.tree.map(({ bound, lods }) => ({
             box: new Box3(
                 new Vector3(bound.min[0], bound.min[1], bound.min[2]),
@@ -732,7 +738,22 @@ export class LodSplat {
     };
 
     private onRendererReset = () => {
-        this.gpuSorting = this.viewerCtx!.viewer._getEngine().renderer.backend === RendererBackend.WEBGPU_WASM;
+        const renderer = this.viewerCtx!.viewer._getEngine().renderer;
+        this.gpuSorting = renderer.backend === RendererBackend.WEBGPU_WASM;
+        this.cancelReplacement();
+        this.resourceManager.resetRenderer(renderer);
+        this.proxies = this.proxies.filter(proxy => {
+            if (this.resourceManager.has(proxy.resourceIdx)) {
+                return true;
+            }
+            this.disposeProxy(proxy);
+            this.pendingWork = true;
+            for (let idx = proxy.nodeStart; idx <= proxy.nodeEnd; idx++) {
+                this.nodes[idx].proxy = undefined;
+                this.nodes[idx].currentLevel = -1;
+            }
+            return false;
+        });
         this.workDirty = true;
     };
 

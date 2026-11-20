@@ -1,5 +1,11 @@
 # changelog
 
+## 1.3.1
+
+- `parseSplatData` 默认流式加载。保留 CPU 数据改用 `stream: false`（原 `retainData: true`）。`chunkBytes` 更名为 `streamChunkBytes`（默认 16 MiB）。
+- 普通点云默认按 Morton 排序后返回，传 `mortonSort: false` 可按文件点序分块加载。
+- `collect()` 在原对象上收齐数据，返回 `Promise<void>`。移除 `readChunks()`、`cancel()` 和解析参数 `signal`。
+
 ## 1.3.0
 
 - `parseSplatData`新增`retainData`、`chunkBytes`和`signal`；默认保留完整CPU数据，`retainData: false`返回元数据与单次消费流，支持`readChunks()`、`collect()`和`cancel()`。

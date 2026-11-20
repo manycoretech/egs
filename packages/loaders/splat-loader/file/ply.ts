@@ -1,4 +1,4 @@
-import { type IFile, type IData } from '../types.js';
+import { type IFile, type IData, type SplatPart } from '../types.js';
 import { SH_MAPS, SH_C0, createSingleSplat, NUM_F_REST_TO_SH_DEGREE } from '../utils/splat.js';
 import { ByteStreamCursor, StreamChunkDecoder } from '../utils/stream.js';
 
@@ -318,13 +318,14 @@ export class PlyFile implements IFile {
         const BlockOffset = await data.initBlock(this.counts, this.shDegree);
         const chunks: ISSChunk[] = [];
         const single = createSingleSplat();
-        const decoder = new StreamChunkDecoder(cursor);
+        const decoder = new StreamChunkDecoder(cursor, data, BlockOffset);
         await decoder.decode(
             Object.keys(elements).map(name => {
                 const { count, properties } = elements[name];
                 const block = createEmptyBlock(properties, shDegree);
                 const [itemSize, parseFn] = createParseFn(properties, littleEndian, shDegree);
 
+                let part: SplatPart | undefined;
                 let fn: (index: number, item: any) => void = () => {};
                 if (isSuperSplatCompressed) {
                     if (name === 'chunk') {
@@ -332,13 +333,16 @@ export class PlyFile implements IFile {
                             chunks[i - BlockOffset] = { ...item };
                         };
                     } else if (name === 'sh') {
+                        part = 'sh';
                         fn = (i: number, item: Record<string, number[]>) => {
-                            setShFn(
-                                i,
-                                item.f_rest.map(v => (v * 8) / 255 - 4),
-                            );
+                            const sh = item.f_rest;
+                            for (let j = 0; j < sh.length; j++) {
+                                sh[j] = (sh[j] * 8) / 255 - 4;
+                            }
+                            setShFn(i, sh);
                         };
                     } else if (name === 'vertex') {
+                        part = 'splat';
                         fn = (i: number, item: ISSVertexBlock) => {
                             const chunk = chunks[(i - BlockOffset) >>> 8];
                             if (!chunk) {
@@ -399,6 +403,7 @@ export class PlyFile implements IFile {
                         };
                     }
                 } else if (name === 'vertex') {
+                    part = 'all';
                     fn = (i: number, item: IVertexBlock) => {
                         single.x = item.x;
                         single.y = item.y;
@@ -421,21 +426,13 @@ export class PlyFile implements IFile {
 
                 return {
                     init: () => [count, itemSize],
-                    maxCounts: data.availableChunkCounts === undefined ? undefined : () => data.availableChunkCounts!,
-                    decode: async (offset, counts, buffer) => {
+                    part,
+                    decode: (offset, counts, buffer) => {
                         offset += BlockOffset;
-                        const channel = name === 'vertex' ? (isSuperSplatCompressed ? 'splat' : 'all') : 'sh';
-                        const isSplatData = name === 'vertex' || (isSuperSplatCompressed && name === 'sh');
-                        if (isSplatData) {
-                            await data.beginChunk?.(offset, counts, channel);
-                        }
                         const dataview = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
                         for (let i = 0; i < counts; i++) {
                             parseFn(dataview, i * itemSize, block);
                             fn(offset + i, block);
-                        }
-                        if (isSplatData) {
-                            await data.endChunk?.();
                         }
                     },
                 };

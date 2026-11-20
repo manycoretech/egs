@@ -224,6 +224,7 @@ export class Renderer extends EventDispatcher implements IRenderer {
             InstancePool.isAvailable = false;
         }
     }
+
     getRenderTarget() {
         throw new Error('Method not implemented.');
     }

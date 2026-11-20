@@ -1,10 +1,19 @@
-import type { ParseExtras, SplatFileType, SplatPackType, ISplatData, SplatStreamChunk } from './types.js';
+import type { ParseExtras, SplatFileType, SplatPackType } from './types.js';
 
-export interface ParseRequest {
-    type: SplatFileType;
-    packType: SplatPackType;
-    input: string | File | { stream: ReadableStream<Uint8Array> | MessagePort; contentLength: number };
-    extras: Omit<ParseExtras, 'signal' | 'retainData'>;
+export enum TaskStatus {
+    Success,
+    Fail,
 }
 
-export type ParseOutput = { data: ISplatData; byteLengths: number[] } | SplatStreamChunk;
+export interface SendMessage {
+    type: SplatFileType;
+    packType: SplatPackType;
+    port: MessagePort;
+    contentLength: number;
+    extras: ParseExtras;
+}
+
+export interface ReceiveMessage {
+    status: TaskStatus;
+    error?: unknown;
+}

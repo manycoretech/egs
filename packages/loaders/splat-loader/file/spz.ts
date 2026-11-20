@@ -3,7 +3,7 @@ import { type ISingleSplat, type IData, type IFile } from '../types.js';
 import { SH_MAPS, SH_C0 } from '../utils/splat.js';
 import { fromHalf } from '../utils/packing.js';
 import { clamp } from '../utils/math.js';
-import { StreamChunkDecoder, type ChunkDecoder, ByteStreamCursor, probeStream } from '../utils/stream.js';
+import { StreamChunkDecoder, ByteStreamCursor, probeStream } from '../utils/stream.js';
 
 const SPZ_MAGIC = 0x5053474e; // NGSP = Niantic gaussian splat
 const SPZ_VERSION = 4;
@@ -17,10 +17,10 @@ const rotation: number[] = new Array(4);
 const SH_SCALE1 = 1 << 3;
 const SH_SCALE2 = 1 << 4;
 
-const SCALE_LUT = new Float32Array(256);
+const SCALE_LUT = new Float64Array(256); // log scale lut
 const COLOR_LUT = new Float32Array(256);
 for (let i = 0; i < 256; i++) {
-    SCALE_LUT[i] = Math.exp(i / 16 - 10);
+    SCALE_LUT[i] = Math.log(Math.fround(Math.exp(i / 16 - 10)));
     COLOR_LUT[i] = (i / 255 - 0.5) * COLOR_SCALE + 0.5;
 }
 
@@ -36,15 +36,16 @@ async function decodeAttributes(
     const isF16 = version < 2;
     const useSmallestThreeQuat = version >= 3;
     const fractionInv = 1 / (1 << fractionalBits);
+    const shN: number[] = new Array(shCounts).fill(0);
     const setCenter = data.setCenter.bind(data) as IData['setCenter'];
     const setAlpha = data.setAlpha.bind(data) as IData['setAlpha'];
     const setColor = data.setColor.bind(data) as IData['setColor'];
-    const setScale = data.setScale.bind(data) as IData['setScale'];
+    const setLogScale = data.setLogScale.bind(data) as IData['setLogScale'];
     const setQuat = data.setQuat.bind(data) as IData['setQuat'];
     const setShN = data.setShN.bind(data) as IData['setShN'];
-    const shN: number[] = new Array(shCounts).fill(0);
 
-    const decoders: ChunkDecoder[] = [
+    data.initChunk(blockOffset, counts, 'splat', Infinity);
+    await new StreamChunkDecoder(cursor, data).decode([
         {
             init: () => [counts, isF16 ? 6 : 9],
             decode: (offset, counts, buf) => {
@@ -91,7 +92,7 @@ async function decodeAttributes(
                 offset += blockOffset;
                 for (let i = 0; i < counts; i++) {
                     const o = i * 3;
-                    setScale(offset + i, SCALE_LUT[buf[o]], SCALE_LUT[buf[o + 1]], SCALE_LUT[buf[o + 2]]);
+                    setLogScale(offset + i, SCALE_LUT[buf[o]], SCALE_LUT[buf[o + 1]], SCALE_LUT[buf[o + 2]]);
                 }
             },
         },
@@ -135,25 +136,27 @@ async function decodeAttributes(
                 }
             },
         },
-    ];
+    ]);
+    await data.commitChunk();
 
     if (shCounts > 0) {
-        decoders.push({
-            init: () => [counts, shCounts],
-            decode: (offset, counts, buf) => {
-                offset += blockOffset;
-                for (let i = 0; i < counts; i++) {
-                    const o = i * shCounts;
-                    for (let j = 0; j < shCounts; j++) {
-                        shN[j] = (buf[o + j] - 128) / 128;
+        await new StreamChunkDecoder(cursor, data, blockOffset).decode([
+            {
+                part: 'sh',
+                init: () => [counts, shCounts],
+                decode: (offset, counts, buf) => {
+                    offset += blockOffset;
+                    for (let i = 0; i < counts; i++) {
+                        const o = i * shCounts;
+                        for (let j = 0; j < shCounts; j++) {
+                            shN[j] = (buf[o + j] - 128) / 128;
+                        }
+                        setShN(offset + i, shN);
                     }
-                    setShN(offset + i, shN);
-                }
+                },
             },
-        });
+        ]);
     }
-
-    await new StreamChunkDecoder(cursor).decodeColumns(decoders, data, blockOffset);
 }
 
 async function pipeZstdStream(
@@ -175,14 +178,11 @@ async function pipeZstdStream(
         }
     };
 
-    try {
-        await cursor.readChunks(compressedSize, async chunk => {
-            await writeOutputs(decompressor.feed(chunk) as Uint8Array[]);
-        });
-        await writeOutputs(decompressor.finish() as Uint8Array[]);
-    } finally {
-        decompressor.free();
-    }
+    await cursor.readChunks(compressedSize, async chunk => {
+        await writeOutputs(decompressor.feed(chunk) as Uint8Array[]);
+    });
+    await writeOutputs(decompressor.finish() as Uint8Array[]);
+    decompressor.free();
 
     if (produced !== uncompressedSize) {
         throw new Error(`Invalid SPZ v4 decompressed size at index ${streamIndex}`);
@@ -260,13 +260,7 @@ export class SpzFile implements IFile {
             await writer.close();
         })();
 
-        try {
-            await Promise.all([feedPromise, decodePromise]);
-        } catch (error) {
-            await Promise.allSettled([writer.abort(error), attributeCursor.cancel(error)]);
-            await Promise.allSettled([feedPromise, decodePromise]);
-            throw error;
-        }
+        await Promise.all([feedPromise, decodePromise]);
     }
 
     private async readLegacyStream(stream: ReadableStream<Uint8Array>, data: IData) {

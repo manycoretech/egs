@@ -1,5 +1,11 @@
 # changelog
 
+## 1.2.3
+
+- `createSplat`支持流式数据，省略`renderer`时保留 CPU 数据。
+- 新增`readbackStream`回读 CPU 数据。
+- `LodSplat`按文件点序流式上传，同一文件的节点共享纹理。
+
 ## 1.2.2
 
 - 只保留24位稳定排序，并提供 WASM SIMD 版本。

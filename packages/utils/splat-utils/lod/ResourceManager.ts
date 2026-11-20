@@ -1,19 +1,7 @@
-import { type SourceTexture, type Splat, __INTERNAL__ } from '@qunhe/egs';
+import { type Splat, TextureFormat, type Viewer, __INTERNAL__ } from '@qunhe/egs';
 import { logger } from '@qunhe/egs-lib';
-import {
-    type SplatData,
-    RawSplatData,
-    CompressedSplatData,
-    SuperCompressedSplatData,
-    SogSplatData,
-} from '@qunhe/egs-splat-loader';
-import { createSourceTextureFromSampler, createSourceTextureFromImageSource } from '../SplatData.js';
-
-interface ResourceData {
-    counts: number;
-    textures: SourceTexture[];
-    createSplat: (counts: number) => Splat;
-}
+import type { SplatData } from '@qunhe/egs-splat-loader';
+import { createSplat } from '../SplatData.js';
 
 export type LoadResourceFn = (url: string, signal?: AbortSignal) => Promise<SplatData>;
 
@@ -22,7 +10,7 @@ interface Resource {
     refs: number;
     controller: AbortController;
     promise: Promise<void>;
-    data?: ResourceData;
+    source?: Splat;
     error?: unknown;
 }
 
@@ -33,12 +21,20 @@ export class ResourceManager {
     private resourceCache = new Map<number, Resource>();
     private isDestroyed = false;
     private onChange: () => void;
+    private renderer?: __INTERNAL__.IRenderer;
 
-    constructor(resources: string[], permanentFiles: number[], loadResource: LoadResourceFn, onChange = () => {}) {
+    constructor(
+        resources: string[],
+        permanentFiles: number[],
+        loadResource: LoadResourceFn,
+        viewer?: Viewer,
+        onChange = () => {},
+    ) {
         this.resources = resources;
         this.permanentFiles = new Set(permanentFiles);
         this.loadResource = loadResource;
         this.onChange = onChange;
+        this.renderer = viewer?._getEngine().renderer;
     }
 
     has(idx: number) {
@@ -101,8 +97,26 @@ export class ResourceManager {
         if (resource?.state !== 'ready') {
             throw new Error(`LOD resource ${idx} is not ready.`);
         }
-        const splat = resource.data!.createSplat(counts);
-        splat.counts = counts;
+        const source = resource.source!;
+        let splat: Splat;
+        if (source instanceof __INTERNAL__.SogSplat) {
+            splat = new __INTERNAL__.SogSplat(
+                source.meta,
+                source.meansL,
+                source.meansU,
+                source.quats,
+                source.scales,
+                source.colors,
+            );
+            splat.counts = counts;
+        } else if (source instanceof __INTERNAL__.CompressedSplat) {
+            const [splat1, splat2, sh1, sh2, sh3, sh4] = source.extrasTex;
+            splat = new __INTERNAL__.CompressedSplat(counts, source.shDegree, splat1, splat2, sh1, sh2, sh3, sh4);
+        } else {
+            const [splat1, sh1, sh2] = source.extrasTex;
+            splat = new __INTERNAL__.SuperCompressedSplat(counts, source.shDegree, splat1, sh1, sh2);
+        }
+        splat.sourceId = source.id;
         splat.offset = offset;
         splat.autoFreeResourceOnGpuPacked = false;
         resource.refs++;
@@ -135,10 +149,30 @@ export class ResourceManager {
                 resource.controller.abort();
                 continue;
             }
-            const data = resource.data!;
-            idlePointBudget -= data.counts;
+            const source = resource.source!;
+            idlePointBudget -= source.counts;
             if (idlePointBudget < 0) {
-                data.textures.forEach(texture => texture.freeGPU());
+                source.destroy();
+                this.resourceCache.delete(idx);
+            }
+        }
+    }
+
+    resetRenderer(renderer: __INTERNAL__.IRenderer) {
+        if (this.renderer === renderer) {
+            return;
+        }
+        this.renderer = renderer;
+        for (const [idx, resource] of this.resourceCache) {
+            if (resource.state === 'loading') {
+                resource.controller.abort();
+            } else if (
+                resource.source?.extrasTex.some(
+                    texture =>
+                        !texture.getLevelLayerSource(0, texture.format === TextureFormat.Rgba8Unorm ? 0 : undefined),
+                )
+            ) {
+                resource.source.destroy();
                 this.resourceCache.delete(idx);
             }
         }
@@ -148,81 +182,31 @@ export class ResourceManager {
         this.isDestroyed = true;
         for (const resource of this.resourceCache.values()) {
             resource.controller.abort();
-            resource.data?.textures.forEach(texture => texture.freeGPU());
+            resource.source?.destroy();
         }
         this.resourceCache.clear();
     }
 
     private async prepare(idx: number, resource: Resource) {
-        const textures: SourceTexture[] = [];
+        const { signal } = resource.controller;
         try {
-            const splatData = await this.loadResource(this.resources[idx], resource.controller.signal);
-            resource.controller.signal.throwIfAborted();
-            if (splatData instanceof RawSplatData) {
-                throw new Error('RawSplatData is not supported in LodSplat');
+            const { renderer } = this;
+            if (renderer) {
+                await renderer.rendererStatus.initialized;
             }
-            const { counts, shDegree, samplers, extras = [] } = splatData.serialize();
-            if (splatData instanceof SogSplatData) {
-                const images = await Promise.allSettled(
-                    samplers.map(async (sampler, i) => {
-                        textures[i] = await createSourceTextureFromImageSource(sampler.source);
-                    }),
-                );
-                const failure = images.find(image => image.status === 'rejected');
-                if (failure) {
-                    throw failure.reason;
-                }
-            } else if (splatData instanceof CompressedSplatData || splatData instanceof SuperCompressedSplatData) {
-                samplers.forEach(sampler => textures.push(createSourceTextureFromSampler(sampler)));
-            } else {
-                throw new Error('Unknown SplatData type');
+            const data = await this.loadResource(this.resources[idx], signal);
+            if (signal.aborted) {
+                await data.stream?.chunks?.cancel(signal.reason);
+                signal.throwIfAborted();
             }
-            resource.controller.signal.throwIfAborted();
-
-            let createSplat: ResourceData['createSplat'];
-            if (splatData instanceof CompressedSplatData) {
-                createSplat = counts =>
-                    new __INTERNAL__.CompressedSplat(
-                        counts,
-                        shDegree,
-                        textures[0],
-                        textures[1],
-                        shDegree >= 1 ? textures[2] : undefined,
-                        shDegree >= 2 ? textures[3] : undefined,
-                        shDegree >= 3 ? textures[4] : undefined,
-                        shDegree >= 3 ? textures[5] : undefined,
-                    );
-            } else if (splatData instanceof SuperCompressedSplatData) {
-                createSplat = counts =>
-                    new __INTERNAL__.SuperCompressedSplat(
-                        counts,
-                        shDegree,
-                        textures[0],
-                        shDegree >= 1 ? textures[1] : undefined,
-                        shDegree >= 3 ? textures[2] : undefined,
-                    );
-            } else {
-                createSplat = () => {
-                    const [meansL, meansU, scales, quats, sh0, shNLabels, shNCentroids] = textures;
-                    return new __INTERNAL__.SogSplat(
-                        extras[0],
-                        meansL,
-                        meansU,
-                        quats,
-                        scales,
-                        sh0,
-                        shNLabels,
-                        shNCentroids,
-                    );
-                };
-            }
-            resource.data = { counts, textures, createSplat };
+            resource.source = await createSplat(data, renderer);
+            signal.throwIfAborted();
             resource.state = 'ready';
         } catch (error) {
-            textures.forEach(texture => texture.freeGPU());
+            resource.source?.destroy();
             resource.state = 'failed';
             resource.error = error;
-            if (resource.controller.signal.aborted) {
+            if (signal.aborted) {
                 this.resourceCache.delete(idx);
             } else {
                 logger.warn('Failed to load LOD resource', error);

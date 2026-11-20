@@ -1,4 +1,4 @@
-import { clamp } from './math.js';
+import { clampInteger } from './math.js';
 
 const f32buffer = new Float32Array(1);
 const u32buffer = new Uint32Array(f32buffer.buffer);
@@ -32,39 +32,31 @@ export function toHalf(f: number): number {
     return halfSign | (newExp << 10) | halfFrac;
 }
 
-export function fromHalf(h: number): number {
-    const sign = (h >> 15) & 0x1;
-    const exp = (h >> 10) & 0x1f;
-    const frac = h & 0x3ff;
-
-    let f32bits: number;
-    if (exp === 0) {
-        if (frac === 0) {
-            f32bits = sign << 31;
+const HALF_VALUES = new Float32Array(65536);
+for (let exponent = 0; exponent < 32; exponent++) {
+    const scale = 2 ** (exponent === 0 ? -14 : exponent - 15);
+    for (let fraction = 0; fraction < 1024; fraction++) {
+        let value: number;
+        if (exponent === 31) {
+            value = fraction === 0 ? Infinity : NaN;
         } else {
-            // Shift the highest set bit of the 10-bit fraction into the implicit leading bit.
-            const shift = Math.clz32(frac) - 21;
-            const newExp = 127 - 14 - shift;
-            const newFrac = ((frac << shift) & 0x3ff) << 13;
-            f32bits = (sign << 31) | (newExp << 23) | newFrac;
+            value = (exponent === 0 ? fraction / 1024 : 1 + fraction / 1024) * scale;
         }
-    } else if (exp === 0x1f) {
-        f32bits = (sign << 31) | (frac === 0 ? 0x7f800000 : 0x7fc00000);
-    } else {
-        const newExp = exp - 15 + 127;
-        const newFrac = frac << 13;
-        f32bits = (sign << 31) | (newExp << 23) | newFrac;
+        const bits = exponent * 1024 + fraction;
+        HALF_VALUES[bits] = value;
+        HALF_VALUES[bits + 32768] = -value;
     }
+}
 
-    u32buffer[0] = f32bits;
-    return f32buffer[0];
+export function fromHalf(h: number): number {
+    return HALF_VALUES[h & 0xffff];
 }
 
 export function encode111011s(a: number, b: number, c: number) {
     return (
-        (clamp(((a * 0.5 + 0.5) * 2047) | 0, 0, 2047) << 21) |
-        (clamp(((b * 0.5 + 0.5) * 1023) | 0, 0, 1023) << 11) |
-        clamp(((c * 0.5 + 0.5) * 2047) | 0, 0, 2047)
+        (clampInteger(((a * 0.5 + 0.5) * 2047) | 0, 2047) << 21) |
+        (clampInteger(((b * 0.5 + 0.5) * 1023) | 0, 1023) << 11) |
+        clampInteger(((c * 0.5 + 0.5) * 2047) | 0, 2047)
     );
 }
 
@@ -75,15 +67,15 @@ export function decode111011s(decode: number, out: number[], offset: number) {
 }
 
 export function packSint5x9ToUint32x2(data: number[], out: Uint32Array, offset: number) {
-    const q0 = clamp((data[0] * 16 + 16.5) | 0, 0, 31);
-    const q1 = clamp((data[1] * 16 + 16.5) | 0, 0, 31);
-    const q2 = clamp((data[2] * 16 + 16.5) | 0, 0, 31);
-    const q3 = clamp((data[3] * 16 + 16.5) | 0, 0, 31);
-    const q4 = clamp((data[4] * 16 + 16.5) | 0, 0, 31);
-    const q5 = clamp((data[5] * 16 + 16.5) | 0, 0, 31);
-    const q6 = clamp((data[6] * 16 + 16.5) | 0, 0, 31);
-    const q7 = clamp((data[7] * 16 + 16.5) | 0, 0, 31);
-    const q8 = clamp((data[8] * 16 + 16.5) | 0, 0, 31);
+    const q0 = clampInteger((data[0] * 16 + 16.5) | 0, 31);
+    const q1 = clampInteger((data[1] * 16 + 16.5) | 0, 31);
+    const q2 = clampInteger((data[2] * 16 + 16.5) | 0, 31);
+    const q3 = clampInteger((data[3] * 16 + 16.5) | 0, 31);
+    const q4 = clampInteger((data[4] * 16 + 16.5) | 0, 31);
+    const q5 = clampInteger((data[5] * 16 + 16.5) | 0, 31);
+    const q6 = clampInteger((data[6] * 16 + 16.5) | 0, 31);
+    const q7 = clampInteger((data[7] * 16 + 16.5) | 0, 31);
+    const q8 = clampInteger((data[8] * 16 + 16.5) | 0, 31);
 
     out[offset] = q0 | (q1 << 5) | (q2 << 10) | (q3 << 15) | (q4 << 20) | (q5 << 25) | ((q6 & 0x3) << 30);
     out[offset + 1] = (q6 >>> 2) | (q7 << 3) | (q8 << 8);
@@ -105,8 +97,8 @@ export function unpackSint5x9FromUint32x2(low: number, high: number, out: number
 }
 
 export function packSint4ToUint8(v0: number, v1: number): number {
-    const l = clamp((v0 * 8 + 8.5) | 0, 0, 15);
-    const h = clamp((v1 * 8 + 8.5) | 0, 0, 15);
+    const l = clampInteger((v0 * 8 + 8.5) | 0, 15);
+    const h = clampInteger((v1 * 8 + 8.5) | 0, 15);
     return (h << 4) | l;
 }
 
@@ -116,7 +108,7 @@ export function unpackUint8ToSint4x2(value: number, out: number[], offset: numbe
 }
 
 export function toUnsignedChar(v: number): number {
-    return clamp((v * 128 + 128.5) | 0, 0, 255);
+    return clampInteger((v * 128 + 128.5) | 0, 255);
 }
 
 export function fromUnsignedChar(v: number): number {
@@ -124,5 +116,5 @@ export function fromUnsignedChar(v: number): number {
 }
 
 export function toUnsignedCharV2(v: number): number {
-    return clamp((v * 255 + 0.5) | 0, 0, 255);
+    return clampInteger((v * 255 + 0.5) | 0, 255);
 }

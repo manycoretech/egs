@@ -2,6 +2,14 @@ export function clamp(v: number, min: number, max: number): number {
     return Math.min(Math.max(v, min), max);
 }
 
+export function clampInteger(value: number, max: number): number {
+    // Quantizers already produce signed integers; this also rejects negative values.
+    if (value >>> 0 > max) {
+        return value < 0 ? 0 : max;
+    }
+    return value;
+}
+
 export class Quaternion {
     constructor(
         public x: number,

@@ -1,26 +1,11 @@
-import { deferred } from '@qunhe/egs-lib';
-import {
-    type SplatData,
-    RawSplatData,
-    CompressedSplatData,
-    SuperCompressedSplatData,
-    SogSplatData,
-} from './splat/index.js';
+import { SplatData, RawSplatData, CompressedSplatData, SuperCompressedSplatData, SogSplatData } from './splat/index.js';
 import { EszFile, KsplatFile, LccFile, Lcc2File, PlyFile, SogFile, SplatFile, SpzFile } from './file/index.js';
 import { getLcc2References } from './file/lcc2.js';
 import type { SogMetadataV1, SogMetadataV2 } from './file/sog.js';
 import type { SogMetadata as SogDataMetadata } from './splat/SogSplatData.js';
 import { type IFile, type IData, SplatFileType, SplatPackType } from './types.js';
 import { detectSplatFileType, isUrl } from './utils/file.js';
-import { SH_MAPS } from './utils/splat.js';
-import {
-    type FileContext,
-    probeZipStream,
-    readZipIndex,
-    openZipEntry,
-    resolveFilePath,
-    getFileEntry,
-} from './utils/zip.js';
+import { type FileContext, readZipIndex, openZipEntry, resolveFilePath, getFileEntry } from './utils/zip.js';
 
 export interface SplatFileInput {
     type: SplatFileType;
@@ -82,12 +67,11 @@ export async function prepareSplatFiles(
     includeOtherFormats: boolean = false,
     context?: FileContext,
 ): Promise<SplatFileInput[]> {
-    const { isZip, stream: source } = await probeZipStream(stream);
-    if (!isZip) {
+    const { files, stream: source } = await readZipIndex(stream);
+    if (!files) {
         return [{ type, stream: source, contentLength, context }];
     }
 
-    const files = await readZipIndex(source);
     const selected: { path: string; type: SplatFileType }[] = [];
     const types = new Set<SplatFileType>();
     const dependencies = new Set<string>();
@@ -201,91 +185,11 @@ export async function readSplatFiles(files: SplatFileInput[], data: IData, lodLe
         await readSogData(file.stream, data, file.context);
         return;
     }
-    if (files.length === 1) {
-        const { type, stream, contentLength, context } = files[0];
-        await createSplatFile(type, lodLevel).read(stream, contentLength, data, context);
-        return;
-    }
-
-    const initialized = deferred();
-    initialized.promise.catch(() => {});
-    let counts = 0;
-    let pending = files.length;
-    let shDegree = 0;
-    let offset = 0;
-    const reads: Promise<void>[] = files.map(async (file, index) => {
-        let paddedSh: number[] = [];
-        let fileShDegree = 0;
-        const target: IData = {
-            get counts() {
-                return data.counts;
-            },
-            get shDegree() {
-                return data.shDegree;
-            },
-            async initBlock(count, degree) {
-                fileShDegree = degree;
-                counts += count;
-                shDegree = Math.max(shDegree, degree);
-                if (--pending === 0) {
-                    offset = await data.initBlock(counts, shDegree);
-                    initialized.resolve();
-                }
-                await initialized.promise;
-                if (index > 0) {
-                    await reads[index - 1];
-                }
-                const blockOffset = offset;
-                offset += count;
-                paddedSh = new Array(SH_MAPS[data.shDegree]).fill(0);
-                return blockOffset;
-            },
-            finishBlock() {},
-            get availableChunkCounts() {
-                return data.availableChunkCounts;
-            },
-            async beginChunk(offset, counts, channel) {
-                await data.beginChunk?.(offset, counts, channel);
-                if (fileShDegree === 0 && data.shDegree > 0) {
-                    for (let i = 0; i < counts; i++) {
-                        data.setShN(offset + i, paddedSh);
-                    }
-                }
-            },
-            endChunk: data.endChunk?.bind(data),
-            set: data.set.bind(data),
-            setCenter: data.setCenter.bind(data),
-            setScale: data.setScale.bind(data),
-            setQuat: data.setQuat.bind(data),
-            setColor: data.setColor.bind(data),
-            setAlpha: data.setAlpha.bind(data),
-            setShN(i, sh) {
-                if (sh.length < paddedSh.length) {
-                    paddedSh.fill(0, sh.length);
-                    for (let j = 0; j < sh.length; j++) {
-                        paddedSh[j] = sh[j];
-                    }
-                    data.setShN(i, paddedSh);
-                } else {
-                    data.setShN(i, sh);
-                }
-            },
-            get: data.get.bind(data),
-            getCenter: data.getCenter.bind(data),
-            getScale: data.getScale.bind(data),
-            getQuat: data.getQuat.bind(data),
-            getColor: data.getColor.bind(data),
-            getAlpha: data.getAlpha.bind(data),
-            getShN: data.getShN.bind(data),
-        };
-        await createSplatFile(file.type, lodLevel).read(file.stream, file.contentLength, target, file.context);
-    });
-    try {
-        await Promise.all(reads);
-    } catch (error) {
-        initialized.reject(error);
-        await Promise.allSettled(reads);
-        throw error;
-    }
-    data.finishBlock();
+    // Replace one input block with its files, including nested ZIP and LCC2 inputs.
+    data.blockCounts += files.length - 1;
+    await Promise.all(
+        files.map(({ type, stream, contentLength, context }) =>
+            createSplatFile(type, lodLevel).read(stream, contentLength, data, context),
+        ),
+    );
 }

@@ -1,5 +1,13 @@
 # EGS 发布说明 Release Notes
 
+## 1.2.103
+
+1. 优化
+    - WebGL 高斯排序复用同源点的中心数据，仅回读变化区间。
+    - WebGL2 渲染时提前剔除完全位于屏幕外的高斯点，减少协方差纹理读取和投影计算。
+2. **<font color="red">Breaking Changes</font>**
+    - 移除 `Splat.stream` 和 `Splat.readback()`
+
 ## 1.2.102
 
 1. 优化

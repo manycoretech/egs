@@ -168,6 +168,14 @@ function createVertexShader(material: SplattingMaterial): string {
             return;
         }
 
+        vec2 scaledResolution = resolution * focalAdjustment;
+        float maxRadius = min(maxPixelRadius * focalAdjustment, min(scaledResolution.x, scaledResolution.y));
+        vec2 absClipXY = abs(clipCenter.xy);
+        vec2 maxClipRadius = maxRadius * clipCenter.w / scaledResolution;
+        if (any(greaterThan(absClipXY - maxClipRadius, clipCenter.ww))) {
+            return;
+        }
+
         ${
             highPrecisionEnabled
                 ? `
@@ -208,7 +216,6 @@ function createVertexShader(material: SplattingMaterial): string {
                 `
         }
 
-        vec2 scaledResolution = resolution * focalAdjustment;
         vec2 focal = 0.5 * scaledResolution * vec2(projectionMatrix[0][0], projectionMatrix[1][1]);
         mat3 J;
         if(projectionMatrix[2][3] == 0.0) {
@@ -269,10 +276,10 @@ function createVertexShader(material: SplattingMaterial): string {
         float delta = length(vec2(halfDiagDiff, b));
         float lambda1 = avg + delta;
         float lambda2 = det / lambda1;
-        float maxRadius = min(maxPixelRadius * focalAdjustment, min(scaledResolution.x, scaledResolution.y));
         float scale1 = min(maxRadius, maxStdDev * sqrt(lambda1));
         float scale2 = min(maxRadius, maxStdDev * sqrt(lambda2));
-        if (any(greaterThan(abs(clipCenter.xy) - vec2(max(scale1, scale2) * clipCenter.w / scaledResolution), clipCenter.ww))) {
+        vec2 clipRadius = max(scale1, scale2) * clipCenter.w / scaledResolution;
+        if (any(greaterThan(absClipXY - clipRadius, clipCenter.ww))) {
             return;
         }
 
