@@ -1,7 +1,7 @@
 #include <cstdint>
-#include <wasm_simd128.h>
-
-using std::uint32_t;
+#include <cstring>
+#include <emmintrin.h>
+#include <limits>
 
 namespace {
 
@@ -11,36 +11,39 @@ constexpr uint32_t DEPTH_LIMIT = 0x7f7fffff;
 static uint32_t buckets[BUCKET_COUNT];
 static uint32_t min_bucket, max_bucket;
 
-using float4 = float __attribute__((vector_size(16), aligned(16)));
+inline __m128 dot3(__m128 x, __m128 y, __m128 z, __m128 dx, __m128 dy, __m128 dz) {
+    const __m128 xy = _mm_add_ps(_mm_mul_ps(x, dx), _mm_mul_ps(y, dy));
+    return _mm_add_ps(xy, _mm_mul_ps(z, dz));
+}
 
-static inline __attribute__((always_inline)) void project_depths(
+template<bool Radial>
+void project_depths(
     const float* centers, uint32_t* keys, uint32_t count, float cx, float cy, float cz,
-    float dx, float dy, float dz, float bias, bool radial) {
-    const float offset = radial ? bias : bias - (cx * dx + cy * dy + cz * dz);
-    const float4 infinity = static_cast<float4>(wasm_f32x4_splat(__builtin_inff()));
+    float dx, float dy, float dz, float bias) {
+    const __m128 offset = _mm_set1_ps(Radial ? bias : bias - (cx * dx + cy * dy + cz * dz));
+    const __m128 dir_x = _mm_set1_ps(dx), dir_y = _mm_set1_ps(dy), dir_z = _mm_set1_ps(dz);
+    const __m128 zero = _mm_setzero_ps();
+    const __m128 infinity = _mm_set1_ps(std::numeric_limits<float>::infinity());
 
     for (uint32_t i = 0; i < count; i += 4, centers += 16) {
         // Transpose four XYZW centers into x, y, z and w vectors.
-        v128_t a = wasm_v128_load(centers), b = wasm_v128_load(centers + 4);
-        v128_t c = wasm_v128_load(centers + 8), d = wasm_v128_load(centers + 12);
-        v128_t ab_xy = wasm_i32x4_shuffle(a, b, 0, 4, 1, 5), cd_xy = wasm_i32x4_shuffle(c, d, 0, 4, 1, 5);
-        v128_t ab_zw = wasm_i32x4_shuffle(a, b, 2, 6, 3, 7), cd_zw = wasm_i32x4_shuffle(c, d, 2, 6, 3, 7);
-        float4 x = static_cast<float4>(wasm_i32x4_shuffle(ab_xy, cd_xy, 0, 1, 4, 5));
-        float4 y = static_cast<float4>(wasm_i32x4_shuffle(ab_xy, cd_xy, 2, 3, 6, 7));
-        float4 z = static_cast<float4>(wasm_i32x4_shuffle(ab_zw, cd_zw, 0, 1, 4, 5));
-        float4 w = static_cast<float4>(wasm_i32x4_shuffle(ab_zw, cd_zw, 2, 3, 6, 7));
-        if (radial) {
-            x -= cx;
-            y -= cy;
-            z -= cz;
+        __m128 x = _mm_load_ps(centers);
+        __m128 y = _mm_load_ps(centers + 4);
+        __m128 z = _mm_load_ps(centers + 8);
+        __m128 w = _mm_load_ps(centers + 12);
+        _MM_TRANSPOSE4_PS(x, y, z, w);
+        if constexpr (Radial) {
+            x = _mm_sub_ps(x, _mm_set1_ps(cx));
+            y = _mm_sub_ps(y, _mm_set1_ps(cy));
+            z = _mm_sub_ps(z, _mm_set1_ps(cz));
         }
-        float4 depth = x * dx + y * dy + z * dz + offset;
-        v128_t visible = (depth > 0.0f) & (w > 0.0f);
-        if (radial) {
-            depth = static_cast<float4>(wasm_f32x4_sqrt(static_cast<v128_t>(x * x + y * y + z * z)));
+        __m128 depth = _mm_add_ps(dot3(x, y, z, dir_x, dir_y, dir_z), offset);
+        const __m128 visible = _mm_and_ps(_mm_cmpgt_ps(depth, zero), _mm_cmpgt_ps(w, zero));
+        if constexpr (Radial) {
+            depth = _mm_sqrt_ps(dot3(x, y, z, x, y, z));
         }
-        wasm_v128_store(keys + i,
-            wasm_v128_bitselect(static_cast<v128_t>(depth), static_cast<v128_t>(infinity), visible));
+        const __m128 key = _mm_or_ps(_mm_and_ps(visible, depth), _mm_andnot_ps(visible, infinity));
+        _mm_store_si128(reinterpret_cast<__m128i*>(keys + i), _mm_castps_si128(key));
     }
 }
 
@@ -49,17 +52,18 @@ static inline __attribute__((always_inline)) void project_depths(
 extern "C" {
 
 void reset_buckets() {
-    __builtin_memset(buckets, 0, sizeof(buckets));
+    std::memset(buckets, 0, sizeof(buckets));
     min_bucket = BUCKET_COUNT;
     max_bucket = 0;
 }
 
+// Both buffers are 16-byte aligned and have space for all four lanes of the final group.
 void project_chunk(const float* centers, uint32_t* keys, uint32_t count, float cx, float cy, float cz,
     float dx, float dy, float dz, float bias, bool radial) {
     if (radial) {
-        project_depths(centers, keys, count, cx, cy, cz, dx, dy, dz, bias, true);
+        project_depths<true>(centers, keys, count, cx, cy, cz, dx, dy, dz, bias);
     } else {
-        project_depths(centers, keys, count, cx, cy, cz, dx, dy, dz, bias, false);
+        project_depths<false>(centers, keys, count, cx, cy, cz, dx, dy, dz, bias);
     }
     // Count the chunk while its depth keys are still in cache.
     uint32_t lo = min_bucket, hi = max_bucket;
