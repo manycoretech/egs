@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 
 import { TaskType, TaskStatus, type SendMessage, type ReceiveMessage } from './WorkerMessage.js';
-import { createSimdSort } from './simd/sort.js';
+import { createWasmSorter } from './sort-wasm/index.js';
 
 const DEPTH_INFINITY_F32 = 0x7f800000 - 1;
 const KEY_SHIFT = 8;
@@ -72,7 +72,7 @@ function sortSplats(request: SendMessage<TaskType.SortSplats>['payload']) {
     return { activeCount, sorting, ordering };
 }
 
-const sorter = createSimdSort().catch(error => {
+const sorter = createWasmSorter().catch(error => {
     console.warn('Splat sort WASM initialization failed; using JavaScript.', error);
     return sortSplats;
 });

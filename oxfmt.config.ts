@@ -17,8 +17,8 @@ export default defineConfig({
         '**/*.cmake',
         '**/*.txt',
         '**/wasm/**',
-        '**/zstd-wasm/**',
+        '**/zstd-wasm/*.{js,d.ts}',
         '**/draco-loader/*.js',
-        '**/splat-utils/simd/*.{js,mjs,d.ts}',
+        '**/sort-wasm/*.{js,d.ts}',
     ],
 });

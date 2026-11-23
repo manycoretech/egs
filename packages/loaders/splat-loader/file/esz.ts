@@ -263,44 +263,46 @@ export class EszFile implements IFile {
 
     async read(stream: ReadableStream<Uint8Array>, _contentLength: number, data: IData) {
         const decompressor = await createZstdDecompressor(128 * 1024);
-        const decompressed = stream.pipeThrough(
-            new TransformStream<Uint8Array, Uint8Array>({
-                transform(chunk, controller) {
-                    for (const output of decompressor.feed(chunk) as Uint8Array[]) {
-                        controller.enqueue(output);
-                    }
-                },
-                flush(controller) {
-                    for (const output of decompressor.finish() as Uint8Array[]) {
-                        controller.enqueue(output);
-                    }
-                },
-            }),
-        );
-        const cursor = new ByteStreamCursor(decompressed);
-        if ((await cursor.readUint32(true)) !== ESZ_MAGIC) {
-            throw new Error('Invalid ESZ file: missing EGS magic');
-        }
+        let cursor: ByteStreamCursor | undefined;
+        try {
+            const decompressed = stream.pipeThrough(
+                new TransformStream<Uint8Array, Uint8Array>({
+                    transform(chunk, controller) {
+                        for (const output of decompressor.feed(chunk)) {
+                            controller.enqueue(output);
+                        }
+                    },
+                    flush() {
+                        decompressor.finishView();
+                    },
+                }),
+            );
+            cursor = new ByteStreamCursor(decompressed);
+            if ((await cursor.readUint32(true)) !== ESZ_MAGIC) {
+                throw new Error('Invalid ESZ file: missing EGS magic');
+            }
 
-        const metaLength = await cursor.readUint32(true);
-        const metaBuffer = await cursor.readExact(metaLength);
-        const meta = JSON.parse(new TextDecoder().decode(metaBuffer)) as Metadata;
-        if (meta.version !== ESZ_VERSION) {
-            throw new Error(`Unsupported ESZ version: ${meta.version}`);
-        }
-        if (meta.layout !== 'low' && meta.layout !== 'high') {
-            throw new Error(`Unsupported ESZ layout: ${meta.layout}`);
-        }
+            const metaLength = await cursor.readUint32(true);
+            const metaBuffer = await cursor.readExact(metaLength);
+            const meta = JSON.parse(new TextDecoder().decode(metaBuffer)) as Metadata;
+            if (meta.version !== ESZ_VERSION) {
+                throw new Error(`Unsupported ESZ version: ${meta.version}`);
+            }
+            if (meta.layout !== 'low' && meta.layout !== 'high') {
+                throw new Error(`Unsupported ESZ layout: ${meta.layout}`);
+            }
 
-        const offset = await data.initBlock(meta.counts, meta.shDegree);
-        if (meta.layout === 'high') {
-            await this.readHighPrecisionLayout(data, offset, meta, cursor);
-        } else {
-            await this.readLowPrecisionLayout(data, offset, meta, cursor);
+            const offset = await data.initBlock(meta.counts, meta.shDegree);
+            if (meta.layout === 'high') {
+                await this.readHighPrecisionLayout(data, offset, meta, cursor);
+            } else {
+                await this.readLowPrecisionLayout(data, offset, meta, cursor);
+            }
+            data.finishBlock();
+        } finally {
+            decompressor.free();
+            await cursor?.cancel();
         }
-        data.finishBlock();
-        await cursor.cancel();
-        decompressor.free();
     }
 
     async write(_stream: WritableStream<Uint8Array>, _data: IData) {

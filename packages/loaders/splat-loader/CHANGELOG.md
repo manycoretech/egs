@@ -1,5 +1,9 @@
 # changelog
 
+## DEV
+
+- ESZ 和 SPZ v4 的 zstd 流式解码改用基于 libzstd 的 C++ WASM 模块。
+
 ## 1.3.1
 
 - `parseSplatData` 默认流式加载。保留 CPU 数据改用 `stream: false`（原 `retainData: true`）。`chunkBytes` 更名为 `streamChunkBytes`（默认 16 MiB）。

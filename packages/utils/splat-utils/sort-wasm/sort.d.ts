@@ -4,11 +4,11 @@ declare namespace RuntimeExports {
     let HEAPU32: Uint32Array;
 }
 interface WasmModule {
-  _reset_buckets(): void;
-  _project_chunk(_0: number, _1: number, _2: number, _3: number, _4: number, _5: number, _6: number, _7: number, _8: number, _9: number, _10: number): void;
-  _write_order(_0: number, _1: number, _2: number): number;
-  _malloc(_0: number): number;
-  _realloc(_0: number, _1: number): number;
+  _sort_chunk_size(): number;
+  _begin_sort(_0: number): number;
+  _project_chunk(_0: number, _1: number, _2: number, _3: number, _4: number, _5: number, _6: number, _7: number, _8: number, _9: number): void;
+  _write_order(_0: number): number;
+  _sort_order(): number;
 }
 
 export type MainModule = WasmModule & typeof RuntimeExports;

@@ -178,11 +178,14 @@ async function pipeZstdStream(
         }
     };
 
-    await cursor.readChunks(compressedSize, async chunk => {
-        await writeOutputs(decompressor.feed(chunk) as Uint8Array[]);
-    });
-    await writeOutputs(decompressor.finish() as Uint8Array[]);
-    decompressor.free();
+    try {
+        await cursor.readChunks(compressedSize, async chunk => {
+            await writeOutputs(decompressor.feed(chunk));
+        });
+        decompressor.finishView();
+    } finally {
+        decompressor.free();
+    }
 
     if (produced !== uncompressedSize) {
         throw new Error(`Invalid SPZ v4 decompressed size at index ${streamIndex}`);

@@ -1,5 +1,9 @@
 # changelog
 
+## DEV
+
+- SIMD 排序模块从 `simd` 迁至 `sort-wasm`，由 CMake 直接生成内嵌 WASM 的单文件 ES 模块。
+
 ## 1.2.3
 
 - `createSplat`支持流式数据，省略`renderer`时保留 CPU 数据。
