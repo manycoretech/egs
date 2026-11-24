@@ -16,7 +16,7 @@
   "repository": "https://github.com/manycoretech/egs.git",
   "scripts": {
     "build": "pnpm egs-build --cp ./utils/zstd-wasm/zstd.js ./utils/zstd-wasm/zstd.d.ts ./utils/zstd-wasm/LICENSE.zstd",
-    "build:wasm": "emcmake cmake -S utils/zstd-wasm -B utils/zstd-wasm/build -G Ninja -DCMAKE_BUILD_TYPE=Release && cmake --build utils/zstd-wasm/build --target decoder && cmake --install utils/zstd-wasm/build --prefix utils/zstd-wasm",
+    "build:wasm": "cd utils/zstd-wasm && cmake --workflow --preset emscripten-wasm32",
     "build:release": "pnpm build --release",
     "build:types": "pnpm build --type-only",
     "build:types:release": "pnpm build --release --type-only"

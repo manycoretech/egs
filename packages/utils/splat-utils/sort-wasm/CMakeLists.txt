@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.31.0)
 project(splat_utils_sort LANGUAGES CXX)
 
 if(NOT EMSCRIPTEN)

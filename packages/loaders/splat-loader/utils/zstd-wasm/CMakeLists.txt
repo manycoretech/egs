@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.31.0)
 project(splat_loader_zstd LANGUAGES C CXX)
 
 if(NOT EMSCRIPTEN)
@@ -6,9 +6,6 @@ if(NOT EMSCRIPTEN)
 endif()
 
 include(FetchContent)
-if(POLICY CMP0135)
-    cmake_policy(SET CMP0135 NEW)
-endif()
 set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(ZSTD_BUILD_PROGRAMS OFF)
 set(ZSTD_BUILD_TESTS OFF)

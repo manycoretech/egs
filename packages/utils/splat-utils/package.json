@@ -22,7 +22,7 @@
   },
   "scripts": {
     "build": "pnpm egs-build --cp ./sort-wasm/sort.js ./sort-wasm/sort.d.ts",
-    "build:wasm": "emcmake cmake -S sort-wasm -B sort-wasm/build -G Ninja -DCMAKE_BUILD_TYPE=Release && cmake --build sort-wasm/build --target sorter && cmake --install sort-wasm/build --prefix sort-wasm",
+    "build:wasm": "cd sort-wasm && cmake --workflow --preset emscripten-wasm32",
     "build:release": "pnpm build --release",
     "build:types": "pnpm build --type-only",
     "build:types:release": "pnpm build --release --type-only"

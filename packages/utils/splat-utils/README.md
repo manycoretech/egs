@@ -13,6 +13,4 @@ pnpm build:wasm
 pnpm build:release
 ```
 
-`pnpm build:wasm` builds `sort.js` and `sort.d.ts` in `sort-wasm/build/` and installs both files into `sort-wasm/`. To install the same build elsewhere, run `cmake --install sort-wasm/build --prefix <output-directory>`.
-
 The C++ sorter allocates and reuses its own scratch buffer. The `sort-wasm/index.ts` adapter initializes the module per worker, copies centers into that buffer in chunks of 4096, and copies the visible indices back to the caller's ordering array. The worker falls back to JavaScript if WASM initialization fails.

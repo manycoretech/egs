@@ -1,0 +1,36 @@
+{
+  "version": 10,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 31,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "emscripten-wasm32",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "installDir": "${sourceDir}",
+      "toolchainFile": "$env{EMSDK}/upstream/emscripten/cmake/Modules/Platform/Emscripten.cmake",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "emscripten-wasm32",
+      "configurePreset": "emscripten-wasm32",
+      "targets": ["install"]
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "emscripten-wasm32",
+      "steps": [
+        { "type": "configure", "name": "emscripten-wasm32" },
+        { "type": "build", "name": "emscripten-wasm32" }
+      ]
+    }
+  ]
+}
