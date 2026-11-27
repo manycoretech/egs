@@ -20,5 +20,7 @@ export default defineConfig({
         '**/zstd-wasm/*.{js,d.ts}',
         '**/draco-loader/*.js',
         '**/sort-wasm/*.{js,d.ts}',
+        '.clang-format',
+        '.clang-tidy',
     ],
 });
