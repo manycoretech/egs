@@ -1,6 +1,6 @@
 # changelog
 
-## DEV
+## 1.3.2
 
 - ESZ 和 SPZ v4 的 zstd 流式解码改用基于 libzstd 的 C++ WASM 模块。
 

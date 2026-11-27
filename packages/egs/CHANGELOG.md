@@ -1,5 +1,10 @@
 # EGS 发布说明 Release Notes
 
+## 1.2.104
+
+1. 优化
+    - 移除 setSortSplats 接口用 setSplatSorter 替换，用以支持扩展性
+
 ## 1.2.103
 
 1. 优化

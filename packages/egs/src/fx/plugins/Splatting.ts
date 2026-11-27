@@ -1,6 +1,6 @@
 import { logger, sleep } from '@qunhe/egs-lib';
 import type { Vector4 } from '../../math/Vector4.js';
-import { PipelinePlugin, type IEffectConfig } from './PipelinePlugin.js';
+import { PipelinePlugin } from './PipelinePlugin.js';
 import type { HashKeyBuilder } from '../../utils/HashKeyBuilder.js';
 import type { RenderGraph } from '../../rendergraph/RenderGraph.js';
 import { pass, target, colorAttachment } from '../../rendergraph/NodeMakers.js';
@@ -52,23 +52,25 @@ export interface SplattingOptions {
 
 export type SplatKernelOptions = Pick<SplatKernelHighlightMaterial, 'size' | 'color' | 'selectedColor'>;
 
-let sortSplats = async ({
-    sorting,
-    ordering,
-}: {
-    count: number;
-    sorting: Float32Array;
-    cameraPosition: number[];
-    cameraDirection: number[];
-    radial: boolean;
-    depthBias: number;
-    ordering: Uint32Array;
-}) => {
-    logger.error('sortSplats is not registered.');
-    return { activeCount: 0, sorting, ordering: ordering.fill(0) };
-};
-export function setSortSplats(fn: typeof sortSplats) {
-    sortSplats = fn;
+type SortStorage = { sorting: Float32Array; ordering: Uint32Array };
+
+export interface SplatSorter {
+    alloc(capacity: number, storage?: SortStorage): Promise<SortStorage>;
+    update(storage: SortStorage, changed: IndexRange[]): Promise<void>;
+    sort(
+        storage: SortStorage,
+        count: number,
+        cameraPosition: number[],
+        cameraDirection: number[],
+        radial: boolean,
+        depthBias: number,
+    ): Promise<number>;
+    release(storage: SortStorage): void;
+}
+
+let sorter: SplatSorter | undefined;
+export function setSplatSorter(instance: SplatSorter) {
+    sorter = instance;
 }
 
 interface SplatCache {
@@ -127,7 +129,6 @@ export class SplattingPlugin extends PipelinePlugin {
     private packAttachSize: Size = { width: 1, height: 1 };
 
     private precalculateEnabled: boolean = true;
-    private precalculateSlowEnabled: boolean = false;
     private precalculateVersion: number = 0;
     private precalculateQueue = new Set<number>();
     private precalculateMaterial = new SplatPrecalculateMaterial();
@@ -207,9 +208,8 @@ export class SplattingPlugin extends PipelinePlugin {
     private isSorting: boolean = false;
     private sortLastTime: number = -Infinity;
     private sortCurrentVersion: number = 0;
-    private sortingUpdate?: 'diff' | 'full';
-    private sortingBuffer?: Float32Array;
-    private orderingBuffer?: Uint32Array;
+    private sortingUpdate?: 'diff' | 'full' = 'full';
+    private storage?: SortStorage;
     private orderTex?: SourceTexture;
     private async flushSortTask(texture: TextureV2) {
         const renderer = this.renderer.renderer as WebGLRenderer;
@@ -218,6 +218,7 @@ export class SplattingPlugin extends PipelinePlugin {
             renderer !== this.renderer.renderer ||
             renderer.rendererStatus.state !== RendererState.Ready;
         if (
+            !sorter ||
             isCancelled() ||
             !this.isSortDirty ||
             this.isSorting ||
@@ -230,40 +231,33 @@ export class SplattingPlugin extends PipelinePlugin {
         this.sortLastTime = performance.now();
 
         try {
-            const capacity = texture.width * texture.height;
-            let sorting = this.sortingBuffer;
-            const sortingUpdate = sorting ? this.sortingUpdate : 'full';
-            if (!sorting || sorting.length < capacity * 4) {
-                const grown = new Float32Array(capacity * 4);
-                if (sorting && sortingUpdate !== 'full') {
-                    grown.set(sorting);
-                }
-                sorting = grown;
-            }
-            let ordering = this.orderingBuffer;
-            if (!ordering || ordering.length < capacity) {
-                ordering = new Uint32Array(capacity);
-            }
-            this.sortingUpdate = undefined;
-
             const { splats, totalCount } = this.scene.scene.splatManager;
-            let orderLayout = this.orderLayout;
-            if (sortingUpdate) {
+            const origin = this.packCameraRelativeOrigin.clone();
+            let orderLayout = this.sortingUpdate === 'full' ? [] : this.orderLayout;
+            if (this.sortingUpdate) {
+                this.sortingUpdate = undefined;
+                const prevOrderLayout = orderLayout;
                 let start = 0;
-                const currentOrderLayout: OrderLayout = splats.map(splat => {
+                orderLayout = splats.map(splat => {
                     const { counts: count, offset: sourceOffset, version } = splat;
                     const entry = { splat, start, count, sourceOffset, version };
                     start += count;
                     return entry;
                 });
-                const { moves, changes } = diffOrderLayout(
-                    currentOrderLayout,
-                    sortingUpdate === 'full' ? [] : orderLayout,
-                );
-                orderLayout = currentOrderLayout;
-                for (const { start, source, count } of moves) {
-                    sorting.copyWithin(start * 4, source * 4, (source + count) * 4);
-                }
+                const { moves, changes } = diffOrderLayout(orderLayout, prevOrderLayout);
+                const changed: IndexRange[] = [];
+                const prepareSorting = async () => {
+                    const capacity = texture.width * texture.height;
+                    if (!this.storage || this.storage.ordering.length < capacity) {
+                        this.storage = await sorter!.alloc(capacity, this.storage);
+                    }
+                    const { sorting } = this.storage;
+                    for (const { start, source, count } of moves) {
+                        sorting.copyWithin(start * 4, source * 4, (source + count) * 4);
+                        changed.push({ start, end: start + count });
+                    }
+                    return sorting;
+                };
                 if (changes.length) {
                     const rows: IndexRange[] = [];
                     for (const range of changes) {
@@ -276,29 +270,30 @@ export class SplattingPlugin extends PipelinePlugin {
                             rows.push({ start, end });
                         }
                     }
-                    await readTextureInChunks(renderer, texture, rows, sorting);
+                    await readTextureInChunks(renderer, texture, rows, prepareSorting);
+                    for (const { start, end } of rows) {
+                        changed.push({ start: start * texture.width, end: end * texture.width });
+                    }
+                } else {
+                    await prepareSorting();
                 }
-                if (isCancelled()) {
-                    return;
+                if (changed.length) {
+                    await sorter.update(this.storage!, changed);
                 }
             }
 
+            const storage = this.storage!;
             const camera = this.scene.camera.matrixWorld;
-            const cameraPosition = camera.getPosition(tempVec0).sub(this.packCameraRelativeOrigin).toArray();
+            const cameraPosition = camera.getPosition(tempVec0).sub(origin).toArray();
             const cameraDirection = tempVec1.set(0, 0, -1).transformDirection(camera).toArray();
-            const {
-                activeCount,
-                sorting: backSorting,
-                ordering: backOrdering,
-            } = await sortSplats({
-                count: totalCount,
-                sorting,
-                ordering,
+            const activeCount = await sorter.sort(
+                storage,
+                totalCount,
                 cameraPosition,
                 cameraDirection,
-                radial: this.sortRadial,
-                depthBias: this.sortDepthBias,
-            });
+                this.sortRadial,
+                this.sortDepthBias,
+            );
             if (isCancelled()) {
                 return;
             }
@@ -308,13 +303,11 @@ export class SplattingPlugin extends PipelinePlugin {
                 orderTex?.freeGPU();
                 orderTex = this.orderTex = createOrderTexture(texture.width, texture.height);
             }
-            await uploadTextureInChunks(renderer, orderTex, activeCount, backOrdering, isCancelled);
+            await uploadTextureInChunks(renderer, orderTex, activeCount, storage.ordering, isCancelled);
             if (isCancelled()) {
                 return;
             }
 
-            this.sortingBuffer = backSorting;
-            this.orderingBuffer = backOrdering;
             this.orderLayout = orderLayout;
             this.orderTex = this.reorderMaterial.orderTex;
             this.splattingMaterial.orderTex =
@@ -330,25 +323,37 @@ export class SplattingPlugin extends PipelinePlugin {
         } catch (error) {
             if (!isCancelled()) {
                 logger.warn('Failed to update splat order', error);
-                this.sortingBuffer = undefined;
                 this.isSortDirty = true;
+                this.releaseSortBuffers();
             }
         } finally {
             this.isSorting = false;
+            if (this.isDestroyed) {
+                this.releaseSortBuffers();
+            }
+        }
+    }
+
+    private releaseSortBuffers() {
+        this.sortingUpdate = 'full';
+        if (this.storage) {
+            sorter!.release(this.storage);
+            this.storage = undefined;
         }
     }
 
     destroy() {
         this.isDestroyed = true;
-        this.sortingBuffer = undefined;
-        this.orderingBuffer = undefined;
+        if (!this.isSorting) {
+            this.releaseSortBuffers();
+        }
     }
 
     private prevSceneVersion: number = 0;
     private prevSplatCache = new Map<number, SplatCache>(); // <objectId, SplatCache>
     private prevSortCameraMatrix?: Matrix4;
     private prevSortCameraLayer: Layers = new Layers();
-    updateEffect(sceneAdaptor: SceneAdaptor, _f: boolean, _c: boolean, effectConfig: IEffectConfig) {
+    updateEffect(sceneAdaptor: SceneAdaptor) {
         if (this.renderer.renderer.backend === RendererBackend.WEBGPU_WASM) {
             this.updateEffectWebGPU(sceneAdaptor);
             return;
@@ -447,10 +452,7 @@ export class SplattingPlugin extends PipelinePlugin {
         const packChanged =
             forceUpdate || packForceUnstableEnabled || isCameraLayerDirty || packCameraRelativeCenterIsDirty;
         const cameraInverseMatrix = camera.matrixWorldInverse;
-        this.precalculateSlowEnabled ||= effectConfig.isPerformanceSlow;
-        const precalculateIsDirty =
-            (!this.repackEnabled && !this.precalculateSlowEnabled) ||
-            this.precalculateVersion !== this.sortCurrentVersion;
+        const precalculateIsDirty = this.precalculateVersion !== this.sortCurrentVersion;
         this.precalculateVersion = this.sortCurrentVersion;
         let packedOffset = 0;
         for (let i = 0; i < splats.length; i++) {
@@ -1292,53 +1294,66 @@ async function readTextureInChunks(
     renderer: WebGLRenderer,
     texture: TextureV2,
     rows: IndexRange[],
-    data: Float32Array,
+    getWriteTarget: () => Promise<Float32Array>,
 ) {
+    const gl = renderer.gl as WebGL2RenderingContext;
     const { width } = texture;
     const rowLength = width * 4;
-    const length = rows.reduce((sum, range) => sum + range.end - range.start, 0) * rowLength;
-    const gl = renderer.gl as WebGL2RenderingContext;
-    const handle = renderer.getGPUTextureHandle(texture);
-    const framebuffer = gl.createFramebuffer()!;
-    const buffer = gl.createBuffer()!;
-    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, framebuffer);
-    gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, handle, 0);
-    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buffer);
-    gl.bufferData(gl.PIXEL_PACK_BUFFER, length * data.BYTES_PER_ELEMENT, gl.STREAM_READ);
-    // FLOAT readback works for both RGBA16F and RGBA32F center attachments.
-    let byteOffset = 0;
-    for (const { start, end } of rows) {
-        gl.readPixels(0, start, width, end - start, gl.RGBA, gl.FLOAT, byteOffset);
-        byteOffset += (end - start) * rowLength * data.BYTES_PER_ELEMENT;
-    }
-    gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
-    gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
-    gl.deleteFramebuffer(framebuffer);
+    const rowsPerChunk = Math.max(1, Math.floor(TEXTURE_CHUNK_BYTES / (rowLength * Float32Array.BYTES_PER_ELEMENT)));
+    const totalRows = rows.reduce((sum, range) => sum + range.end - range.start, 0);
+    const source = renderer.getGPUTextureHandle(texture);
+    const snapshot = gl.createTexture()!;
+    const snapshotFramebuffer = gl.createFramebuffer()!;
     try {
-        await waitForWebGL(gl);
-        const chunkLength = TEXTURE_CHUNK_BYTES / data.BYTES_PER_ELEMENT;
-        byteOffset = 0;
+        renderer.wglState.bindTextureAndActiveForUploading(gl.TEXTURE_2D, snapshot);
+        gl.texStorage2D(gl.TEXTURE_2D, 1, gl.RGBA32F, width, totalRows);
+
+        const previousDraw = gl.getParameter(gl.DRAW_FRAMEBUFFER_BINDING);
+        const scissor = gl.isEnabled(gl.SCISSOR_TEST);
+        const sourceFramebuffer = gl.createFramebuffer()!;
+        try {
+            gl.bindFramebuffer(gl.READ_FRAMEBUFFER, sourceFramebuffer);
+            gl.framebufferTexture2D(gl.READ_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, source, 0);
+            gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, snapshotFramebuffer);
+            gl.framebufferTexture2D(gl.DRAW_FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, snapshot, 0);
+            if (scissor) {
+                gl.disable(gl.SCISSOR_TEST);
+            }
+            let packedRow = 0;
+            for (const { start, end } of rows) {
+                const nextRow = packedRow + (end - start);
+                gl.blitFramebuffer(0, start, width, end, 0, packedRow, width, nextRow, gl.COLOR_BUFFER_BIT, gl.NEAREST);
+                packedRow = nextRow;
+            }
+        } finally {
+            if (scissor) {
+                gl.enable(gl.SCISSOR_TEST);
+            }
+            gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, previousDraw);
+            gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+            gl.deleteFramebuffer(sourceFramebuffer);
+        }
+        const [data] = await Promise.all([getWriteTarget(), waitForWebGL(gl)]);
+
+        let packedRow = 0;
         for (const { start, end } of rows) {
-            const target = data.subarray(start * rowLength, end * rowLength);
-            for (let offset = 0; offset < target.length;) {
-                const remaining = chunkLength - ((byteOffset / data.BYTES_PER_ELEMENT) % chunkLength);
-                const chunk = target.subarray(offset, offset + remaining);
-                const nextChunk =
-                    chunk.length === remaining && byteOffset + chunk.byteLength < length * data.BYTES_PER_ELEMENT
-                        ? sleep(0)
-                        : undefined;
-                gl.bindBuffer(gl.PIXEL_PACK_BUFFER, buffer);
-                gl.getBufferSubData(gl.PIXEL_PACK_BUFFER, byteOffset, chunk);
-                gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
-                byteOffset += chunk.byteLength;
-                offset += chunk.length;
-                if (nextChunk) {
-                    await nextChunk;
+            for (let row = start; row < end;) {
+                const remaining = rowsPerChunk - (packedRow % rowsPerChunk);
+                const height = Math.min(end - row, remaining);
+                const next = height === remaining && packedRow + height < totalRows ? sleep(0) : undefined;
+                gl.bindFramebuffer(gl.READ_FRAMEBUFFER, snapshotFramebuffer);
+                gl.readPixels(0, packedRow, width, height, gl.RGBA, gl.FLOAT, data, row * rowLength);
+                gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+                row += height;
+                packedRow += height;
+                if (next) {
+                    await next;
                 }
             }
         }
     } finally {
-        gl.deleteBuffer(buffer);
+        gl.deleteFramebuffer(snapshotFramebuffer);
+        gl.deleteTexture(snapshot);
     }
 }
 

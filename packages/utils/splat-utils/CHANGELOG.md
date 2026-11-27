@@ -1,8 +1,9 @@
 # changelog
 
-## DEV
+## 1.2.4
 
 - SIMD 排序模块从 `simd` 迁至 `sort-wasm`，由 CMake 直接生成内嵌 WASM 的单文件 ES 模块。
+- 排序支持 Shared Memory 以及多线程
 
 ## 1.2.3
 

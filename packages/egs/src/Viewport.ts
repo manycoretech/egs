@@ -301,6 +301,7 @@ export class Viewport {
         }
         this.isDestroyed = true;
         this.viewer.removeViewport(this);
+        this.pipeline.destroy();
         this.engine = undefined!;
         this.scene = undefined!;
         this.viewer = undefined!;

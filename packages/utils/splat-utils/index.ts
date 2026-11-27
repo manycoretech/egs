@@ -15,5 +15,5 @@ export { type SplatCenterPrimitive, SplatCenterPrimitiveSource } from './SplatCe
 export { type SplatEllipsoidPrimitive, SplatEllipsoidPrimitiveSource } from './SplatEllipsoidSource.js';
 
 import { __INTERNAL__ } from '@qunhe/egs';
-import { sortSplats } from './sort.js';
-__INTERNAL__?.setSortSplats(sortSplats);
+import { WorkerSplatSorter } from './sort.js';
+__INTERNAL__?.setSplatSorter(new WorkerSplatSorter());

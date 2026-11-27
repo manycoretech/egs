@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 
-import { TaskType, TaskStatus, type SendMessage, type ReceiveMessage } from './WorkerMessage.js';
-import { createWasmSorter } from './sort-wasm/index.js';
+import { TaskStatus, TaskType, type IMessage, type ReceiveMessage, type SendMessage } from './WorkerMessage.js';
+import * as WasmSort from './sort-wasm/index.js';
 
 const DEPTH_INFINITY_F32 = 0x7f800000 - 1;
 const KEY_SHIFT = 8;
@@ -44,8 +44,14 @@ function countingSort(count: number, depthBits: Uint32Array, order: Uint32Array)
 
 let depths = new Float32Array(0);
 let depthBits = new Uint32Array(depths.buffer);
-function sortSplats(request: SendMessage<TaskType.SortSplats>['payload']) {
-    const { count, sorting, ordering, cameraPosition, cameraDirection, radial, depthBias } = request;
+function sortSplats({
+    storage: { sorting, ordering },
+    count,
+    cameraPosition,
+    cameraDirection,
+    radial,
+    depthBias,
+}: IMessage[TaskType.Sort]['send']) {
     if (depths.length < count) {
         depths = new Float32Array(count);
         depthBits = new Uint32Array(depths.buffer);
@@ -68,26 +74,47 @@ function sortSplats(request: SendMessage<TaskType.SortSplats>['payload']) {
         depths[i] = depth;
     }
 
-    const activeCount = countingSort(count, depthBits, ordering);
-    return { activeCount, sorting, ordering };
+    return countingSort(count, depthBits, ordering);
 }
 
-const sorter = createWasmSorter().catch(error => {
-    console.warn('Splat sort WASM initialization failed; using JavaScript.', error);
-    return sortSplats;
-});
-
-self.onmessage = async ({ data }: MessageEvent<SendMessage<TaskType.SortSplats>>) => {
+let sort: Awaited<ReturnType<typeof WasmSort.init>>;
+self.onmessage = async ({ data }: MessageEvent<SendMessage>) => {
+    const storage = data.payload && 'storage' in data.payload ? data.payload.storage : undefined;
+    let reply: ReceiveMessage<TaskType>;
     try {
-        if (data.taskType !== TaskType.SortSplats) {
-            throw new Error(`Unsupported task type: ${data.taskType}.`);
+        let payload: IMessage[TaskType]['receive'];
+        const { taskType } = data;
+        switch (taskType) {
+            case TaskType.Init:
+                sort ??= await WasmSort.init(data.payload).catch(error => {
+                    console.warn('WASM splat sort unavailable, using JavaScript.', error);
+                    return sortSplats;
+                });
+                break;
+            case TaskType.Alloc:
+                payload = WasmSort.alloc(data.payload.capacity, data.payload.storage?.sorting);
+                break;
+            case TaskType.Update:
+                WasmSort.update(data.payload);
+                break;
+            case TaskType.Sort:
+                payload = { activeCount: sort(data.payload) ?? sortSplats(data.payload) };
+                break;
+            case TaskType.Release:
+                WasmSort.release(data.payload.region);
+                break;
+            default:
+                throw new Error(`Unsupported task type: ${taskType}.`);
         }
-        const payload = (await sorter)(data.payload);
-        postMessage({ status: TaskStatus.Success, payload } satisfies ReceiveMessage<TaskType.SortSplats>, [
-            payload.sorting.buffer,
-            payload.ordering.buffer,
-        ]);
+        reply = { status: TaskStatus.Success, payload };
     } catch (error) {
-        postMessage({ status: TaskStatus.Fail, payload: String(error) } satisfies ReceiveMessage<TaskType.SortSplats>);
+        reply = { status: TaskStatus.Fail, payload: String(error) };
     }
+    reply.returned = storage;
+    postMessage(
+        reply,
+        storage
+            ? [storage.sorting.buffer, storage.ordering.buffer].filter(buffer => buffer instanceof ArrayBuffer)
+            : [],
+    );
 };

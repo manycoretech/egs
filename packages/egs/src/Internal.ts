@@ -84,7 +84,12 @@ export {
     DeferredDrawRectAreaLightMaterial,
     DeferredDrawSpotLightMaterial,
 } from './fx/plugins/Deferred.js';
-export { setSortSplats, type SplattingOptions, type SplatKernelOptions } from './fx/plugins/Splatting.js';
+export {
+    setSplatSorter,
+    type SplatSorter,
+    type SplattingOptions,
+    type SplatKernelOptions,
+} from './fx/plugins/Splatting.js';
 
 export { registerPipelineContentAPI, removePipelineContentAPI } from './fx/PipelineAPI.js';
 export {

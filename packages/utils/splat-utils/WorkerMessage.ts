@@ -1,5 +1,15 @@
+export type SortStorage = {
+    sorting: Float32Array;
+    ordering: Uint32Array;
+    region?: number;
+};
+
 export enum TaskType {
-    SortSplats = 'SortSplats',
+    Init = 'Init',
+    Alloc = 'Alloc',
+    Update = 'Update',
+    Sort = 'Sort',
+    Release = 'Release',
 }
 
 export enum TaskStatus {
@@ -7,33 +17,38 @@ export enum TaskStatus {
     Fail,
 }
 
-interface IBasicMessage {
-    [key: string]: {
-        send: unknown;
-        receive: unknown;
+export interface IMessage {
+    [TaskType.Init]: {
+        send: { moduleUrl: string; shared: boolean };
+        receive: never;
     };
-}
-
-export interface IMessage extends IBasicMessage {
-    [TaskType.SortSplats]: {
+    [TaskType.Alloc]: {
+        send: { capacity: number; storage?: SortStorage };
+        receive: SortStorage | undefined;
+    };
+    [TaskType.Update]: {
+        send: { storage: SortStorage; changed: Array<{ start: number; end: number }> };
+        receive: never;
+    };
+    [TaskType.Sort]: {
         send: {
+            storage: SortStorage;
             count: number;
-            sorting: Float32Array;
             cameraPosition: number[];
             cameraDirection: number[];
             radial: boolean;
             depthBias: number;
-            ordering: Uint32Array;
         };
-        receive: { activeCount: number; sorting: Float32Array; ordering: Uint32Array };
+        receive: { activeCount: number };
+    };
+    [TaskType.Release]: {
+        send: { region: number };
+        receive: never;
     };
 }
 
-export interface SendMessage<T extends TaskType> {
-    taskType: T;
-    payload: IMessage[T]['send'];
-}
-export type ReceiveMessage<T extends TaskType> =
+export type SendMessage = { [Task in TaskType]: { taskType: Task; payload: IMessage[Task]['send'] } }[TaskType];
+export type ReceiveMessage<T extends TaskType> = (
     | {
           status: TaskStatus.Success;
           payload: IMessage[T]['receive'];
@@ -41,4 +56,7 @@ export type ReceiveMessage<T extends TaskType> =
     | {
           status: TaskStatus.Fail;
           payload: string;
-      };
+      }
+) & {
+    returned?: SortStorage;
+};

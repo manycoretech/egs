@@ -6,7 +6,7 @@ This package is usually used together with `@qunhe/egs` and `@qunhe/egs-splat-lo
 
 ## Building the SIMD sorter
 
-The C++20 implementation lives in `sort-wasm/src/sort.cpp`. Activate the Emscripten SDK and make CMake 3.20 or newer and Ninja available on `PATH`. From this package directory, run
+The C++20 sorter lives in `sort-wasm/src/sort.cpp`, with headers in `sort-wasm/include/`. Activate the Emscripten SDK and make CMake 3.31 or newer and Ninja available on `PATH`. From this package directory, run
 
 ```sh
 pnpm build:wasm

@@ -188,7 +188,7 @@ export class PostPipeline {
             taaEnabled: false,
             taaStable: false,
         };
-        this.splattingPlugin.updateEffect(scene, isFrameStable, isCameraStable, effectConfig);
+        this.splattingPlugin.updateEffect(scene);
         this.forwardPlugin.updateEffect(scene, isFrameStable, isCameraStable, effectConfig);
         this.aoPlugin.updateEffect(scene, isFrameStable, isCameraStable, effectConfig);
         this.taaPlugin.updateEffect(scene, isFrameStable, isCameraStable, effectConfig);
